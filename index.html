@@ -214,11 +214,55 @@ for i in range(1, 6): print(i)</textarea>
   <button class="btn secondary" type="button" data-load="table">Load: Table</button>
 </div>
 
+<div class="note" style="margin-top:12px">
+  <b>Status:</b> <span id="pyStatus">Not loaded</span><br>
+  <span class="muted">Pyodide needs internet to load. If you opened this file offline, Pyodide will not work.</span>
+</div>
+
 <pre id="pyOut">Output will appear here...</pre>
 
   </div>  <div class="footer">
     <b style="color:#92400e">Programmer's Picnic</b> - Champak Roy - Calm learning. Strong foundations.
-  </div></div><script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script><script>
+  </div></div><!-- Pyodide loader (robust, avoids document.write issues) --><script>
+  window.__PYODIDE_TRIES__ = [
+    { js: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js", indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/" },
+    { js: "https://unpkg.com/pyodide@0.26.2/pyodide.js", indexURL: "https://unpkg.com/pyodide@0.26.2/" },
+    { js: "https://cdn.jsdelivr.net/npm/pyodide@0.26.2/pyodide.js", indexURL: "https://cdn.jsdelivr.net/npm/pyodide@0.26.2/" }
+  ];
+
+  function loadScript(src){
+    return new Promise(function(resolve, reject){
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = function(){ resolve(); };
+      s.onerror = function(){ reject(new Error('Failed to load script: ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensurePyodideLoaded(statusEl){
+    if(window.loadPyodide) return { indexURL: window.__PYODIDE_INDEX_URL__ || "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/" };
+
+    var lastErr = null;
+    for(var i=0;i<window.__PYODIDE_TRIES__.length;i++){
+      var t = window.__PYODIDE_TRIES__[i];
+      try{
+        if(statusEl) statusEl.textContent = 'Loading Pyodide...';
+        await loadScript(t.js);
+        if(!window.loadPyodide) throw new Error('pyodide.js loaded but loadPyodide not found');
+        window.__PYODIDE_INDEX_URL__ = t.indexURL;
+        if(statusEl) statusEl.textContent = 'Pyodide loaded. Initializing...';
+        return { indexURL: t.indexURL };
+      }catch(e){
+        lastErr = e;
+      }
+    }
+
+    if(statusEl) statusEl.textContent = 'Pyodide failed to load. Check internet or blocked CDN.';
+    throw lastErr || new Error('Pyodide failed to load');
+  }
+</script><script>
 // Utilities
 function shuffle(arr){
   const a = arr.slice();
@@ -356,7 +400,13 @@ document.getElementById('mcqScore').textContent = Score: ${score} / ${mcq.length
 
 // Pyodide const EXAMPLES = { evens: for i in range(2, 11, 2): print(i) , vowels: s = input("Enter a string: ") count = 0 for ch in s: if ch in "aeiouAEIOU": count += 1 print("Vowels =", count) , table: n = int(input("Enter a number: ")) for i in range(1, 11): print(n, "x", i, "=", n*i)  };
 
-let pyReady = null; async function runPy(){ const out = document.getElementById('pyOut'); out.textContent = ''; try{ if(!pyReady){ pyReady = await loadPyodide({ stdout: s => out.textContent += s + "\n", stderr: s => out.textContent += s + "\n" }); pyReady.globals.set('input', prompt); } await pyReady.runPythonAsync(document.getElementById('pyCode').value); }catch(e){ out.textContent += "Error: " + e; } }
+let pyReady = null; async function runPy(){ const out = document.getElementById('pyOut'); const st = document.getElementById('pyStatus'); out.textContent = '';
+
+try{ if(!pyReady){ const info = await ensurePyodideLoaded(st); pyReady = await loadPyodide({ indexURL: info.indexURL, stdout: (s) => { out.textContent += s + " "; }, stderr: (s) => { out.textContent += s + " "; } }); pyReady.globals.set('input', prompt); if(st) st.textContent = 'Ready'; }
+
+await pyReady.runPythonAsync(document.getElementById('pyCode').value);
+
+}catch(e){ if(st) st.textContent = 'Error'; out.textContent += "Error: " + e; } }
 
 // Wire up
 
