@@ -198,11 +198,61 @@ i = 1 while i <= 5: print(i) i += 1 </textarea>
   <button class="btn secondary" type="button" data-load="menu">Load: Menu Loop</button>
 </div>
 
+<div class="note" style="margin-top:12px">
+  <b>Pyodide Status:</b> <span id="pyStatus">Not loaded</span><br>
+  <span class="muted">If Pyodide does not load, your browser may be blocking CDN access. Try opening this HTML with internet enabled.</span>
+</div>
+
 <pre id="pyOut">Output will appear here...</pre>
 
   </div>  <div class="footer">
     <b style="color:#92400e">Programmer's Picnic</b> - Champak Roy - Calm learning. Strong foundations.
-  </div></div><script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script><script>
+  </div></div><!-- Pyodide loader (robust) --><script>
+  // Some environments need an explicit loader and indexURL.
+  // This loader tries multiple CDNs and shows a clear error if blocked.
+  window.__PYODIDE_INDEX_URLS__ = [
+    "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
+    "https://unpkg.com/pyodide@0.26.2/",
+    "https://cdn.jsdelivr.net/npm/pyodide@0.26.2/"
+  ];
+
+  function loadScript(src){
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src=src; s.async=true;
+      s.onload=()=>resolve();
+      s.onerror=()=>reject(new Error('Failed to load: '+src));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensurePyodideLoaded(){
+    if(window.loadPyodide) return;
+    const statusEl = document.getElementById('pyStatus');
+    const tries = [
+      {js:"https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js", indexURL: window.__PYODIDE_INDEX_URLS__[0]},
+      {js:"https://unpkg.com/pyodide@0.26.2/pyodide.js", indexURL: window.__PYODIDE_INDEX_URLS__[1]},
+      {js:"https://cdn.jsdelivr.net/npm/pyodide@0.26.2/pyodide.js", indexURL: window.__PYODIDE_INDEX_URLS__[2]}
+    ];
+
+    let lastErr = null;
+    for(const t of tries){
+      try{
+        if(statusEl) statusEl.textContent = 'Loading Pyodide...';
+        await loadScript(t.js);
+        // If loaded but loadPyodide missing, try next.
+        if(!window.loadPyodide) throw new Error('pyodide.js loaded but loadPyodide not found');
+        window.__PYODIDE_INDEX_URL__ = t.indexURL;
+        if(statusEl) statusEl.textContent = 'Pyodide loaded.';
+        return;
+      }catch(e){
+        lastErr = e;
+      }
+    }
+    if(statusEl) statusEl.textContent = 'Pyodide failed to load (network blocked or offline).';
+    throw lastErr || new Error('Pyodide failed to load');
+  }
+</script><script>
 // ---------------- Utilities
 function shuffle(arr){
   const a = arr.slice();
@@ -386,9 +436,9 @@ else:
 
 ` };
 
-let pyReady = null; async function runPy(){ const out = document.getElementById('pyOut'); out.textContent = '';
+let pyReady = null; async function runPy(){ const out = document.getElementById('pyOut'); out.textContent = ''; const st = document.getElementById('pyStatus'); if(st) st.textContent = st.textContent || 'Not loaded';
 
-try{ if(!pyReady){ pyReady = await loadPyodide({ stdout: s => out.textContent += s + "\n", stderr: s => out.textContent += s + "\n" }); pyReady.globals.set('input', prompt); } await pyReady.runPythonAsync(document.getElementById('pyCode').value); }catch(e){ out.textContent += "\nError: " + e; } }
+try{ if(!pyReady){ await ensurePyodideLoaded(); const indexURL = window.PYODIDE_INDEX_URL || "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/"; document.getElementById('pyStatus').textContent = 'Initializing runtime...'; pyReady = await loadPyodide({ indexURL, stdout: s => out.textContent += s + " ", stderr: s => out.textContent += s + " " }); document.getElementById('pyStatus').textContent = 'Ready.'; pyReady.globals.set('input', prompt); } await pyReady.runPythonAsync(document.getElementById('pyCode').value); }catch(e){ out.textContent += "\nError: " + e; } }
 
 // ---------------- Wire up document.getElementById('newMcqBtn').addEventListener('click', buildMcq); document.getElementById('submitMcqBtn').addEventListener('click', submitMcq); document.getElementById('runPyBtn').addEventListener('click', runPy); document.querySelectorAll('[data-load]').forEach(btn => { btn.addEventListener('click', () => { const key = btn.getAttribute('data-load'); document.getElementById('pyCode').value = EXAMPLES[key] || ''; }); });
 
