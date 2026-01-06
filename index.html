@@ -1,363 +1,1017 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Interactive Pattern Programs in Python</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>SQL in Browser — SQLite Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta property="og:title" content="Interactive Pattern Programs in Python" />
-  <meta property="og:description" content="Python,Pattern Programs,Interactive,Coding Practice,Pyodide,Champak Roy,Learn With Champak,Programming Exercises," />
-  <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjyoQWoe62o54odkLj67MDHu-SbqOPQyEjep0AC4oruXdr15y9uQsx8nRu6P6pWgJQGMEvgI4l_7S4q-mvyO57ln5modPmoL18iKF4y5wRCQZkvS7ISoKmTz5hl1bIaS-IFGIy-5jbZ8vBEE2z1fJNb6wi-MMjG_zzCu8E0nh6QY8eKqXfTOh0_IfDccsM/s16000/1000030701.jpg" />
+    <style>
+      :root {
+        --bg: #fff7e6;
+        --card: #ffffff;
+        --ink: #1f2937;
+        --brand: #d97706;
+        --border: #f3d7a6;
+        --muted: #6b7280;
+        --danger: #b91c1c;
+        --ok: #166534;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      .container {
+        max-width: 1200px;
+        margin: 28px auto;
+        padding: 18px;
+      }
+      h1 {
+        text-align: center;
+        color: var(--brand);
+        margin: 0 0 14px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: var(--card);
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .row.space {
+        justify-content: space-between;
+      }
+      textarea {
+        width: 100%;
+        height: 170px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        outline: none;
+        background: #fff;
+        box-sizing: border-box;
+      }
+      textarea:focus {
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18);
+      }
+      button {
+        background: var(--brand);
+        color: #fff;
+        border: none;
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      button:hover {
+        opacity: 0.92;
+      }
+      button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .btn-secondary {
+        background: #9a3412;
+      }
+      .btn-ghost {
+        background: #fffaf2;
+        color: #92400e;
+        border: 1px solid var(--border);
+      }
+      .btn-ghost:hover {
+        background: #fff3db;
+        opacity: 1;
+      }
 
-  <link href="https://varanasi-software-junction.github.io/blogger/blogger-assets/crx_styles_v1.css" rel="stylesheet" />
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #fffaf2;
+        color: var(--muted);
+        font-size: 13px;
+        user-select: none;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+      }
+      .dot.ok {
+        background: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+      }
+      .help {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
 
-  <style>
-    .info-section, .further-study {
-      background:#f8fbff;
-      border:1px solid #e6f3ff;
-      padding:16px 20px;
-      border-radius:12px;
-      margin:20px 0;
-      box-shadow:0 4px 10px rgba(0,0,0,0.03);
-    }
-    .info-section h3, .further-study h3 { color:#0b4b74; margin-bottom:8px; }
-    .info-section p, .further-study p { color:#07385b; line-height:1.7; }
-    .info-section ul, .further-study ul { margin-left:18px; color:#083047; }
-    .further-study a { color:#0b63b8; font-weight:600; text-decoration:none; }
-    .further-study a:hover { text-decoration:underline; }
+      .samples {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .chip {
+        border: 1px solid var(--border);
+        background: #fffaf2;
+        color: #92400e;
+        padding: 7px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 13px;
+        user-select: none;
+      }
+      .chip:hover {
+        background: #fff3db;
+      }
 
-    .pattern-box { border:1px solid #e0e6ef; background:#fff; padding:14px; border-radius:12px; margin:20px 0; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
-    .pattern-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-    .pattern-diagram { font-family:monospace; white-space:pre; background:#fbfdff; padding:12px; border-radius:8px; display:inline-block; margin-top:10px; color:#0b3a66; }
-    .pattern-actions { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .pattern-actions button { background:#0b63b8; color:white; border:0; border-radius:8px; padding:8px 12px; cursor:pointer; font-weight:600; }
-    .pattern-actions button.secondary { background:#6b7fa6; }
+      #error {
+        color: var(--danger);
+        margin-top: 10px;
+        white-space: pre-wrap;
+      }
+      #result {
+        margin-top: 10px;
+      }
+      .okmsg {
+        color: var(--ok);
+        margin-top: 10px;
+        white-space: pre-wrap;
+      }
 
-    pre.pattern-code { background:#f6f9ff; padding:12px; border-radius:8px; overflow:auto; border:1px solid #e8f0ff; position:relative; }
-    pre.pattern-code code{ font-family:monospace; display:block; white-space:pre; color:#062a44; }
-    .copy-btn { position:absolute; top:8px; right:8px; background:#e8f0ff; color:#0b3a66; border:1px solid #d6e5ff; border-radius:8px; padding:6px 10px; cursor:pointer; font-size:12px; }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 12px;
+        background: #fff;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 13px;
+      }
+      th {
+        background: #fdecc8;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+      .table-title {
+        margin-top: 14px;
+        font-weight: 800;
+        color: #92400e;
+      }
 
-    .explain { margin-top:10px; color:#0b3a66; background:#f7fbff; border:1px solid #e7f2ff; padding:10px; border-radius:8px; }
+      .panel-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 0 0 10px;
+      }
+      .panel-title h2 {
+        margin: 0;
+        font-size: 16px;
+        color: #92400e;
+      }
+      .seg {
+        display: inline-flex;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        background: #fffaf2;
+      }
+      .seg button {
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        color: #92400e;
+        padding: 8px 10px;
+        font-size: 13px;
+      }
+      .seg button.active {
+        background: #fdecc8;
+        font-weight: 700;
+      }
 
-    #editor-area { border:2px solid #0b63b8; border-radius:12px; padding:12px; background:#ffffff; margin-top:22px; }
-    #python-code { width:100%; min-height:260px; border:0; background:#f8fbff; font-family:monospace; padding:12px; border-radius:8px; resize:vertical; box-sizing:border-box; color:#083047; }
-    #controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
-    #run-btn { background:#16a34a; color:white; border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-weight:700; }
-    #stop-btn { background:#ef4444; color:#fff; border:0; border-radius:8px; padding:10px 14px; cursor:not-allowed; opacity:.6; }
-    #copy-out { background:#0b63b8; color:#fff; border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-weight:700; }
-    #rows-input { width:110px; padding:9px 10px; border:1px solid #cfe1ff; border-radius:8px; background:#fbfdff; font-weight:600; color:#063152; }
-    #output { background:#000; color:#00ff80; padding:12px; border-radius:8px; height:240px; overflow:auto; font-family:monospace; margin-top:10px; white-space:pre-wrap; line-height:1.5; }
-    .top-note { padding:10px 12px; background:#f0fbff; border-radius:8px; border:1px solid #e6f4ff; color:#0b4b74; margin-bottom:16px; }
-    .small { font-size:13px; color:#56708b; }
-    #patterns { margin-top:16px; }
-    #loader { padding:12px; border-radius:8px; background:#f8fbff; border:1px solid #e6f4ff; color:#0b4b74; }
+      .list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        max-height: 280px;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .item {
+        padding: 10px 10px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .item:last-child {
+        border-bottom: none;
+      }
+      .item:hover {
+        background: #fffaf2;
+      }
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 6px;
+      }
+      code.inline {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        background: #fff7e6;
+        border: 1px solid var(--border);
+        padding: 1px 6px;
+        border-radius: 6px;
+      }
+      .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-    @media (max-width:600px){
-      .pattern-diagram{width:100%;}
-      #output{height:220px;}
-    }
-  </style>
-</head>
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 0;
+      }
 
-<body>
-  <div class="post-body">
+      .footer {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
 
-    <!-- OPTIONAL: Keep your hidden Blogger image dump here, INSIDE body -->
-    <!--
-    <div style="display:none;">
-      ... your big hidden content ...
-    </div>
-    -->
+  <body>
+    <div class="container">
+      <h1>Run SQL in Your Browser 🧠</h1>
 
-    <h2>Try this if you prefer video walkthroughs</h2>
-    <iframe
-      width="560" height="315"
-      src="https://www.youtube.com/embed/Lx85bsBc5-Y?si=cYbJkCGNZcf-ptVQ"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
+      <div class="grid">
+        <!-- LEFT: SQL editor + results -->
+        <div class="card">
+          <div class="row space">
+            <div>
+              <p style="margin: 0 0 6px"><b>Try editing and running SQL:</b></p>
+              <div class="help">
+                Tip: Press <b>Ctrl + Enter</b> to run. Multiple statements are
+                allowed (separated by <code class="inline">;</code>).
+              </div>
+            </div>
 
-    <div class="separator" style="clear: both; text-align: center; margin-top:16px;">
-      <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjyoQWoe62o54odkLj67MDHu-SbqOPQyEjep0AC4oruXdr15y9uQsx8nRu6P6pWgJQGMEvgI4l_7S4q-mvyO57ln5modPmoL18iKF4y5wRCQZkvS7ISoKmTz5hl1bIaS-IFGIy-5jbZ8vBEE2z1fJNb6wi-MMjG_zzCu8E0nh6QY8eKqXfTOh0_IfDccsM/s16000/1000030701.jpg" imageanchor="1">
-        <img
-          border="0"
-          loading="lazy"
-          alt="Interactive Pattern Programs in Python cover"
-          src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjyoQWoe62o54odkLj67MDHu-SbqOPQyEjep0AC4oruXdr15y9uQsx8nRu6P6pWgJQGMEvgI4l_7S4q-mvyO57ln5modPmoL18iKF4y5wRCQZkvS7ISoKmTz5hl1bIaS-IFGIy-5jbZ8vBEE2z1fJNb6wi-MMjG_zzCu8E0nh6QY8eKqXfTOh0_IfDccsM/s238/1000030701.jpg"
-        />
-      </a>
-    </div>
+            <div class="badge" id="statusBadge" title="SQLite engine status">
+              <span class="dot" id="statusDot"></span>
+              <span id="statusText">Loading SQLite…</span>
+            </div>
+          </div>
 
-    <h2>🐍 Interactive Pattern Programs in Python</h2>
+          <div class="samples" aria-label="Sample queries">
+            <span class="chip" data-sql="SELECT * FROM birthdays;">Show all</span>
+            <span
+              class="chip"
+              data-sql="SELECT name, birthday FROM birthdays ORDER BY birthday;"
+              >Order by birthday</span
+            >
+            <span
+              class="chip"
+              data-sql="SELECT name FROM birthdays WHERE name LIKE '%Roy%';"
+              >Find 'Roy'</span
+            >
+            <span
+              class="chip"
+              data-sql="INSERT INTO birthdays (name, birthday) VALUES ('Abhishek Pandey', '2001-09-12');\nSELECT * FROM birthdays;"
+              >Insert + show</span
+            >
+            <span
+              class="chip"
+              data-sql="UPDATE birthdays SET name='Champak Roy (Updated)' WHERE name='Champak Roy';\nSELECT * FROM birthdays;"
+              >Update + show</span
+            >
+            <span
+              class="chip"
+              data-sql="DELETE FROM birthdays WHERE name LIKE '%Updated%';\nSELECT * FROM birthdays;"
+              >Delete + show</span
+            >
+            <span class="chip" data-sql="SELECT * FROM not_a_table;"
+              >Intentional error</span
+            >
+          </div>
 
-    <div class="info-section">
-      <h3>💡 Introduction</h3>
-      <p>
-        Pattern programs are one of the most enjoyable ways to learn Python. They help you master
-        <b>loops, nested structures, and logic flow</b> while building creative outputs.
-      </p>
+          <textarea id="sqlInput">SELECT * FROM birthdays;</textarea>
 
-      <h3>📘 Importance</h3>
-      <p>
-        Pattern problems are common in programming interviews and academic exams. They test your grasp
-        of logic, control flow, and nested iterations.
-      </p>
+          <div class="row" style="margin-top: 10px">
+            <button id="runBtn" disabled>Run SQL</button>
+            <button id="resetBtn" class="btn-secondary" disabled>Reset DB</button>
+            <button id="downloadCsvBtn" class="btn-ghost" disabled>
+              Download last result CSV
+            </button>
+            <button id="exportDbBtn" class="btn-ghost" disabled>
+              Export DB (.sqlite)
+            </button>
+            <button id="importDbBtn" class="btn-ghost" disabled>
+              Import DB (.sqlite)
+            </button>
+            <input id="importDbFile" type="file" accept=".sqlite,application/octet-stream" style="display:none" />
+          </div>
 
-      <ul>
-        <li>Boosts problem-solving and analytical thinking</li>
-        <li>Strengthens understanding of loops and conditions</li>
-        <li>Prepares for coding interviews and DSA concepts</li>
-        <li>Encourages creative and structured thinking</li>
-      </ul>
+          <div id="error" role="alert"></div>
+          <div id="result" aria-live="polite"></div>
 
-      <h3>🔑 Keywords</h3>
-      <p>
-        <b>Python pattern programs, star patterns, triangle patterns, loops in Python, pyramid printing,
-        Floyd’s triangle, Pascal’s triangle, Learn With Champak, Champak Roy, Learning Sutras</b>
-      </p>
-    </div>
+          <div class="help">
+            CSV downloads the <b>last displayed SELECT result</b> (if your query
+            has multiple SELECTs, it uses the last one).
+          </div>
+        </div>
 
-    <div class="top-note">
-      This gallery is powered by JSON. Click <b>▶ Run in Editor</b> to load any pattern below into the live
-      Python editor and run it directly in your browser.
-    </div>
+        <!-- RIGHT: Schema + History panel -->
+        <div class="card">
+          <div class="panel-title">
+            <h2>Schema</h2>
+            <button id="refreshSchemaBtn" class="btn-ghost" disabled>
+              Refresh schema
+            </button>
+          </div>
+          <ul id="schemaList" class="list" aria-label="Schema list"></ul>
 
-    <div id="loader">⏳ Loading patterns…</div>
-    <div id="patterns" hidden></div>
+          <div class="divider"></div>
 
-    <h2>💻 Live Python Editor (Pyodide)</h2>
-    <p>Write or modify code, optionally set <b>rows</b>, then click <b>Run Code</b> to execute instantly.</p>
+          <div class="panel-title">
+            <h2>Query History</h2>
+            <div class="seg" role="tablist" aria-label="History tabs">
+              <button id="tabSuccess" class="active" type="button">Success</button>
+              <button id="tabFail" type="button">Failure</button>
+            </div>
+          </div>
 
-    <div id="editor-area" aria-live="polite">
-      <textarea id="python-code" aria-label="Python code">print("Hello from Champak Roy!")</textarea>
+          <div class="row" style="margin-bottom: 10px">
+            <button id="exportHistoryBtn" class="btn-ghost" disabled>
+              Export history (JSON)
+            </button>
+            <button id="importHistoryBtn" class="btn-ghost" disabled>
+              Import history (JSON)
+            </button>
+            <button id="clearHistoryBtn" class="btn-ghost" disabled>
+              Clear tab
+            </button>
+            <input
+              id="importFile"
+              type="file"
+              accept="application/json"
+              style="display: none"
+            />
+          </div>
 
-      <div id="controls">
-        <label class="small" for="rows-input">rows:</label>
-        <input id="rows-input" type="number" value="5" />
-        <button id="run-btn">▶ Run Code</button>
-        <button id="stop-btn" disabled>⏹ Running…</button>
-        <button id="copy-out" title="Copy output">Copy output</button>
-        <span class="small" id="status"></span>
+          <ul id="historyList" class="list" aria-label="History list"></ul>
+          <div class="help">
+            - Click an item to load it into the editor.<br />
+            - Duplicates are ignored (same SQL text, trimmed).<br />
+            - History is saved in <b>localStorage</b>.
+          </div>
+        </div>
       </div>
 
-      <div id="output" aria-label="Program output">Loading Python runtime…</div>
+      <div class="footer">Powered by SQLite — Programmer's Picnic</div>
     </div>
 
-    <div class="further-study">
-      <h3>📘 Spinoffs &amp; Further Study</h3>
-      <p>Once you’ve mastered these Python pattern programs, continue your learning journey:</p>
-      <ul>
-        <li>🔄 <a href="https://www.learnwithchampak.live/2025/10/python-loops-and-nesting.html" target="_blank" rel="noopener noreferrer">Loops and Nesting in Python</a></li>
-        <li>🧮 <a href="https://www.learnwithchampak.live/2025/10/recursion-in-python-simple-examples.html" target="_blank" rel="noopener noreferrer">Recursion Explained with Patterns</a></li>
-        <li>🧠 <a href="https://www.learnwithchampak.live/2025/10/data-structures-visualized-in-python.html" target="_blank" rel="noopener noreferrer">Data Structures Visualized</a></li>
-        <li>🎨 <a href="https://www.learnwithchampak.live/2025/10/css-animations-for-programming-demos.html" target="_blank" rel="noopener noreferrer">Add Animations with CSS</a></li>
-        <li>🧩 <a href="https://www.learnwithchampak.live/2025/10/dsa-quizzes-python.html" target="_blank" rel="noopener noreferrer">DSA Quizzes in Python</a></li>
-      </ul>
-      <p>All lessons are part of the <b>Learning Sutras</b> series by <b>Champak Roy</b>.</p>
-    </div>
-  </div>
+    <!-- SQL.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
-  <script>
-    const JSON_URL = "https://varanasi-software-junction.github.io/blogger/blogger-assets/patterns.json";
-    const patternsWrap = document.getElementById("patterns");
-    const loader = document.getElementById("loader");
+    <script>
+      "use strict";
 
-    // ---------- Load and Render Patterns ----------
-    async function loadPatterns() {
-      try {
-        const res = await fetch(JSON_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-        renderPatterns(Array.isArray(data) ? data : []);
-        loader.hidden = true;
-        patternsWrap.hidden = false;
-      } catch (e) {
-        loader.textContent = "❌ Failed to load patterns.json. Please check the URL and CORS.";
+      // ====== LocalStorage keys ======
+      const LS_SUCCESS = "pp_sql_history_success_v1";
+      const LS_FAIL = "pp_sql_history_fail_v1";
+
+      // ====== State ======
+      let db = null;
+      let SQLlib = null;
+
+      let activeTab = "success"; // "success" | "fail"
+      let lastResultForCSV = null; // { columns:[], values:[[]], filenameHint:"..." }
+
+      // ====== DOM ======
+      const sqlInput = document.getElementById("sqlInput");
+      const runBtn = document.getElementById("runBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const downloadCsvBtn = document.getElementById("downloadCsvBtn");
+
+      const exportDbBtn = document.getElementById("exportDbBtn");
+      const importDbBtn = document.getElementById("importDbBtn");
+      const importDbFile = document.getElementById("importDbFile");
+
+      const resultDiv = document.getElementById("result");
+      const errorDiv = document.getElementById("error");
+
+      const statusDot = document.getElementById("statusDot");
+      const statusText = document.getElementById("statusText");
+
+      const schemaList = document.getElementById("schemaList");
+      const refreshSchemaBtn = document.getElementById("refreshSchemaBtn");
+
+      const tabSuccess = document.getElementById("tabSuccess");
+      const tabFail = document.getElementById("tabFail");
+      const historyList = document.getElementById("historyList");
+
+      const exportHistoryBtn = document.getElementById("exportHistoryBtn");
+      const importHistoryBtn = document.getElementById("importHistoryBtn");
+      const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+      const importFile = document.getElementById("importFile");
+
+      // ====== Helpers ======
+      function nowISO() {
+        return new Date().toISOString();
       }
-    }
 
-    function renderPatterns(list) {
-      patternsWrap.innerHTML = "";
-      list.forEach((item, idx) => {
-        const box = document.createElement("div");
-        box.className = "pattern-box";
+      function normalizeSQL(sql) {
+        return (sql || "").trim();
+      }
 
-        const head = document.createElement("div");
-        head.className = "pattern-head";
-
-        const h3 = document.createElement("h3");
-        // safer than innerHTML for JSON-driven titles
-        h3.textContent = `${String(idx + 1).padStart(2, "0")} — ${item.title || "Untitled Pattern"}`;
-        head.appendChild(h3);
-        box.appendChild(head);
-
-        if (item.diagram) {
-          const diagram = document.createElement("div");
-          diagram.className = "pattern-diagram";
-          diagram.textContent = item.diagram;
-          box.appendChild(diagram);
+      function safeJSONParse(str, fallback) {
+        try {
+          return JSON.parse(str);
+        } catch {
+          return fallback;
         }
+      }
 
-        const pre = document.createElement("pre");
-        pre.className = "pattern-code";
+      function escapeHTML(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
 
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "copy-btn";
-        copyBtn.type = "button";
-        copyBtn.textContent = "Copy";
-        copyBtn.addEventListener("click", async () => {
-          try {
-            await navigator.clipboard.writeText((item.code || "").trim());
-            const old = copyBtn.textContent;
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => (copyBtn.textContent = old), 900);
-          } catch {
-            alert("Copy failed.");
-          }
+      function getHistory(kind) {
+        const key = kind === "success" ? LS_SUCCESS : LS_FAIL;
+        const raw = localStorage.getItem(key);
+        const arr = safeJSONParse(raw, []);
+        return Array.isArray(arr) ? arr : [];
+      }
+
+      function setHistory(kind, arr) {
+        const key = kind === "success" ? LS_SUCCESS : LS_FAIL;
+        localStorage.setItem(key, JSON.stringify(arr));
+      }
+
+      function hasSQL(kind, sqlNorm) {
+        const arr = getHistory(kind);
+        return arr.some((x) => (x && x.sqlNorm) === sqlNorm);
+      }
+
+      function addToHistory(kind, payload) {
+        const sqlNorm = payload.sqlNorm;
+        if (!sqlNorm) return;
+        if (hasSQL(kind, sqlNorm)) return; // no repeats
+        const arr = getHistory(kind);
+        arr.unshift(payload);
+        const CAP = 200;
+        if (arr.length > CAP) arr.length = CAP;
+        setHistory(kind, arr);
+      }
+
+      function setStatus(ready) {
+        if (ready) {
+          statusDot.classList.add("ok");
+          statusText.textContent = "DB Ready ✅";
+          runBtn.disabled = false;
+          resetBtn.disabled = false;
+          exportHistoryBtn.disabled = false;
+          importHistoryBtn.disabled = false;
+          clearHistoryBtn.disabled = false;
+          refreshSchemaBtn.disabled = false;
+
+          exportDbBtn.disabled = false;
+          importDbBtn.disabled = false;
+
+          downloadCsvBtn.disabled = !lastResultForCSV;
+        } else {
+          statusDot.classList.remove("ok");
+          statusText.textContent = "Loading SQLite…";
+          runBtn.disabled = true;
+          resetBtn.disabled = true;
+          exportHistoryBtn.disabled = true;
+          importHistoryBtn.disabled = true;
+          clearHistoryBtn.disabled = true;
+          refreshSchemaBtn.disabled = true;
+
+          exportDbBtn.disabled = true;
+          importDbBtn.disabled = true;
+
+          downloadCsvBtn.disabled = true;
+        }
+      }
+
+      function clearOutput() {
+        resultDiv.innerHTML = "";
+        errorDiv.textContent = "";
+      }
+
+      function showOk(message) {
+        const p = document.createElement("div");
+        p.className = "okmsg";
+        p.textContent = message;
+        resultDiv.appendChild(p);
+      }
+
+      function createFreshDB() {
+        if (!SQLlib) return;
+        db = new SQLlib.Database();
+
+        db.run(`
+          CREATE TABLE birthdays (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            birthday TEXT
+          );
+
+          INSERT INTO birthdays (name, birthday) VALUES
+          ('Champak Roy', '1970-01-16');
+        `);
+      }
+
+      function renderResultSet(res, index) {
+        const title = document.createElement("div");
+        title.className = "table-title";
+        title.textContent = `Result ${index + 1}`;
+        resultDiv.appendChild(title);
+
+        const table = document.createElement("table");
+        const thead = table.createTHead();
+        const tbody = table.createTBody();
+
+        const headerRow = thead.insertRow();
+        res.columns.forEach((col) => {
+          const th = document.createElement("th");
+          th.textContent = col;
+          headerRow.appendChild(th);
         });
 
-        const code = document.createElement("code");
-        const codeId = `pattern-code-${item.id || idx}`;
-        code.id = codeId;
-        code.textContent = item.code || "";
+        (res.values || []).forEach((row) => {
+          const tr = tbody.insertRow();
+          row.forEach((cell) => {
+            const td = tr.insertCell();
+            td.textContent = cell === null ? "NULL" : String(cell);
+          });
+        });
 
-        pre.appendChild(copyBtn);
-        pre.appendChild(code);
-        box.appendChild(pre);
+        resultDiv.appendChild(table);
+      }
 
-        const act = document.createElement("div");
-        act.className = "pattern-actions";
+      // ====== CSV ======
+      function csvEscape(value) {
+        const s = value === null || value === undefined ? "" : String(value);
+        if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+        return s;
+      }
 
-        const runBtn = document.createElement("button");
-        runBtn.type = "button";
-        runBtn.textContent = "▶ Run in Editor";
-        runBtn.addEventListener("click", () => loadToEditor(codeId));
-        act.appendChild(runBtn);
+      function toCSV(columns, values) {
+        const lines = [];
+        lines.push((columns || []).map(csvEscape).join(","));
+        for (const row of values || []) lines.push(row.map(csvEscape).join(","));
+        return lines.join("\n");
+      }
 
-        const tip = document.createElement("span");
-        tip.className = "small";
-        tip.innerHTML = `Tip: change <code>rows</code> in the editor or use the input below.`;
-        act.appendChild(tip);
+      function downloadText(filename, text, mime = "text/plain") {
+        const blob = new Blob([text], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
 
-        box.appendChild(act);
+      function suggestCSVFilename(sqlNorm) {
+        let name = "result";
+        const m = sqlNorm.match(/from\s+([a-zA-Z_][\w]*)/i);
+        if (m && m[1]) name = m[1];
+        const dt = new Date();
+        const stamp =
+          dt.getFullYear().toString() +
+          String(dt.getMonth() + 1).padStart(2, "0") +
+          String(dt.getDate()).padStart(2, "0") +
+          "_" +
+          String(dt.getHours()).padStart(2, "0") +
+          String(dt.getMinutes()).padStart(2, "0") +
+          String(dt.getSeconds()).padStart(2, "0");
+        return `${name}_${stamp}.csv`;
+      }
 
-        if (item.explanation) {
-          const ex = document.createElement("div");
-          ex.className = "explain";
-          ex.textContent = item.explanation;
-          box.appendChild(ex);
+      // ====== Schema ======
+      function renderSchema() {
+        schemaList.innerHTML = "";
+        if (!db) return;
+
+        try {
+          const tablesRes = db.exec(`
+            SELECT name, sql
+            FROM sqlite_master
+            WHERE type='table' AND name NOT LIKE 'sqlite_%'
+            ORDER BY name;
+          `);
+
+          if (!tablesRes.length || !tablesRes[0].values.length) {
+            const li = document.createElement("li");
+            li.className = "item";
+            li.style.cursor = "default";
+            li.innerHTML = `<div class="small">No user tables found.</div>`;
+            schemaList.appendChild(li);
+            return;
+          }
+
+          const rows = tablesRes[0].values; // [ [name, sql], ... ]
+          for (const [name, sql] of rows) {
+            const colsRes = db.exec(`PRAGMA table_info(${name});`);
+            const cols =
+              colsRes.length && colsRes[0].values.length
+                ? colsRes[0].values.map((r) => `${r[1]} (${r[2]})`) // name, type
+                : [];
+
+            const li = document.createElement("li");
+            li.className = "item";
+            li.innerHTML = `
+              <div style="font-weight:800;color:#92400e;">${escapeHTML(name)}</div>
+              <div class="small" style="margin-top:6px;white-space:pre-wrap;">
+                ${cols.length ? escapeHTML(cols.join(", ")) : "—"}
+              </div>
+              <div class="meta">
+                <span>Click to query</span>
+                <span>🧩 table</span>
+              </div>
+            `;
+            li.addEventListener("click", () => {
+              sqlInput.value = `SELECT * FROM ${name} LIMIT 50;`;
+              sqlInput.focus();
+            });
+            schemaList.appendChild(li);
+          }
+        } catch (e) {
+          const li = document.createElement("li");
+          li.className = "item";
+          li.style.cursor = "default";
+          li.innerHTML = `<div class="small">Schema error: ${escapeHTML(
+            e && e.message ? e.message : String(e)
+          )}</div>`;
+          schemaList.appendChild(li);
+        }
+      }
+
+      // ====== History UI ======
+      function setActiveTab(tab) {
+        activeTab = tab;
+        tabSuccess.classList.toggle("active", tab === "success");
+        tabFail.classList.toggle("active", tab === "fail");
+        renderHistory();
+      }
+
+      function renderHistory() {
+        const arr = getHistory(activeTab);
+        historyList.innerHTML = "";
+
+        if (!arr.length) {
+          const li = document.createElement("li");
+          li.className = "item";
+          li.style.cursor = "default";
+          li.innerHTML = `<div class="small">No ${activeTab} queries yet.</div>`;
+          historyList.appendChild(li);
+          return;
         }
 
-        patternsWrap.appendChild(box);
+        for (const entry of arr) {
+          const li = document.createElement("li");
+          li.className = "item";
+          const sqlShort =
+            entry.sql.length > 180 ? entry.sql.slice(0, 180) + "…" : entry.sql;
+
+          li.innerHTML = `
+            <div style="white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size: 12.5px;">
+              ${escapeHTML(sqlShort)}
+            </div>
+            <div class="meta">
+              <span>${new Date(entry.ts).toLocaleString()}</span>
+              <span>${activeTab === "success" ? "✅ Success" : "❌ Failure"}</span>
+            </div>
+          `;
+
+          li.addEventListener("click", () => {
+            sqlInput.value = entry.sql;
+            sqlInput.focus();
+          });
+
+          historyList.appendChild(li);
+        }
+      }
+
+      // ====== Export/Import History ======
+      function exportHistoryJSON() {
+        const payload = {
+          version: 1,
+          exportedAt: nowISO(),
+          success: getHistory("success"),
+          fail: getHistory("fail"),
+        };
+        const filename = `sql_history_${new Date()
+          .toISOString()
+          .replace(/[:]/g, "-")}.json`;
+        downloadText(filename, JSON.stringify(payload, null, 2), "application/json");
+      }
+
+      function importHistoryJSON(file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const obj = JSON.parse(String(reader.result || "{}"));
+            const incomingSuccess = Array.isArray(obj.success) ? obj.success : [];
+            const incomingFail = Array.isArray(obj.fail) ? obj.fail : [];
+
+            function merge(kind, incoming) {
+              const existing = getHistory(kind);
+              const seen = new Set(existing.map((x) => x.sqlNorm));
+              const merged = [...existing];
+
+              for (const x of incoming) {
+                if (!x || !x.sqlNorm || !x.sql) continue;
+                if (seen.has(x.sqlNorm)) continue;
+                seen.add(x.sqlNorm);
+                merged.push(x);
+              }
+
+              merged.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+              const CAP = 200;
+              if (merged.length > CAP) merged.length = CAP;
+
+              setHistory(kind, merged);
+            }
+
+            merge("success", incomingSuccess);
+            merge("fail", incomingFail);
+
+            renderHistory();
+            showOk("History imported successfully.");
+          } catch (e) {
+            errorDiv.textContent =
+              "Import failed. Please choose a valid JSON export.\n\n" +
+              (e && e.message ? e.message : String(e));
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function clearActiveHistory() {
+        setHistory(activeTab, []);
+        renderHistory();
+        showOk(`Cleared ${activeTab} history.`);
+      }
+
+      // ====== Export/Import DB (.sqlite) ======
+      function exportDatabaseFile() {
+        clearOutput();
+        if (!db) return;
+        try {
+          const binaryArray = db.export(); // Uint8Array
+          const blob = new Blob([binaryArray], { type: "application/octet-stream" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `pp_database_${new Date().toISOString().replace(/[:]/g, "-")}.sqlite`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          showOk("Database exported successfully.");
+        } catch (e) {
+          errorDiv.textContent =
+            "DB export failed.\n\n" + (e && e.message ? e.message : String(e));
+        }
+      }
+
+      function importDatabaseFile(file) {
+        clearOutput();
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const buf = reader.result;
+            const u8 = new Uint8Array(buf);
+            try { db && db.close(); } catch(_) {}
+            db = new SQLlib.Database(u8);
+            lastResultForCSV = null;
+            downloadCsvBtn.disabled = true;
+
+            renderSchema();
+            renderHistory();
+            showOk("Database imported successfully.");
+          } catch (e) {
+            errorDiv.textContent =
+              "DB import failed. Please choose a valid .sqlite file.\n\n" +
+              (e && e.message ? e.message : String(e));
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      // ====== Main: Run SQL ======
+      function runSQL() {
+        clearOutput();
+
+        if (!db) {
+          errorDiv.textContent = "SQLite is still loading… please wait.";
+          return;
+        }
+
+        const sql = sqlInput.value;
+        const sqlNorm = normalizeSQL(sql);
+
+        if (!sqlNorm) {
+          errorDiv.textContent = "Please type a SQL query first.";
+          return;
+        }
+
+        try {
+          const results = db.exec(sql);
+
+          addToHistory("success", { sql, sqlNorm, ts: nowISO() });
+
+          if (!results || results.length === 0) {
+            // Show helpful "rows affected" info for non-SELECT statements
+            const changed = typeof db.getRowsModified === "function" ? db.getRowsModified() : 0;
+            const msg =
+              changed && changed > 0
+                ? `Query executed successfully.\nRows affected: ${changed}`
+                : "Query executed successfully (no rows returned).";
+            showOk(msg);
+
+            lastResultForCSV = null;
+            downloadCsvBtn.disabled = true;
+
+            renderHistory();
+            renderSchema(); // schema may change after DDL
+            return;
+          }
+
+          results.forEach((res, i) => renderResultSet(res, i));
+
+          const last = results[results.length - 1];
+          lastResultForCSV = {
+            columns: last.columns || [],
+            values: last.values || [],
+            filenameHint: suggestCSVFilename(sqlNorm),
+          };
+          downloadCsvBtn.disabled = false;
+
+          renderHistory();
+          renderSchema();
+        } catch (err) {
+          const msg = err && err.message ? err.message : String(err);
+          errorDiv.textContent = msg;
+
+          addToHistory("fail", { sql, sqlNorm, ts: nowISO(), error: msg });
+
+          lastResultForCSV = null;
+          downloadCsvBtn.disabled = true;
+
+          renderHistory();
+        }
+      }
+
+      // ====== Events ======
+      runBtn.addEventListener("click", runSQL);
+
+      resetBtn.addEventListener("click", () => {
+        clearOutput();
+        if (!db) return;
+        try { db.close(); } catch (_) {}
+        createFreshDB();
+        lastResultForCSV = null;
+        downloadCsvBtn.disabled = true;
+        showOk("Database reset. Try running a query.");
+        renderSchema();
       });
-    }
 
-    loadPatterns();
-
-    // ---------- Pyodide Runtime ----------
-    let pyodide = null;
-    const outputDiv = document.getElementById("output");
-    const runBtn = document.getElementById("run-btn");
-    const stopBtn = document.getElementById("stop-btn");
-    const statusEl = document.getElementById("status");
-    const rowsInput = document.getElementById("rows-input");
-    const copyOutBtn = document.getElementById("copy-out");
-    let running = false;
-
-    function setStatus(msg, err = false) {
-      statusEl.textContent = msg;
-      statusEl.style.color = err ? "#d11" : "#56708b";
-    }
-
-    function attachStdIO() {
-      pyodide.setStdout({
-        batched: (t) => {
-          outputDiv.innerText += t;
-          outputDiv.scrollTop = outputDiv.scrollHeight;
-        },
+      downloadCsvBtn.addEventListener("click", () => {
+        clearOutput();
+        if (!lastResultForCSV) {
+          errorDiv.textContent = "No result available to export as CSV.";
+          return;
+        }
+        const csv = toCSV(lastResultForCSV.columns, lastResultForCSV.values);
+        downloadText(lastResultForCSV.filenameHint, csv, "text/csv");
+        showOk(`Downloaded CSV: ${lastResultForCSV.filenameHint}`);
       });
-      pyodide.setStderr({
-        batched: (t) => {
-          outputDiv.innerText += "❌ " + t;
-          if (!t.endsWith("\n")) outputDiv.innerText += "\n";
-          outputDiv.scrollTop = outputDiv.scrollHeight;
-        },
+
+      exportDbBtn.addEventListener("click", exportDatabaseFile);
+      importDbBtn.addEventListener("click", () => importDbFile.click());
+      importDbFile.addEventListener("change", () => {
+        const file = importDbFile.files && importDbFile.files[0];
+        if (!file) return;
+        importDatabaseFile(file);
+        importDbFile.value = "";
       });
-    }
 
-    async function initPyodide() {
-      setStatus("⏳ Loading Python (Pyodide)…");
-      outputDiv.innerText = "⏳ Loading Python (Pyodide)…";
-      try {
-        pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/" });
-        attachStdIO();
-        outputDiv.innerText = "✅ Pyodide ready! Paste or load a snippet, then click Run.";
-        setStatus("Ready.");
-      } catch {
-        setStatus("Failed to load Pyodide.", true);
-        outputDiv.innerText = "❌ Failed to load Pyodide. Check your connection.";
-      }
-    }
-    initPyodide();
+      refreshSchemaBtn.addEventListener("click", renderSchema);
 
-    async function runCode() {
-      if (!pyodide) {
-        outputDiv.innerText = "Please wait… Pyodide still loading.";
-        return;
-      }
-      if (running) return;
+      sqlInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          runSQL();
+        }
+      });
 
-      running = true;
-      runBtn.disabled = true;
-      stopBtn.disabled = false;
+      document.querySelectorAll(".chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const sql = chip.getAttribute("data-sql") || "";
+          sqlInput.value = sql;
+          sqlInput.focus();
+        });
+      });
 
-      outputDiv.innerText = "";
-      setStatus("Running…");
+      tabSuccess.addEventListener("click", () => setActiveTab("success"));
+      tabFail.addEventListener("click", () => setActiveTab("fail"));
 
-      const code = document.getElementById("python-code").value || "";
-      const rowsVal = Math.max(1, parseInt(rowsInput.value || "5", 10));
-      const injected = `rows=${rowsVal}\n` + code + "\n";
+      exportHistoryBtn.addEventListener("click", exportHistoryJSON);
+      importHistoryBtn.addEventListener("click", () => importFile.click());
+      importFile.addEventListener("change", () => {
+        const file = importFile.files && importFile.files[0];
+        if (!file) return;
+        importHistoryJSON(file);
+        importFile.value = "";
+      });
+      clearHistoryBtn.addEventListener("click", clearActiveHistory);
 
-      try {
-        await pyodide.runPythonAsync(injected);
-        setStatus("Done.");
-      } catch (e) {
-        outputDiv.innerText += "❌ " + e + "\n";
-        setStatus("Error", true);
-      } finally {
-        running = false;
-        runBtn.disabled = false;
-        stopBtn.disabled = true;
-      }
-    }
+      // ====== Init SQL.js ======
+      setStatus(false);
 
-    runBtn.addEventListener("click", runCode);
-    stopBtn.addEventListener("click", () => setStatus("Cannot stop mid-run in this version.", true));
+      initSqlJs({
+        locateFile: (file) =>
+          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
+      })
+        .then((SQL) => {
+          SQLlib = SQL;
+          createFreshDB();
+          setStatus(true);
+          renderSchema();
+          renderHistory();
+          runSQL();
+        })
+        .catch((e) => {
+          setStatus(false);
+          errorDiv.textContent =
+            "Failed to load SQL.js. Check internet/CDN access.\n\n" +
+            (e && e.message ? e.message : String(e));
+        });
+    </script>
 
-    function loadToEditor(id) {
-      const code = document.getElementById(id)?.innerText?.trim() ?? "";
-      document.getElementById("python-code").value = code;
-      document.getElementById("editor-area").scrollIntoView({ behavior: "smooth" });
-    }
-
-    copyOutBtn.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(outputDiv.innerText);
-        copyOutBtn.textContent = "Copied!";
-        setTimeout(() => (copyOutBtn.textContent = "Copy output"), 900);
-      } catch {
-        alert("Copy failed.");
-      }
-    });
-  </script>
-
-  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
-  <script src="https://programmer-s-picnic.github.io/json-images/imgshow.js"></script>
-  <script src="https://programmer-s-picnic.github.io/json-images/pp-lock.js"></script>
-  <script src="https://programmer-s-picnic.github.io/json-images/hometag.js"></script>
-</body>
+    <!-- Optional project scripts (non-blocking for core demo) -->
+    <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js" defer></script>
+    <script src="https://programmer-s-picnic.github.io/json-images/imgshow.js" defer></script>
+    <script src="https://programmer-s-picnic.github.io/json-images/hometag.js" defer></script>
+  </body>
 </html>
