@@ -1,1018 +1,169 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>SQL in Browser — SQLite Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!doctype html>
 
-    <style>
-      :root {
-        --bg: #fff7e6;
-        --card: #ffffff;
-        --ink: #1f2937;
-        --brand: #d97706;
-        --border: #f3d7a6;
-        --muted: #6b7280;
-        --danger: #b91c1c;
-        --ok: #166534;
-      }
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-        background: var(--bg);
-        color: var(--ink);
-      }
-      .container {
-        max-width: 1200px;
-        margin: 28px auto;
-        padding: 18px;
-      }
-      h1 {
-        text-align: center;
-        color: var(--brand);
-        margin: 0 0 14px;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: 1.6fr 1fr;
-        gap: 14px;
-        align-items: start;
-      }
-      @media (max-width: 980px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
-      }
-      .card {
-        background: var(--card);
-        padding: 18px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      }
-      .row {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-      .row.space {
-        justify-content: space-between;
-      }
-      textarea {
-        width: 100%;
-        height: 170px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        font-size: 15px;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        outline: none;
-        background: #fff;
-        box-sizing: border-box;
-      }
-      textarea:focus {
-        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18);
-      }
-      button {
-        background: var(--brand);
-        color: #fff;
-        border: none;
-        padding: 10px 14px;
-        font-size: 14px;
-        border-radius: 8px;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-      button:hover {
-        opacity: 0.92;
-      }
-      button:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-      }
-      .btn-secondary {
-        background: #9a3412;
-      }
-      .btn-ghost {
-        background: #fffaf2;
-        color: #92400e;
-        border: 1px solid var(--border);
-      }
-      .btn-ghost:hover {
-        background: #fff3db;
-        opacity: 1;
-      }
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>गृह प्रवेश आमंत्रण | दीपक राय</title>
+  <style>
+    :root{
+      --saffron-50:#fff7e6;
+      --saffron-100:#ffe8bf;
+      --saffron-200:#ffd9a1;
+      --saffron-300:#ffc26a;
+      --saffron-400:#ffa84a;
+      --saffron-500:#ff8a00;--rose-1:#ffb3b3;
+  --rose-2:#ff7a7a;
+  --rose-3:#e94b4b;
+  --marigold-1:#ffd27a;
+  --marigold-2:#ffb703;
 
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fffaf2;
-        color: var(--muted);
-        font-size: 13px;
-        user-select: none;
-      }
-      .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 999px;
-        background: #f59e0b;
-        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
-      }
-      .dot.ok {
-        background: #22c55e;
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
-      }
-      .help {
-        margin: 8px 0 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.45;
-      }
+  --ink:#2a1d12;
+  --muted:#6a4429;
+  --panel:#fffdf7;
+  --border:#f3a44a;
+  --shadow:0 24px 70px rgba(42,29,18,.18);
+  --accent:#d06a00;
+}
 
-      .samples {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 8px;
-      }
-      .chip {
-        border: 1px solid var(--border);
-        background: #fffaf2;
-        color: #92400e;
-        padding: 7px 10px;
-        border-radius: 999px;
-        cursor: pointer;
-        font-size: 13px;
-        user-select: none;
-      }
-      .chip:hover {
-        background: #fff3db;
-      }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Noto Serif Devanagari", "Mangal", "Kalimati", serif;
+  color:var(--ink);
+  background:linear-gradient(180deg,var(--saffron-50),#fff);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
 
-      #error {
-        color: var(--danger);
-        margin-top: 10px;
-        white-space: pre-wrap;
-      }
-      #result {
-        margin-top: 10px;
-      }
-      .okmsg {
-        color: var(--ok);
-        margin-top: 10px;
-        white-space: pre-wrap;
-      }
+.wrap{width:min(860px,100%)}
 
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 12px;
-        background: #fff;
-        overflow: hidden;
-        border-radius: 10px;
-      }
-      th,
-      td {
-        border: 1px solid var(--border);
-        padding: 8px;
-        text-align: left;
-        vertical-align: top;
-        font-size: 13px;
-      }
-      th {
-        background: #fdecc8;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-      }
-      .table-title {
-        margin-top: 14px;
-        font-weight: 800;
-        color: #92400e;
-      }
+.frame{background:var(--border);padding:22px;border-radius:14px;box-shadow:var(--shadow)}
+.card{position:relative;background:var(--panel);border-radius:10px;overflow:hidden;min-height:1080px}
 
-      .panel-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin: 0 0 10px;
-      }
-      .panel-title h2 {
-        margin: 0;
-        font-size: 16px;
-        color: #92400e;
-      }
-      .seg {
-        display: inline-flex;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        overflow: hidden;
-        background: #fffaf2;
-      }
-      .seg button {
-        border-radius: 0;
-        border: none;
-        background: transparent;
-        color: #92400e;
-        padding: 8px 10px;
-        font-size: 13px;
-      }
-      .seg button.active {
-        background: #fdecc8;
-        font-weight: 700;
-      }
+.card::before{content:"";position:absolute;inset:18px;border:2px solid rgba(243,164,74,.45);pointer-events:none;z-index:3}
 
-      .list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        max-height: 280px;
-        overflow: auto;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        background: #fff;
-      }
-      .item {
-        padding: 10px 10px;
-        border-bottom: 1px solid var(--border);
-        cursor: pointer;
-      }
-      .item:last-child {
-        border-bottom: none;
-      }
-      .item:hover {
-        background: #fffaf2;
-      }
-      .meta {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        color: var(--muted);
-        font-size: 12px;
-        margin-top: 6px;
-      }
-      code.inline {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        font-size: 12px;
-        background: #fff7e6;
-        border: 1px solid var(--border);
-        padding: 1px 6px;
-        border-radius: 6px;
-      }
-      .small {
-        font-size: 12px;
-        color: var(--muted);
-      }
+.top-decor{position:absolute;top:0;left:0;right:0;height:240px;background:
+  radial-gradient(180px 140px at 18% 80%, rgba(255,194,106,.95), transparent 70%),
+  radial-gradient(220px 170px at 38% 72%, rgba(255,217,161,.95), transparent 72%),
+  radial-gradient(260px 190px at 62% 78%, rgba(255,194,106,.9), transparent 72%),
+  radial-gradient(210px 160px at 82% 85%, rgba(255,217,161,.9), transparent 72%),
+  linear-gradient(180deg, rgba(255,168,74,.6), rgba(255,168,74,0));
+  border-bottom-left-radius:50% 35%;border-bottom-right-radius:50% 35%;z-index:1}
 
-      .divider {
-        height: 1px;
-        background: var(--border);
-        margin: 12px 0;
-      }
+.rangoli{position:absolute;top:170px;left:50%;width:320px;height:320px;transform:translateX(-50%) scale(.2);border-radius:50%;opacity:0;
+  background:radial-gradient(circle at center, rgba(255,255,255,.9) 0 8%, transparent 9%),
+  conic-gradient(var(--marigold-2),var(--rose-2),var(--saffron-400),var(--rose-3),var(--marigold-1),var(--saffron-300),var(--rose-1),var(--marigold-2));
+  animation:rangoliIn 2.8s ease-out forwards;z-index:2}
 
-      .footer {
-        text-align: center;
-        margin-top: 12px;
-        font-size: 13px;
-        color: var(--muted);
-      }
-    </style>
-  </head>
+@keyframes rangoliIn{0%{transform:translateX(-50%) scale(.2);opacity:0}60%{opacity:1}100%{transform:translateX(-50%) scale(1);opacity:.25}}
 
-  <body>
-    <div class="container">
-      <h1>Run SQL in Your Browser 🧠</h1>
+.bell-btn{position:absolute;top:26px;right:26px;z-index:5;border:none;background:#fffaf2;border-radius:50%;width:46px;height:46px;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
 
-      <div class="grid">
-        <!-- LEFT: SQL editor + results -->
-        <div class="card">
-          <div class="row space">
-            <div>
-              <p style="margin: 0 0 6px"><b>Try editing and running SQL:</b></p>
-              <div class="help">
-                Tip: Press <b>Ctrl + Enter</b> to run. Multiple statements are
-                allowed (separated by <code class="inline">;</code>).
-              </div>
-            </div>
+.floaters{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.rose,.petal{position:absolute;bottom:-100px;left:var(--x);width:var(--s);height:var(--s);opacity:var(--o);
+  animation:floatUp var(--t) linear infinite,sway var(--w) ease-in-out infinite,spin var(--r) linear infinite}
 
-            <div class="badge" id="statusBadge" title="SQLite engine status">
-              <span class="dot" id="statusDot"></span>
-              <span id="statusText">Loading SQLite…</span>
-            </div>
-          </div>
+.rose::before{content:"";position:absolute;inset:0;border-radius:50%;background:
+  radial-gradient(circle at 50% 50%, #fff 0 18%, transparent 19%),
+  radial-gradient(circle at 35% 40%, var(--rose-1) 0 38%, transparent 39%),
+  radial-gradient(circle at 65% 40%, var(--rose-2) 0 38%, transparent 39%),
+  radial-gradient(circle at 40% 65%, var(--rose-3) 0 38%, transparent 39%),
+  radial-gradient(circle at 60% 65%, var(--rose-2) 0 38%, transparent 39%)}
 
-          <div class="samples" aria-label="Sample queries">
-            <span class="chip" data-sql="SELECT * FROM birthdays;">Show all</span>
-            <span
-              class="chip"
-              data-sql="SELECT name, birthday FROM birthdays ORDER BY birthday;"
-              >Order by birthday</span
-            >
-            <span
-              class="chip"
-              data-sql="SELECT name FROM birthdays WHERE name LIKE '%Roy%';"
-              >Find 'Roy'</span
-            >
-            <span
-              class="chip"
-              data-sql="INSERT INTO birthdays (name, birthday) VALUES ('Abhishek Pandey', '2001-09-12');\nSELECT * FROM birthdays;"
-              >Insert + show</span
-            >
-            <span
-              class="chip"
-              data-sql="UPDATE birthdays SET name='Champak Roy (Updated)' WHERE name='Champak Roy';\nSELECT * FROM birthdays;"
-              >Update + show</span
-            >
-            <span
-              class="chip"
-              data-sql="DELETE FROM birthdays WHERE name LIKE '%Updated%';\nSELECT * FROM birthdays;"
-              >Delete + show</span
-            >
-            <span class="chip" data-sql="SELECT * FROM not_a_table;"
-              >Intentional error</span
-            >
-          </div>
+.petal::before{content:"";position:absolute;inset:0;border-radius:60%/70%;background:radial-gradient(circle at 30% 30%, var(--marigold-1), var(--marigold-2))}
 
-          <textarea id="sqlInput">SELECT * FROM birthdays;</textarea>
+@keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-1400px)}}
+@keyframes sway{0%,100%{margin-left:-22px}50%{margin-left:22px}}
+@keyframes spin{from{rotate:0deg}to{rotate:360deg}}
 
-          <div class="row" style="margin-top: 10px">
-            <button id="runBtn" disabled>Run SQL</button>
-            <button id="resetBtn" class="btn-secondary" disabled>Reset DB</button>
-            <button id="downloadCsvBtn" class="btn-ghost" disabled>
-              Download last result CSV
-            </button>
-            <button id="exportDbBtn" class="btn-ghost" disabled>
-              Export DB (.sqlite)
-            </button>
-            <button id="importDbBtn" class="btn-ghost" disabled>
-              Import DB (.sqlite)
-            </button>
-            <input id="importDbFile" type="file" accept=".sqlite,application/octet-stream" style="display:none" />
-          </div>
+.content{position:relative;padding:160px 44px 44px;display:flex;flex-direction:column;gap:24px;min-height:1080px;z-index:4}
+.top-center{text-align:center}
+.ganesh{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;background:#fff7e6;border:2px solid rgba(243,164,74,.6);font-size:36px;margin:0 auto 6px}
+.mantra{font-size:13px;letter-spacing:.14em;color:var(--muted)}
+.title{margin:12px 0 0;font-weight:900;letter-spacing:.2em;font-size:42px}
+.subtitle{margin:0;font-size:16px;letter-spacing:.1em;color:var(--muted)}
 
-          <div id="error" role="alert"></div>
-          <div id="result" aria-live="polite"></div>
+.logo-block{text-align:center}
+.logo{display:inline-block;padding:20px 24px;border:2px solid rgba(243,164,74,.55);border-radius:14px;background:#fffaf2}
+.logo .name{font-size:32px;font-weight:900;letter-spacing:.18em}
+.logo .sub{font-size:13px;letter-spacing:.26em;color:var(--muted)}
 
-          <div class="help">
-            CSV downloads the <b>last displayed SELECT result</b> (if your query
-            has multiple SELECTs, it uses the last one).
-          </div>
-        </div>
+.date-pill{margin-top:16px;display:inline-block;padding:12px 22px;border-radius:999px;border:2px solid rgba(243,164,74,.6);background:#fff;font-weight:900}
 
-        <!-- RIGHT: Schema + History panel -->
-        <div class="card">
-          <div class="panel-title">
-            <h2>Schema</h2>
-            <button id="refreshSchemaBtn" class="btn-ghost" disabled>
-              Refresh schema
-            </button>
-          </div>
-          <ul id="schemaList" class="list" aria-label="Schema list"></ul>
+.address{margin:26px auto 0;max-width:620px;text-align:center;padding:18px 20px;border:2px solid rgba(243,164,74,.6);border-radius:16px;background:#fffaf2}
+.address h4{margin:0 0 6px;color:var(--accent);letter-spacing:.14em;font-size:14px}
+.address p{margin:0;font-size:16px;line-height:1.6}
 
-          <div class="divider"></div>
+.bottom{margin-top:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.awaiting{border:2px solid rgba(243,164,74,.55);padding:16px 18px;border-radius:14px;background:#fffaf2}
 
-          <div class="panel-title">
-            <h2>Query History</h2>
-            <div class="seg" role="tablist" aria-label="History tabs">
-              <button id="tabSuccess" class="active" type="button">Success</button>
-              <button id="tabFail" type="button">Failure</button>
-            </div>
-          </div>
+.actions{display:flex;gap:10px}
+.btn{border:none;border-radius:999px;padding:12px 18px;color:#fff;background:linear-gradient(180deg,var(--saffron-400),var(--saffron-500));cursor:pointer}
 
-          <div class="row" style="margin-bottom: 10px">
-            <button id="exportHistoryBtn" class="btn-ghost" disabled>
-              Export history (JSON)
-            </button>
-            <button id="importHistoryBtn" class="btn-ghost" disabled>
-              Import history (JSON)
-            </button>
-            <button id="clearHistoryBtn" class="btn-ghost" disabled>
-              Clear tab
-            </button>
-            <input
-              id="importFile"
-              type="file"
-              accept="application/json"
-              style="display: none"
-            />
-          </div>
+@media print{.floaters,.actions{display:none}}
 
-          <ul id="historyList" class="list" aria-label="History list"></ul>
-          <div class="help">
-            - Click an item to load it into the editor.<br />
-            - Duplicates are ignored (same SQL text, trimmed).<br />
-            - History is saved in <b>localStorage</b>.
-          </div>
-        </div>
-      </div>
-
-      <div class="footer">Powered by SQLite — Programmer's Picnic</div>
+  </style>  <script>
+    function playBell(){
+      const audio=new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a0b6e5b7a.mp3');
+      audio.volume=.4;audio.play();
+    }
+  </script></head>
+<body>
+  <main class="wrap">
+    <div class="frame">
+      <section class="card">
+        <div class="top-decor"></div>
+        <div class="rangoli"></div>
+        <button class="bell-btn" onclick="playBell()">🔔</button><div class="floaters">
+      <span class="rose" style="--x:10%;--s:46px;--t:22s;--w:4s;--r:16s;--o:.3"></span>
+      <span class="petal" style="--x:22%;--s:26px;--t:17s;--w:3.4s;--r:12s;--o:.35"></span>
+      <span class="rose" style="--x:40%;--s:54px;--t:28s;--w:5s;--r:20s;--o:.25"></span>
+      <span class="petal" style="--x:58%;--s:28px;--t:18s;--w:3.6s;--r:13s;--o:.32"></span>
+      <span class="rose" style="--x:76%;--s:44px;--t:22s;--w:4.6s;--r:16s;--o:.28"></span>
     </div>
 
-    <!-- SQL.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
-
-    <script>
-      "use strict";
-
-      // ====== LocalStorage keys ======
-      const LS_SUCCESS = "pp_sql_history_success_v1";
-      const LS_FAIL = "pp_sql_history_fail_v1";
-
-      // ====== State ======
-      let db = null;
-      let SQLlib = null;
-
-      let activeTab = "success"; // "success" | "fail"
-      let lastResultForCSV = null; // { columns:[], values:[[]], filenameHint:"..." }
-
-      // ====== DOM ======
-      const sqlInput = document.getElementById("sqlInput");
-      const runBtn = document.getElementById("runBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const downloadCsvBtn = document.getElementById("downloadCsvBtn");
-
-      const exportDbBtn = document.getElementById("exportDbBtn");
-      const importDbBtn = document.getElementById("importDbBtn");
-      const importDbFile = document.getElementById("importDbFile");
-
-      const resultDiv = document.getElementById("result");
-      const errorDiv = document.getElementById("error");
-
-      const statusDot = document.getElementById("statusDot");
-      const statusText = document.getElementById("statusText");
-
-      const schemaList = document.getElementById("schemaList");
-      const refreshSchemaBtn = document.getElementById("refreshSchemaBtn");
-
-      const tabSuccess = document.getElementById("tabSuccess");
-      const tabFail = document.getElementById("tabFail");
-      const historyList = document.getElementById("historyList");
-
-      const exportHistoryBtn = document.getElementById("exportHistoryBtn");
-      const importHistoryBtn = document.getElementById("importHistoryBtn");
-      const clearHistoryBtn = document.getElementById("clearHistoryBtn");
-      const importFile = document.getElementById("importFile");
-
-      // ====== Helpers ======
-      function nowISO() {
-        return new Date().toISOString();
-      }
-
-      function normalizeSQL(sql) {
-        return (sql || "").trim();
-      }
-
-      function safeJSONParse(str, fallback) {
-        try {
-          return JSON.parse(str);
-        } catch {
-          return fallback;
-        }
-      }
-
-      function escapeHTML(str) {
-        return String(str)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function getHistory(kind) {
-        const key = kind === "success" ? LS_SUCCESS : LS_FAIL;
-        const raw = localStorage.getItem(key);
-        const arr = safeJSONParse(raw, []);
-        return Array.isArray(arr) ? arr : [];
-      }
-
-      function setHistory(kind, arr) {
-        const key = kind === "success" ? LS_SUCCESS : LS_FAIL;
-        localStorage.setItem(key, JSON.stringify(arr));
-      }
-
-      function hasSQL(kind, sqlNorm) {
-        const arr = getHistory(kind);
-        return arr.some((x) => (x && x.sqlNorm) === sqlNorm);
-      }
-
-      function addToHistory(kind, payload) {
-        const sqlNorm = payload.sqlNorm;
-        if (!sqlNorm) return;
-        if (hasSQL(kind, sqlNorm)) return; // no repeats
-        const arr = getHistory(kind);
-        arr.unshift(payload);
-        const CAP = 200;
-        if (arr.length > CAP) arr.length = CAP;
-        setHistory(kind, arr);
-      }
-
-      function setStatus(ready) {
-        if (ready) {
-          statusDot.classList.add("ok");
-          statusText.textContent = "DB Ready ✅";
-          runBtn.disabled = false;
-          resetBtn.disabled = false;
-          exportHistoryBtn.disabled = false;
-          importHistoryBtn.disabled = false;
-          clearHistoryBtn.disabled = false;
-          refreshSchemaBtn.disabled = false;
-
-          exportDbBtn.disabled = false;
-          importDbBtn.disabled = false;
-
-          downloadCsvBtn.disabled = !lastResultForCSV;
-        } else {
-          statusDot.classList.remove("ok");
-          statusText.textContent = "Loading SQLite…";
-          runBtn.disabled = true;
-          resetBtn.disabled = true;
-          exportHistoryBtn.disabled = true;
-          importHistoryBtn.disabled = true;
-          clearHistoryBtn.disabled = true;
-          refreshSchemaBtn.disabled = true;
-
-          exportDbBtn.disabled = true;
-          importDbBtn.disabled = true;
-
-          downloadCsvBtn.disabled = true;
-        }
-      }
-
-      function clearOutput() {
-        resultDiv.innerHTML = "";
-        errorDiv.textContent = "";
-      }
-
-      function showOk(message) {
-        const p = document.createElement("div");
-        p.className = "okmsg";
-        p.textContent = message;
-        resultDiv.appendChild(p);
-      }
-
-      function createFreshDB() {
-        if (!SQLlib) return;
-        db = new SQLlib.Database();
-
-        db.run(`
-          CREATE TABLE birthdays (
-            id INTEGER PRIMARY KEY,
-            name TEXT,
-            birthday TEXT
-          );
-
-          INSERT INTO birthdays (name, birthday) VALUES
-          ('Champak Roy', '1970-01-16');
-        `);
-      }
-
-      function renderResultSet(res, index) {
-        const title = document.createElement("div");
-        title.className = "table-title";
-        title.textContent = `Result ${index + 1}`;
-        resultDiv.appendChild(title);
-
-        const table = document.createElement("table");
-        const thead = table.createTHead();
-        const tbody = table.createTBody();
-
-        const headerRow = thead.insertRow();
-        res.columns.forEach((col) => {
-          const th = document.createElement("th");
-          th.textContent = col;
-          headerRow.appendChild(th);
-        });
-
-        (res.values || []).forEach((row) => {
-          const tr = tbody.insertRow();
-          row.forEach((cell) => {
-            const td = tr.insertCell();
-            td.textContent = cell === null ? "NULL" : String(cell);
-          });
-        });
-
-        resultDiv.appendChild(table);
-      }
-
-      // ====== CSV ======
-      function csvEscape(value) {
-        const s = value === null || value === undefined ? "" : String(value);
-        if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-        return s;
-      }
-
-      function toCSV(columns, values) {
-        const lines = [];
-        lines.push((columns || []).map(csvEscape).join(","));
-        for (const row of values || []) lines.push(row.map(csvEscape).join(","));
-        return lines.join("\n");
-      }
-
-      function downloadText(filename, text, mime = "text/plain") {
-        const blob = new Blob([text], { type: mime });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
-
-      function suggestCSVFilename(sqlNorm) {
-        let name = "result";
-        const m = sqlNorm.match(/from\s+([a-zA-Z_][\w]*)/i);
-        if (m && m[1]) name = m[1];
-        const dt = new Date();
-        const stamp =
-          dt.getFullYear().toString() +
-          String(dt.getMonth() + 1).padStart(2, "0") +
-          String(dt.getDate()).padStart(2, "0") +
-          "_" +
-          String(dt.getHours()).padStart(2, "0") +
-          String(dt.getMinutes()).padStart(2, "0") +
-          String(dt.getSeconds()).padStart(2, "0");
-        return `${name}_${stamp}.csv`;
-      }
-
-      // ====== Schema ======
-      function renderSchema() {
-        schemaList.innerHTML = "";
-        if (!db) return;
-
-        try {
-          const tablesRes = db.exec(`
-            SELECT name, sql
-            FROM sqlite_master
-            WHERE type='table' AND name NOT LIKE 'sqlite_%'
-            ORDER BY name;
-          `);
-
-          if (!tablesRes.length || !tablesRes[0].values.length) {
-            const li = document.createElement("li");
-            li.className = "item";
-            li.style.cursor = "default";
-            li.innerHTML = `<div class="small">No user tables found.</div>`;
-            schemaList.appendChild(li);
-            return;
-          }
-
-          const rows = tablesRes[0].values; // [ [name, sql], ... ]
-          for (const [name, sql] of rows) {
-            const colsRes = db.exec(`PRAGMA table_info(${name});`);
-            const cols =
-              colsRes.length && colsRes[0].values.length
-                ? colsRes[0].values.map((r) => `${r[1]} (${r[2]})`) // name, type
-                : [];
-
-            const li = document.createElement("li");
-            li.className = "item";
-            li.innerHTML = `
-              <div style="font-weight:800;color:#92400e;">${escapeHTML(name)}</div>
-              <div class="small" style="margin-top:6px;white-space:pre-wrap;">
-                ${cols.length ? escapeHTML(cols.join(", ")) : "—"}
-              </div>
-              <div class="meta">
-                <span>Click to query</span>
-                <span>🧩 table</span>
-              </div>
-            `;
-            li.addEventListener("click", () => {
-              sqlInput.value = `SELECT * FROM ${name} LIMIT 50;`;
-              sqlInput.focus();
-            });
-            schemaList.appendChild(li);
-          }
-        } catch (e) {
-          const li = document.createElement("li");
-          li.className = "item";
-          li.style.cursor = "default";
-          li.innerHTML = `<div class="small">Schema error: ${escapeHTML(
-            e && e.message ? e.message : String(e)
-          )}</div>`;
-          schemaList.appendChild(li);
-        }
-      }
-
-      // ====== History UI ======
-      function setActiveTab(tab) {
-        activeTab = tab;
-        tabSuccess.classList.toggle("active", tab === "success");
-        tabFail.classList.toggle("active", tab === "fail");
-        renderHistory();
-      }
-
-      function renderHistory() {
-        const arr = getHistory(activeTab);
-        historyList.innerHTML = "";
-
-        if (!arr.length) {
-          const li = document.createElement("li");
-          li.className = "item";
-          li.style.cursor = "default";
-          li.innerHTML = `<div class="small">No ${activeTab} queries yet.</div>`;
-          historyList.appendChild(li);
-          return;
-        }
-
-        for (const entry of arr) {
-          const li = document.createElement("li");
-          li.className = "item";
-          const sqlShort =
-            entry.sql.length > 180 ? entry.sql.slice(0, 180) + "…" : entry.sql;
-
-          li.innerHTML = `
-            <div style="white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size: 12.5px;">
-              ${escapeHTML(sqlShort)}
-            </div>
-            <div class="meta">
-              <span>${new Date(entry.ts).toLocaleString()}</span>
-              <span>${activeTab === "success" ? "✅ Success" : "❌ Failure"}</span>
-            </div>
-          `;
-
-          li.addEventListener("click", () => {
-            sqlInput.value = entry.sql;
-            sqlInput.focus();
-          });
-
-          historyList.appendChild(li);
-        }
-      }
-
-      // ====== Export/Import History ======
-      function exportHistoryJSON() {
-        const payload = {
-          version: 1,
-          exportedAt: nowISO(),
-          success: getHistory("success"),
-          fail: getHistory("fail"),
-        };
-        const filename = `sql_history_${new Date()
-          .toISOString()
-          .replace(/[:]/g, "-")}.json`;
-        downloadText(filename, JSON.stringify(payload, null, 2), "application/json");
-      }
-
-      function importHistoryJSON(file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const obj = JSON.parse(String(reader.result || "{}"));
-            const incomingSuccess = Array.isArray(obj.success) ? obj.success : [];
-            const incomingFail = Array.isArray(obj.fail) ? obj.fail : [];
-
-            function merge(kind, incoming) {
-              const existing = getHistory(kind);
-              const seen = new Set(existing.map((x) => x.sqlNorm));
-              const merged = [...existing];
-
-              for (const x of incoming) {
-                if (!x || !x.sqlNorm || !x.sql) continue;
-                if (seen.has(x.sqlNorm)) continue;
-                seen.add(x.sqlNorm);
-                merged.push(x);
-              }
-
-              merged.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-              const CAP = 200;
-              if (merged.length > CAP) merged.length = CAP;
-
-              setHistory(kind, merged);
-            }
-
-            merge("success", incomingSuccess);
-            merge("fail", incomingFail);
-
-            renderHistory();
-            showOk("History imported successfully.");
-          } catch (e) {
-            errorDiv.textContent =
-              "Import failed. Please choose a valid JSON export.\n\n" +
-              (e && e.message ? e.message : String(e));
-          }
-        };
-        reader.readAsText(file);
-      }
-
-      function clearActiveHistory() {
-        setHistory(activeTab, []);
-        renderHistory();
-        showOk(`Cleared ${activeTab} history.`);
-      }
-
-      // ====== Export/Import DB (.sqlite) ======
-      function exportDatabaseFile() {
-        clearOutput();
-        if (!db) return;
-        try {
-          const binaryArray = db.export(); // Uint8Array
-          const blob = new Blob([binaryArray], { type: "application/octet-stream" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `pp_database_${new Date().toISOString().replace(/[:]/g, "-")}.sqlite`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
-          showOk("Database exported successfully.");
-        } catch (e) {
-          errorDiv.textContent =
-            "DB export failed.\n\n" + (e && e.message ? e.message : String(e));
-        }
-      }
-
-      function importDatabaseFile(file) {
-        clearOutput();
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const buf = reader.result;
-            const u8 = new Uint8Array(buf);
-            try { db && db.close(); } catch(_) {}
-            db = new SQLlib.Database(u8);
-            lastResultForCSV = null;
-            downloadCsvBtn.disabled = true;
-
-            renderSchema();
-            renderHistory();
-            showOk("Database imported successfully.");
-          } catch (e) {
-            errorDiv.textContent =
-              "DB import failed. Please choose a valid .sqlite file.\n\n" +
-              (e && e.message ? e.message : String(e));
-          }
-        };
-        reader.readAsArrayBuffer(file);
-      }
-
-      // ====== Main: Run SQL ======
-      function runSQL() {
-        clearOutput();
-
-        if (!db) {
-          errorDiv.textContent = "SQLite is still loading… please wait.";
-          return;
-        }
-
-        const sql = sqlInput.value;
-        const sqlNorm = normalizeSQL(sql);
-
-        if (!sqlNorm) {
-          errorDiv.textContent = "Please type a SQL query first.";
-          return;
-        }
-
-        try {
-          const results = db.exec(sql);
-
-          addToHistory("success", { sql, sqlNorm, ts: nowISO() });
-
-          if (!results || results.length === 0) {
-            // Show helpful "rows affected" info for non-SELECT statements
-            const changed = typeof db.getRowsModified === "function" ? db.getRowsModified() : 0;
-            const msg =
-              changed && changed > 0
-                ? `Query executed successfully.\nRows affected: ${changed}`
-                : "Query executed successfully (no rows returned).";
-            showOk(msg);
-
-            lastResultForCSV = null;
-            downloadCsvBtn.disabled = true;
-
-            renderHistory();
-            renderSchema(); // schema may change after DDL
-            return;
-          }
-
-          results.forEach((res, i) => renderResultSet(res, i));
-
-          const last = results[results.length - 1];
-          lastResultForCSV = {
-            columns: last.columns || [],
-            values: last.values || [],
-            filenameHint: suggestCSVFilename(sqlNorm),
-          };
-          downloadCsvBtn.disabled = false;
-
-          renderHistory();
-          renderSchema();
-        } catch (err) {
-          const msg = err && err.message ? err.message : String(err);
-          errorDiv.textContent = msg;
-
-          addToHistory("fail", { sql, sqlNorm, ts: nowISO(), error: msg });
-
-          lastResultForCSV = null;
-          downloadCsvBtn.disabled = true;
-
-          renderHistory();
-        }
-      }
-
-      // ====== Events ======
-      runBtn.addEventListener("click", runSQL);
-
-      resetBtn.addEventListener("click", () => {
-        clearOutput();
-        if (!db) return;
-        try { db.close(); } catch (_) {}
-        createFreshDB();
-        lastResultForCSV = null;
-        downloadCsvBtn.disabled = true;
-        showOk("Database reset. Try running a query.");
-        renderSchema();
-      });
-
-      downloadCsvBtn.addEventListener("click", () => {
-        clearOutput();
-        if (!lastResultForCSV) {
-          errorDiv.textContent = "No result available to export as CSV.";
-          return;
-        }
-        const csv = toCSV(lastResultForCSV.columns, lastResultForCSV.values);
-        downloadText(lastResultForCSV.filenameHint, csv, "text/csv");
-        showOk(`Downloaded CSV: ${lastResultForCSV.filenameHint}`);
-      });
-
-      exportDbBtn.addEventListener("click", exportDatabaseFile);
-      importDbBtn.addEventListener("click", () => importDbFile.click());
-      importDbFile.addEventListener("change", () => {
-        const file = importDbFile.files && importDbFile.files[0];
-        if (!file) return;
-        importDatabaseFile(file);
-        importDbFile.value = "";
-      });
-
-      refreshSchemaBtn.addEventListener("click", renderSchema);
-
-      sqlInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          runSQL();
-        }
-      });
-
-      document.querySelectorAll(".chip").forEach((chip) => {
-        chip.addEventListener("click", () => {
-          const sql = chip.getAttribute("data-sql") || "";
-          sqlInput.value = sql;
-          sqlInput.focus();
-        });
-      });
-
-      tabSuccess.addEventListener("click", () => setActiveTab("success"));
-      tabFail.addEventListener("click", () => setActiveTab("fail"));
-
-      exportHistoryBtn.addEventListener("click", exportHistoryJSON);
-      importHistoryBtn.addEventListener("click", () => importFile.click());
-      importFile.addEventListener("change", () => {
-        const file = importFile.files && importFile.files[0];
-        if (!file) return;
-        importHistoryJSON(file);
-        importFile.value = "";
-      });
-      clearHistoryBtn.addEventListener("click", clearActiveHistory);
-
-      // ====== Init SQL.js ======
-      setStatus(false);
-
-      initSqlJs({
-        locateFile: (file) =>
-          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
-      })
-        .then((SQL) => {
-          SQLlib = SQL;
-          createFreshDB();
-          setStatus(true);
-          renderSchema();
-          renderHistory();
-          runSQL();
-        })
-
-        .catch((e) => {
-          setStatus(false);
-          errorDiv.textContent =
-            "Failed to load SQL.js. Check internet/CDN access.\n\n" +
-            (e && e.message ? e.message : String(e));
-        });
-    </script>
-
-    <!-- Optional project scripts (non-blocking for core demo) -->
-    <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js" defer></script>
-    <script src="https://programmer-s-picnic.github.io/json-images/imgshow.js" defer></script>
-    <script src="https://programmer-s-picnic.github.io/json-images/hometag.js" defer></script>
-  </body>
+    <div class="content">
+      <header class="top-center">
+        <div class="ganesh">ॐ</div>
+        <div class="mantra">॥ श्री गणेशाय नमः ॥</div>
+        <h1 class="title">गृह प्रवेश</h1>
+        <p class="subtitle">नवगृह प्रवेश समारोह</p>
+      </header>
+
+      <section class="logo-block">
+        <div class="logo">
+          <div class="name">दीपक राय</div>
+          <div class="sub">सपरिवार सादर आमंत्रण</div>
+        </div>
+        <div class="date-pill">दिनांक: 23 जनवरी 2026</div>
+      </section>
+
+      <section class="address">
+        <h4>स्थान</h4>
+        <p>
+          सा-18/132, नई बस्ती, पांडेयपुर,<br>
+          वाराणसी – 221007, उत्तर प्रदेश
+        </p>
+      </section>
+
+      <section class="bottom">
+        <div class="awaiting">
+          <strong>प्रतीक्षारत</strong><br>
+          दीपक राय<br>
+          📞 +91-__________
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="window.print()">🖨️ प्रिंट</button>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+  </main>
+</body>
 </html>
