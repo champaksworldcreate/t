@@ -22,9 +22,10 @@
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background: radial-gradient(900px 600px at 15% 10%, rgba(255,138,0,.18), transparent 60%),
-                  radial-gradient(900px 600px at 85% 10%, rgba(255,194,106,.28), transparent 55%),
-                  linear-gradient(180deg, var(--bg), #fff);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(255,138,0,.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 10%, rgba(255,194,106,.28), transparent 55%),
+        linear-gradient(180deg, var(--bg), #fff);
       color:var(--ink);
     }
     header{
@@ -44,12 +45,7 @@
       justify-content:space-between;
       gap:12px;
     }
-    h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-      color:var(--brand);
-    }
+    h1{margin:0;font-size:18px;letter-spacing:.2px;color:var(--brand)}
     .btnrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     button{
       border:none;
@@ -61,20 +57,10 @@
       font-weight:700;
       box-shadow:0 10px 22px rgba(217,119,6,.18);
     }
-    button.secondary{
-      background:#fff;
-      color:var(--brand);
-      border:1px solid var(--border);
-      box-shadow:none;
-    }
+    button.secondary{background:#fff;color:var(--brand);border:1px solid var(--border);box-shadow:none}
     button:active{transform:translateY(1px)}.wrap{max-width:1200px;margin:18px auto;padding:0 16px 24px}
-.grid{
-  display:grid;
-  gap:14px;
-}
-@media (min-width:1000px){
-  .grid{grid-template-columns: 420px 1fr; align-items:start}
-}
+.grid{display:grid;gap:14px}
+@media (min-width:1000px){.grid{grid-template-columns:420px 1fr;align-items:start}}
 
 .panel{
   background:rgba(255,255,255,.86);
@@ -108,7 +94,7 @@ input, textarea, select{
 }
 textarea{min-height:74px;resize:vertical}
 .row{display:grid;gap:12px}
-@media (min-width:520px){ .row{grid-template-columns:1fr 1fr} }
+@media (min-width:520px){.row{grid-template-columns:1fr 1fr}}
 
 .toggles{display:grid;gap:10px}
 .toggle{
@@ -125,41 +111,40 @@ textarea{min-height:74px;resize:vertical}
 .toggle small{display:block;color:var(--muted);margin-top:2px}
 .toggle input{width:44px;height:24px;accent-color: var(--brand2)}
 
-.hint{
-  font-size:12px;
-  color:var(--muted);
-  padding:0 14px 14px;
-  line-height:1.45;
-}
-
-.previewWrap{padding:14px}
-.previewFrame{
-  width:100%;
-  aspect-ratio: 3 / 4;
+.langToggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
   border:1px solid var(--border);
   border-radius:14px;
-  overflow:hidden;
-  background:#fff;
+  background:rgba(255,247,230,.6);
 }
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid var(--border);
+  color:#7c2d12;
+  font-weight:800;
+  font-size:12px;
+}
+
+.hint{font-size:12px;color:var(--muted);padding:0 14px 14px;line-height:1.45}
+
+.previewWrap{padding:14px}
+.previewFrame{width:100%;aspect-ratio:3/4;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff}
 iframe{width:100%;height:100%;border:0;background:#fff}
 
-.status{
-  margin-left:12px;
-  font-size:12px;
-  color:var(--muted);
-}
+.status{margin-left:12px;font-size:12px;color:var(--muted)}
 .status.ok{color:var(--ok)}
 .status.bad{color:var(--danger)}
 
-.mini{
-  padding:10px 14px 14px;
-  border-top:1px solid var(--border);
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-  justify-content:space-between;
-}
+.mini{padding:10px 14px 14px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .mini code{font-size:12px;color:#7c2d12;background:rgba(255,232,191,.7);padding:4px 8px;border-radius:999px;border:1px solid var(--border)}
 
   </style>
@@ -179,20 +164,15 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       <section class="panel">
         <h2>Card Details</h2>
         <form id="f">
-          <div class="row">
-            <label>
-              Language
-              <select id="lang">
-                <option value="hi">Hindi (हिन्दी)</option>
-                <option value="en">English</option>
-              </select>
-            </label>
-            <label>
-              Theme
-              <select id="theme">
-                <option value="saffron">Light Saffron (default)</option>
-              </select>
-            </label>
+          <div class="langToggle">
+            <div>
+              <strong style="color:#7c2d12">Default language</strong>
+              <div style="color:var(--muted);font-size:12px;margin-top:2px">Generated invite includes a Hindi/English toggle.</div>
+            </div>
+            <span class="pill"><span>हिन्दी</span>
+              <input id="lang" type="checkbox" aria-label="Language toggle" />
+              <span>English</span>
+            </span>
           </div><label>
         House Owner / गृह स्वामी
         <input id="owner" value="Deepak Roy" />
@@ -218,6 +198,26 @@ iframe{width:100%;height:100%;border:0;background:#fff}
         Map Query (for embed + directions)
         <input id="mapq" value="Sa-18/132 Nai Basti Pandepur Varanasi" />
       </label>
+
+      <div class="row">
+        <label>
+          Design style
+          <select id="design">
+            <option value="classic" selected>Classic Border</option>
+            <option value="minimal">Minimal Ivory</option>
+            <option value="festive">Festive Marigold</option>
+            <option value="royal">Royal Blue & Gold</option>
+          </select>
+        </label>
+        <label>
+          Flower density
+          <select id="density">
+            <option value="low">Low</option>
+            <option value="med" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+      </div>
 
       <div class="toggles" aria-label="Effects">
         <div class="toggle">
@@ -281,6 +281,8 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       date: $('date'),
       phone: $('phone'),
       mapq: $('mapq'),
+      design: $('design'),
+      density: $('density'),
       tRangoli: $('tRangoli'),
       tFlowers: $('tFlowers'),
       tBell: $('tBell'),
@@ -299,8 +301,29 @@ iframe{width:100%;height:100%;border:0;background:#fff}
         .replaceAll("'",'&#39;');
     }
 
+    function buildFloaters(density){
+      const sets = {
+        low: 8,
+        med: 14,
+        high: 22
+      };
+      const n = sets[density] ?? 14;
+      const items = [];
+      for(let i=0;i<n;i++){
+        const isRose = i % 2 === 0;
+        const x = Math.round((i+1) * (92/(n+1))) + (i%3===0? -2 : i%3===1? 1 : 0);
+        const s = isRose ? (34 + (i%5)*4) : (20 + (i%4)*2);
+        const t = isRose ? (18 + (i%6)*2) : (14 + (i%5)*2);
+        const w = (3.2 + (i%5)*0.4).toFixed(1);
+        const r = (11 + (i%7)*1.2).toFixed(1);
+        const o = isRose ? 0.22 : 0.34;
+        items.push(`<span class="${isRose?'rose':'petal'}" style="--x:${x}%;--s:${s}px;--t:${t}s;--w:${w}s;--r:${r}s;--o:${o}"></span>`);
+      }
+      return `<div class="floaters" aria-hidden="true">${items.join('')}<\/div>`;
+    }
+
     function buildInviteHTML(){
-      const lang = els.lang.value;
+      const defaultLang = els.lang.checked ? 'en' : 'hi';
       const owner = els.owner.value.trim() || 'Deepak Roy';
       const addressRaw = els.address.value.trim() || '';
       const addressHtml = escHtml(addressRaw).replaceAll('\n','<br>');
@@ -308,60 +331,106 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       const phone = els.phone.value.trim() || '+91-__________';
       const mapq = els.mapq.value.trim() || owner;
 
+      const design = els.design.value;
+      const density = els.density.value;
+
       const onRangoli = els.tRangoli.checked;
       const onFlowers = els.tFlowers.checked;
       const onBell = els.tBell.checked;
       const onMap = els.tMap.checked;
 
-      const txt = {
+      const I18N = {
         hi: {
-          title: 'गृह प्रवेश आमंत्रण',
+          pageTitle: 'गृह प्रवेश आमंत्रण',
+          title: 'गृह प्रवेश',
           subtitle: 'नवगृह प्रवेश समारोह',
           mantra: '॥ श्री गणेशाय नमः ॥',
           familyInvite: 'सपरिवार सादर आमंत्रण',
-          venue: 'स्थान',
           venueLoc: 'स्थान एवं लोकेशन',
           awaiting: 'प्रतीक्षारत',
           print: 'प्रिंट',
           whatsapp: 'व्हाट्सएप',
           directions: '📍 मार्गदर्शन',
-          datePrefix: 'दिनांक: '
+          datePrefix: 'दिनांक: ',
+          toggleLabel: 'English'
         },
         en: {
+          pageTitle: 'Grih Pravesh Invitation',
           title: 'GRIHA PRAVESH',
           subtitle: 'HOUSEWARMING CEREMONY',
           mantra: '|| Shree Ganeshay Namah ||',
           familyInvite: 'With Family — Cordial Invitation',
-          venue: 'Venue',
           venueLoc: 'Venue & Location',
           awaiting: 'Awaiting',
           print: 'Print',
           whatsapp: 'WhatsApp',
           directions: '📍 Get Directions',
-          datePrefix: 'Date: '
+          datePrefix: 'Date: ',
+          toggleLabel: 'हिन्दी'
         }
-      }[lang];
+      };
 
-      const waText = encodeURIComponent(
-        (lang === 'hi'
-          ? `गृह प्रवेश आमंत्रण\nगृह स्वामी: ${owner}\nदिनांक: ${date}\nपता: ${addressRaw}`
-          : `Grih Pravesh Invitation\nHouse Owner: ${owner}\nDate: ${date}\nAddress: ${addressRaw}`)
-      );
+      const waHI = `गृह प्रवेश आमंत्रण\nगृह स्वामी: ${owner}\nदिनांक: ${date}\nपता: ${addressRaw}`;
+      const waEN = `Grih Pravesh Invitation\nHouse Owner: ${owner}\nDate: ${date}\nAddress: ${addressRaw}`;
+
+      // Design variants via CSS variables + decorations
+      const designCSS = {
+        classic: `:root{--panel:#fffdf7;--border:#f3a44a;--accent:#d06a00;--ink:#2a1d12;--muted:#6a4429;}`,
+        minimal: `:root{--panel:#fffefb;--border:#e9d7b7;--accent:#b45309;--ink:#1f2937;--muted:#6b7280;}`,
+        festive: `:root{--panel:#fffdf7;--border:#f1a552;--accent:#b45309;--ink:#2a1d12;--muted:#6a4429;}`,
+        royal: `:root{--panel:#fffdf7;--border:#caa04a;--accent:#a16207;--ink:#111827;--muted:#374151;}`
+      }[design] || '';
+
+      const extraDecor = {
+        classic: '',
+        minimal: `.top-decor{opacity:.6;filter:saturate(.8)}
+                 .card::before{border-color:rgba(180,83,9,.22)}`,
+        festive: `.garland{position:absolute;top:92px;left:50%;transform:translateX(-50%);width:min(520px,92%);height:56px;z-index:2;pointer-events:none;
+                  background:
+                    radial-gradient(circle at 5% 30%, #ffb703 0 12px, transparent 13px),
+                    radial-gradient(circle at 15% 30%, #ffd27a 0 12px, transparent 13px),
+                    radial-gradient(circle at 25% 30%, #ffb703 0 12px, transparent 13px),
+                    radial-gradient(circle at 35% 30%, #ffd27a 0 12px, transparent 13px),
+                    radial-gradient(circle at 45% 30%, #ffb703 0 12px, transparent 13px),
+                    radial-gradient(circle at 55% 30%, #ffd27a 0 12px, transparent 13px),
+                    radial-gradient(circle at 65% 30%, #ffb703 0 12px, transparent 13px),
+                    radial-gradient(circle at 75% 30%, #ffd27a 0 12px, transparent 13px),
+                    radial-gradient(circle at 85% 30%, #ffb703 0 12px, transparent 13px),
+                    radial-gradient(circle at 95% 30%, #ffd27a 0 12px, transparent 13px);
+                  filter: drop-shadow(0 8px 14px rgba(42,29,18,.18));
+                 }
+                 .garland::after{content:"";position:absolute;left:2%;right:2%;top:10px;height:2px;background:rgba(180,83,9,.35);border-radius:999px}
+                 .top-decor{opacity:.85}`,
+        royal: `.top-decor{background:
+                  radial-gradient(180px 140px at 18% 80%, rgba(255,194,106,.75), transparent 70%),
+                  radial-gradient(220px 170px at 38% 72%, rgba(255,217,161,.75), transparent 72%),
+                  radial-gradient(260px 190px at 62% 78%, rgba(255,194,106,.68), transparent 72%),
+                  radial-gradient(210px 160px at 82% 85%, rgba(255,217,161,.68), transparent 72%),
+                  linear-gradient(180deg, rgba(30,64,175,.55), rgba(30,64,175,0));
+                 }
+                 .logo{background:linear-gradient(180deg, rgba(30,64,175,.06), rgba(255,255,255,.85))}
+                 .card::before{border-color:rgba(202,160,74,.55)}`
+      }[design] || '';
+
+      const extraNode = (design === 'festive') ? '<div class="garland" aria-hidden="true"></div>' : '';
+
+      const floatersHTML = onFlowers ? buildFloaters(density) : '';
 
       return `<!doctype html>
-<html lang="${lang}">
+<html lang="${defaultLang}">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>${escHtml(txt.title)} | ${escHtml(owner)}</title>
+<title>${escHtml(I18N[defaultLang].pageTitle)} | ${escHtml(owner)}</title>
 <style>
+${designCSS}
 :root{
   --saffron-50:#fff7e6;--saffron-100:#ffe8bf;--saffron-200:#ffd9a1;--saffron-300:#ffc26a;--saffron-400:#ffa84a;--saffron-500:#ff8a00;
   --rose-1:#ffb3b3;--rose-2:#ff7a7a;--rose-3:#e94b4b;--marigold-1:#ffd27a;--marigold-2:#ffb703;
-  --ink:#2a1d12;--muted:#6a4429;--panel:#fffdf7;--border:#f3a44a;--shadow:0 24px 70px rgba(42,29,18,.18);--accent:#d06a00;
+  --shadow:0 24px 70px rgba(42,29,18,.18);
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:${lang==='hi' ? '"Noto Serif Devanagari","Mangal","Kalimati",serif' : 'system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial'};color:var(--ink);
+body{margin:0;font-family:"Noto Serif Devanagari","Mangal","Kalimati",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--ink);
   background:linear-gradient(180deg,var(--saffron-50),#fff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 .wrap{width:min(860px,100%)}
 .frame{background:var(--border);padding:22px;border-radius:14px;box-shadow:var(--shadow)}
@@ -379,9 +448,17 @@ ${onRangoli ? `.rangoli{position:absolute;top:170px;left:50%;width:320px;height:
   conic-gradient(var(--marigold-2),var(--rose-2),var(--saffron-400),var(--rose-3),var(--marigold-1),var(--saffron-300),var(--rose-1),var(--marigold-2));
   animation:rangoliIn 2.8s ease-out forwards;z-index:2}
 @keyframes rangoliIn{0%{transform:translateX(-50%) scale(.2);opacity:0}60%{opacity:1}100%{transform:translateX(-50%) scale(1);opacity:.25}}` : ''}
-${onBell ? `.bell-btn{position:absolute;top:26px;right:26px;z-index:6;border:none;background:#fffaf2;border-radius:50%;width:46px;height:46px;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
+
+/* Hindi/English toggle */
+.lang-pill{position:absolute;top:26px;left:26px;z-index:7;border:1px solid rgba(243,164,74,.55);background:#fffaf2;color:#7c2d12;
+  border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
+.lang-pill:active{transform:translateY(1px)}
+
+${onBell ? `.bell-btn{position:absolute;top:26px;right:26px;z-index:7;border:none;background:#fffaf2;border-radius:50%;width:46px;height:46px;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
 .bell-btn:active{transform:scale(.95)}` : ''}
-${onFlowers ? `.floaters{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+
+/* Floaters */
+.floaters{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .rose,.petal{position:absolute;bottom:-100px;left:var(--x);width:var(--s);height:var(--s);opacity:var(--o);
   animation:floatUp var(--t) linear infinite,sway var(--w) ease-in-out infinite,spin var(--r) linear infinite}
 .rose::before{content:"";position:absolute;inset:0;border-radius:50%;background:
@@ -396,12 +473,13 @@ ${onFlowers ? `.floaters{position:absolute;inset:0;pointer-events:none;z-index:0
   box-shadow:0 8px 18px rgba(42,29,18,.12)}
 @keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-1400px)}}
 @keyframes sway{0%,100%{margin-left:-22px}50%{margin-left:22px}}
-@keyframes spin{from{rotate:0deg}to{rotate:360deg}}` : ''}
+@keyframes spin{from{rotate:0deg}to{rotate:360deg}}
+
 .content{position:relative;padding:160px 44px 44px;display:flex;flex-direction:column;gap:24px;min-height:1080px;z-index:4}
 .top-center{text-align:center}
 .ganesh{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;background:#fff7e6;border:2px solid rgba(243,164,74,.6);font-size:36px;margin:0 auto 6px}
 .mantra{font-size:13px;letter-spacing:.14em;color:var(--muted)}
-.title{margin:12px 0 0;font-weight:900;letter-spacing:${lang==='hi' ? '.18em' : '.14em'};font-size:44px}
+.title{margin:12px 0 0;font-weight:900;letter-spacing:.14em;font-size:44px}
 .subtitle{margin:0;font-size:15px;letter-spacing:.1em;color:var(--muted)}
 .logo-block{text-align:center}
 .logo{display:inline-block;padding:20px 24px;border:2px solid rgba(243,164,74,.55);border-radius:14px;background:#fffaf2}
@@ -420,79 +498,86 @@ ${onMap ? `.map{margin-top:14px;border-radius:14px;overflow:hidden;border:2px so
 .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .btn{border:none;border-radius:999px;padding:12px 18px;color:#fff;background:linear-gradient(180deg,var(--saffron-400),var(--saffron-500));cursor:pointer;font-weight:900}
 .btn.whatsapp{background:linear-gradient(180deg,#25D366,#128C7E)}
-@media print{.floaters,.actions,.map,.location-actions,.bell-btn{display:none}body{background:#fff}}
+${extraDecor}
+@media print{.floaters,.actions,.map,.location-actions,.bell-btn,.lang-pill,.garland{display:none}body{background:#fff}}
 </style></head>
 <body>
   <main class="wrap">
     <div class="frame">
       <section class="card">
         <div class="top-decor"></div>
+        ${extraNode}
         ${onRangoli ? '<div class="rangoli" aria-hidden="true"></div>' : ''}
+        <button class="lang-pill" id="langBtn" type="button"></button>
         ${onBell ? '<button class="bell-btn" onclick="playBell()" title="Bell">🔔</button>' : ''}
-        ${onFlowers ? `<div class="floaters" aria-hidden="true">
-          <span class="rose" style="--x:3%;  --s:48px; --t:24s; --w:4.4s; --r:16s; --o:.30"></span>
-          <span class="petal" style="--x:8%;  --s:22px; --t:15s; --w:3.2s; --r:11s; --o:.38"></span>
-          <span class="rose" style="--x:14%; --s:40px; --t:20s; --w:4s;   --r:14s; --o:.26"></span>
-          <span class="petal" style="--x:20%; --s:26px; --t:17s; --w:3.4s; --r:12s; --o:.34"></span>
-          <span class="rose" style="--x:28%; --s:54px; --t:28s; --w:5.2s; --r:20s; --o:.22"></span>
-          <span class="petal" style="--x:36%; --s:24px; --t:16s; --w:3.2s; --r:11s; --o:.36"></span>
-          <span class="rose" style="--x:44%; --s:44px; --t:22s; --w:4.6s; --r:16s; --o:.28"></span>
-          <span class="petal" style="--x:52%; --s:28px; --t:18s; --w:3.6s; --r:13s; --o:.32"></span>
-          <span class="rose" style="--x:60%; --s:36px; --t:18s; --w:3.8s; --r:14s; --o:.30"></span>
-          <span class="petal" style="--x:66%; --s:22px; --t:15s; --w:3.2s; --r:11s; --o:.38"></span>
-          <span class="rose" style="--x:72%; --s:50px; --t:26s; --w:5s;   --r:19s; --o:.24"></span>
-          <span class="petal" style="--x:78%; --s:26px; --t:17s; --w:3.4s; --r:12s; --o:.34"></span>
-          <span class="rose" style="--x:84%; --s:42px; --t:22s; --w:4.6s; --r:16s; --o:.28"></span>
-          <span class="petal" style="--x:90%; --s:24px; --t:16s; --w:3.2s; --r:11s; --o:.36"></span>
-        </div>` : ''}<div class="content">
+        ${onFlowers ? floatersHTML : ''}<div class="content">
       <header class="top-center">
         <div class="ganesh">ॐ</div>
-        <div class="mantra">${escHtml(txt.mantra)}</div>
-        <h1 class="title">${escHtml(txt.title)}</h1>
-        <p class="subtitle">${escHtml(txt.subtitle)}</p>
+        <div class="mantra" data-i="mantra"></div>
+        <h1 class="title" data-i="title"></h1>
+        <p class="subtitle" data-i="subtitle"></p>
       </header>
 
       <section class="logo-block">
         <div class="logo">
           <div class="name">${escHtml(owner)}</div>
-          <div class="sub">${escHtml(txt.familyInvite)}</div>
+          <div class="sub" data-i="familyInvite"></div>
         </div>
-        <div class="date-pill">${escHtml(txt.datePrefix + date)}</div>
+        <div class="date-pill" id="dateLine"></div>
       </section>
 
       <section class="address">
-        <h4>${escHtml(txt.venueLoc)}</h4>
+        <h4 data-i="venueLoc"></h4>
         <p>${addressHtml}</p>
-        ${onMap ? `<div class="location-actions">
-          <button class="loc-btn" onclick="openMaps()">${escHtml(txt.directions)}</button>
-        </div>
-        <div class="map">
-          <iframe loading="lazy" src="https://www.google.com/maps?q=${encodeURIComponent(mapq)}&output=embed"></iframe>
-        </div>` : ''}
+        ${onMap ? `<div class="location-actions"><button class="loc-btn" id="dirBtn" type="button"></button><\/div>
+        <div class="map"><iframe loading="lazy" src="https://www.google.com/maps?q=${encodeURIComponent(mapq)}&output=embed"></iframe><\/div>` : ''}
       </section>
 
       <section class="bottom">
         <div class="awaiting">
-          <strong>${escHtml(txt.awaiting)}</strong><br>
+          <strong data-i="awaiting"></strong><br>
           ${escHtml(owner)}<br>
           📞 ${escHtml(phone)}
         </div>
         <div class="actions">
-          <button class="btn" onclick="window.print()">🖨️ ${escHtml(txt.print)}</button>
-          <button class="btn whatsapp" onclick="shareWA()">📲 ${escHtml(txt.whatsapp)}</button>
+          <button class="btn" id="printBtn" type="button"></button>
+          <button class="btn whatsapp" id="waBtn" type="button"></button>
         </div>
       </section>
     </div>
 
     <script>
-      function shareWA(){ window.open('https://wa.me/?text=${waText}', '_blank'); }
-      function openMaps(){ window.open('https://www.google.com/maps?q=${encodeURIComponent(mapq)}', '_blank'); }
-      function playBell(){
-        try{
-          const a = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a0b6e5b7a.mp3?filename=temple-bell-110624.mp3');
-          a.volume = 0.4; a.play();
-        }catch(e){}
+      const I18N = ${JSON.stringify(I18N)};
+      let LANG = '${defaultLang}';
+      const mapQ = '${encodeURIComponent(mapq)}';
+      const waHI = ${JSON.stringify(waHI)};
+      const waEN = ${JSON.stringify(waEN)};
+
+      function applyLang(){
+        document.documentElement.lang = LANG;
+        const t = I18N[LANG];
+        document.title = t.pageTitle + ' | ' + ${JSON.stringify(owner)};
+        document.querySelectorAll('[data-i]').forEach(el=>{ el.textContent = t[el.getAttribute('data-i')] || ''; });
+        document.getElementById('langBtn').textContent = t.toggleLabel;
+        document.getElementById('dateLine').textContent = t.datePrefix + ${JSON.stringify(date)};
+        document.getElementById('printBtn').textContent = '🖨️ ' + t.print;
+        document.getElementById('waBtn').textContent = '📲 ' + t.whatsapp;
+        const d = document.getElementById('dirBtn');
+        if(d) d.textContent = t.directions;
       }
+      function toggleLang(){ LANG = (LANG === 'hi') ? 'en' : 'hi'; applyLang(); }
+      function shareWA(){ const txt = (LANG === 'hi') ? waHI : waEN; window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank'); }
+      function openMaps(){ window.open('https://www.google.com/maps?q=' + mapQ, '_blank'); }
+      function playBell(){
+        try{ const a = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a0b6e5b7a.mp3?filename=temple-bell-110624.mp3'); a.volume=0.4; a.play(); }catch(e){}
+      }
+
+      document.getElementById('langBtn').addEventListener('click', toggleLang);
+      document.getElementById('waBtn').addEventListener('click', shareWA);
+      document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+      document.getElementById('dirBtn')?.addEventListener('click', openMaps);
+
+      applyLang();
     <\/script>
   </section>
 </div>
@@ -504,7 +589,7 @@ ${onMap ? `.map{margin-top:14px;border-radius:14px;overflow:hidden;border:2px so
   try{
     const html = buildInviteHTML();
     els.pv.srcdoc = html;
-    els.mode.textContent = 'mode: ' + (els.lang.value === 'hi' ? 'hindi' : 'english');
+    els.mode.textContent = 'mode: ' + (els.lang.checked ? 'english' : 'hindi') + ' (default) • design: ' + els.design.value;
     els.status.textContent = 'Preview updated';
     els.status.className = 'status ok';
   }catch(e){
@@ -533,12 +618,14 @@ async function copyHTML(){
 }
 
 function resetForm(){
-  $('lang').value = 'hi';
+  $('lang').checked = false;
   $('owner').value = 'Deepak Roy';
   $('address').value = 'Sa-18/132, Nai Basti, Pandepur, Varanasi 221007.';
   $('date').value = '23 Jan 2026';
   $('phone').value = '+91-__________';
   $('mapq').value = 'Sa-18/132 Nai Basti Pandepur Varanasi';
+  $('design').value = 'classic';
+  $('density').value = 'med';
   $('tRangoli').checked = true;
   $('tFlowers').checked = true;
   $('tBell').checked = true;
@@ -546,7 +633,6 @@ function resetForm(){
   refreshPreview();
 }
 
-// Wire up events
 document.querySelectorAll('#f input, #f textarea, #f select').forEach(el => {
   el.addEventListener('input', refreshPreview);
   el.addEventListener('change', refreshPreview);
@@ -559,7 +645,6 @@ $('btnCopy').addEventListener('click', async (e)=>{e.preventDefault();
 });
 $('btnReset').addEventListener('click', (e)=>{e.preventDefault(); resetForm();});
 
-// First render
 refreshPreview();
 
   </script>
