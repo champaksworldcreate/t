@@ -111,29 +111,6 @@ textarea{min-height:74px;resize:vertical}
 .toggle small{display:block;color:var(--muted);margin-top:2px}
 .toggle input{width:44px;height:24px;accent-color: var(--brand2)}
 
-.langToggle{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 12px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:rgba(255,247,230,.6);
-}
-.pill{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#fff;
-  border:1px solid var(--border);
-  color:#7c2d12;
-  font-weight:800;
-  font-size:12px;
-}
-
 .hint{font-size:12px;color:var(--muted);padding:0 14px 14px;line-height:1.45}
 
 .previewWrap{padding:14px}
@@ -146,6 +123,39 @@ iframe{width:100%;height:100%;border:0;background:#fff}
 
 .mini{padding:10px 14px 14px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .mini code{font-size:12px;color:#7c2d12;background:rgba(255,232,191,.7);padding:4px 8px;border-radius:999px;border:1px solid var(--border)}
+
+/* Template thumbnails */
+.thumbs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
+.thumb{
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:#fff;
+  padding:10px;
+  cursor:pointer;
+  box-shadow:0 10px 22px rgba(217,119,6,.10);
+  position:relative;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.thumb:active{transform:translateY(1px)}
+.thumb:hover{box-shadow:0 14px 28px rgba(217,119,6,.14)}
+.thumb.selected{outline:3px solid rgba(217,119,6,.25); border-color:#f0b56d}
+.t-canvas{border-radius:10px;border:1px solid rgba(243,215,166,.9);overflow:hidden;aspect-ratio:3/4}
+.t-top{height:34%;}
+.t-body{padding:10px}
+.t-line{height:10px;border-radius:999px;background:rgba(31,41,55,.14);margin:8px 0}
+.t-line.sm{height:8px;opacity:.8}
+.t-chip{display:inline-block;margin-top:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(243,215,166,.9);font-size:11px;color:#7c2d12;background:rgba(255,247,230,.6)}
+.t-label{margin-top:8px;font-size:12px;color:#7c2d12;font-weight:800}
+
+.thumb.classic .t-top{background:linear-gradient(180deg, rgba(255,168,74,.75), rgba(255,168,74,0))}
+.thumb.minimal .t-top{background:linear-gradient(180deg, rgba(180,83,9,.22), rgba(255,255,255,0))}
+.thumb.festive .t-top{background:linear-gradient(180deg, rgba(255,183,3,.65), rgba(255,183,3,0))}
+.thumb.royal .t-top{background:linear-gradient(180deg, rgba(30,64,175,.55), rgba(30,64,175,0))}
+
+.thumb.festive .t-garland{position:absolute;left:14px;right:14px;top:40px;height:16px;border-radius:999px;
+  background:repeating-radial-gradient(circle at 10px 8px, #ffb703 0 6px, transparent 7px);
+  opacity:.9;filter:drop-shadow(0 6px 8px rgba(42,29,18,.12));
+}
 
   </style>
 </head>
@@ -163,17 +173,26 @@ iframe{width:100%;height:100%;border:0;background:#fff}
     <div class="grid">
       <section class="panel">
         <h2>Card Details</h2>
-        <form id="f">
-          <div class="langToggle">
-            <div>
-              <strong style="color:#7c2d12">Default language</strong>
-              <div style="color:var(--muted);font-size:12px;margin-top:2px">Generated invite includes a Hindi/English toggle.</div>
-            </div>
-            <span class="pill"><span>हिन्दी</span>
-              <input id="lang" type="checkbox" aria-label="Language toggle" />
-              <span>English</span>
-            </span>
-          </div><label>
+        <form id="f"><div class="row">
+        <label>
+          Language mode
+          <select id="langMode">
+            <option value="hi" selected>Hindi (हिन्दी)</option>
+            <option value="en">English</option>
+            <option value="both">Hindi + English</option>
+          </select>
+        </label>
+        <label>
+          Flower density
+          <select id="density">
+            <option value="low">Low</option>
+            <option value="med" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
         House Owner / गृह स्वामी
         <input id="owner" value="Deepak Roy" />
       </label>
@@ -199,25 +218,66 @@ iframe{width:100%;height:100%;border:0;background:#fff}
         <input id="mapq" value="Sa-18/132 Nai Basti Pandepur Varanasi" />
       </label>
 
-      <div class="row">
-        <label>
-          Design style
-          <select id="design">
-            <option value="classic" selected>Classic Border</option>
-            <option value="minimal">Minimal Ivory</option>
-            <option value="festive">Festive Marigold</option>
-            <option value="royal">Royal Blue & Gold</option>
-          </select>
-        </label>
-        <label>
-          Flower density
-          <select id="density">
-            <option value="low">Low</option>
-            <option value="med" selected>Medium</option>
-            <option value="high">High</option>
-          </select>
-        </label>
-      </div>
+      <label>
+        Design style
+        <select id="design">
+          <option value="classic" selected>Classic Border</option>
+          <option value="minimal">Minimal Ivory</option>
+          <option value="festive">Festive Marigold</option>
+          <option value="royal">Royal Blue & Gold</option>
+        </select>
+        <div class="thumbs" id="thumbs">
+          <div class="thumb classic selected" data-design="classic" role="button" tabindex="0" aria-label="Classic Border">
+            <div class="t-canvas">
+              <div class="t-top"></div>
+              <div class="t-body">
+                <div class="t-line"></div>
+                <div class="t-line sm" style="width:70%"></div>
+                <div class="t-line" style="width:85%"></div>
+                <span class="t-chip">Saffron</span>
+              </div>
+            </div>
+            <div class="t-label">Classic</div>
+          </div>
+          <div class="thumb minimal" data-design="minimal" role="button" tabindex="0" aria-label="Minimal Ivory">
+            <div class="t-canvas">
+              <div class="t-top"></div>
+              <div class="t-body">
+                <div class="t-line"></div>
+                <div class="t-line sm" style="width:65%"></div>
+                <div class="t-line" style="width:78%"></div>
+                <span class="t-chip">Minimal</span>
+              </div>
+            </div>
+            <div class="t-label">Minimal</div>
+          </div>
+          <div class="thumb festive" data-design="festive" role="button" tabindex="0" aria-label="Festive Marigold">
+            <div class="t-garland" aria-hidden="true"></div>
+            <div class="t-canvas">
+              <div class="t-top"></div>
+              <div class="t-body">
+                <div class="t-line"></div>
+                <div class="t-line sm" style="width:72%"></div>
+                <div class="t-line" style="width:88%"></div>
+                <span class="t-chip">Garland</span>
+              </div>
+            </div>
+            <div class="t-label">Festive</div>
+          </div>
+          <div class="thumb royal" data-design="royal" role="button" tabindex="0" aria-label="Royal Blue & Gold">
+            <div class="t-canvas">
+              <div class="t-top"></div>
+              <div class="t-body">
+                <div class="t-line"></div>
+                <div class="t-line sm" style="width:68%"></div>
+                <div class="t-line" style="width:82%"></div>
+                <span class="t-chip">Royal</span>
+              </div>
+            </div>
+            <div class="t-label">Royal</div>
+          </div>
+        </div>
+      </label>
 
       <div class="toggles" aria-label="Effects">
         <div class="toggle">
@@ -251,8 +311,8 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       </div>
     </form>
     <div class="hint">
-      Tip: Change values on the left — the preview updates instantly. Use <b>Download .html</b> to get a single-file invite.
-      The generated invite works offline except for map + bell audio.
+      Tip: Pick a template thumbnail, edit details, and download a single-file invite.
+      Offline works except for map + bell audio.
     </div>
   </section>
 
@@ -275,7 +335,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
     const $ = (id) => document.getElementById(id);
 
     const els = {
-      lang: $('lang'),
+      langMode: $('langMode'),
       owner: $('owner'),
       address: $('address'),
       date: $('date'),
@@ -287,6 +347,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       tFlowers: $('tFlowers'),
       tBell: $('tBell'),
       tMap: $('tMap'),
+      thumbs: $('thumbs'),
       pv: $('pv'),
       mode: $('mode'),
       status: $('status')
@@ -302,11 +363,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
     }
 
     function buildFloaters(density){
-      const sets = {
-        low: 8,
-        med: 14,
-        high: 22
-      };
+      const sets = { low: 8, med: 14, high: 22 };
       const n = sets[density] ?? 14;
       const items = [];
       for(let i=0;i<n;i++){
@@ -323,7 +380,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
     }
 
     function buildInviteHTML(){
-      const defaultLang = els.lang.checked ? 'en' : 'hi';
+      const langMode = els.langMode.value; // hi | en | both
       const owner = els.owner.value.trim() || 'Deepak Roy';
       const addressRaw = els.address.value.trim() || '';
       const addressHtml = escHtml(addressRaw).replaceAll('\n','<br>');
@@ -372,8 +429,8 @@ iframe{width:100%;height:100%;border:0;background:#fff}
 
       const waHI = `गृह प्रवेश आमंत्रण\nगृह स्वामी: ${owner}\nदिनांक: ${date}\nपता: ${addressRaw}`;
       const waEN = `Grih Pravesh Invitation\nHouse Owner: ${owner}\nDate: ${date}\nAddress: ${addressRaw}`;
+      const waBOTH = `${waHI}\n\n---\n\n${waEN}`;
 
-      // Design variants via CSS variables + decorations
       const designCSS = {
         classic: `:root{--panel:#fffdf7;--border:#f3a44a;--accent:#d06a00;--ink:#2a1d12;--muted:#6a4429;}`,
         minimal: `:root{--panel:#fffefb;--border:#e9d7b7;--accent:#b45309;--ink:#1f2937;--muted:#6b7280;}`,
@@ -383,8 +440,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
 
       const extraDecor = {
         classic: '',
-        minimal: `.top-decor{opacity:.6;filter:saturate(.8)}
-                 .card::before{border-color:rgba(180,83,9,.22)}`,
+        minimal: `.top-decor{opacity:.6;filter:saturate(.8)} .card::before{border-color:rgba(180,83,9,.22)}`,
         festive: `.garland{position:absolute;top:92px;left:50%;transform:translateX(-50%);width:min(520px,92%);height:56px;z-index:2;pointer-events:none;
                   background:
                     radial-gradient(circle at 5% 30%, #ffb703 0 12px, transparent 13px),
@@ -406,15 +462,15 @@ iframe{width:100%;height:100%;border:0;background:#fff}
                   radial-gradient(220px 170px at 38% 72%, rgba(255,217,161,.75), transparent 72%),
                   radial-gradient(260px 190px at 62% 78%, rgba(255,194,106,.68), transparent 72%),
                   radial-gradient(210px 160px at 82% 85%, rgba(255,217,161,.68), transparent 72%),
-                  linear-gradient(180deg, rgba(30,64,175,.55), rgba(30,64,175,0));
-                 }
+                  linear-gradient(180deg, rgba(30,64,175,.55), rgba(30,64,175,0));}
                  .logo{background:linear-gradient(180deg, rgba(30,64,175,.06), rgba(255,255,255,.85))}
                  .card::before{border-color:rgba(202,160,74,.55)}`
       }[design] || '';
 
       const extraNode = (design === 'festive') ? '<div class="garland" aria-hidden="true"></div>' : '';
-
       const floatersHTML = onFlowers ? buildFloaters(density) : '';
+
+      const defaultLang = (langMode === 'both') ? 'hi' : langMode;
 
       return `<!doctype html>
 <html lang="${defaultLang}">
@@ -449,7 +505,7 @@ ${onRangoli ? `.rangoli{position:absolute;top:170px;left:50%;width:320px;height:
   animation:rangoliIn 2.8s ease-out forwards;z-index:2}
 @keyframes rangoliIn{0%{transform:translateX(-50%) scale(.2);opacity:0}60%{opacity:1}100%{transform:translateX(-50%) scale(1);opacity:.25}}` : ''}
 
-/* Hindi/English toggle */
+/* Toggle button for single-language modes */
 .lang-pill{position:absolute;top:26px;left:26px;z-index:7;border:1px solid rgba(243,164,74,.55);background:#fffaf2;color:#7c2d12;
   border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
 .lang-pill:active{transform:translateY(1px)}
@@ -478,7 +534,11 @@ ${onBell ? `.bell-btn{position:absolute;top:26px;right:26px;z-index:7;border:non
 .content{position:relative;padding:160px 44px 44px;display:flex;flex-direction:column;gap:24px;min-height:1080px;z-index:4}
 .top-center{text-align:center}
 .ganesh{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;background:#fff7e6;border:2px solid rgba(243,164,74,.6);font-size:36px;margin:0 auto 6px}
-.mantra{font-size:13px;letter-spacing:.14em;color:var(--muted)}
+
+/* bilingual helpers */
+.bh{font-size:13px;letter-spacing:.14em;color:var(--muted)}
+.be{font-size:12px;letter-spacing:.18em;color:rgba(106,68,41,.72);margin-top:6px}
+
 .title{margin:12px 0 0;font-weight:900;letter-spacing:.14em;font-size:44px}
 .subtitle{margin:0;font-size:15px;letter-spacing:.1em;color:var(--muted)}
 .logo-block{text-align:center}
@@ -508,76 +568,127 @@ ${extraDecor}
         <div class="top-decor"></div>
         ${extraNode}
         ${onRangoli ? '<div class="rangoli" aria-hidden="true"></div>' : ''}
-        <button class="lang-pill" id="langBtn" type="button"></button>
+        ${langMode === 'both' ? '' : '<button class="lang-pill" id="langBtn" type="button"></button>'}
         ${onBell ? '<button class="bell-btn" onclick="playBell()" title="Bell">🔔</button>' : ''}
         ${onFlowers ? floatersHTML : ''}<div class="content">
       <header class="top-center">
         <div class="ganesh">ॐ</div>
-        <div class="mantra" data-i="mantra"></div>
-        <h1 class="title" data-i="title"></h1>
-        <p class="subtitle" data-i="subtitle"></p>
+        ${langMode === 'both' ? `
+          <div class="bh">${escHtml(I18N.hi.mantra)}<\/div>
+          <div class="be">${escHtml(I18N.en.mantra)}<\/div>
+          <h1 class="title">${escHtml(I18N.hi.title)}<\/h1>
+          <div class="be" style="font-size:13px;letter-spacing:.14em;margin-top:8px">${escHtml(I18N.en.title)}<\/div>
+          <p class="subtitle">${escHtml(I18N.hi.subtitle)}<\/p>
+          <div class="be" style="margin-top:6px">${escHtml(I18N.en.subtitle)}<\/div>
+        ` : `
+          <div class="mantra" data-i="mantra"><\/div>
+          <h1 class="title" data-i="title"><\/h1>
+          <p class="subtitle" data-i="subtitle"><\/p>
+        `}
       </header>
 
       <section class="logo-block">
         <div class="logo">
-          <div class="name">${escHtml(owner)}</div>
-          <div class="sub" data-i="familyInvite"></div>
+          <div class="name">${escHtml(owner)}<\/div>
+          ${langMode === 'both' ? `
+            <div class="sub">${escHtml(I18N.hi.familyInvite)}<\/div>
+            <div class="be">${escHtml(I18N.en.familyInvite)}<\/div>
+          ` : `<div class="sub" data-i="familyInvite"><\/div>`}
         </div>
-        <div class="date-pill" id="dateLine"></div>
+        ${langMode === 'both' ? `
+          <div class="date-pill">${escHtml(I18N.hi.datePrefix + date)}<\/div>
+          <div class="be" style="text-align:center;margin-top:10px">${escHtml(I18N.en.datePrefix + date)}<\/div>
+        ` : `<div class="date-pill" id="dateLine"><\/div>`}
       </section>
 
       <section class="address">
-        <h4 data-i="venueLoc"></h4>
-        <p>${addressHtml}</p>
-        ${onMap ? `<div class="location-actions"><button class="loc-btn" id="dirBtn" type="button"></button><\/div>
-        <div class="map"><iframe loading="lazy" src="https://www.google.com/maps?q=${encodeURIComponent(mapq)}&output=embed"></iframe><\/div>` : ''}
+        ${langMode === 'both' ? `
+          <h4>${escHtml(I18N.hi.venueLoc)}<\/h4>
+          <div class="be" style="margin:6px 0 12px">${escHtml(I18N.en.venueLoc)}<\/div>
+        ` : `<h4 data-i="venueLoc"><\/h4>`}
+        <p>${addressHtml}<\/p>
+        ${onMap ? `<div class="location-actions"><button class="loc-btn" id="dirBtn" type="button"><\/button><\/div>
+        <div class="map"><iframe loading="lazy" src="https://www.google.com/maps?q=${encodeURIComponent(mapq)}&output=embed"><\/iframe><\/div>` : ''}
       </section>
 
       <section class="bottom">
         <div class="awaiting">
-          <strong data-i="awaiting"></strong><br>
+          ${langMode === 'both' ? `
+            <strong>${escHtml(I18N.hi.awaiting)}<\/strong><br>
+            <span class="be" style="display:block;margin-top:4px">${escHtml(I18N.en.awaiting)}<\/span>
+          ` : `<strong data-i="awaiting"><\/strong><br>`}
           ${escHtml(owner)}<br>
           📞 ${escHtml(phone)}
         </div>
         <div class="actions">
-          <button class="btn" id="printBtn" type="button"></button>
-          <button class="btn whatsapp" id="waBtn" type="button"></button>
+          <button class="btn" id="printBtn" type="button"><\/button>
+          <button class="btn whatsapp" id="waBtn" type="button"><\/button>
         </div>
       </section>
     </div>
 
     <script>
       const I18N = ${JSON.stringify(I18N)};
-      let LANG = '${defaultLang}';
+      const MODE = ${JSON.stringify(langMode)}; // hi|en|both
+      let LANG = ${JSON.stringify(langMode === 'both' ? 'hi' : defaultLang)};
+
       const mapQ = '${encodeURIComponent(mapq)}';
       const waHI = ${JSON.stringify(waHI)};
       const waEN = ${JSON.stringify(waEN)};
+      const waBOTH = ${JSON.stringify(waBOTH)};
 
       function applyLang(){
+        if(MODE === 'both') return; // bilingual is static
         document.documentElement.lang = LANG;
         const t = I18N[LANG];
         document.title = t.pageTitle + ' | ' + ${JSON.stringify(owner)};
         document.querySelectorAll('[data-i]').forEach(el=>{ el.textContent = t[el.getAttribute('data-i')] || ''; });
-        document.getElementById('langBtn').textContent = t.toggleLabel;
-        document.getElementById('dateLine').textContent = t.datePrefix + ${JSON.stringify(date)};
-        document.getElementById('printBtn').textContent = '🖨️ ' + t.print;
-        document.getElementById('waBtn').textContent = '📲 ' + t.whatsapp;
-        const d = document.getElementById('dirBtn');
-        if(d) d.textContent = t.directions;
+        const langBtn = document.getElementById('langBtn');
+        if(langBtn) langBtn.textContent = t.toggleLabel;
+        const dateLine = document.getElementById('dateLine');
+        if(dateLine) dateLine.textContent = t.datePrefix + ${JSON.stringify(date)};
+        const dirBtn = document.getElementById('dirBtn');
+        if(dirBtn) dirBtn.textContent = t.directions;
       }
-      function toggleLang(){ LANG = (LANG === 'hi') ? 'en' : 'hi'; applyLang(); }
-      function shareWA(){ const txt = (LANG === 'hi') ? waHI : waEN; window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank'); }
+
+      function toggleLang(){
+        if(MODE === 'both') return;
+        LANG = (LANG === 'hi') ? 'en' : 'hi';
+        applyLang();
+      }
+
+      function shareWA(){
+        const txt = (MODE === 'both') ? waBOTH : ((LANG === 'hi') ? waHI : waEN);
+        window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+      }
+
       function openMaps(){ window.open('https://www.google.com/maps?q=' + mapQ, '_blank'); }
       function playBell(){
         try{ const a = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a0b6e5b7a.mp3?filename=temple-bell-110624.mp3'); a.volume=0.4; a.play(); }catch(e){}
       }
 
-      document.getElementById('langBtn').addEventListener('click', toggleLang);
-      document.getElementById('waBtn').addEventListener('click', shareWA);
-      document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+      document.getElementById('langBtn')?.addEventListener('click', toggleLang);
+      document.getElementById('waBtn')?.addEventListener('click', shareWA);
+      document.getElementById('printBtn')?.addEventListener('click', ()=>window.print());
       document.getElementById('dirBtn')?.addEventListener('click', openMaps);
 
+      // Label action buttons
+      function setActionLabels(){
+        if(MODE === 'both'){
+          document.getElementById('printBtn').textContent = '🖨️ ' + I18N.hi.print + ' / ' + I18N.en.print;
+          document.getElementById('waBtn').textContent = '📲 ' + I18N.hi.whatsapp + ' / ' + I18N.en.whatsapp;
+          const d = document.getElementById('dirBtn');
+          if(d) d.textContent = I18N.en.directions; // keep English icon label for map
+          document.title = I18N.hi.pageTitle + ' | ' + ${JSON.stringify(owner)};
+          return;
+        }
+        const t = I18N[LANG];
+        document.getElementById('printBtn').textContent = '🖨️ ' + t.print;
+        document.getElementById('waBtn').textContent = '📲 ' + t.whatsapp;
+      }
+
       applyLang();
+      setActionLabels();
     <\/script>
   </section>
 </div>
@@ -589,7 +700,7 @@ ${extraDecor}
   try{
     const html = buildInviteHTML();
     els.pv.srcdoc = html;
-    els.mode.textContent = 'mode: ' + (els.lang.checked ? 'english' : 'hindi') + ' (default) • design: ' + els.design.value;
+    els.mode.textContent = `mode: ${els.langMode.value} • design: ${els.design.value} • density: ${els.density.value}`;
     els.status.textContent = 'Preview updated';
     els.status.className = 'status ok';
   }catch(e){
@@ -617,8 +728,12 @@ async function copyHTML(){
   els.status.className = 'status ok';
 }
 
+function setSelectedThumb(design){
+  document.querySelectorAll('.thumb').forEach(t=>t.classList.toggle('selected', t.dataset.design === design));
+}
+
 function resetForm(){
-  $('lang').checked = false;
+  $('langMode').value = 'hi';
   $('owner').value = 'Deepak Roy';
   $('address').value = 'Sa-18/132, Nai Basti, Pandepur, Varanasi 221007.';
   $('date').value = '23 Jan 2026';
@@ -630,12 +745,33 @@ function resetForm(){
   $('tFlowers').checked = true;
   $('tBell').checked = true;
   $('tMap').checked = true;
+  setSelectedThumb('classic');
   refreshPreview();
 }
 
+// Builder events
 document.querySelectorAll('#f input, #f textarea, #f select').forEach(el => {
   el.addEventListener('input', refreshPreview);
   el.addEventListener('change', refreshPreview);
+});
+
+// Thumbnail click -> select design
+els.thumbs.addEventListener('click', (e)=>{
+  const thumb = e.target.closest('.thumb');
+  if(!thumb) return;
+  els.design.value = thumb.dataset.design;
+  setSelectedThumb(thumb.dataset.design);
+  refreshPreview();
+});
+// Keyboard support
+els.thumbs.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const thumb = e.target.closest('.thumb');
+  if(!thumb) return;
+  e.preventDefault();
+  els.design.value = thumb.dataset.design;
+  setSelectedThumb(thumb.dataset.design);
+  refreshPreview();
 });
 
 $('btnRefresh').addEventListener('click', refreshPreview);
@@ -645,6 +781,10 @@ $('btnCopy').addEventListener('click', async (e)=>{e.preventDefault();
 });
 $('btnReset').addEventListener('click', (e)=>{e.preventDefault(); resetForm();});
 
+// Sync thumbs when dropdown changes
+els.design.addEventListener('change', ()=>setSelectedThumb(els.design.value));
+
+// First render
 refreshPreview();
 
   </script>
