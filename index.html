@@ -1,169 +1,567 @@
 <!doctype html>
 
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>गृह प्रवेश आमंत्रण | दीपक राय</title>
+  <title>Grih Pravesh Card Builder (HTML)</title>
   <style>
     :root{
-      --saffron-50:#fff7e6;
-      --saffron-100:#ffe8bf;
-      --saffron-200:#ffd9a1;
-      --saffron-300:#ffc26a;
-      --saffron-400:#ffa84a;
-      --saffron-500:#ff8a00;--rose-1:#ffb3b3;
-  --rose-2:#ff7a7a;
-  --rose-3:#e94b4b;
-  --marigold-1:#ffd27a;
-  --marigold-2:#ffb703;
-
-  --ink:#2a1d12;
-  --muted:#6a4429;
-  --panel:#fffdf7;
-  --border:#f3a44a;
-  --shadow:0 24px 70px rgba(42,29,18,.18);
-  --accent:#d06a00;
+      --bg:#fff7e6;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --brand:#d97706;
+      --brand2:#ff8a00;
+      --border:#f3d7a6;
+      --shadow:0 18px 45px rgba(31,41,55,.14);
+      --ok:#166534;
+      --danger:#b91c1c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(900px 600px at 15% 10%, rgba(255,138,0,.18), transparent 60%),
+                  radial-gradient(900px 600px at 85% 10%, rgba(255,194,106,.28), transparent 55%),
+                  linear-gradient(180deg, var(--bg), #fff);
+      color:var(--ink);
+    }
+    header{
+      padding:18px 16px;
+      border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,.7);
+      backdrop-filter: blur(6px);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .topbar{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      color:var(--brand);
+    }
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    button{
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:linear-gradient(180deg, #ffb85c, var(--brand2));
+      color:#fff;
+      cursor:pointer;
+      font-weight:700;
+      box-shadow:0 10px 22px rgba(217,119,6,.18);
+    }
+    button.secondary{
+      background:#fff;
+      color:var(--brand);
+      border:1px solid var(--border);
+      box-shadow:none;
+    }
+    button:active{transform:translateY(1px)}.wrap{max-width:1200px;margin:18px auto;padding:0 16px 24px}
+.grid{
+  display:grid;
+  gap:14px;
+}
+@media (min-width:1000px){
+  .grid{grid-template-columns: 420px 1fr; align-items:start}
 }
 
-*{box-sizing:border-box}
-body{
+.panel{
+  background:rgba(255,255,255,.86);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.panel h2{
   margin:0;
-  font-family: "Noto Serif Devanagari", "Mangal", "Kalimati", serif;
+  padding:14px 14px 10px;
+  font-size:14px;
+  color:#7c2d12;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,232,191,.65), rgba(255,255,255,.6));
+}
+
+form{padding:14px;display:grid;gap:12px}
+label{font-size:12px;color:var(--muted);display:grid;gap:6px}
+input, textarea, select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 10px;
+  font:inherit;
+  background:#fff;
   color:var(--ink);
-  background:linear-gradient(180deg,var(--saffron-50),#fff);
-  min-height:100vh;
+  outline:none;
+}
+textarea{min-height:74px;resize:vertical}
+.row{display:grid;gap:12px}
+@media (min-width:520px){ .row{grid-template-columns:1fr 1fr} }
+
+.toggles{display:grid;gap:10px}
+.toggle{
   display:flex;
   align-items:center;
-  justify-content:center;
-  padding:24px;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:rgba(255,247,230,.6);
+}
+.toggle strong{font-size:13px}
+.toggle small{display:block;color:var(--muted);margin-top:2px}
+.toggle input{width:44px;height:24px;accent-color: var(--brand2)}
+
+.hint{
+  font-size:12px;
+  color:var(--muted);
+  padding:0 14px 14px;
+  line-height:1.45;
 }
 
-.wrap{width:min(860px,100%)}
+.previewWrap{padding:14px}
+.previewFrame{
+  width:100%;
+  aspect-ratio: 3 / 4;
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+}
+iframe{width:100%;height:100%;border:0;background:#fff}
 
+.status{
+  margin-left:12px;
+  font-size:12px;
+  color:var(--muted);
+}
+.status.ok{color:var(--ok)}
+.status.bad{color:var(--danger)}
+
+.mini{
+  padding:10px 14px 14px;
+  border-top:1px solid var(--border);
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+}
+.mini code{font-size:12px;color:#7c2d12;background:rgba(255,232,191,.7);padding:4px 8px;border-radius:999px;border:1px solid var(--border)}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <h1>Grih Pravesh Card Builder (HTML)</h1>
+      <div class="btnrow">
+        <button class="secondary" id="btnCopy">Copy HTML</button>
+        <button class="secondary" id="btnDownload">Download .html</button>
+        <button id="btnReset" class="secondary">Reset</button>
+      </div>
+    </div>
+  </header>  <main class="wrap">
+    <div class="grid">
+      <section class="panel">
+        <h2>Card Details</h2>
+        <form id="f">
+          <div class="row">
+            <label>
+              Language
+              <select id="lang">
+                <option value="hi">Hindi (हिन्दी)</option>
+                <option value="en">English</option>
+              </select>
+            </label>
+            <label>
+              Theme
+              <select id="theme">
+                <option value="saffron">Light Saffron (default)</option>
+              </select>
+            </label>
+          </div><label>
+        House Owner / गृह स्वामी
+        <input id="owner" value="Deepak Roy" />
+      </label>
+
+      <label>
+        Address / पता
+        <textarea id="address">Sa-18/132, Nai Basti, Pandepur, Varanasi 221007.</textarea>
+      </label>
+
+      <div class="row">
+        <label>
+          Date / दिनांक
+          <input id="date" value="23 Jan 2026" />
+        </label>
+        <label>
+          Phone (optional)
+          <input id="phone" value="+91-__________" />
+        </label>
+      </div>
+
+      <label>
+        Map Query (for embed + directions)
+        <input id="mapq" value="Sa-18/132 Nai Basti Pandepur Varanasi" />
+      </label>
+
+      <div class="toggles" aria-label="Effects">
+        <div class="toggle">
+          <div>
+            <strong>Rangoli formation</strong>
+            <small>Rangoli forms on load and settles as a soft background.</small>
+          </div>
+          <input id="tRangoli" type="checkbox" checked />
+        </div>
+        <div class="toggle">
+          <div>
+            <strong>Floating roses + petals</strong>
+            <small>Animated roses/petals floating up behind the card.</small>
+          </div>
+          <input id="tFlowers" type="checkbox" checked />
+        </div>
+        <div class="toggle">
+          <div>
+            <strong>Temple bell button</strong>
+            <small>Tap the bell to play a short temple bell sound.</small>
+          </div>
+          <input id="tBell" type="checkbox" checked />
+        </div>
+        <div class="toggle">
+          <div>
+            <strong>Location block + map</strong>
+            <small>Shows address + embed map + "Get Directions" button.</small>
+          </div>
+          <input id="tMap" type="checkbox" checked />
+        </div>
+      </div>
+    </form>
+    <div class="hint">
+      Tip: Change values on the left — the preview updates instantly. Use <b>Download .html</b> to get a single-file invite.
+      The generated invite works offline except for map + bell audio.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Live Preview</h2>
+    <div class="previewWrap">
+      <div class="previewFrame"><iframe id="pv" title="Preview"></iframe></div>
+    </div>
+    <div class="mini">
+      <div>
+        <code id="mode">mode: hindi</code>
+        <span class="status" id="status">Ready</span>
+      </div>
+      <button id="btnRefresh">Refresh Preview</button>
+    </div>
+  </section>
+</div>
+
+  </main>  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const els = {
+      lang: $('lang'),
+      owner: $('owner'),
+      address: $('address'),
+      date: $('date'),
+      phone: $('phone'),
+      mapq: $('mapq'),
+      tRangoli: $('tRangoli'),
+      tFlowers: $('tFlowers'),
+      tBell: $('tBell'),
+      tMap: $('tMap'),
+      pv: $('pv'),
+      mode: $('mode'),
+      status: $('status')
+    };
+
+    function escHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#39;');
+    }
+
+    function buildInviteHTML(){
+      const lang = els.lang.value;
+      const owner = els.owner.value.trim() || 'Deepak Roy';
+      const addressRaw = els.address.value.trim() || '';
+      const addressHtml = escHtml(addressRaw).replaceAll('\n','<br>');
+      const date = els.date.value.trim() || '23 Jan 2026';
+      const phone = els.phone.value.trim() || '+91-__________';
+      const mapq = els.mapq.value.trim() || owner;
+
+      const onRangoli = els.tRangoli.checked;
+      const onFlowers = els.tFlowers.checked;
+      const onBell = els.tBell.checked;
+      const onMap = els.tMap.checked;
+
+      const txt = {
+        hi: {
+          title: 'गृह प्रवेश आमंत्रण',
+          subtitle: 'नवगृह प्रवेश समारोह',
+          mantra: '॥ श्री गणेशाय नमः ॥',
+          familyInvite: 'सपरिवार सादर आमंत्रण',
+          venue: 'स्थान',
+          venueLoc: 'स्थान एवं लोकेशन',
+          awaiting: 'प्रतीक्षारत',
+          print: 'प्रिंट',
+          whatsapp: 'व्हाट्सएप',
+          directions: '📍 मार्गदर्शन',
+          datePrefix: 'दिनांक: '
+        },
+        en: {
+          title: 'GRIHA PRAVESH',
+          subtitle: 'HOUSEWARMING CEREMONY',
+          mantra: '|| Shree Ganeshay Namah ||',
+          familyInvite: 'With Family — Cordial Invitation',
+          venue: 'Venue',
+          venueLoc: 'Venue & Location',
+          awaiting: 'Awaiting',
+          print: 'Print',
+          whatsapp: 'WhatsApp',
+          directions: '📍 Get Directions',
+          datePrefix: 'Date: '
+        }
+      }[lang];
+
+      const waText = encodeURIComponent(
+        (lang === 'hi'
+          ? `गृह प्रवेश आमंत्रण\nगृह स्वामी: ${owner}\nदिनांक: ${date}\nपता: ${addressRaw}`
+          : `Grih Pravesh Invitation\nHouse Owner: ${owner}\nDate: ${date}\nAddress: ${addressRaw}`)
+      );
+
+      return `<!doctype html>
+<html lang="${lang}">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>${escHtml(txt.title)} | ${escHtml(owner)}</title>
+<style>
+:root{
+  --saffron-50:#fff7e6;--saffron-100:#ffe8bf;--saffron-200:#ffd9a1;--saffron-300:#ffc26a;--saffron-400:#ffa84a;--saffron-500:#ff8a00;
+  --rose-1:#ffb3b3;--rose-2:#ff7a7a;--rose-3:#e94b4b;--marigold-1:#ffd27a;--marigold-2:#ffb703;
+  --ink:#2a1d12;--muted:#6a4429;--panel:#fffdf7;--border:#f3a44a;--shadow:0 24px 70px rgba(42,29,18,.18);--accent:#d06a00;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:${lang==='hi' ? '"Noto Serif Devanagari","Mangal","Kalimati",serif' : 'system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial'};color:var(--ink);
+  background:linear-gradient(180deg,var(--saffron-50),#fff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{width:min(860px,100%)}
 .frame{background:var(--border);padding:22px;border-radius:14px;box-shadow:var(--shadow)}
 .card{position:relative;background:var(--panel);border-radius:10px;overflow:hidden;min-height:1080px}
-
 .card::before{content:"";position:absolute;inset:18px;border:2px solid rgba(243,164,74,.45);pointer-events:none;z-index:3}
-
 .top-decor{position:absolute;top:0;left:0;right:0;height:240px;background:
   radial-gradient(180px 140px at 18% 80%, rgba(255,194,106,.95), transparent 70%),
   radial-gradient(220px 170px at 38% 72%, rgba(255,217,161,.95), transparent 72%),
   radial-gradient(260px 190px at 62% 78%, rgba(255,194,106,.9), transparent 72%),
   radial-gradient(210px 160px at 82% 85%, rgba(255,217,161,.9), transparent 72%),
   linear-gradient(180deg, rgba(255,168,74,.6), rgba(255,168,74,0));
-  border-bottom-left-radius:50% 35%;border-bottom-right-radius:50% 35%;z-index:1}
-
-.rangoli{position:absolute;top:170px;left:50%;width:320px;height:320px;transform:translateX(-50%) scale(.2);border-radius:50%;opacity:0;
+  border-bottom-left-radius:50% 35%;border-bottom-right-radius:50% 35%;pointer-events:none;z-index:1}
+${onRangoli ? `.rangoli{position:absolute;top:170px;left:50%;width:320px;height:320px;transform:translateX(-50%) scale(.2);border-radius:50%;opacity:0;
   background:radial-gradient(circle at center, rgba(255,255,255,.9) 0 8%, transparent 9%),
   conic-gradient(var(--marigold-2),var(--rose-2),var(--saffron-400),var(--rose-3),var(--marigold-1),var(--saffron-300),var(--rose-1),var(--marigold-2));
   animation:rangoliIn 2.8s ease-out forwards;z-index:2}
-
-@keyframes rangoliIn{0%{transform:translateX(-50%) scale(.2);opacity:0}60%{opacity:1}100%{transform:translateX(-50%) scale(1);opacity:.25}}
-
-.bell-btn{position:absolute;top:26px;right:26px;z-index:5;border:none;background:#fffaf2;border-radius:50%;width:46px;height:46px;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
-
-.floaters{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+@keyframes rangoliIn{0%{transform:translateX(-50%) scale(.2);opacity:0}60%{opacity:1}100%{transform:translateX(-50%) scale(1);opacity:.25}}` : ''}
+${onBell ? `.bell-btn{position:absolute;top:26px;right:26px;z-index:6;border:none;background:#fffaf2;border-radius:50%;width:46px;height:46px;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(42,29,18,.18)}
+.bell-btn:active{transform:scale(.95)}` : ''}
+${onFlowers ? `.floaters{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .rose,.petal{position:absolute;bottom:-100px;left:var(--x);width:var(--s);height:var(--s);opacity:var(--o);
   animation:floatUp var(--t) linear infinite,sway var(--w) ease-in-out infinite,spin var(--r) linear infinite}
-
 .rose::before{content:"";position:absolute;inset:0;border-radius:50%;background:
   radial-gradient(circle at 50% 50%, #fff 0 18%, transparent 19%),
   radial-gradient(circle at 35% 40%, var(--rose-1) 0 38%, transparent 39%),
   radial-gradient(circle at 65% 40%, var(--rose-2) 0 38%, transparent 39%),
   radial-gradient(circle at 40% 65%, var(--rose-3) 0 38%, transparent 39%),
-  radial-gradient(circle at 60% 65%, var(--rose-2) 0 38%, transparent 39%)}
-
-.petal::before{content:"";position:absolute;inset:0;border-radius:60%/70%;background:radial-gradient(circle at 30% 30%, var(--marigold-1), var(--marigold-2))}
-
+  radial-gradient(circle at 60% 65%, var(--rose-2) 0 38%, transparent 39%);
+  box-shadow:0 10px 22px rgba(42,29,18,.12)}
+.petal::before{content:"";position:absolute;inset:0;border-radius:60% 60% 60% 60% / 70% 70% 50% 50%;
+  background:radial-gradient(circle at 30% 30%, var(--marigold-1), var(--marigold-2));
+  box-shadow:0 8px 18px rgba(42,29,18,.12)}
 @keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-1400px)}}
 @keyframes sway{0%,100%{margin-left:-22px}50%{margin-left:22px}}
-@keyframes spin{from{rotate:0deg}to{rotate:360deg}}
-
+@keyframes spin{from{rotate:0deg}to{rotate:360deg}}` : ''}
 .content{position:relative;padding:160px 44px 44px;display:flex;flex-direction:column;gap:24px;min-height:1080px;z-index:4}
 .top-center{text-align:center}
 .ganesh{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;background:#fff7e6;border:2px solid rgba(243,164,74,.6);font-size:36px;margin:0 auto 6px}
 .mantra{font-size:13px;letter-spacing:.14em;color:var(--muted)}
-.title{margin:12px 0 0;font-weight:900;letter-spacing:.2em;font-size:42px}
-.subtitle{margin:0;font-size:16px;letter-spacing:.1em;color:var(--muted)}
-
+.title{margin:12px 0 0;font-weight:900;letter-spacing:${lang==='hi' ? '.18em' : '.14em'};font-size:44px}
+.subtitle{margin:0;font-size:15px;letter-spacing:.1em;color:var(--muted)}
 .logo-block{text-align:center}
 .logo{display:inline-block;padding:20px 24px;border:2px solid rgba(243,164,74,.55);border-radius:14px;background:#fffaf2}
-.logo .name{font-size:32px;font-weight:900;letter-spacing:.18em}
-.logo .sub{font-size:13px;letter-spacing:.26em;color:var(--muted)}
-
+.logo .name{font-size:32px;font-weight:900;letter-spacing:.14em}
+.logo .sub{font-size:13px;letter-spacing:.22em;color:var(--muted)}
 .date-pill{margin-top:16px;display:inline-block;padding:12px 22px;border-radius:999px;border:2px solid rgba(243,164,74,.6);background:#fff;font-weight:900}
-
 .address{margin:26px auto 0;max-width:620px;text-align:center;padding:18px 20px;border:2px solid rgba(243,164,74,.6);border-radius:16px;background:#fffaf2}
-.address h4{margin:0 0 6px;color:var(--accent);letter-spacing:.14em;font-size:14px}
+.address h4{margin:0 0 6px;color:var(--accent);letter-spacing:.14em;font-size:14px;text-transform:uppercase}
 .address p{margin:0;font-size:16px;line-height:1.6}
-
-.bottom{margin-top:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+${onMap ? `.map{margin-top:14px;border-radius:14px;overflow:hidden;border:2px solid rgba(243,164,74,.45);aspect-ratio:16/9}
+.map iframe{width:100%;height:100%;border:0}
+.location-actions{margin-top:10px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.loc-btn{padding:10px 14px;border-radius:999px;border:2px solid rgba(243,164,74,.55);background:#fff;color:var(--accent);font-weight:900;cursor:pointer}` : ''}
+.bottom{margin-top:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-end}
 .awaiting{border:2px solid rgba(243,164,74,.55);padding:16px 18px;border-radius:14px;background:#fffaf2}
-
-.actions{display:flex;gap:10px}
-.btn{border:none;border-radius:999px;padding:12px 18px;color:#fff;background:linear-gradient(180deg,var(--saffron-400),var(--saffron-500));cursor:pointer}
-
-@media print{.floaters,.actions{display:none}}
-
-  </style>  <script>
-    function playBell(){
-      const audio=new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a0b6e5b7a.mp3');
-      audio.volume=.4;audio.play();
-    }
-  </script></head>
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:none;border-radius:999px;padding:12px 18px;color:#fff;background:linear-gradient(180deg,var(--saffron-400),var(--saffron-500));cursor:pointer;font-weight:900}
+.btn.whatsapp{background:linear-gradient(180deg,#25D366,#128C7E)}
+@media print{.floaters,.actions,.map,.location-actions,.bell-btn{display:none}body{background:#fff}}
+</style></head>
 <body>
   <main class="wrap">
     <div class="frame">
       <section class="card">
         <div class="top-decor"></div>
-        <div class="rangoli"></div>
-        <button class="bell-btn" onclick="playBell()">🔔</button><div class="floaters">
-      <span class="rose" style="--x:10%;--s:46px;--t:22s;--w:4s;--r:16s;--o:.3"></span>
-      <span class="petal" style="--x:22%;--s:26px;--t:17s;--w:3.4s;--r:12s;--o:.35"></span>
-      <span class="rose" style="--x:40%;--s:54px;--t:28s;--w:5s;--r:20s;--o:.25"></span>
-      <span class="petal" style="--x:58%;--s:28px;--t:18s;--w:3.6s;--r:13s;--o:.32"></span>
-      <span class="rose" style="--x:76%;--s:44px;--t:22s;--w:4.6s;--r:16s;--o:.28"></span>
-    </div>
-
-    <div class="content">
+        ${onRangoli ? '<div class="rangoli" aria-hidden="true"></div>' : ''}
+        ${onBell ? '<button class="bell-btn" onclick="playBell()" title="Bell">🔔</button>' : ''}
+        ${onFlowers ? `<div class="floaters" aria-hidden="true">
+          <span class="rose" style="--x:3%;  --s:48px; --t:24s; --w:4.4s; --r:16s; --o:.30"></span>
+          <span class="petal" style="--x:8%;  --s:22px; --t:15s; --w:3.2s; --r:11s; --o:.38"></span>
+          <span class="rose" style="--x:14%; --s:40px; --t:20s; --w:4s;   --r:14s; --o:.26"></span>
+          <span class="petal" style="--x:20%; --s:26px; --t:17s; --w:3.4s; --r:12s; --o:.34"></span>
+          <span class="rose" style="--x:28%; --s:54px; --t:28s; --w:5.2s; --r:20s; --o:.22"></span>
+          <span class="petal" style="--x:36%; --s:24px; --t:16s; --w:3.2s; --r:11s; --o:.36"></span>
+          <span class="rose" style="--x:44%; --s:44px; --t:22s; --w:4.6s; --r:16s; --o:.28"></span>
+          <span class="petal" style="--x:52%; --s:28px; --t:18s; --w:3.6s; --r:13s; --o:.32"></span>
+          <span class="rose" style="--x:60%; --s:36px; --t:18s; --w:3.8s; --r:14s; --o:.30"></span>
+          <span class="petal" style="--x:66%; --s:22px; --t:15s; --w:3.2s; --r:11s; --o:.38"></span>
+          <span class="rose" style="--x:72%; --s:50px; --t:26s; --w:5s;   --r:19s; --o:.24"></span>
+          <span class="petal" style="--x:78%; --s:26px; --t:17s; --w:3.4s; --r:12s; --o:.34"></span>
+          <span class="rose" style="--x:84%; --s:42px; --t:22s; --w:4.6s; --r:16s; --o:.28"></span>
+          <span class="petal" style="--x:90%; --s:24px; --t:16s; --w:3.2s; --r:11s; --o:.36"></span>
+        </div>` : ''}<div class="content">
       <header class="top-center">
         <div class="ganesh">ॐ</div>
-        <div class="mantra">॥ श्री गणेशाय नमः ॥</div>
-        <h1 class="title">गृह प्रवेश</h1>
-        <p class="subtitle">नवगृह प्रवेश समारोह</p>
+        <div class="mantra">${escHtml(txt.mantra)}</div>
+        <h1 class="title">${escHtml(txt.title)}</h1>
+        <p class="subtitle">${escHtml(txt.subtitle)}</p>
       </header>
 
       <section class="logo-block">
         <div class="logo">
-          <div class="name">दीपक राय</div>
-          <div class="sub">सपरिवार सादर आमंत्रण</div>
+          <div class="name">${escHtml(owner)}</div>
+          <div class="sub">${escHtml(txt.familyInvite)}</div>
         </div>
-        <div class="date-pill">दिनांक: 23 जनवरी 2026</div>
+        <div class="date-pill">${escHtml(txt.datePrefix + date)}</div>
       </section>
 
       <section class="address">
-        <h4>स्थान</h4>
-        <p>
-          सा-18/132, नई बस्ती, पांडेयपुर,<br>
-          वाराणसी – 221007, उत्तर प्रदेश
-        </p>
+        <h4>${escHtml(txt.venueLoc)}</h4>
+        <p>${addressHtml}</p>
+        ${onMap ? `<div class="location-actions">
+          <button class="loc-btn" onclick="openMaps()">${escHtml(txt.directions)}</button>
+        </div>
+        <div class="map">
+          <iframe loading="lazy" src="https://www.google.com/maps?q=${encodeURIComponent(mapq)}&output=embed"></iframe>
+        </div>` : ''}
       </section>
 
       <section class="bottom">
         <div class="awaiting">
-          <strong>प्रतीक्षारत</strong><br>
-          दीपक राय<br>
-          📞 +91-__________
+          <strong>${escHtml(txt.awaiting)}</strong><br>
+          ${escHtml(owner)}<br>
+          📞 ${escHtml(phone)}
         </div>
         <div class="actions">
-          <button class="btn" onclick="window.print()">🖨️ प्रिंट</button>
+          <button class="btn" onclick="window.print()">🖨️ ${escHtml(txt.print)}</button>
+          <button class="btn whatsapp" onclick="shareWA()">📲 ${escHtml(txt.whatsapp)}</button>
         </div>
       </section>
     </div>
+
+    <script>
+      function shareWA(){ window.open('https://wa.me/?text=${waText}', '_blank'); }
+      function openMaps(){ window.open('https://www.google.com/maps?q=${encodeURIComponent(mapq)}', '_blank'); }
+      function playBell(){
+        try{
+          const a = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a0b6e5b7a.mp3?filename=temple-bell-110624.mp3');
+          a.volume = 0.4; a.play();
+        }catch(e){}
+      }
+    <\/script>
   </section>
 </div>
 
   </main>
+</body>
+</html>`;
+    }function refreshPreview(){
+  try{
+    const html = buildInviteHTML();
+    els.pv.srcdoc = html;
+    els.mode.textContent = 'mode: ' + (els.lang.value === 'hi' ? 'hindi' : 'english');
+    els.status.textContent = 'Preview updated';
+    els.status.className = 'status ok';
+  }catch(e){
+    els.status.textContent = 'Error: ' + e.message;
+    els.status.className = 'status bad';
+  }
+}
+
+function downloadHTML(){
+  const html = buildInviteHTML();
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'grih-pravesh-invite.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
+async function copyHTML(){
+  const html = buildInviteHTML();
+  await navigator.clipboard.writeText(html);
+  els.status.textContent = 'Copied HTML to clipboard';
+  els.status.className = 'status ok';
+}
+
+function resetForm(){
+  $('lang').value = 'hi';
+  $('owner').value = 'Deepak Roy';
+  $('address').value = 'Sa-18/132, Nai Basti, Pandepur, Varanasi 221007.';
+  $('date').value = '23 Jan 2026';
+  $('phone').value = '+91-__________';
+  $('mapq').value = 'Sa-18/132 Nai Basti Pandepur Varanasi';
+  $('tRangoli').checked = true;
+  $('tFlowers').checked = true;
+  $('tBell').checked = true;
+  $('tMap').checked = true;
+  refreshPreview();
+}
+
+// Wire up events
+document.querySelectorAll('#f input, #f textarea, #f select').forEach(el => {
+  el.addEventListener('input', refreshPreview);
+  el.addEventListener('change', refreshPreview);
+});
+
+$('btnRefresh').addEventListener('click', refreshPreview);
+$('btnDownload').addEventListener('click', (e)=>{e.preventDefault(); downloadHTML();});
+$('btnCopy').addEventListener('click', async (e)=>{e.preventDefault();
+  try{ await copyHTML(); }catch{ els.status.textContent='Clipboard blocked (try HTTPS)'; els.status.className='status bad'; }
+});
+$('btnReset').addEventListener('click', (e)=>{e.preventDefault(); resetForm();});
+
+// First render
+refreshPreview();
+
+  </script>
 </body>
 </html>
