@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Marriage Anniversary Card Maker — Templates + Print + WhatsApp | Champak Roy</title>
-  <meta name="description" content="Create beautiful marriage anniversary cards with live preview, photo, templates, print-ready layout, and WhatsApp sharing." />
+  <title>Birthday Card Maker — Templates + Print + WhatsApp | Champak Roy</title>
+  <meta name="description" content="Create beautiful birthday cards with templates, photo, live preview, print-ready layout, download, and WhatsApp sharing. Built by Champak Roy." />
   <meta name="author" content="Champak Roy" />
   <style>
     :root{
@@ -19,96 +19,93 @@
       --shadow:0 18px 45px rgba(31,41,55,.14);
       --ok:#166534;
       --danger:#b91c1c;
-      --soft:#fff1d6;
-      --soft2:#fffaf0;
 
-      /* Card theme variables (overrides set via data-theme) */
-      --cardBg: linear-gradient(135deg, #fffaf2, #ffffff);
-      --cardAccent: #d97706;
-      --cardAccent2:#f59e0b;
-      --cardInk:#1f2937;
-      --cardMuted:#6b7280;
-      --cardBorder: rgba(217,119,6,.25);
+      --radius:18px;
+      --radius2:24px;
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background:
-        radial-gradient(900px 600px at 12% 10%, rgba(255,138,0,.18), transparent 60%),
-        radial-gradient(900px 600px at 88% 18%, rgba(245,158,11,.16), transparent 55%),
-        radial-gradient(1000px 700px at 50% 90%, rgba(217,119,6,.10), transparent 60%),
-        var(--bg);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background: radial-gradient(1200px 700px at 20% 0%, #fff2d3 0%, var(--bg) 45%, #fff 100%);
       color:var(--ink);
     }
-    a{color:inherit}
-    .container{
-      max-width:1200px;
-      margin:24px auto 42px;
-      padding:0 16px;
+
+    .wrap{
+      max-width:1180px;
+      margin:22px auto 34px;
+      padding:16px;
     }
-    .hero{
+
+    .topbar{
       display:flex;
       gap:14px;
       align-items:center;
       justify-content:space-between;
-      background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
+      flex-wrap:wrap;
+      background: rgba(255,255,255,.72);
       border:1px solid var(--border);
-      border-radius:18px;
-      padding:16px 18px;
-      box-shadow:var(--shadow);
+      border-radius: var(--radius2);
+      padding:14px 16px;
+      box-shadow: var(--shadow);
       backdrop-filter: blur(6px);
     }
-    .hero h1{
-      margin:0;
-      font-size: clamp(20px, 3.2vw, 34px);
-      line-height:1.12;
-      color:var(--brand);
-      letter-spacing:.2px;
+
+    .brand{
+      display:flex; gap:12px; align-items:center;
+      min-width: 240px;
     }
-    .hero p{
-      margin:6px 0 0;
-      color:var(--muted);
-      max-width:64ch;
-    }
-    .badgeRow{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,241,214,.65));
-      font-weight:800;
-      color:var(--ink);
-      font-size:13px;
-      white-space:nowrap;
-    }
-    .logo-badge{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: radial-gradient(120px 80px at 20% 40%, rgba(245,158,11,.22), transparent 60%),
-                  radial-gradient(120px 80px at 80% 60%, rgba(217,119,6,.18), transparent 60%),
-                  rgba(255,255,255,.75);
-      box-shadow: 0 10px 22px rgba(31,41,55,.10);
-    }
-    .logoMark{
-      width:34px; height:34px; border-radius:10px;
-      background:linear-gradient(135deg, var(--brand), var(--brand2));
+    .logo{
+      width:44px; height:44px;
+      border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, var(--brand2), var(--brand));
+      box-shadow: 0 10px 22px rgba(217,119,6,.25);
       display:grid; place-items:center;
-      color:white; font-weight:900;
+      color:#fff; font-weight:900;
       letter-spacing:.5px;
-      box-shadow: 0 10px 20px rgba(217,119,6,.25);
+    }
+    .brand h1{
+      font-size:16px; margin:0;
+      line-height:1.2;
+    }
+    .brand p{
+      margin:3px 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .actions{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      justify-content:flex-end;
+    }
+
+    button, .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:650;
+      box-shadow: 0 10px 22px rgba(31,41,55,.08);
+      transition: transform .08s ease, box-shadow .18s ease, border-color .18s ease;
       user-select:none;
     }
-    .logoText{line-height:1.05}
-    .logoText b{display:block; font-size:13px}
-    .logoText span{display:block; font-size:12px; color:var(--muted); font-weight:700}
+    button:hover, .btn:hover{
+      border-color:#e6c999;
+      box-shadow: 0 14px 28px rgba(31,41,55,.12);
+      transform: translateY(-1px);
+    }
+    .primary{
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      border-color: rgba(0,0,0,.05);
+    }
+    .danger{
+      border-color: rgba(185,28,28,.25);
+      color: var(--danger);
+    }
 
     .grid{
       display:grid;
@@ -117,1180 +114,1190 @@
       margin-top:16px;
     }
     @media (max-width: 980px){
-      .grid{grid-template-columns: 1fr; }
-      .badgeRow{justify-content:flex-start}
+      .grid{grid-template-columns:1fr}
     }
 
     .panel{
-      background:rgba(255,255,255,.78);
+      background: rgba(255,255,255,.78);
       border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
       padding:14px;
       backdrop-filter: blur(6px);
     }
     .panel h2{
       margin:0 0 10px;
-      font-size:18px;
-      color:var(--brand);
+      font-size:14px;
+      color: var(--brand);
+      letter-spacing:.2px;
     }
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
+
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
+    @media (max-width:520px){
+      .row,.row3{grid-template-columns:1fr}
     }
-    @media (max-width: 520px){
-      .row{grid-template-columns:1fr}
-    }
+
     label{
       display:block;
       font-size:12px;
-      font-weight:800;
       color:var(--muted);
-      margin:10px 0 6px;
-      letter-spacing:.2px;
+      margin:8px 0 6px;
+      font-weight:650;
     }
-    input, select, textarea{
+    input, textarea, select{
       width:100%;
       padding:10px 11px;
-      border-radius:12px;
+      border-radius:14px;
       border:1px solid var(--border);
       background:#fff;
-      color:var(--ink);
       outline:none;
       font-size:14px;
-    }
-    textarea{min-height:92px; resize:vertical}
-    input:focus, select:focus, textarea:focus{
-      border-color: rgba(217,119,6,.55);
-      box-shadow: 0 0 0 4px rgba(245,158,11,.18);
-    }
-    .hint{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:6px;
-      line-height:1.25;
-    }
-
-    .btnRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-    .btn{
-      border:1px solid var(--border);
-      background:linear-gradient(180deg, #fff, #fff1d6);
       color:var(--ink);
-      font-weight:900;
-      padding:10px 12px;
-      border-radius:14px;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      box-shadow: 0 10px 18px rgba(31,41,55,.10);
-      user-select:none;
     }
-    .btn.primary{
-      border-color: rgba(217,119,6,.45);
-      background: linear-gradient(180deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
-    }
-    .btn.danger{
-      border-color: rgba(185,28,28,.35);
-      background: linear-gradient(180deg, rgba(185,28,28,.08), rgba(185,28,28,.14));
-    }
-    .btn:active{transform: translateY(1px)}
-    .split{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      padding-top:10px;
-      border-top:1px dashed rgba(234,220,197,.9);
-      margin-top:14px;
-    }
+    textarea{min-height:88px; resize:vertical}
 
-    /* Preview area */
-    .previewWrap{display:grid; gap:12px;}
-    .previewHeader{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .previewHeader h2{
-      margin:0;
-      font-size:18px;
-      color:var(--brand);
-    }
-    .mini{
+    .hint{
+      margin:8px 0 0;
       font-size:12px;
       color:var(--muted);
-      margin-top:4px;
+      line-height:1.45;
     }
-    .toggleRow{
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
+
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
     .chip{
-      display:inline-flex; align-items:center; gap:8px;
       padding:8px 10px;
       border-radius:999px;
       border:1px solid var(--border);
-      background: rgba(255,255,255,.85);
-      font-weight:800;
-      font-size:12px;
+      background:#fff;
       cursor:pointer;
-      user-select:none;
+      font-size:12px;
+      font-weight:750;
+      color: var(--ink);
+      transition: transform .08s ease, border-color .18s ease;
     }
-    .chip input{width:auto; margin:0}
-    .cardStage{
-      background:rgba(255,255,255,.78);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:14px;
+    .chip:hover{transform: translateY(-1px); border-color:#e6c999}
+    .chip.active{
+      border-color: rgba(217,119,6,.4);
+      background: linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.12));
+    }
+
+    /* Preview */
+    .previewWrap{
+      display:grid;
+      gap:14px;
+    }
+
+    .previewTop{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; flex-wrap:wrap;
+    }
+    .previewTop .meta{
+      font-size:12px; color:var(--muted);
+    }
+
+    .stage{
       display:grid;
       place-items:center;
+      padding:14px;
+      border-radius: var(--radius2);
+      border: 1px dashed #e6c999;
+      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
+      min-height: 520px;
     }
 
-    /* Card */
     .card{
-      width:min(780px, 100%);
-      aspect-ratio: 16/10;
-      border-radius:22px;
-      position:relative;
+      width: 760px;
+      height: 520px;
+      border-radius: 26px;
+      border: 1px solid rgba(0,0,0,.06);
       overflow:hidden;
-      background: var(--cardBg);
-      border:1.5px solid var(--cardBorder);
-      box-shadow: 0 22px 55px rgba(31,41,55,.16);
-      color: var(--cardInk);
-      isolation:isolate;
-    }
-    .card:before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(380px 260px at 12% 18%, rgba(245,158,11,.22), transparent 65%),
-        radial-gradient(420px 280px at 86% 20%, rgba(217,119,6,.18), transparent 65%),
-        radial-gradient(520px 360px at 50% 92%, rgba(245,158,11,.12), transparent 60%);
-      z-index:0;
-      pointer-events:none;
-    }
-
-    /* Themes (original 4) */
-    .card[data-theme="golden"]{
-      --cardBg: linear-gradient(135deg, #fffaf0, #ffffff);
-      --cardAccent:#b45309;
-      --cardAccent2:#f59e0b;
-      --cardBorder: rgba(180,83,9,.32);
-    }
-    .card[data-theme="floral"]{
-      --cardBg: linear-gradient(135deg, #fff7f0, #ffffff);
-      --cardAccent:#c2410c;
-      --cardAccent2:#fb7185;
-      --cardBorder: rgba(194,65,12,.28);
-    }
-    .card[data-theme="royal"]{
-      --cardBg: linear-gradient(135deg, #fffaf2, #ffffff);
-      --cardAccent:#7c2d12;
-      --cardAccent2:#f59e0b;
-      --cardBorder: rgba(124,45,18,.25);
-    }
-    .card[data-theme="minimal"]{
-      --cardBg: linear-gradient(135deg, #ffffff, #fffaf2);
-      --cardAccent:#d97706;
-      --cardAccent2:#111827;
-      --cardBorder: rgba(17,24,39,.14);
-    }
-
-    /* More themes */
-    .card[data-theme="sunset"]{
-      --cardBg: linear-gradient(135deg, #fff1e6, #ffffff);
-      --cardAccent:#c2410c;
-      --cardAccent2:#f59e0b;
-      --cardBorder: rgba(194,65,12,.26);
-    }
-    .card[data-theme="rose"]{
-      --cardBg: linear-gradient(135deg, #fff1f2, #ffffff);
-      --cardAccent:#be123c;
-      --cardAccent2:#fb7185;
-      --cardBorder: rgba(190,18,60,.22);
-    }
-    .card[data-theme="emerald"]{
-      --cardBg: linear-gradient(135deg, #ecfdf5, #ffffff);
-      --cardAccent:#047857;
-      --cardAccent2:#10b981;
-      --cardBorder: rgba(4,120,87,.22);
-    }
-    .card[data-theme="peacock"]{
-      --cardBg: linear-gradient(135deg, #eef2ff, #ffffff);
-      --cardAccent:#1d4ed8;
-      --cardAccent2:#06b6d4;
-      --cardBorder: rgba(29,78,216,.20);
-    }
-    .card[data-theme="lavender"]{
-      --cardBg: linear-gradient(135deg, #f5f3ff, #ffffff);
-      --cardAccent:#6d28d9;
-      --cardAccent2:#a78bfa;
-      --cardBorder: rgba(109,40,217,.20);
-    }
-    .card[data-theme="midnight"]{
-      --cardBg: linear-gradient(135deg, #111827, #1f2937);
-      --cardAccent:#f59e0b;
-      --cardAccent2:#fb7185;
-      --cardInk:#f9fafb;
-      --cardMuted: rgba(249,250,251,.75);
-      --cardBorder: rgba(245,158,11,.25);
-    }
-    .card[data-theme="ivory"]{
-      --cardBg: linear-gradient(135deg, #fffffb, #fff7ed);
-      --cardAccent:#7c2d12;
-      --cardAccent2:#d97706;
-      --cardBorder: rgba(124,45,18,.18);
-    }
-    .card[data-theme="retro"]{
-      --cardBg: linear-gradient(135deg, #fff7ed, #fef3c7);
-      --cardAccent:#92400e;
-      --cardAccent2:#0f766e;
-      --cardBorder: rgba(146,64,14,.22);
-    }
-
-    .decor{
-      position:absolute; inset:0;
-      z-index:1;
-      pointer-events:none;
-      opacity:.9;
-    }
-
-    /* Theme-aware decor (color-mix modern browsers) */
-    .decor .ring{
-      position:absolute;
-      right:-22px; top:-22px;
-      width:160px; height:160px;
-      border-radius:999px;
-      border:10px solid color-mix(in srgb, var(--cardAccent2) 35%, transparent);
-      box-shadow: inset 0 0 0 10px color-mix(in srgb, var(--cardAccent) 22%, transparent);
-      transform: rotate(12deg);
-    }
-    .decor .ring2{
-      position:absolute;
-      right:38px; top:34px;
-      width:120px; height:120px;
-      border-radius:999px;
-      border:10px solid color-mix(in srgb, var(--cardAccent) 28%, transparent);
-      transform: rotate(-18deg);
-    }
-    .decor .petal{
-      position:absolute;
-      left:-60px; bottom:-60px;
-      width:240px; height:240px;
-      border-radius: 50% 50% 50% 50%;
-      background:
-        radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--cardAccent2) 25%, transparent), transparent 58%),
-        radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--cardAccent) 18%, transparent), transparent 55%),
-        rgba(255,255,255,.0);
-      transform: rotate(-18deg);
-    }
-
-    /* Card inner grid (default: classic split) */
-    .cardGrid{
+      box-shadow: 0 26px 60px rgba(31,41,55,.18);
       position:relative;
-      z-index:2;
+      background: #fff;
+      transform-origin: center;
+    }
+    @media (max-width: 980px){
+      .card{width: 92vw; max-width: 760px; height: calc(min(520px, 68vw));}
+    }
+
+    .card .bg{
+      position:absolute; inset:0;
+      background: var(--cardBg, linear-gradient(135deg,#fff,#fff7e6));
+    }
+    .card .decor{
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity: var(--decorOpacity, .95);
+    }
+
+    .card .content{
+      position:absolute; inset:0;
+      padding: 26px 28px;
       display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:12px;
-      height:100%;
-      padding:22px;
+      grid-template-columns: 1fr 260px;
+      gap:18px;
+      align-items: center;
     }
-    @media (max-width: 680px){
-      .card{aspect-ratio: 4/5;}
-      .cardGrid{grid-template-columns:1fr;}
+    @media (max-width: 700px){
+      .card .content{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        padding: 18px 16px;
+      }
     }
-
-    .left, .right{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-width:0;
-    }
-    .right{justify-content:space-between}
-
-    .topLine{display:flex; align-items:center; justify-content:space-between; gap:12px;}
-
-    .seal{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.72);
-      border:1px solid rgba(234,220,197,.9);
-      font-weight:900;
-      color: var(--cardAccent);
-      box-shadow: 0 10px 18px rgba(31,41,55,.10);
-      max-width:100%;
-    }
-    .seal small{color:var(--cardMuted); font-weight:800}
 
     .title{
-      margin:4px 0 0;
-      font-size: clamp(22px, 3.6vw, 40px);
-      line-height:1.05;
-      color:var(--cardAccent);
-      letter-spacing:.2px;
-      font-weight:900;
-    }
-    .subTitle{
+      font-size: var(--titleSize, 48px);
       margin:0;
-      color:var(--cardMuted);
-      font-weight:800;
-      line-height:1.25;
+      line-height:1.05;
+      letter-spacing:.2px;
+      color: var(--titleColor, #1f2937);
+      text-shadow: 0 10px 30px rgba(0,0,0,.08);
+      font-weight: 900;
+      font-family: var(--titleFont, system-ui);
+      word-break: break-word;
     }
-    .names{
-      margin:6px 0 0;
-      font-size: clamp(18px, 2.6vw, 28px);
-      font-weight:900;
-      color:var(--cardInk);
-    }
-    .names .amp{color:var(--cardAccent2); padding:0 8px; font-weight:900;}
-
-    .meta{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:6px;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:7px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.72);
-      border:1px solid rgba(234,220,197,.92);
-      font-weight:900;
-      font-size:12px;
-      color:var(--cardInk);
-      max-width:100%;
-    }
-    .pill span{color:var(--cardMuted); font-weight:800}
-
-    .messageBox{
-      margin-top:8px;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px dashed rgba(234,220,197,.95);
-      background: rgba(255,255,255,.62);
-      min-height:92px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+    .sub{
+      margin:10px 0 0;
+      font-size: var(--subSize, 18px);
+      color: var(--subColor, #374151);
+      font-weight: 700;
+      font-family: var(--bodyFont, system-ui);
+      word-break: break-word;
     }
     .msg{
-      margin:0;
-      font-size:14px;
-      line-height:1.35;
-      color:var(--cardInk);
-      white-space:pre-wrap;
-      word-break:break-word;
+      margin:12px 0 0;
+      font-size: var(--msgSize, 16px);
+      color: var(--msgColor, #374151);
+      line-height:1.45;
+      white-space: pre-wrap;
+      font-family: var(--bodyFont, system-ui);
+      word-break: break-word;
     }
-    .from{
-      margin-top:auto;
-      display:flex; justify-content:flex-end;
-      font-weight:900;
-      color:var(--cardAccent);
-      font-size:13px;
-      white-space:pre-wrap;
-      text-align:right;
-    }
-
-    .photo{
-      width:100%;
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid rgba(234,220,197,.95);
-      background: rgba(255,255,255,.55);
-      box-shadow: 0 12px 22px rgba(31,41,55,.10);
-      min-height: 160px;
-      display:grid;
-      place-items:center;
-      position:relative;
-    }
-    .photo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:none;
-    }
-    .photo .phHint{
-      padding:14px;
-      color:var(--cardMuted);
-      font-weight:900;
-      text-align:center;
-      line-height:1.2;
-    }
-
-    .footerBrand{
+    .footer{
+      position:absolute;
+      left: 24px;
+      bottom: 16px;
+      right: 24px;
       display:flex;
-      align-items:center;
       justify-content:space-between;
       gap:10px;
-      flex-wrap:wrap;
-      margin-top:2px;
-      padding:10px 12px;
-      border-radius:16px;
-      background: rgba(255,255,255,.62);
-      border:1px solid rgba(234,220,197,.95);
+      align-items:flex-end;
       font-size:12px;
-      color:var(--cardMuted);
-      font-weight:800;
+      color: rgba(55,65,81,.8);
+      font-weight:650;
+      font-family: var(--bodyFont, system-ui);
     }
-    .footerBrand b{color:var(--cardInk)}
-
-    .watermark{
-      position:absolute;
-      left:18px;
-      bottom:14px;
-      font-size:12px;
-      font-weight:900;
-      color: rgba(31,41,55,.38);
-      z-index:2;
-      display:none;
-    }
-    .card[data-watermark="1"] .watermark{display:block}
-
-    /* ---------- LAYOUT TEMPLATES (visible + working) ---------- */
-
-    /* 1) Classic Split (default): left text, right photo */
-    .card[data-layout="classic"] .cardGrid{
-      grid-template-columns: 1.2fr .8fr;
-    }
-
-    /* 2) Photo Left Split */
-    .card[data-layout="photoLeft"] .cardGrid{
-      grid-template-columns: .8fr 1.2fr;
-    }
-    .card[data-layout="photoLeft"] .left{ order:2; }
-    .card[data-layout="photoLeft"] .right{ order:1; }
-
-    /* 3) Full Photo Background */
-    .card[data-layout="fullPhoto"] .cardGrid{
-      grid-template-columns: 1fr;
-      padding:20px;
-    }
-    .card[data-layout="fullPhoto"] .right{ display:none; }
-    .card[data-layout="fullPhoto"] .left{
-      background: rgba(255,255,255,.70);
-      border: 1px solid rgba(234,220,197,.92);
-      border-radius:18px;
-      padding:14px 14px;
-      box-shadow: 0 14px 26px rgba(31,41,55,.10);
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.65);
       backdrop-filter: blur(6px);
     }
-    .card[data-layout="fullPhoto"] .cardBgPhoto{
-      display:block;
+    .dot{
+      width:9px; height:9px; border-radius:99px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 8px 18px rgba(217,119,6,.25);
+    }
+
+    /* Photo */
+    .photoBox{
+      position:relative;
+      width: 260px;
+      height: 260px;
+      border-radius: var(--photoRadius, 22px);
+      border: 2px solid rgba(255,255,255,.75);
+      box-shadow: 0 22px 55px rgba(31,41,55,.18);
+      overflow:hidden;
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(6px);
+      justify-self:end;
+    }
+    @media (max-width:700px){
+      .photoBox{justify-self:center; width: 220px; height:220px;}
+    }
+    .photoBox .ph{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(245,158,11,.18), rgba(217,119,6,.08) 45%, rgba(255,255,255,.75) 70%),
+        linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,247,230,.85));
+      display:grid; place-items:center;
+      color: rgba(55,65,81,.75);
+      font-weight: 900;
+      text-align:center;
+      padding: 18px;
+    }
+    .photoBox img{
       position:absolute;
-      inset:0;
-      z-index:1;
-      background-size:cover;
-      background-position:center;
-      filter: saturate(1.05) contrast(1.02);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      transform-origin: center;
+      user-select:none;
+      -webkit-user-drag:none;
+      max-width: none;
+      width: auto;
+      height: auto;
+      min-width: 100%;
+      min-height: 100%;
+      cursor: grab;
     }
-    .card[data-layout="fullPhoto"] .cardBgOverlay{
-      display:block;
-      position:absolute;
-      inset:0;
-      z-index:1;
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(17,24,39,.12));
+    .photoBox img:active{cursor: grabbing;}
+
+    .miniActions{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;
     }
 
-    /* 4) Text Only (no photo panel) */
-    .card[data-layout="textOnly"] .cardGrid{
-      grid-template-columns: 1fr;
+    .twoCols{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
     }
-    .card[data-layout="textOnly"] .right{ display:none; }
-
-    /* 5) Big Photo + Footer */
-    .card[data-layout="bigPhotoTop"] .cardGrid{
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr auto;
-      gap:12px;
-    }
-    .card[data-layout="bigPhotoTop"] .right{
-      order:1;
-      justify-content:flex-start;
-    }
-    .card[data-layout="bigPhotoTop"] .right .photo{
-      min-height: 240px;
-      height: 100%;
-    }
-    .card[data-layout="bigPhotoTop"] .right .footerBrand{
-      display:none;
-    }
-    .card[data-layout="bigPhotoTop"] .left{
-      order:2;
-      background: rgba(255,255,255,.62);
-      border: 1px solid rgba(234,220,197,.95);
-      border-radius:18px;
-      padding:12px 12px;
+    @media (max-width:520px){
+      .twoCols{grid-template-columns:1fr}
     }
 
-    /* Full photo background helpers (hidden by default) */
-    .cardBgPhoto, .cardBgOverlay{ display:none; }
+    .note{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      background: rgba(245,158,11,.12);
+      border:1px solid rgba(217,119,6,.18);
+      color:#6b4a1b;
+      font-size:12px;
+      line-height:1.45;
+      font-weight:650;
+    }
 
     /* Print */
     @media print{
-      body{background:#fff !important}
-      .hero, .panel, .previewHeader, .mini, .toggleRow, .btnRow, .split, .hint{display:none !important}
-      .container{max-width:none; margin:0; padding:0}
-      .grid{grid-template-columns:1fr; margin:0}
-      .cardStage{border:none; box-shadow:none; padding:0; background:#fff}
-      .card{
-        width: 185mm;
-        height: 118mm;
-        aspect-ratio:auto;
-        border-radius:12mm;
-        box-shadow:none;
-        margin: 8mm auto;
-      }
-      @page { size: A4; margin: 10mm; }
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:18px;
-      transform:translateX(-50%);
-      background: rgba(17,24,39,.92);
-      color:white;
-      padding:10px 12px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:13px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .25s ease, transform .25s ease;
-      z-index:50;
-    }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-2px);
-    }
-
-    /* Fallback if browser doesn't support color-mix() */
-    @supports not (color: color-mix(in srgb, white 50%, black)){
-      .decor .ring{border:10px solid rgba(245,158,11,.28); box-shadow: inset 0 0 0 10px rgba(217,119,6,.14);}
-      .decor .ring2{border:10px solid rgba(217,119,6,.22);}
-      .decor .petal{
-        background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.25), transparent 58%),
-                    radial-gradient(circle at 70% 70%, rgba(217,119,6,.18), transparent 55%),
-                    rgba(255,255,255,.0);
-      }
+      body{background:#fff}
+      .wrap{max-width:none; margin:0; padding:0}
+      .topbar,.panel,.previewTop,.note{display:none !important}
+      .stage{border:none; background:#fff; min-height:auto; padding:0}
+      .card{box-shadow:none; border:none}
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <header class="hero">
-      <div>
-        <h1>💍 Marriage Anniversary Card Maker</h1>
-        <p>Create a beautiful anniversary card with live preview, photo, templates, print-ready layout, and WhatsApp share — in your Light Saffron style.</p>
-      </div>
-
-      <div class="badgeRow">
-        <div class="badge">🖨️ Print Ready</div>
-        <div class="badge">📲 WhatsApp Share</div>
-        <div class="logo-badge" title="Brand">
-          <div class="logoMark">CR</div>
-          <div class="logoText">
-            <b>Champak Roy</b>
-            <span>Programmer’s Picnic</span>
-          </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">CR</div>
+        <div>
+          <h1>Birthday Card Maker</h1>
+          <p>Templates • Photo • Print • WhatsApp • <strong>Champak Roy</strong></p>
         </div>
       </div>
-    </header>
 
-    <main class="grid">
-      <!-- Controls -->
-      <section class="panel" aria-label="Card controls">
-        <h2>✍️ Customize Your Card</h2>
+      <div class="actions">
+        <button id="btnRandom">🎲 Random Template</button>
+        <button id="btnSave">💾 Save</button>
+        <button id="btnLoad">📂 Load</button>
+        <button id="btnReset" class="danger">♻ Reset</button>
+        <button id="btnDownload" class="primary">⬇ Download PNG</button>
+        <button id="btnPrint" class="primary">🖨 Print</button>
+        <button id="btnWhatsApp" class="primary">🟢 WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left controls -->
+      <div class="panel">
+        <h2>1) Card Details</h2>
 
         <div class="row">
           <div>
-            <label for="husband">Partner 1 Name</label>
-            <input id="husband" type="text" placeholder="e.g., Amit" value="Amit" />
+            <label>To (Name)</label>
+            <input id="toName" placeholder="e.g., Riya" value="Riya" />
           </div>
           <div>
-            <label for="wife">Partner 2 Name</label>
-            <input id="wife" type="text" placeholder="e.g., Neha" value="Neha" />
+            <label>From (Your name)</label>
+            <input id="fromName" placeholder="e.g., Champak" value="Champak" />
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label for="annivType">Anniversary Type</label>
-            <select id="annivType">
-              <option value="Happy Anniversary">Happy Anniversary</option>
-              <option value="1st Anniversary">1st Anniversary</option>
-              <option value="5th Anniversary">5th Anniversary</option>
-              <option value="10th Anniversary">10th Anniversary</option>
-              <option value="25th Anniversary (Silver Jubilee)">25th Anniversary (Silver Jubilee)</option>
-              <option value="50th Anniversary (Golden Jubilee)">50th Anniversary (Golden Jubilee)</option>
-            </select>
+            <label>Age (optional)</label>
+            <input id="age" type="number" min="0" placeholder="e.g., 12" value="12" />
           </div>
           <div>
-            <label for="date">Date</label>
+            <label>Date (optional)</label>
             <input id="date" type="date" />
-            <div class="hint">Tip: If you don’t want a date on the card, leave it empty.</div>
           </div>
         </div>
 
-        <div class="row">
+        <label>Message</label>
+        <textarea id="message" placeholder="Write a sweet birthday message...">Wishing you a day full of smiles, surprises, and cake! 🎂✨</textarea>
+
+        <div class="twoCols">
           <div>
-            <label for="since">Together Since</label>
-            <input id="since" type="text" placeholder="e.g., 2005" value="2005" />
+            <label>Title Style</label>
+            <select id="titleStyle">
+              <option value="classic">Classic</option>
+              <option value="fun" selected>Fun</option>
+              <option value="elegant">Elegant</option>
+              <option value="bold">Bold</option>
+            </select>
           </div>
           <div>
-            <label for="city">City / Venue (optional)</label>
-            <input id="city" type="text" placeholder="e.g., Varanasi" value="Varanasi" />
-          </div>
-        </div>
-
-        <label for="message">Message</label>
-        <textarea id="message" placeholder="Write your wishes...">Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛</textarea>
-        <div class="hint">Your message keeps line breaks exactly as you type.</div>
-
-        <div class="row">
-          <div>
-            <label for="from">From / Best Wishes By</label>
-            <input id="from" type="text" placeholder="e.g., Champak Roy" value="Champak Roy" />
-          </div>
-          <div>
-            <label for="theme">Color Theme</label>
-            <select id="theme">
-              <option value="golden">Golden Elegance</option>
-              <option value="floral">Floral Romance</option>
-              <option value="royal">Royal Traditional</option>
-              <option value="minimal">Minimal Modern</option>
-
-              <option value="sunset">Sunset Glow</option>
-              <option value="rose">Rose Blush</option>
-              <option value="emerald">Emerald Grace</option>
-              <option value="peacock">Peacock Blue</option>
-              <option value="lavender">Lavender Dream</option>
-              <option value="midnight">Midnight Luxe</option>
-              <option value="ivory">Ivory Classic</option>
-              <option value="retro">Retro Festive</option>
+            <label>Photo Shape</label>
+            <select id="photoShape">
+              <option value="rounded" selected>Rounded</option>
+              <option value="circle">Circle</option>
+              <option value="square">Square</option>
             </select>
           </div>
         </div>
 
+        <div class="twoCols">
+          <div>
+            <label>Title Size</label>
+            <input id="titleSize" type="range" min="34" max="64" value="50" />
+          </div>
+          <div>
+            <label>Message Size</label>
+            <input id="msgSize" type="range" min="12" max="22" value="16" />
+          </div>
+        </div>
+
+        <div class="note">
+          ✅ Tip: Upload a photo, then <b>drag</b> to position it. Use the slider to <b>zoom</b>.
+        </div>
+
+        <h2 style="margin-top:14px;">2) Choose a Template</h2>
+        <div id="templateChips" class="chips"></div>
+
+        <h2 style="margin-top:14px;">3) Add a Photo</h2>
         <div class="row">
           <div>
-            <label for="layout">Layout Template</label>
-            <select id="layout">
-              <option value="classic">Classic Split</option>
-              <option value="photoLeft">Photo Left Split</option>
-              <option value="fullPhoto">Full Photo Background</option>
-              <option value="textOnly">Text Only</option>
-              <option value="bigPhotoTop">Big Photo + Footer</option>
-            </select>
-            <div class="hint">Layouts change the structure of the card (not just colors).</div>
+            <label>Upload Photo</label>
+            <input id="photo" type="file" accept="image/*" />
           </div>
           <div>
-            <label for="photoInput">Couple Photo (optional)</label>
-            <input id="photoInput" type="file" accept="image/*" />
-            <div class="hint">Photo stays only in your browser (saved in localStorage if you click “Save”).</div>
+            <label>Photo Zoom</label>
+            <input id="photoZoom" type="range" min="1" max="2.8" step="0.01" value="1.2" />
           </div>
         </div>
 
-        <div class="btnRow">
-          <button class="btn primary" id="btnSave" type="button">💾 Save</button>
-          <button class="btn" id="btnLoad" type="button">📂 Load</button>
-          <button class="btn danger" id="btnReset" type="button">🧹 Reset</button>
+        <div class="miniActions">
+          <button id="btnClearPhoto">🗑 Clear Photo</button>
+          <button id="btnCenterPhoto">🎯 Center Photo</button>
         </div>
 
-        <div class="split">
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
-            <button class="btn primary" id="btnWhatsApp" type="button">📲 Share on WhatsApp</button>
-          </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn" id="btnCopyMsg" type="button">📋 Copy Message</button>
-          </div>
-        </div>
+        <p class="hint">
+          Download PNG works best on modern browsers. WhatsApp share opens WhatsApp with your message —
+          attach the downloaded image manually if you want to send the card image.
+        </p>
+      </div>
 
-        <div class="hint">
-          WhatsApp share sends a formatted text message (not an image). For image sharing, print to PDF or take a screenshot of the preview.
-        </div>
-      </section>
-
-      <!-- Preview -->
-      <section class="previewWrap" aria-label="Live preview">
-        <div class="panel previewHeader">
+      <!-- Right preview -->
+      <div class="previewWrap">
+        <div class="panel previewTop">
           <div>
-            <h2>👀 Live Preview</h2>
-            <div class="mini">Everything updates instantly. Use toggles to show/hide decorations and watermark.</div>
+            <div style="font-weight:900;color:var(--brand);">Live Preview</div>
+            <div class="meta">Card updates as you type • Print-ready • 1-click download</div>
           </div>
-          <div class="toggleRow">
-            <label class="chip" title="Show decorative rings and petals">
-              <input id="togDecor" type="checkbox" checked />
-              ✨ Decorations
-            </label>
-            <label class="chip" title="Show subtle watermark on the card">
-              <input id="togWatermark" type="checkbox" />
-              🏷️ Watermark
-            </label>
-          </div>
+          <div class="meta" id="activeTemplateMeta">Template: —</div>
         </div>
 
-        <div class="cardStage">
-          <div class="card" id="card" data-theme="golden" data-layout="classic" data-watermark="0" role="img" aria-label="Anniversary card preview">
-            <!-- Full photo layout helpers -->
-            <div class="cardBgPhoto" id="cardBgPhoto"></div>
-            <div class="cardBgOverlay" aria-hidden="true"></div>
+        <div class="stage">
+          <div id="card" class="card">
+            <div class="bg" id="cardBg"></div>
+            <div class="decor" id="decor"></div>
 
-            <div class="decor" id="decor">
-              <div class="ring"></div>
-              <div class="ring2"></div>
-              <div class="petal"></div>
+            <div class="content">
+              <div>
+                <h1 class="title" id="titleText">Happy Birthday</h1>
+                <div class="sub" id="subText">Riya — 12</div>
+                <div class="msg" id="msgText"></div>
+              </div>
+
+              <div class="photoBox" id="photoBox">
+                <div class="ph" id="photoPlaceholder">
+                  <div>
+                    <div style="font-size:28px;">📸</div>
+                    <div style="margin-top:6px;">Upload Photo</div>
+                  </div>
+                </div>
+                <img id="photoImg" alt="Uploaded photo" style="display:none;" />
+              </div>
             </div>
 
-            <div class="watermark">Made with 💛 by Champak Roy</div>
-
-            <div class="cardGrid">
-              <div class="left">
-                <div class="topLine">
-                  <div class="seal">
-                    💍 <span id="annivTypePrev">Happy Anniversary</span>
-                    <small id="typeNote">• Celebrate Love</small>
-                  </div>
-                </div>
-
-                <h3 class="title" id="title">Happy Anniversary</h3>
-                <p class="subTitle" id="subtitle">A special day to celebrate your beautiful journey together.</p>
-
-                <div class="names">
-                  <span id="husbandPrev">Amit</span>
-                  <span class="amp">&amp;</span>
-                  <span id="wifePrev">Neha</span>
-                </div>
-
-                <div class="meta">
-                  <div class="pill" id="pillSince">❤️ <b>Together Since</b> <span id="sincePrev">2005</span></div>
-                  <div class="pill" id="pillDate">📅 <b>Date</b> <span id="datePrev">—</span></div>
-                  <div class="pill" id="pillCity">📍 <b>Place</b> <span id="cityPrev">Varanasi</span></div>
-                </div>
-
-                <div class="messageBox">
-                  <p class="msg" id="messagePrev">Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛</p>
-                  <div class="from" id="fromPrev">— Champak Roy</div>
-                </div>
+            <div class="footer">
+              <div class="badge">
+                <span class="dot"></span>
+                <span id="footerLeft">Made with ❤️</span>
               </div>
+              <div class="badge" id="footerRight">— Champak Roy</div>
+            </div>
+          </div>
+        </div>
 
-              <div class="right">
-                <div class="photo" id="photoBox">
-                  <img id="photoImg" alt="Couple photo preview" />
-                  <div class="phHint" id="photoHint">📷 Add a couple photo<br><span style="font-weight:800;color:var(--cardMuted);">Optional</span></div>
-                </div>
-
-                <div class="footerBrand">
-                  <div>
-                    <b>Programmer’s Picnic</b><br />
-                    <span>Anniversary Card Maker</span>
-                  </div>
-                  <div style="text-align:right">
-                    <span>Designed by</span><br />
-                    <b>Champak Roy</b>
-                  </div>
-                </div>
-              </div>
-            </div><!-- /cardGrid -->
-          </div><!-- /card -->
-        </div><!-- /stage -->
-      </section>
-    </main>
+        <div class="panel">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+            <div style="font-weight:900;">Quick Share Text</div>
+            <div class="meta">Copy & use anywhere</div>
+          </div>
+          <textarea id="shareText" readonly></textarea>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="toast" id="toast">Saved</div>
+  <!-- html2canvas for PNG download -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <script>
-    (function(){
-      const $ = (id)=>document.getElementById(id);
+    // -----------------------------
+    // Templates
+    // -----------------------------
+    const templates = [
+      {
+        id: "balloons",
+        name: "Balloons Pop",
+        bg: "linear-gradient(135deg,#fff 0%, #fff7e6 35%, #fff 100%)",
+        titleColor: "#111827",
+        subColor: "#374151",
+        msgColor: "#374151",
+        decorOpacity: 1,
+        decor: balloonsSVG()
+      },
+      {
+        id: "confetti",
+        name: "Confetti Party",
+        bg: "linear-gradient(135deg,#ffffff 0%, #fff1d6 45%, #ffffff 100%)",
+        titleColor: "#1f2937",
+        subColor: "#374151",
+        msgColor: "#374151",
+        decorOpacity: 1,
+        decor: confettiSVG()
+      },
+      {
+        id: "minimal",
+        name: "Minimal Classy",
+        bg: "linear-gradient(135deg,#ffffff 0%, #ffffff 60%, #fff7e6 100%)",
+        titleColor: "#111827",
+        subColor: "#374151",
+        msgColor: "#374151",
+        decorOpacity: .7,
+        decor: minimalLinesSVG()
+      },
+      {
+        id: "kids",
+        name: "Kids Fun",
+        bg: "radial-gradient(900px 600px at 20% 10%, rgba(245,158,11,.20), transparent 55%), linear-gradient(135deg,#ffffff 0%, #fff7e6 45%, #ffffff 100%)",
+        titleColor: "#0f172a",
+        subColor: "#1f2937",
+        msgColor: "#1f2937",
+        decorOpacity: 1,
+        decor: kidsDoodlesSVG()
+      },
+      {
+        id: "floral",
+        name: "Floral Soft",
+        bg: "linear-gradient(135deg,#ffffff 0%, #fff7e6 40%, #ffffff 100%)",
+        titleColor: "#1f2937",
+        subColor: "#374151",
+        msgColor: "#374151",
+        decorOpacity: .95,
+        decor: floralSVG()
+      }
+    ];
 
-      const el = {
-        husband: $("husband"),
-        wife: $("wife"),
-        annivType: $("annivType"),
-        date: $("date"),
-        since: $("since"),
-        city: $("city"),
-        message: $("message"),
-        from: $("from"),
-        theme: $("theme"),
-        layout: $("layout"),
-        photoInput: $("photoInput"),
+    // -----------------------------
+    // Elements
+    // -----------------------------
+    const el = (id) => document.getElementById(id);
 
-        // toggles
-        togDecor: $("togDecor"),
-        togWatermark: $("togWatermark"),
+    const toName = el("toName");
+    const fromName = el("fromName");
+    const age = el("age");
+    const date = el("date");
+    const message = el("message");
+    const titleStyle = el("titleStyle");
+    const photoShape = el("photoShape");
+    const titleSize = el("titleSize");
+    const msgSize = el("msgSize");
 
-        // preview
-        card: $("card"),
-        decor: $("decor"),
-        cardBgPhoto: $("cardBgPhoto"),
-        annivTypePrev: $("annivTypePrev"),
-        typeNote: $("typeNote"),
-        title: $("title"),
-        subtitle: $("subtitle"),
-        husbandPrev: $("husbandPrev"),
-        wifePrev: $("wifePrev"),
-        sincePrev: $("sincePrev"),
-        datePrev: $("datePrev"),
-        cityPrev: $("cityPrev"),
-        messagePrev: $("messagePrev"),
-        fromPrev: $("fromPrev"),
-        pillSince: $("pillSince"),
-        pillDate: $("pillDate"),
-        pillCity: $("pillCity"),
+    const card = el("card");
+    const cardBg = el("cardBg");
+    const decor = el("decor");
+    const titleText = el("titleText");
+    const subText = el("subText");
+    const msgText = el("msgText");
+    const footerLeft = el("footerLeft");
+    const footerRight = el("footerRight");
+    const shareText = el("shareText");
+    const activeTemplateMeta = el("activeTemplateMeta");
 
-        photoImg: $("photoImg"),
-        photoHint: $("photoHint"),
+    const templateChips = el("templateChips");
 
-        // buttons
-        btnSave: $("btnSave"),
-        btnLoad: $("btnLoad"),
-        btnReset: $("btnReset"),
-        btnPrint: $("btnPrint"),
-        btnWhatsApp: $("btnWhatsApp"),
-        btnCopyMsg: $("btnCopyMsg"),
+    const photoInput = el("photo");
+    const photoImg = el("photoImg");
+    const photoPlaceholder = el("photoPlaceholder");
+    const photoBox = el("photoBox");
+    const photoZoom = el("photoZoom");
+    const btnClearPhoto = el("btnClearPhoto");
+    const btnCenterPhoto = el("btnCenterPhoto");
 
-        toast: $("toast")
+    // Top buttons
+    const btnRandom = el("btnRandom");
+    const btnSave = el("btnSave");
+    const btnLoad = el("btnLoad");
+    const btnReset = el("btnReset");
+    const btnDownload = el("btnDownload");
+    const btnPrint = el("btnPrint");
+    const btnWhatsApp = el("btnWhatsApp");
+
+    // -----------------------------
+    // State
+    // -----------------------------
+    let activeTemplateId = templates[1].id; // default: Confetti Party
+
+    // Photo drag state
+    let imgLoaded = false;
+    let drag = { active:false, startX:0, startY:0, imgX:0, imgY:0 };
+    let imgPos = { x: 0, y: 0, scale: parseFloat(photoZoom.value) };
+
+    // -----------------------------
+    // Helpers
+    // -----------------------------
+    function safeText(s){ return (s ?? "").toString().trim(); }
+
+    function computeSubline(){
+      const name = safeText(toName.value) || "Friend";
+      const a = safeText(age.value);
+      const d = safeText(date.value);
+      let parts = [name];
+      if (a) parts.push(a);
+      if (d) parts.push(formatDate(d));
+      return parts.join(" — ");
+    }
+
+    function formatDate(iso){
+      // iso: YYYY-MM-DD
+      try{
+        const [y,m,dd] = iso.split("-").map(Number);
+        const dt = new Date(y, m-1, dd);
+        const opts = { day:"2-digit", month:"short", year:"numeric" };
+        return dt.toLocaleDateString(undefined, opts);
+      }catch(e){
+        return iso;
+      }
+    }
+
+    function applyFonts(){
+      const style = titleStyle.value;
+      let titleFont = "system-ui";
+      let bodyFont = "system-ui";
+      if (style === "fun"){
+        titleFont = "ui-rounded, system-ui, Segoe UI, Arial";
+        bodyFont = "system-ui, Segoe UI, Arial";
+      } else if (style === "elegant"){
+        titleFont = "Georgia, 'Times New Roman', serif";
+        bodyFont = "system-ui, Segoe UI, Arial";
+      } else if (style === "bold"){
+        titleFont = "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif";
+        bodyFont = "system-ui, Segoe UI, Arial";
+      }
+      card.style.setProperty("--titleFont", titleFont);
+      card.style.setProperty("--bodyFont", bodyFont);
+    }
+
+    function applySizes(){
+      card.style.setProperty("--titleSize", `${titleSize.value}px`);
+      card.style.setProperty("--msgSize", `${msgSize.value}px`);
+    }
+
+    function applyPhotoShape(){
+      const v = photoShape.value;
+      let r = "22px";
+      if (v === "circle") r = "999px";
+      if (v === "square") r = "10px";
+      photoBox.style.setProperty("--photoRadius", r);
+    }
+
+    function renderChips(){
+      templateChips.innerHTML = "";
+      templates.forEach(t=>{
+        const b = document.createElement("button");
+        b.className = "chip" + (t.id===activeTemplateId ? " active" : "");
+        b.type = "button";
+        b.textContent = t.name;
+        b.addEventListener("click", ()=> setTemplate(t.id));
+        templateChips.appendChild(b);
+      });
+    }
+
+    function setTemplate(id){
+      const t = templates.find(x=>x.id===id) || templates[0];
+      activeTemplateId = t.id;
+
+      card.style.setProperty("--cardBg", t.bg);
+      card.style.setProperty("--titleColor", t.titleColor);
+      card.style.setProperty("--subColor", t.subColor);
+      card.style.setProperty("--msgColor", t.msgColor);
+      card.style.setProperty("--decorOpacity", t.decorOpacity);
+
+      decor.innerHTML = t.decor;
+      activeTemplateMeta.textContent = `Template: ${t.name}`;
+      renderChips();
+      update();
+    }
+
+    function update(){
+      // Text
+      const who = safeText(toName.value) || "Friend";
+      const from = safeText(fromName.value) || "Someone";
+      const msg = safeText(message.value) || "Have a wonderful day! 🎉";
+      titleText.textContent = "Happy Birthday";
+      subText.textContent = computeSubline();
+      msgText.textContent = msg;
+
+      footerLeft.textContent = `To: ${who}`;
+      footerRight.textContent = `— From ${from} • Champak Roy`;
+
+      applyFonts();
+      applySizes();
+      applyPhotoShape();
+
+      // Share text
+      const a = safeText(age.value);
+      const d = safeText(date.value);
+      const niceDate = d ? `\nDate: ${formatDate(d)}` : "";
+      const niceAge = a ? `\nAge: ${a}` : "";
+      shareText.value =
+`🎉 Happy Birthday, ${who}! 🎂${niceAge}${niceDate}
+
+${msg}
+
+— ${from}
+
+(Generated using Birthday Card Maker by Champak Roy)`;
+    }
+
+    function resetAll(){
+      toName.value = "Riya";
+      fromName.value = "Champak";
+      age.value = "12";
+      date.value = "";
+      message.value = "Wishing you a day full of smiles, surprises, and cake! 🎂✨";
+      titleStyle.value = "fun";
+      photoShape.value = "rounded";
+      titleSize.value = 50;
+      msgSize.value = 16;
+
+      clearPhoto();
+      setTemplate("confetti");
+      update();
+    }
+
+    // -----------------------------
+    // Photo handling (upload + drag + zoom)
+    // -----------------------------
+    function clearPhoto(){
+      imgLoaded = false;
+      photoImg.style.display = "none";
+      photoPlaceholder.style.display = "grid";
+      photoImg.src = "";
+      photoInput.value = "";
+      imgPos = { x: 0, y: 0, scale: parseFloat(photoZoom.value) };
+      applyImageTransform();
+    }
+
+    function centerPhoto(){
+      imgPos.x = 0;
+      imgPos.y = 0;
+      applyImageTransform();
+    }
+
+    function applyImageTransform(){
+      if(!imgLoaded) return;
+      const s = imgPos.scale;
+      photoImg.style.transform = `translate(calc(-50% + ${imgPos.x}px), calc(-50% + ${imgPos.y}px)) scale(${s})`;
+    }
+
+    photoInput.addEventListener("change", (e)=>{
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      const url = URL.createObjectURL(file);
+      photoImg.onload = () => {
+        imgLoaded = true;
+        photoPlaceholder.style.display = "none";
+        photoImg.style.display = "block";
+        // Start a bit zoomed-in for nicer framing
+        imgPos.scale = parseFloat(photoZoom.value);
+        imgPos.x = 0; imgPos.y = 0;
+        applyImageTransform();
       };
+      photoImg.src = url;
+    });
 
-      const LS_KEY = "anniversary_card_maker_v2";
+    photoZoom.addEventListener("input", ()=>{
+      imgPos.scale = parseFloat(photoZoom.value);
+      applyImageTransform();
+    });
 
-      function showToast(msg){
-        el.toast.textContent = msg;
-        el.toast.classList.add("show");
-        clearTimeout(showToast._t);
-        showToast._t = setTimeout(()=>el.toast.classList.remove("show"), 1200);
+    // Dragging
+    function getPoint(evt){
+      if (evt.touches && evt.touches[0]) return {x: evt.touches[0].clientX, y: evt.touches[0].clientY};
+      return {x: evt.clientX, y: evt.clientY};
+    }
+
+    function onDown(evt){
+      if(!imgLoaded) return;
+      evt.preventDefault();
+      drag.active = true;
+      const p = getPoint(evt);
+      drag.startX = p.x;
+      drag.startY = p.y;
+      drag.imgX = imgPos.x;
+      drag.imgY = imgPos.y;
+    }
+    function onMove(evt){
+      if(!drag.active || !imgLoaded) return;
+      const p = getPoint(evt);
+      const dx = p.x - drag.startX;
+      const dy = p.y - drag.startY;
+      imgPos.x = drag.imgX + dx;
+      imgPos.y = drag.imgY + dy;
+      applyImageTransform();
+    }
+    function onUp(){
+      drag.active = false;
+    }
+
+    photoBox.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+
+    photoBox.addEventListener("touchstart", onDown, {passive:false});
+    window.addEventListener("touchmove", onMove, {passive:false});
+    window.addEventListener("touchend", onUp);
+
+    btnClearPhoto.addEventListener("click", clearPhoto);
+    btnCenterPhoto.addEventListener("click", centerPhoto);
+
+    // -----------------------------
+    // Save / Load
+    // -----------------------------
+    const STORAGE_KEY = "birthday_card_maker_v1_champak_roy";
+
+    function getState(){
+      // Note: we do not store the actual photo file; only layout settings.
+      return {
+        toName: toName.value,
+        fromName: fromName.value,
+        age: age.value,
+        date: date.value,
+        message: message.value,
+        titleStyle: titleStyle.value,
+        photoShape: photoShape.value,
+        titleSize: titleSize.value,
+        msgSize: msgSize.value,
+        templateId: activeTemplateId,
+        photoZoom: photoZoom.value,
+        photoPos: imgPos
+      };
+    }
+
+    function setState(s){
+      if(!s) return;
+      toName.value = s.toName ?? "";
+      fromName.value = s.fromName ?? "";
+      age.value = s.age ?? "";
+      date.value = s.date ?? "";
+      message.value = s.message ?? "";
+      titleStyle.value = s.titleStyle ?? "fun";
+      photoShape.value = s.photoShape ?? "rounded";
+      titleSize.value = s.titleSize ?? 50;
+      msgSize.value = s.msgSize ?? 16;
+
+      photoZoom.value = s.photoZoom ?? 1.2;
+      imgPos = s.photoPos ?? {x:0,y:0,scale: parseFloat(photoZoom.value)};
+
+      setTemplate(s.templateId ?? "confetti");
+      update();
+      applyImageTransform();
+    }
+
+    btnSave.addEventListener("click", ()=>{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
+      toast("Saved ✅");
+    });
+
+    btnLoad.addEventListener("click", ()=>{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){ toast("No saved design found."); return; }
+      try{
+        const s = JSON.parse(raw);
+        setState(s);
+        toast("Loaded ✅");
+      }catch(e){
+        toast("Saved data is corrupted.");
       }
+    });
 
-      function formatDateNice(iso){
-        if(!iso) return "";
-        const parts = iso.split("-");
-        if(parts.length !== 3) return iso;
-        const y = Number(parts[0]);
-        const m = Number(parts[1]);
-        const d = Number(parts[2]);
-        if(!y || !m || !d) return iso;
-        const dt = new Date(y, m-1, d);
-        return dt.toLocaleDateString(undefined, { day:"2-digit", month:"short", year:"numeric" });
-      }
-
-      function computeTypeNote(type){
-        const t = (type || "").toLowerCase();
-        if(t.includes("silver")) return "• Silver Jubilee";
-        if(t.includes("golden")) return "• Golden Jubilee";
-        if(t.includes("1st")) return "• First Anniversary";
-        if(t.includes("5th")) return "• Five Years";
-        if(t.includes("10th")) return "• A Decade Together";
-        if(t.includes("25th")) return "• Silver Jubilee";
-        if(t.includes("50th")) return "• Golden Jubilee";
-        return "• Celebrate Love";
-      }
-
-      function computeSubtitle(type){
-        const t = (type || "").toLowerCase();
-        if(t.includes("silver")) return "Celebrating 25 years of love, blessings, and togetherness.";
-        if(t.includes("golden")) return "Celebrating 50 golden years of a beautiful bond.";
-        if(t.includes("1st")) return "One year down, forever to go. Keep shining together.";
-        if(t.includes("5th")) return "Five years of memories — and many more to come.";
-        if(t.includes("10th")) return "A decade of love — cheers to your next chapter.";
-        return "A special day to celebrate your beautiful journey together.";
-      }
-
-      function safeText(v, fallback){
-        const s = (v ?? "").toString().trim();
-        return s ? s : (fallback ?? "");
-      }
-
-      function setFullPhotoBackground(){
-        const url = el.photoImg.dataset.url || "";
-        if(url){
-          el.cardBgPhoto.style.backgroundImage = "url('" + url.replaceAll("'", "%27") + "')";
-        }else{
-          el.cardBgPhoto.style.backgroundImage = "none";
-        }
-      }
-
-      function updatePreview(){
-        const husband = safeText(el.husband.value, "Partner 1");
-        const wife = safeText(el.wife.value, "Partner 2");
-        const type = safeText(el.annivType.value, "Happy Anniversary");
-        const dateIso = el.date.value;
-        const since = safeText(el.since.value, "");
-        const city = safeText(el.city.value, "");
-        const msg = safeText(el.message.value, "Wishing you both a lifetime of love and togetherness.");
-        const from = safeText(el.from.value, "");
-
-        el.husbandPrev.textContent = husband;
-        el.wifePrev.textContent = wife;
-
-        el.annivTypePrev.textContent = type;
-        el.typeNote.textContent = computeTypeNote(type);
-        el.title.textContent = type;
-        el.subtitle.textContent = computeSubtitle(type);
-
-        // Since
-        if(since){
-          el.sincePrev.textContent = since;
-          el.pillSince.style.display = "inline-flex";
-        }else{
-          el.pillSince.style.display = "none";
-        }
-
-        // Date
-        if(dateIso){
-          el.datePrev.textContent = formatDateNice(dateIso);
-          el.pillDate.style.display = "inline-flex";
-        }else{
-          el.pillDate.style.display = "none";
-        }
-
-        // City
-        if(city){
-          el.cityPrev.textContent = city;
-          el.pillCity.style.display = "inline-flex";
-        }else{
-          el.pillCity.style.display = "none";
-        }
-
-        el.messagePrev.textContent = msg;
-        el.fromPrev.textContent = from ? ("— " + from) : "";
-
-        // Theme + Layout
-        el.card.setAttribute("data-theme", el.theme.value);
-        el.card.setAttribute("data-layout", el.layout.value);
-
-        // Decor toggle
-        el.decor.style.display = el.togDecor.checked ? "block" : "none";
-
-        // Watermark toggle
-        el.card.setAttribute("data-watermark", el.togWatermark.checked ? "1" : "0");
-
-        // Full photo layout background
-        setFullPhotoBackground();
-      }
-
-      function getState(){
-        return {
-          husband: el.husband.value,
-          wife: el.wife.value,
-          annivType: el.annivType.value,
-          date: el.date.value,
-          since: el.since.value,
-          city: el.city.value,
-          message: el.message.value,
-          from: el.from.value,
-          theme: el.theme.value,
-          layout: el.layout.value,
-          toggles: {
-            decor: !!el.togDecor.checked,
-            watermark: !!el.togWatermark.checked
-          },
-          photoDataUrl: el.photoImg.dataset.url || ""
-        };
-      }
-
-      function setState(s){
-        if(!s || typeof s !== "object") return;
-        el.husband.value = s.husband ?? "";
-        el.wife.value = s.wife ?? "";
-        el.annivType.value = s.annivType ?? "Happy Anniversary";
-        el.date.value = s.date ?? "";
-        el.since.value = s.since ?? "";
-        el.city.value = s.city ?? "";
-        el.message.value = s.message ?? "";
-        el.from.value = s.from ?? "";
-        el.theme.value = s.theme ?? "golden";
-        el.layout.value = s.layout ?? "classic";
-
-        const decor = s.toggles?.decor ?? true;
-        const watermark = s.toggles?.watermark ?? false;
-        el.togDecor.checked = !!decor;
-        el.togWatermark.checked = !!watermark;
-
-        const url = s.photoDataUrl ?? "";
-        if(url){
-          el.photoImg.src = url;
-          el.photoImg.style.display = "block";
-          el.photoHint.style.display = "none";
-          el.photoImg.dataset.url = url;
-        }else{
-          el.photoImg.removeAttribute("src");
-          el.photoImg.style.display = "none";
-          el.photoHint.style.display = "block";
-          el.photoImg.dataset.url = "";
-        }
-        updatePreview();
-      }
-
-      function resetAll(){
-        el.husband.value = "Amit";
-        el.wife.value = "Neha";
-        el.annivType.value = "Happy Anniversary";
-        el.date.value = "";
-        el.since.value = "2005";
-        el.city.value = "Varanasi";
-        el.message.value = "Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛";
-        el.from.value = "Champak Roy";
-        el.theme.value = "golden";
-        el.layout.value = "classic";
-        el.togDecor.checked = true;
-        el.togWatermark.checked = false;
-
-        el.photoInput.value = "";
-        el.photoImg.dataset.url = "";
-        el.photoImg.removeAttribute("src");
-        el.photoImg.style.display = "none";
-        el.photoHint.style.display = "block";
-
-        updatePreview();
-      }
-
-      function save(){
-        try{
-          localStorage.setItem(LS_KEY, JSON.stringify(getState()));
-          showToast("Saved ✅");
-        }catch(e){
-          console.error(e);
-          showToast("Save failed (photo too large?)");
-        }
-      }
-
-      function load(){
-        try{
-          const raw = localStorage.getItem(LS_KEY);
-          if(!raw){
-            showToast("No saved card");
-            return;
-          }
-          setState(JSON.parse(raw));
-          showToast("Loaded ✅");
-        }catch(e){
-          console.error(e);
-          showToast("Load failed");
-        }
-      }
-
-      function clearSaved(){
-        try{
-          localStorage.removeItem(LS_KEY);
-          showToast("Cleared ✅");
-        }catch(e){
-          console.error(e);
-          showToast("Clear failed");
-        }
-      }
-
-      function handlePhoto(file){
-        if(!file) return;
-        if(!file.type || !file.type.startsWith("image/")){
-          showToast("Please choose an image");
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-          const url = String(reader.result || "");
-          el.photoImg.src = url;
-          el.photoImg.style.display = "block";
-          el.photoHint.style.display = "none";
-          el.photoImg.dataset.url = url;
-          setFullPhotoBackground();
-          showToast("Photo added ✅");
-        };
-        reader.onerror = () => showToast("Photo load failed");
-        reader.readAsDataURL(file);
-      }
-
-      function buildWhatsAppText(){
-        const husband = safeText(el.husband.value, "Partner 1");
-        const wife = safeText(el.wife.value, "Partner 2");
-        const type = safeText(el.annivType.value, "Happy Anniversary");
-        const dateNice = el.date.value ? formatDateNice(el.date.value) : "";
-        const since = safeText(el.since.value, "");
-        const city = safeText(el.city.value, "");
-        const msg = safeText(el.message.value, "");
-        const from = safeText(el.from.value, "");
-
-        const lines = [];
-        lines.push("💍 " + type);
-        lines.push("✨ " + husband + " & " + wife);
-        if(since) lines.push("❤️ Together Since: " + since);
-        if(dateNice) lines.push("📅 Date: " + dateNice);
-        if(city) lines.push("📍 Place: " + city);
-        if(msg) { lines.push(""); lines.push(msg); }
-        if(from) { lines.push(""); lines.push("— " + from); }
-        return lines.join("\n");
-      }
-
-      function shareWhatsApp(){
-        const text = buildWhatsAppText();
-        const url = "https://wa.me/?text=" + encodeURIComponent(text);
-        window.open(url, "_blank", "noopener,noreferrer");
-      }
-
-      async function copyMessage(){
-        const text = buildWhatsAppText();
-        try{
-          await navigator.clipboard.writeText(text);
-          showToast("Copied ✅");
-        }catch(e){
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          ta.style.position = "fixed";
-          ta.style.left = "-9999px";
-          document.body.appendChild(ta);
-          ta.select();
-          try{
-            document.execCommand("copy");
-            showToast("Copied ✅");
-          }catch(err){
-            showToast("Copy failed");
-          }
-          document.body.removeChild(ta);
-        }
-      }
-
-      // Wire events
-      const liveInputs = [
-        el.husband, el.wife, el.annivType, el.date, el.since, el.city,
-        el.message, el.from, el.theme, el.layout, el.togDecor, el.togWatermark
-      ];
-      liveInputs.forEach(n => n.addEventListener("input", updatePreview));
-      liveInputs.forEach(n => n.addEventListener("change", updatePreview));
-
-      el.photoInput.addEventListener("change", (e)=>{
-        const f = e.target.files && e.target.files[0];
-        handlePhoto(f);
-      });
-
-      el.btnSave.addEventListener("click", save);
-      el.btnLoad.addEventListener("click", load);
-      el.btnReset.addEventListener("click", ()=>{
+    btnReset.addEventListener("click", ()=>{
+      if(confirm("Reset everything?")){
+        localStorage.removeItem(STORAGE_KEY);
         resetAll();
-        clearSaved();
-      });
-      el.btnPrint.addEventListener("click", ()=>window.print());
-      el.btnWhatsApp.addEventListener("click", shareWhatsApp);
-      el.btnCopyMsg.addEventListener("click", copyMessage);
+        toast("Reset ✅");
+      }
+    });
 
-      updatePreview();
-    })();
+    // -----------------------------
+    // Random template
+    // -----------------------------
+    btnRandom.addEventListener("click", ()=>{
+      const i = Math.floor(Math.random() * templates.length);
+      setTemplate(templates[i].id);
+      toast("Random template applied 🎲");
+    });
+
+    // -----------------------------
+    // Download PNG
+    // -----------------------------
+    btnDownload.addEventListener("click", async ()=>{
+      // Make it crisp
+      const scale = 2;
+      const canvas = await html2canvas(card, {
+        backgroundColor: null,
+        scale,
+        useCORS: true
+      });
+      const a = document.createElement("a");
+      const who = safeText(toName.value) || "birthday-card";
+      a.download = `birthday-card-${who.replace(/\s+/g,"-").toLowerCase()}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+      toast("Downloaded PNG ✅");
+    });
+
+    // -----------------------------
+    // Print
+    // -----------------------------
+    btnPrint.addEventListener("click", ()=>{
+      // Print only the card by opening a print window
+      const t = templates.find(x=>x.id===activeTemplateId) || templates[0];
+      const printWin = window.open("", "_blank");
+      const photoHTML = imgLoaded
+        ? `<img src="${photoImg.src}" style="position:absolute;left:50%;top:50%;transform:${photoImg.style.transform};max-width:none;min-width:100%;min-height:100%;user-select:none;-webkit-user-drag:none;" />`
+        : `<div style="position:absolute;inset:0;display:grid;place-items:center;color:rgba(55,65,81,.75);font-weight:900;background:rgba(255,255,255,.55);">
+            <div style="text-align:center">
+              <div style="font-size:28px">📸</div>
+              <div style="margin-top:6px">No Photo</div>
+            </div>
+          </div>`;
+
+      const photoRadius = getComputedStyle(photoBox).getPropertyValue("--photoRadius") || "22px";
+
+      printWin.document.write(`
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Print Birthday Card</title>
+  <style>
+    @page { size: A4; margin: 10mm; }
+    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#fff; }
+    .sheet{ display:grid; place-items:center; min-height: 100vh; padding: 10mm; }
+    .card{
+      width: 180mm; height: 120mm;
+      border-radius: 26px;
+      overflow:hidden;
+      position:relative;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .bg{ position:absolute; inset:0; background: ${t.bg}; }
+    .decor{ position:absolute; inset:0; opacity:${t.decorOpacity}; }
+    .content{
+      position:absolute; inset:0;
+      padding: 18mm 18mm;
+      display:grid;
+      grid-template-columns: 1fr 70mm;
+      gap: 10mm;
+      align-items:center;
+    }
+    .title{
+      font-size: ${titleSize.value}px;
+      margin:0;
+      line-height:1.05;
+      font-weight:900;
+      color: ${t.titleColor};
+      font-family: ${getComputedStyle(card).getPropertyValue("--titleFont") || "system-ui"};
+    }
+    .sub{
+      margin:6mm 0 0;
+      font-size: 18px;
+      font-weight:800;
+      color: ${t.subColor};
+    }
+    .msg{
+      margin:6mm 0 0;
+      font-size: ${msgSize.value}px;
+      line-height:1.45;
+      color: ${t.msgColor};
+      white-space: pre-wrap;
+    }
+    .photoBox{
+      width: 70mm; height: 70mm;
+      border-radius: ${photoRadius};
+      border: 2px solid rgba(255,255,255,.8);
+      overflow:hidden;
+      position:relative;
+      background: rgba(255,255,255,.55);
+    }
+    .footer{
+      position:absolute;
+      left: 12mm; right: 12mm; bottom: 8mm;
+      display:flex; justify-content:space-between; gap:8mm;
+      font-size: 12px;
+      color: rgba(55,65,81,.85);
+      font-weight:700;
+    }
+    .badge{ padding:6px 10px; border-radius:999px; border:1px solid rgba(0,0,0,.10); background: rgba(255,255,255,.7); }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="card">
+      <div class="bg"></div>
+      <div class="decor">${t.decor}</div>
+      <div class="content">
+        <div>
+          <h1 class="title">Happy Birthday</h1>
+          <div class="sub">${escapeHTML(computeSubline())}</div>
+          <div class="msg">${escapeHTML(safeText(message.value) || "")}</div>
+        </div>
+        <div class="photoBox">
+          ${photoHTML}
+        </div>
+      </div>
+      <div class="footer">
+        <div class="badge">To: ${escapeHTML(safeText(toName.value) || "Friend")}</div>
+        <div class="badge">From ${escapeHTML(safeText(fromName.value) || "Someone")} • Champak Roy</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.onload = () => setTimeout(()=>window.print(), 200);
+  </script>
+</body>
+</html>`);
+      printWin.document.close();
+    });
+
+    // -----------------------------
+    // WhatsApp Share
+    // -----------------------------
+    btnWhatsApp.addEventListener("click", ()=>{
+      const text = shareText.value || "";
+      const url = "https://wa.me/?text=" + encodeURIComponent(text);
+      window.open(url, "_blank");
+    });
+
+    // -----------------------------
+    // Input listeners
+    // -----------------------------
+    [toName, fromName, age, date, message, titleStyle, photoShape, titleSize, msgSize].forEach(x=>{
+      x.addEventListener("input", update);
+      x.addEventListener("change", update);
+    });
+
+    // -----------------------------
+    // Toast
+    // -----------------------------
+    let toastTimer = null;
+    function toast(msg){
+      let t = document.getElementById("toast");
+      if(!t){
+        t = document.createElement("div");
+        t.id = "toast";
+        t.style.position = "fixed";
+        t.style.left = "50%";
+        t.style.bottom = "18px";
+        t.style.transform = "translateX(-50%)";
+        t.style.background = "rgba(17,24,39,.92)";
+        t.style.color = "#fff";
+        t.style.padding = "10px 12px";
+        t.style.borderRadius = "14px";
+        t.style.fontWeight = "800";
+        t.style.fontSize = "13px";
+        t.style.boxShadow = "0 18px 40px rgba(0,0,0,.25)";
+        t.style.zIndex = "9999";
+        t.style.maxWidth = "92vw";
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = "1";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ t.style.opacity = "0"; }, 1300);
+    }
+
+    // -----------------------------
+    // SVG Decor Generators
+    // -----------------------------
+    function balloonsSVG(){
+      return `
+<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="g1" cx="30%" cy="20%">
+      <stop offset="0" stop-color="rgba(245,158,11,.85)"/>
+      <stop offset="1" stop-color="rgba(217,119,6,.9)"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="30%" cy="20%">
+      <stop offset="0" stop-color="rgba(255,255,255,.95)"/>
+      <stop offset="1" stop-color="rgba(245,158,11,.65)"/>
+    </radialGradient>
+  </defs>
+
+  <g opacity="0.95">
+    <circle cx="80" cy="90" r="46" fill="url(#g1)"/>
+    <circle cx="150" cy="70" r="34" fill="url(#g2)"/>
+    <circle cx="690" cy="110" r="48" fill="url(#g2)"/>
+    <circle cx="630" cy="60" r="30" fill="url(#g1)"/>
+
+    <path d="M80 136 C78 200, 90 260, 70 330" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
+    <path d="M150 104 C145 160, 160 230, 140 300" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
+    <path d="M690 158 C675 210, 700 270, 675 340" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
+    <path d="M630 90 C620 155, 640 220, 615 290" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
+  </g>
+
+  <g opacity="0.25">
+    <circle cx="260" cy="450" r="140" fill="rgba(245,158,11,.25)"/>
+    <circle cx="560" cy="440" r="160" fill="rgba(217,119,6,.18)"/>
+  </g>
+</svg>`;
+    }
+
+    function confettiSVG(){
+      // Simple confetti rectangles + streamers
+      const pieces = [];
+      for(let i=0;i<90;i++){
+        const x = Math.random()*760;
+        const y = Math.random()*520;
+        const w = 6 + Math.random()*10;
+        const h = 3 + Math.random()*10;
+        const r = (Math.random()*70)-35;
+        const op = 0.18 + Math.random()*0.28;
+        pieces.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"
+          rx="2" fill="rgba(217,119,6,${op.toFixed(2)})" transform="rotate(${r.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`);
+      }
+      return `
+<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <path d="M-10 120 C 140 40, 260 200, 420 120 S 650 120, 770 60" stroke="rgba(245,158,11,.25)" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M-10 180 C 170 110, 330 250, 510 170 S 660 150, 770 120" stroke="rgba(217,119,6,.18)" stroke-width="10" fill="none" stroke-linecap="round"/>
+  ${pieces.join("")}
+</svg>`;
+    }
+
+    function minimalLinesSVG(){
+      return `
+<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.22" stroke="rgba(217,119,6,.55)" stroke-width="2" fill="none">
+    <path d="M40 80 H720" stroke-dasharray="6 10"/>
+    <path d="M60 120 H700" stroke-dasharray="6 10"/>
+    <path d="M40 440 H720" stroke-dasharray="6 10"/>
+    <path d="M60 400 H700" stroke-dasharray="6 10"/>
+  </g>
+  <g opacity="0.20">
+    <circle cx="90" cy="260" r="120" fill="rgba(245,158,11,.18)"/>
+    <circle cx="670" cy="260" r="140" fill="rgba(217,119,6,.12)"/>
+  </g>
+</svg>`;
+    }
+
+    function kidsDoodlesSVG(){
+      return `
+<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.9">
+    <circle cx="90" cy="80" r="26" fill="rgba(245,158,11,.45)"/>
+    <circle cx="140" cy="110" r="14" fill="rgba(217,119,6,.30)"/>
+    <circle cx="680" cy="90" r="22" fill="rgba(245,158,11,.35)"/>
+    <circle cx="620" cy="130" r="12" fill="rgba(217,119,6,.28)"/>
+  </g>
+  <g opacity="0.24" stroke="rgba(217,119,6,.85)" stroke-width="5" fill="none" stroke-linecap="round">
+    <path d="M90 430 C 160 360, 240 520, 330 440"/>
+    <path d="M430 450 C 520 380, 610 520, 720 420"/>
+  </g>
+  <g opacity="0.18">
+    <polygon points="80,250 95,280 128,284 103,304 110,336 80,320 50,336 57,304 32,284 65,280" fill="rgba(245,158,11,.55)"/>
+    <polygon points="690,260 705,290 738,294 713,314 720,346 690,330 660,346 667,314 642,294 675,290" fill="rgba(217,119,6,.45)"/>
+  </g>
+</svg>`;
+    }
+
+    function floralSVG(){
+      return `
+<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.22">
+    <circle cx="90" cy="430" r="120" fill="rgba(245,158,11,.22)"/>
+    <circle cx="680" cy="420" r="140" fill="rgba(217,119,6,.16)"/>
+  </g>
+  <g opacity="0.9">
+    ${flower(70, 420, 34)}
+    ${flower(120, 460, 24)}
+    ${flower(690, 430, 38)}
+    ${flower(640, 470, 22)}
+  </g>
+</svg>`;
+    }
+
+    function flower(cx, cy, r){
+      // petals
+      const petals = [];
+      for(let i=0;i<6;i++){
+        const a = (Math.PI*2/6)*i;
+        const px = cx + Math.cos(a)*r*0.9;
+        const py = cy + Math.sin(a)*r*0.9;
+        petals.push(`<ellipse cx="${px}" cy="${py}" rx="${r*0.55}" ry="${r*0.32}" fill="rgba(245,158,11,.35)"/>`);
+      }
+      return `
+<g>
+  ${petals.join("")}
+  <circle cx="${cx}" cy="${cy}" r="${r*0.32}" fill="rgba(217,119,6,.42)"/>
+  <circle cx="${cx}" cy="${cy}" r="${r*0.18}" fill="rgba(255,255,255,.75)"/>
+</g>`;
+    }
+
+    // -----------------------------
+    // Utilities
+    // -----------------------------
+    function escapeHTML(str){
+      return (str ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;")
+        .replaceAll("\n","<br/>");
+    }
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+    function init(){
+      // Default date empty; user can set
+      renderChips();
+      setTemplate(activeTemplateId);
+      update();
+
+      // Try auto-load a saved state (non-blocking)
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        try{ setState(JSON.parse(raw)); }catch(e){}
+      }
+    }
+    init();
   </script>
 </body>
 </html>
