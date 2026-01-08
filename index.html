@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -21,732 +20,903 @@
       --ok:#166534;
       --danger:#b91c1c;
       --soft:#fff1d6;
-      --soft2:#fffaf0;/* Card themes (overrides set via data-theme) */
-  --cardBg: linear-gradient(135deg, #fffaf2, #ffffff);
-  --cardAccent: #d97706;
-  --cardAccent2:#f59e0b;
-  --cardInk:#1f2937;
-  --cardMuted:#6b7280;
-  --cardBorder: rgba(217,119,6,.25);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background:
-    radial-gradient(900px 600px at 12% 10%, rgba(255,138,0,.18), transparent 60%),
-    radial-gradient(900px 600px at 88% 18%, rgba(245,158,11,.16), transparent 55%),
-    radial-gradient(1000px 700px at 50% 90%, rgba(217,119,6,.10), transparent 60%),
-    var(--bg);
-  color:var(--ink);
-}
-a{color:inherit}
-.container{
-  max-width:1200px;
-  margin:24px auto 42px;
-  padding:0 16px;
-}
-.hero{
-  display:flex;
-  gap:14px;
-  align-items:center;
-  justify-content:space-between;
-  background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:16px 18px;
-  box-shadow:var(--shadow);
-  backdrop-filter: blur(6px);
-}
-.hero h1{
-  margin:0;
-  font-size: clamp(20px, 3.2vw, 34px);
-  line-height:1.12;
-  color:var(--brand);
-  letter-spacing:.2px;
-}
-.hero p{
-  margin:6px 0 0;
-  color:var(--muted);
-  max-width:64ch;
-}
-.badgeRow{
-  display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
-}
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,241,214,.65));
-  font-weight:700;
-  color:var(--ink);
-  font-size:13px;
-  white-space:nowrap;
-}
-.logo-badge{
-  display:inline-flex; align-items:center; gap:10px;
-  padding:8px 12px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background: radial-gradient(120px 80px at 20% 40%, rgba(245,158,11,.22), transparent 60%),
-              radial-gradient(120px 80px at 80% 60%, rgba(217,119,6,.18), transparent 60%),
-              rgba(255,255,255,.75);
-  box-shadow: 0 10px 22px rgba(31,41,55,.10);
-}
-.logoMark{
-  width:34px; height:34px; border-radius:10px;
-  background:linear-gradient(135deg, var(--brand), var(--brand2));
-  display:grid; place-items:center;
-  color:white; font-weight:900;
-  letter-spacing:.5px;
-  box-shadow: 0 10px 20px rgba(217,119,6,.25);
-  user-select:none;
-}
-.logoText{line-height:1.05}
-.logoText b{display:block; font-size:13px}
-.logoText span{display:block; font-size:12px; color:var(--muted); font-weight:700}
+      --soft2:#fffaf0;
 
-.grid{
-  display:grid;
-  grid-template-columns: 420px 1fr;
-  gap:16px;
-  margin-top:16px;
-}
-@media (max-width: 980px){
-  .grid{grid-template-columns: 1fr; }
-  .badgeRow{justify-content:flex-start}
-}
+      /* Card theme variables (overrides set via data-theme) */
+      --cardBg: linear-gradient(135deg, #fffaf2, #ffffff);
+      --cardAccent: #d97706;
+      --cardAccent2:#f59e0b;
+      --cardInk:#1f2937;
+      --cardMuted:#6b7280;
+      --cardBorder: rgba(217,119,6,.25);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(900px 600px at 12% 10%, rgba(255,138,0,.18), transparent 60%),
+        radial-gradient(900px 600px at 88% 18%, rgba(245,158,11,.16), transparent 55%),
+        radial-gradient(1000px 700px at 50% 90%, rgba(217,119,6,.10), transparent 60%),
+        var(--bg);
+      color:var(--ink);
+    }
+    a{color:inherit}
+    .container{
+      max-width:1200px;
+      margin:24px auto 42px;
+      padding:0 16px;
+    }
+    .hero{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px 18px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .hero h1{
+      margin:0;
+      font-size: clamp(20px, 3.2vw, 34px);
+      line-height:1.12;
+      color:var(--brand);
+      letter-spacing:.2px;
+    }
+    .hero p{
+      margin:6px 0 0;
+      color:var(--muted);
+      max-width:64ch;
+    }
+    .badgeRow{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,241,214,.65));
+      font-weight:800;
+      color:var(--ink);
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .logo-badge{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: radial-gradient(120px 80px at 20% 40%, rgba(245,158,11,.22), transparent 60%),
+                  radial-gradient(120px 80px at 80% 60%, rgba(217,119,6,.18), transparent 60%),
+                  rgba(255,255,255,.75);
+      box-shadow: 0 10px 22px rgba(31,41,55,.10);
+    }
+    .logoMark{
+      width:34px; height:34px; border-radius:10px;
+      background:linear-gradient(135deg, var(--brand), var(--brand2));
+      display:grid; place-items:center;
+      color:white; font-weight:900;
+      letter-spacing:.5px;
+      box-shadow: 0 10px 20px rgba(217,119,6,.25);
+      user-select:none;
+    }
+    .logoText{line-height:1.05}
+    .logoText b{display:block; font-size:13px}
+    .logoText span{display:block; font-size:12px; color:var(--muted); font-weight:700}
 
-.panel{
-  background:rgba(255,255,255,.78);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  padding:14px;
-  backdrop-filter: blur(6px);
-}
-.panel h2{
-  margin:0 0 10px;
-  font-size:18px;
-  color:var(--brand);
-}
-.row{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:10px;
-}
-@media (max-width: 520px){
-  .row{grid-template-columns:1fr}
-}
-label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  color:var(--muted);
-  margin:10px 0 6px;
-  letter-spacing:.2px;
-}
-input, select, textarea{
-  width:100%;
-  padding:10px 11px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  color:var(--ink);
-  outline:none;
-  font-size:14px;
-}
-textarea{min-height:92px; resize:vertical}
-input:focus, select:focus, textarea:focus{
-  border-color: rgba(217,119,6,.55);
-  box-shadow: 0 0 0 4px rgba(245,158,11,.18);
-}
-.hint{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:6px;
-  line-height:1.25;
-}
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr; }
+      .badgeRow{justify-content:flex-start}
+    }
 
-.btnRow{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:14px;
-}
-.btn{
-  border:1px solid var(--border);
-  background:linear-gradient(180deg, #fff, #fff1d6);
-  color:var(--ink);
-  font-weight:900;
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  box-shadow: 0 10px 18px rgba(31,41,55,.10);
-  user-select:none;
-}
-.btn.primary{
-  border-color: rgba(217,119,6,.45);
-  background: linear-gradient(180deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
-}
-.btn.danger{
-  border-color: rgba(185,28,28,.35);
-  background: linear-gradient(180deg, rgba(185,28,28,.08), rgba(185,28,28,.14));
-}
-.btn:active{transform: translateY(1px)}
-.split{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-  justify-content:space-between;
-  padding-top:10px;
-  border-top:1px dashed rgba(234,220,197,.9);
-  margin-top:14px;
-}
+    .panel{
+      background:rgba(255,255,255,.78);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+      backdrop-filter: blur(6px);
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:18px;
+      color:var(--brand);
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .row{grid-template-columns:1fr}
+    }
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      margin:10px 0 6px;
+      letter-spacing:.2px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--ink);
+      outline:none;
+      font-size:14px;
+    }
+    textarea{min-height:92px; resize:vertical}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(217,119,6,.55);
+      box-shadow: 0 0 0 4px rgba(245,158,11,.18);
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+      line-height:1.25;
+    }
 
-/* Preview area */
-.previewWrap{
-  display:grid;
-  gap:12px;
-}
-.previewHeader{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.previewHeader h2{
-  margin:0;
-  font-size:18px;
-  color:var(--brand);
-}
-.mini{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-}
-.toggleRow{
-  display:flex; gap:10px; flex-wrap:wrap;
-}
-.chip{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background: rgba(255,255,255,.85);
-  font-weight:800;
-  font-size:12px;
-  cursor:pointer;
-  user-select:none;
-}
-.chip input{width:auto; margin:0}
-.cardStage{
-  background:rgba(255,255,255,.78);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  padding:14px;
-  display:grid;
-  place-items:center;
-}
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .btn{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #fff, #fff1d6);
+      color:var(--ink);
+      font-weight:900;
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 10px 18px rgba(31,41,55,.10);
+      user-select:none;
+    }
+    .btn.primary{
+      border-color: rgba(217,119,6,.45);
+      background: linear-gradient(180deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
+    }
+    .btn.danger{
+      border-color: rgba(185,28,28,.35);
+      background: linear-gradient(180deg, rgba(185,28,28,.08), rgba(185,28,28,.14));
+    }
+    .btn:active{transform: translateY(1px)}
+    .split{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      padding-top:10px;
+      border-top:1px dashed rgba(234,220,197,.9);
+      margin-top:14px;
+    }
 
-/* Card itself */
-.card{
-  width:min(780px, 100%);
-  aspect-ratio: 16/10;
-  border-radius:22px;
-  position:relative;
-  overflow:hidden;
-  background: var(--cardBg);
-  border:1.5px solid var(--cardBorder);
-  box-shadow: 0 22px 55px rgba(31,41,55,.16);
-  color: var(--cardInk);
-  isolation:isolate;
-}
-.card:before{
-  content:"";
-  position:absolute; inset:-2px;
-  background:
-    radial-gradient(380px 260px at 12% 18%, rgba(245,158,11,.22), transparent 65%),
-    radial-gradient(420px 280px at 86% 20%, rgba(217,119,6,.18), transparent 65%),
-    radial-gradient(520px 360px at 50% 92%, rgba(245,158,11,.12), transparent 60%);
-  z-index:0;
-  pointer-events:none;
-}
-.card[data-theme="golden"]{
-  --cardBg: linear-gradient(135deg, #fffaf0, #ffffff);
-  --cardAccent:#b45309;
-  --cardAccent2:#f59e0b;
-  --cardBorder: rgba(180,83,9,.32);
-}
-.card[data-theme="floral"]{
-  --cardBg: linear-gradient(135deg, #fff7f0, #ffffff);
-  --cardAccent:#c2410c;
-  --cardAccent2:#fb7185;
-  --cardBorder: rgba(194,65,12,.28);
-}
-.card[data-theme="royal"]{
-  --cardBg: linear-gradient(135deg, #fffaf2, #ffffff);
-  --cardAccent:#7c2d12;
-  --cardAccent2:#f59e0b;
-  --cardBorder: rgba(124,45,18,.25);
-}
-.card[data-theme="minimal"]{
-  --cardBg: linear-gradient(135deg, #ffffff, #fffaf2);
-  --cardAccent:#d97706;
-  --cardAccent2:#111827;
-  --cardBorder: rgba(17,24,39,.14);
-}
+    /* Preview area */
+    .previewWrap{display:grid; gap:12px;}
+    .previewHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .previewHeader h2{
+      margin:0;
+      font-size:18px;
+      color:var(--brand);
+    }
+    .mini{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+    .toggleRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.85);
+      font-weight:800;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip input{width:auto; margin:0}
+    .cardStage{
+      background:rgba(255,255,255,.78);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+      display:grid;
+      place-items:center;
+    }
 
-.decor{
-  position:absolute; inset:0;
-  z-index:1;
-  pointer-events:none;
-  opacity:.9;
-}
-.decor .ring{
-  position:absolute;
-  right:-22px; top:-22px;
-  width:160px; height:160px;
-  border-radius:999px;
-  border:10px solid rgba(245,158,11,.28);
-  box-shadow: inset 0 0 0 10px rgba(217,119,6,.14);
-  transform: rotate(12deg);
-  filter: blur(.0px);
-}
-.decor .ring2{
-  position:absolute;
-  right:38px; top:34px;
-  width:120px; height:120px;
-  border-radius:999px;
-  border:10px solid rgba(217,119,6,.22);
-  transform: rotate(-18deg);
-}
-.decor .petal{
-  position:absolute;
-  left:-60px; bottom:-60px;
-  width:240px; height:240px;
-  border-radius: 50% 50% 50% 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.25), transparent 58%),
-              radial-gradient(circle at 70% 70%, rgba(217,119,6,.18), transparent 55%),
-              rgba(255,255,255,.0);
-  transform: rotate(-18deg);
-}
+    /* Card */
+    .card{
+      width:min(780px, 100%);
+      aspect-ratio: 16/10;
+      border-radius:22px;
+      position:relative;
+      overflow:hidden;
+      background: var(--cardBg);
+      border:1.5px solid var(--cardBorder);
+      box-shadow: 0 22px 55px rgba(31,41,55,.16);
+      color: var(--cardInk);
+      isolation:isolate;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(380px 260px at 12% 18%, rgba(245,158,11,.22), transparent 65%),
+        radial-gradient(420px 280px at 86% 20%, rgba(217,119,6,.18), transparent 65%),
+        radial-gradient(520px 360px at 50% 92%, rgba(245,158,11,.12), transparent 60%);
+      z-index:0;
+      pointer-events:none;
+    }
 
-.cardGrid{
-  position:relative;
-  z-index:2;
-  display:grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap:12px;
-  height:100%;
-  padding:22px;
-}
-@media (max-width: 680px){
-  .card{aspect-ratio: 4/5;}
-  .cardGrid{grid-template-columns:1fr; }
-}
+    /* Themes (original 4) */
+    .card[data-theme="golden"]{
+      --cardBg: linear-gradient(135deg, #fffaf0, #ffffff);
+      --cardAccent:#b45309;
+      --cardAccent2:#f59e0b;
+      --cardBorder: rgba(180,83,9,.32);
+    }
+    .card[data-theme="floral"]{
+      --cardBg: linear-gradient(135deg, #fff7f0, #ffffff);
+      --cardAccent:#c2410c;
+      --cardAccent2:#fb7185;
+      --cardBorder: rgba(194,65,12,.28);
+    }
+    .card[data-theme="royal"]{
+      --cardBg: linear-gradient(135deg, #fffaf2, #ffffff);
+      --cardAccent:#7c2d12;
+      --cardAccent2:#f59e0b;
+      --cardBorder: rgba(124,45,18,.25);
+    }
+    .card[data-theme="minimal"]{
+      --cardBg: linear-gradient(135deg, #ffffff, #fffaf2);
+      --cardAccent:#d97706;
+      --cardAccent2:#111827;
+      --cardBorder: rgba(17,24,39,.14);
+    }
 
-.left{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  min-width:0;
-}
-.right{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  align-items:stretch;
-  justify-content:space-between;
-  min-width:0;
-}
+    /* More themes */
+    .card[data-theme="sunset"]{
+      --cardBg: linear-gradient(135deg, #fff1e6, #ffffff);
+      --cardAccent:#c2410c;
+      --cardAccent2:#f59e0b;
+      --cardBorder: rgba(194,65,12,.26);
+    }
+    .card[data-theme="rose"]{
+      --cardBg: linear-gradient(135deg, #fff1f2, #ffffff);
+      --cardAccent:#be123c;
+      --cardAccent2:#fb7185;
+      --cardBorder: rgba(190,18,60,.22);
+    }
+    .card[data-theme="emerald"]{
+      --cardBg: linear-gradient(135deg, #ecfdf5, #ffffff);
+      --cardAccent:#047857;
+      --cardAccent2:#10b981;
+      --cardBorder: rgba(4,120,87,.22);
+    }
+    .card[data-theme="peacock"]{
+      --cardBg: linear-gradient(135deg, #eef2ff, #ffffff);
+      --cardAccent:#1d4ed8;
+      --cardAccent2:#06b6d4;
+      --cardBorder: rgba(29,78,216,.20);
+    }
+    .card[data-theme="lavender"]{
+      --cardBg: linear-gradient(135deg, #f5f3ff, #ffffff);
+      --cardAccent:#6d28d9;
+      --cardAccent2:#a78bfa;
+      --cardBorder: rgba(109,40,217,.20);
+    }
+    .card[data-theme="midnight"]{
+      --cardBg: linear-gradient(135deg, #111827, #1f2937);
+      --cardAccent:#f59e0b;
+      --cardAccent2:#fb7185;
+      --cardInk:#f9fafb;
+      --cardMuted: rgba(249,250,251,.75);
+      --cardBorder: rgba(245,158,11,.25);
+    }
+    .card[data-theme="ivory"]{
+      --cardBg: linear-gradient(135deg, #fffffb, #fff7ed);
+      --cardAccent:#7c2d12;
+      --cardAccent2:#d97706;
+      --cardBorder: rgba(124,45,18,.18);
+    }
+    .card[data-theme="retro"]{
+      --cardBg: linear-gradient(135deg, #fff7ed, #fef3c7);
+      --cardAccent:#92400e;
+      --cardAccent2:#0f766e;
+      --cardBorder: rgba(146,64,14,.22);
+    }
 
-.topLine{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-}
-.seal{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  padding:8px 12px;
-  border-radius:999px;
-  background: rgba(255,255,255,.72);
-  border:1px solid rgba(234,220,197,.9);
-  font-weight:900;
-  color: var(--cardAccent);
-  box-shadow: 0 10px 18px rgba(31,41,55,.10);
-  max-width:100%;
-}
-.seal small{color:var(--cardMuted); font-weight:800}
-.title{
-  margin:4px 0 0;
-  font-size: clamp(22px, 3.6vw, 40px);
-  line-height:1.05;
-  color:var(--cardAccent);
-  letter-spacing:.2px;
-  font-weight:1000;
-}
-.subTitle{
-  margin:0;
-  color:var(--cardMuted);
-  font-weight:800;
-  line-height:1.25;
-}
-.names{
-  margin:6px 0 0;
-  font-size: clamp(18px, 2.6vw, 28px);
-  font-weight:1000;
-  color:var(--cardInk);
-}
-.names .amp{
-  color:var(--cardAccent2);
-  padding:0 8px;
-  font-weight:1100;
-}
-.meta{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:6px;
-}
-.pill{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:7px 10px;
-  border-radius:999px;
-  background: rgba(255,255,255,.72);
-  border:1px solid rgba(234,220,197,.92);
-  font-weight:900;
-  font-size:12px;
-  color:var(--cardInk);
-  max-width:100%;
-}
-.pill span{color:var(--cardMuted); font-weight:800}
+    .decor{
+      position:absolute; inset:0;
+      z-index:1;
+      pointer-events:none;
+      opacity:.9;
+    }
 
-.messageBox{
-  margin-top:8px;
-  padding:12px 12px;
-  border-radius:16px;
-  border:1px dashed rgba(234,220,197,.95);
-  background: rgba(255,255,255,.62);
-  min-height:92px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-.msg{
-  margin:0;
-  font-size:14px;
-  line-height:1.35;
-  color:var(--cardInk);
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-.from{
-  margin-top:auto;
-  display:flex; justify-content:flex-end;
-  font-weight:1000;
-  color:var(--cardAccent);
-  font-size:13px;
-  white-space:pre-wrap;
-  text-align:right;
-}
+    /* Theme-aware decor (color-mix modern browsers) */
+    .decor .ring{
+      position:absolute;
+      right:-22px; top:-22px;
+      width:160px; height:160px;
+      border-radius:999px;
+      border:10px solid color-mix(in srgb, var(--cardAccent2) 35%, transparent);
+      box-shadow: inset 0 0 0 10px color-mix(in srgb, var(--cardAccent) 22%, transparent);
+      transform: rotate(12deg);
+    }
+    .decor .ring2{
+      position:absolute;
+      right:38px; top:34px;
+      width:120px; height:120px;
+      border-radius:999px;
+      border:10px solid color-mix(in srgb, var(--cardAccent) 28%, transparent);
+      transform: rotate(-18deg);
+    }
+    .decor .petal{
+      position:absolute;
+      left:-60px; bottom:-60px;
+      width:240px; height:240px;
+      border-radius: 50% 50% 50% 50%;
+      background:
+        radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--cardAccent2) 25%, transparent), transparent 58%),
+        radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--cardAccent) 18%, transparent), transparent 55%),
+        rgba(255,255,255,.0);
+      transform: rotate(-18deg);
+    }
 
-.photo{
-  width:100%;
-  border-radius:18px;
-  overflow:hidden;
-  border:1px solid rgba(234,220,197,.95);
-  background: rgba(255,255,255,.55);
-  box-shadow: 0 12px 22px rgba(31,41,55,.10);
-  min-height: 160px;
-  display:grid;
-  place-items:center;
-  position:relative;
-}
-.photo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:none;
-}
-.photo .phHint{
-  padding:14px;
-  color:var(--cardMuted);
-  font-weight:900;
-  text-align:center;
-  line-height:1.2;
-}
+    /* Card inner grid (default: classic split) */
+    .cardGrid{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:12px;
+      height:100%;
+      padding:22px;
+    }
+    @media (max-width: 680px){
+      .card{aspect-ratio: 4/5;}
+      .cardGrid{grid-template-columns:1fr;}
+    }
 
-.footerBrand{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:2px;
-  padding:10px 12px;
-  border-radius:16px;
-  background: rgba(255,255,255,.62);
-  border:1px solid rgba(234,220,197,.95);
-  font-size:12px;
-  color:var(--cardMuted);
-  font-weight:800;
-}
-.footerBrand b{color:var(--cardInk)}
-.watermark{
-  position:absolute;
-  left:18px;
-  bottom:14px;
-  font-size:12px;
-  font-weight:900;
-  color: rgba(31,41,55,.38);
-  z-index:2;
-  display:none;
-}
-.card[data-watermark="1"] .watermark{display:block}
+    .left, .right{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    .right{justify-content:space-between}
 
-/* Print */
-@media print{
-  body{background:#fff !important}
-  .hero, .panel, .previewHeader, .mini, .toggleRow, .btnRow, .split, .hint{display:none !important}
-  .container{max-width:none; margin:0; padding:0}
-  .grid{grid-template-columns:1fr; margin:0}
-  .cardStage{border:none; box-shadow:none; padding:0; background:#fff}
-  .card{
-    width: 190mm; /* fits nicely on A4 with margins */
-    height: 120mm;
-    aspect-ratio:auto;
-    border-radius:12mm;
-    box-shadow:none;
-    margin: 10mm auto;
-  }
-  @page { size: A4; margin: 10mm; }
-}
+    .topLine{display:flex; align-items:center; justify-content:space-between; gap:12px;}
 
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  background: rgba(17,24,39,.92);
-  color:white;
-  padding:10px 12px;
-  border-radius:999px;
-  font-weight:800;
-  font-size:13px;
-  opacity:0;
-  pointer-events:none;
-  transition: opacity .25s ease, transform .25s ease;
-  z-index:50;
-}
-.toast.show{
-  opacity:1;
-  transform: translateX(-50%) translateY(-2px);
-}
+    .seal{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.72);
+      border:1px solid rgba(234,220,197,.9);
+      font-weight:900;
+      color: var(--cardAccent);
+      box-shadow: 0 10px 18px rgba(31,41,55,.10);
+      max-width:100%;
+    }
+    .seal small{color:var(--cardMuted); font-weight:800}
 
+    .title{
+      margin:4px 0 0;
+      font-size: clamp(22px, 3.6vw, 40px);
+      line-height:1.05;
+      color:var(--cardAccent);
+      letter-spacing:.2px;
+      font-weight:900;
+    }
+    .subTitle{
+      margin:0;
+      color:var(--cardMuted);
+      font-weight:800;
+      line-height:1.25;
+    }
+    .names{
+      margin:6px 0 0;
+      font-size: clamp(18px, 2.6vw, 28px);
+      font-weight:900;
+      color:var(--cardInk);
+    }
+    .names .amp{color:var(--cardAccent2); padding:0 8px; font-weight:900;}
+
+    .meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.72);
+      border:1px solid rgba(234,220,197,.92);
+      font-weight:900;
+      font-size:12px;
+      color:var(--cardInk);
+      max-width:100%;
+    }
+    .pill span{color:var(--cardMuted); font-weight:800}
+
+    .messageBox{
+      margin-top:8px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px dashed rgba(234,220,197,.95);
+      background: rgba(255,255,255,.62);
+      min-height:92px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .msg{
+      margin:0;
+      font-size:14px;
+      line-height:1.35;
+      color:var(--cardInk);
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    .from{
+      margin-top:auto;
+      display:flex; justify-content:flex-end;
+      font-weight:900;
+      color:var(--cardAccent);
+      font-size:13px;
+      white-space:pre-wrap;
+      text-align:right;
+    }
+
+    .photo{
+      width:100%;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(234,220,197,.95);
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 12px 22px rgba(31,41,55,.10);
+      min-height: 160px;
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+    .photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
+    .photo .phHint{
+      padding:14px;
+      color:var(--cardMuted);
+      font-weight:900;
+      text-align:center;
+      line-height:1.2;
+    }
+
+    .footerBrand{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:2px;
+      padding:10px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.62);
+      border:1px solid rgba(234,220,197,.95);
+      font-size:12px;
+      color:var(--cardMuted);
+      font-weight:800;
+    }
+    .footerBrand b{color:var(--cardInk)}
+
+    .watermark{
+      position:absolute;
+      left:18px;
+      bottom:14px;
+      font-size:12px;
+      font-weight:900;
+      color: rgba(31,41,55,.38);
+      z-index:2;
+      display:none;
+    }
+    .card[data-watermark="1"] .watermark{display:block}
+
+    /* ---------- LAYOUT TEMPLATES (visible + working) ---------- */
+
+    /* 1) Classic Split (default): left text, right photo */
+    .card[data-layout="classic"] .cardGrid{
+      grid-template-columns: 1.2fr .8fr;
+    }
+
+    /* 2) Photo Left Split */
+    .card[data-layout="photoLeft"] .cardGrid{
+      grid-template-columns: .8fr 1.2fr;
+    }
+    .card[data-layout="photoLeft"] .left{ order:2; }
+    .card[data-layout="photoLeft"] .right{ order:1; }
+
+    /* 3) Full Photo Background */
+    .card[data-layout="fullPhoto"] .cardGrid{
+      grid-template-columns: 1fr;
+      padding:20px;
+    }
+    .card[data-layout="fullPhoto"] .right{ display:none; }
+    .card[data-layout="fullPhoto"] .left{
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(234,220,197,.92);
+      border-radius:18px;
+      padding:14px 14px;
+      box-shadow: 0 14px 26px rgba(31,41,55,.10);
+      backdrop-filter: blur(6px);
+    }
+    .card[data-layout="fullPhoto"] .cardBgPhoto{
+      display:block;
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background-size:cover;
+      background-position:center;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .card[data-layout="fullPhoto"] .cardBgOverlay{
+      display:block;
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(17,24,39,.12));
+    }
+
+    /* 4) Text Only (no photo panel) */
+    .card[data-layout="textOnly"] .cardGrid{
+      grid-template-columns: 1fr;
+    }
+    .card[data-layout="textOnly"] .right{ display:none; }
+
+    /* 5) Big Photo + Footer */
+    .card[data-layout="bigPhotoTop"] .cardGrid{
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr auto;
+      gap:12px;
+    }
+    .card[data-layout="bigPhotoTop"] .right{
+      order:1;
+      justify-content:flex-start;
+    }
+    .card[data-layout="bigPhotoTop"] .right .photo{
+      min-height: 240px;
+      height: 100%;
+    }
+    .card[data-layout="bigPhotoTop"] .right .footerBrand{
+      display:none;
+    }
+    .card[data-layout="bigPhotoTop"] .left{
+      order:2;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(234,220,197,.95);
+      border-radius:18px;
+      padding:12px 12px;
+    }
+
+    /* Full photo background helpers (hidden by default) */
+    .cardBgPhoto, .cardBgOverlay{ display:none; }
+
+    /* Print */
+    @media print{
+      body{background:#fff !important}
+      .hero, .panel, .previewHeader, .mini, .toggleRow, .btnRow, .split, .hint{display:none !important}
+      .container{max-width:none; margin:0; padding:0}
+      .grid{grid-template-columns:1fr; margin:0}
+      .cardStage{border:none; box-shadow:none; padding:0; background:#fff}
+      .card{
+        width: 185mm;
+        height: 118mm;
+        aspect-ratio:auto;
+        border-radius:12mm;
+        box-shadow:none;
+        margin: 8mm auto;
+      }
+      @page { size: A4; margin: 10mm; }
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background: rgba(17,24,39,.92);
+      color:white;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index:50;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    /* Fallback if browser doesn't support color-mix() */
+    @supports not (color: color-mix(in srgb, white 50%, black)){
+      .decor .ring{border:10px solid rgba(245,158,11,.28); box-shadow: inset 0 0 0 10px rgba(217,119,6,.14);}
+      .decor .ring2{border:10px solid rgba(217,119,6,.22);}
+      .decor .petal{
+        background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.25), transparent 58%),
+                    radial-gradient(circle at 70% 70%, rgba(217,119,6,.18), transparent 55%),
+                    rgba(255,255,255,.0);
+      }
+    }
   </style>
-</head><body>
+</head>
+
+<body>
   <div class="container">
     <header class="hero">
       <div>
         <h1>💍 Marriage Anniversary Card Maker</h1>
         <p>Create a beautiful anniversary card with live preview, photo, templates, print-ready layout, and WhatsApp share — in your Light Saffron style.</p>
-      </div><div class="badgeRow">
-    <div class="badge">🖨️ Print Ready</div>
-    <div class="badge">📲 WhatsApp Share</div>
-    <div class="logo-badge" title="Brand">
-      <div class="logoMark">CR</div>
-      <div class="logoText">
-        <b>Champak Roy</b>
-        <span>Programmer’s Picnic</span>
       </div>
-    </div>
-  </div>
-</header>
 
-<main class="grid">
-  <!-- Controls -->
-  <section class="panel" aria-label="Card controls">
-    <h2>✍️ Customize Your Card</h2>
+      <div class="badgeRow">
+        <div class="badge">🖨️ Print Ready</div>
+        <div class="badge">📲 WhatsApp Share</div>
+        <div class="logo-badge" title="Brand">
+          <div class="logoMark">CR</div>
+          <div class="logoText">
+            <b>Champak Roy</b>
+            <span>Programmer’s Picnic</span>
+          </div>
+        </div>
+      </div>
+    </header>
 
-    <div class="row">
-      <div>
-        <label for="husband">Partner 1 Name</label>
-        <input id="husband" type="text" placeholder="e.g., Amit" value="Amit" />
-      </div>
-      <div>
-        <label for="wife">Partner 2 Name</label>
-        <input id="wife" type="text" placeholder="e.g., Neha" value="Neha" />
-      </div>
-    </div>
+    <main class="grid">
+      <!-- Controls -->
+      <section class="panel" aria-label="Card controls">
+        <h2>✍️ Customize Your Card</h2>
 
-    <div class="row">
-      <div>
-        <label for="annivType">Anniversary Type</label>
-        <select id="annivType">
-          <option value="Happy Anniversary">Happy Anniversary</option>
-          <option value="1st Anniversary">1st Anniversary</option>
-          <option value="5th Anniversary">5th Anniversary</option>
-          <option value="10th Anniversary">10th Anniversary</option>
-          <option value="25th Anniversary (Silver Jubilee)">25th Anniversary (Silver Jubilee)</option>
-          <option value="50th Anniversary (Golden Jubilee)">50th Anniversary (Golden Jubilee)</option>
-        </select>
-      </div>
-      <div>
-        <label for="date">Date</label>
-        <input id="date" type="date" />
-        <div class="hint">Tip: If you don’t want a date on the card, leave it empty.</div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label for="since">Together Since</label>
-        <input id="since" type="text" placeholder="e.g., 2005" value="2005" />
-      </div>
-      <div>
-        <label for="city">City / Venue (optional)</label>
-        <input id="city" type="text" placeholder="e.g., Varanasi" value="Varanasi" />
-      </div>
-    </div>
-
-    <label for="message">Message</label>
-    <textarea id="message" placeholder="Write your wishes...">Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛</textarea>
-    <div class="hint">Your message keeps line breaks exactly as you type.</div>
-
-    <div class="row">
-      <div>
-        <label for="from">From / Best Wishes By</label>
-        <input id="from" type="text" placeholder="e.g., Champak Roy" value="Champak Roy" />
-      </div>
-      <div>
-        <label for="theme">Template Theme</label>
-        <select id="theme">
-          <option value="golden">Golden Elegance</option>
-          <option value="floral">Floral Romance</option>
-          <option value="royal">Royal Traditional</option>
-          <option value="minimal">Minimal Modern</option>
-        </select>
-      </div>
-    </div>
-
-    <label for="photoInput">Couple Photo (optional)</label>
-    <input id="photoInput" type="file" accept="image/*" />
-    <div class="hint">Photo stays only in your browser (saved in localStorage if you click “Save”).</div>
-
-    <div class="btnRow">
-      <button class="btn primary" id="btnSave" type="button">💾 Save</button>
-      <button class="btn" id="btnLoad" type="button">📂 Load</button>
-      <button class="btn danger" id="btnReset" type="button">🧹 Reset</button>
-    </div>
-
-    <div class="split">
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
-        <button class="btn primary" id="btnWhatsApp" type="button">📲 Share on WhatsApp</button>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" id="btnCopyMsg" type="button">📋 Copy Message</button>
-      </div>
-    </div>
-
-    <div class="hint">
-      WhatsApp share sends a formatted text message (not an image). For image sharing, print to PDF or take a screenshot of the preview.
-    </div>
-  </section>
-
-  <!-- Preview -->
-  <section class="previewWrap" aria-label="Live preview">
-    <div class="panel previewHeader">
-      <div>
-        <h2>👀 Live Preview</h2>
-        <div class="mini">Everything updates instantly. Use toggles to show/hide decorations and watermark.</div>
-      </div>
-      <div class="toggleRow">
-        <label class="chip" title="Show decorative rings and petals">
-          <input id="togDecor" type="checkbox" checked />
-          ✨ Decorations
-        </label>
-        <label class="chip" title="Show subtle watermark on the card">
-          <input id="togWatermark" type="checkbox" />
-          🏷️ Watermark
-        </label>
-      </div>
-    </div>
-
-    <div class="cardStage">
-      <div class="card" id="card" data-theme="golden" data-watermark="0" role="img" aria-label="Anniversary card preview">
-        <div class="decor" id="decor">
-          <div class="ring"></div>
-          <div class="ring2"></div>
-          <div class="petal"></div>
+        <div class="row">
+          <div>
+            <label for="husband">Partner 1 Name</label>
+            <input id="husband" type="text" placeholder="e.g., Amit" value="Amit" />
+          </div>
+          <div>
+            <label for="wife">Partner 2 Name</label>
+            <input id="wife" type="text" placeholder="e.g., Neha" value="Neha" />
+          </div>
         </div>
 
-        <div class="watermark">Made with 💛 by Champak Roy</div>
-
-        <div class="cardGrid">
-          <div class="left">
-            <div class="topLine">
-              <div class="seal" id="seal">
-                💍 <span id="annivTypePrev">Happy Anniversary</span>
-                <small id="typeNote">• Celebrate Love</small>
-              </div>
-            </div>
-
-            <h3 class="title" id="title">Happy Anniversary</h3>
-            <p class="subTitle" id="subtitle">A special day to celebrate your beautiful journey together.</p>
-
-            <div class="names" id="names">
-              <span id="husbandPrev">Amit</span>
-              <span class="amp">&amp;</span>
-              <span id="wifePrev">Neha</span>
-            </div>
-
-            <div class="meta">
-              <div class="pill" id="pillSince">❤️ <b>Together Since</b> <span id="sincePrev">2005</span></div>
-              <div class="pill" id="pillDate">📅 <b>Date</b> <span id="datePrev">—</span></div>
-              <div class="pill" id="pillCity">📍 <b>Place</b> <span id="cityPrev">Varanasi</span></div>
-            </div>
-
-            <div class="messageBox">
-              <p class="msg" id="messagePrev">Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛</p>
-              <div class="from" id="fromPrev">— Champak Roy</div>
-            </div>
+        <div class="row">
+          <div>
+            <label for="annivType">Anniversary Type</label>
+            <select id="annivType">
+              <option value="Happy Anniversary">Happy Anniversary</option>
+              <option value="1st Anniversary">1st Anniversary</option>
+              <option value="5th Anniversary">5th Anniversary</option>
+              <option value="10th Anniversary">10th Anniversary</option>
+              <option value="25th Anniversary (Silver Jubilee)">25th Anniversary (Silver Jubilee)</option>
+              <option value="50th Anniversary (Golden Jubilee)">50th Anniversary (Golden Jubilee)</option>
+            </select>
           </div>
-
-          <div class="right">
-            <div class="photo" id="photoBox">
-              <img id="photoImg" alt="Couple photo preview" />
-              <div class="phHint" id="photoHint">📷 Add a couple photo<br><span style="font-weight:800;color:var(--cardMuted);">Optional</span></div>
-            </div>
-
-            <div class="footerBrand">
-              <div>
-                <b>Programmer’s Picnic</b><br />
-                <span>Anniversary Card Maker</span>
-              </div>
-              <div style="text-align:right">
-                <span>Designed by</span><br />
-                <b>Champak Roy</b>
-              </div>
-            </div>
+          <div>
+            <label for="date">Date</label>
+            <input id="date" type="date" />
+            <div class="hint">Tip: If you don’t want a date on the card, leave it empty.</div>
           </div>
-        </div><!-- /cardGrid -->
-      </div><!-- /card -->
-    </div><!-- /stage -->
-  </section>
-</main>
+        </div>
 
-  </div>  <div class="toast" id="toast">Saved</div>  <script>
+        <div class="row">
+          <div>
+            <label for="since">Together Since</label>
+            <input id="since" type="text" placeholder="e.g., 2005" value="2005" />
+          </div>
+          <div>
+            <label for="city">City / Venue (optional)</label>
+            <input id="city" type="text" placeholder="e.g., Varanasi" value="Varanasi" />
+          </div>
+        </div>
+
+        <label for="message">Message</label>
+        <textarea id="message" placeholder="Write your wishes...">Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛</textarea>
+        <div class="hint">Your message keeps line breaks exactly as you type.</div>
+
+        <div class="row">
+          <div>
+            <label for="from">From / Best Wishes By</label>
+            <input id="from" type="text" placeholder="e.g., Champak Roy" value="Champak Roy" />
+          </div>
+          <div>
+            <label for="theme">Color Theme</label>
+            <select id="theme">
+              <option value="golden">Golden Elegance</option>
+              <option value="floral">Floral Romance</option>
+              <option value="royal">Royal Traditional</option>
+              <option value="minimal">Minimal Modern</option>
+
+              <option value="sunset">Sunset Glow</option>
+              <option value="rose">Rose Blush</option>
+              <option value="emerald">Emerald Grace</option>
+              <option value="peacock">Peacock Blue</option>
+              <option value="lavender">Lavender Dream</option>
+              <option value="midnight">Midnight Luxe</option>
+              <option value="ivory">Ivory Classic</option>
+              <option value="retro">Retro Festive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="layout">Layout Template</label>
+            <select id="layout">
+              <option value="classic">Classic Split</option>
+              <option value="photoLeft">Photo Left Split</option>
+              <option value="fullPhoto">Full Photo Background</option>
+              <option value="textOnly">Text Only</option>
+              <option value="bigPhotoTop">Big Photo + Footer</option>
+            </select>
+            <div class="hint">Layouts change the structure of the card (not just colors).</div>
+          </div>
+          <div>
+            <label for="photoInput">Couple Photo (optional)</label>
+            <input id="photoInput" type="file" accept="image/*" />
+            <div class="hint">Photo stays only in your browser (saved in localStorage if you click “Save”).</div>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn primary" id="btnSave" type="button">💾 Save</button>
+          <button class="btn" id="btnLoad" type="button">📂 Load</button>
+          <button class="btn danger" id="btnReset" type="button">🧹 Reset</button>
+        </div>
+
+        <div class="split">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
+            <button class="btn primary" id="btnWhatsApp" type="button">📲 Share on WhatsApp</button>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn" id="btnCopyMsg" type="button">📋 Copy Message</button>
+          </div>
+        </div>
+
+        <div class="hint">
+          WhatsApp share sends a formatted text message (not an image). For image sharing, print to PDF or take a screenshot of the preview.
+        </div>
+      </section>
+
+      <!-- Preview -->
+      <section class="previewWrap" aria-label="Live preview">
+        <div class="panel previewHeader">
+          <div>
+            <h2>👀 Live Preview</h2>
+            <div class="mini">Everything updates instantly. Use toggles to show/hide decorations and watermark.</div>
+          </div>
+          <div class="toggleRow">
+            <label class="chip" title="Show decorative rings and petals">
+              <input id="togDecor" type="checkbox" checked />
+              ✨ Decorations
+            </label>
+            <label class="chip" title="Show subtle watermark on the card">
+              <input id="togWatermark" type="checkbox" />
+              🏷️ Watermark
+            </label>
+          </div>
+        </div>
+
+        <div class="cardStage">
+          <div class="card" id="card" data-theme="golden" data-layout="classic" data-watermark="0" role="img" aria-label="Anniversary card preview">
+            <!-- Full photo layout helpers -->
+            <div class="cardBgPhoto" id="cardBgPhoto"></div>
+            <div class="cardBgOverlay" aria-hidden="true"></div>
+
+            <div class="decor" id="decor">
+              <div class="ring"></div>
+              <div class="ring2"></div>
+              <div class="petal"></div>
+            </div>
+
+            <div class="watermark">Made with 💛 by Champak Roy</div>
+
+            <div class="cardGrid">
+              <div class="left">
+                <div class="topLine">
+                  <div class="seal">
+                    💍 <span id="annivTypePrev">Happy Anniversary</span>
+                    <small id="typeNote">• Celebrate Love</small>
+                  </div>
+                </div>
+
+                <h3 class="title" id="title">Happy Anniversary</h3>
+                <p class="subTitle" id="subtitle">A special day to celebrate your beautiful journey together.</p>
+
+                <div class="names">
+                  <span id="husbandPrev">Amit</span>
+                  <span class="amp">&amp;</span>
+                  <span id="wifePrev">Neha</span>
+                </div>
+
+                <div class="meta">
+                  <div class="pill" id="pillSince">❤️ <b>Together Since</b> <span id="sincePrev">2005</span></div>
+                  <div class="pill" id="pillDate">📅 <b>Date</b> <span id="datePrev">—</span></div>
+                  <div class="pill" id="pillCity">📍 <b>Place</b> <span id="cityPrev">Varanasi</span></div>
+                </div>
+
+                <div class="messageBox">
+                  <p class="msg" id="messagePrev">Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛</p>
+                  <div class="from" id="fromPrev">— Champak Roy</div>
+                </div>
+              </div>
+
+              <div class="right">
+                <div class="photo" id="photoBox">
+                  <img id="photoImg" alt="Couple photo preview" />
+                  <div class="phHint" id="photoHint">📷 Add a couple photo<br><span style="font-weight:800;color:var(--cardMuted);">Optional</span></div>
+                </div>
+
+                <div class="footerBrand">
+                  <div>
+                    <b>Programmer’s Picnic</b><br />
+                    <span>Anniversary Card Maker</span>
+                  </div>
+                  <div style="text-align:right">
+                    <span>Designed by</span><br />
+                    <b>Champak Roy</b>
+                  </div>
+                </div>
+              </div>
+            </div><!-- /cardGrid -->
+          </div><!-- /card -->
+        </div><!-- /stage -->
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <script>
     (function(){
       const $ = (id)=>document.getElementById(id);
 
@@ -760,6 +930,7 @@ input:focus, select:focus, textarea:focus{
         message: $("message"),
         from: $("from"),
         theme: $("theme"),
+        layout: $("layout"),
         photoInput: $("photoInput"),
 
         // toggles
@@ -769,6 +940,7 @@ input:focus, select:focus, textarea:focus{
         // preview
         card: $("card"),
         decor: $("decor"),
+        cardBgPhoto: $("cardBgPhoto"),
         annivTypePrev: $("annivTypePrev"),
         typeNote: $("typeNote"),
         title: $("title"),
@@ -798,7 +970,7 @@ input:focus, select:focus, textarea:focus{
         toast: $("toast")
       };
 
-      const LS_KEY = "anniversary_card_maker_v1";
+      const LS_KEY = "anniversary_card_maker_v2";
 
       function showToast(msg){
         el.toast.textContent = msg;
@@ -809,7 +981,6 @@ input:focus, select:focus, textarea:focus{
 
       function formatDateNice(iso){
         if(!iso) return "";
-        // iso like "2026-01-08"
         const parts = iso.split("-");
         if(parts.length !== 3) return iso;
         const y = Number(parts[0]);
@@ -845,6 +1016,15 @@ input:focus, select:focus, textarea:focus{
       function safeText(v, fallback){
         const s = (v ?? "").toString().trim();
         return s ? s : (fallback ?? "");
+      }
+
+      function setFullPhotoBackground(){
+        const url = el.photoImg.dataset.url || "";
+        if(url){
+          el.cardBgPhoto.style.backgroundImage = "url('" + url.replaceAll("'", "%27") + "')";
+        }else{
+          el.cardBgPhoto.style.backgroundImage = "none";
+        }
       }
 
       function updatePreview(){
@@ -892,14 +1072,18 @@ input:focus, select:focus, textarea:focus{
         el.messagePrev.textContent = msg;
         el.fromPrev.textContent = from ? ("— " + from) : "";
 
-        // Theme
+        // Theme + Layout
         el.card.setAttribute("data-theme", el.theme.value);
+        el.card.setAttribute("data-layout", el.layout.value);
 
         // Decor toggle
         el.decor.style.display = el.togDecor.checked ? "block" : "none";
 
         // Watermark toggle
         el.card.setAttribute("data-watermark", el.togWatermark.checked ? "1" : "0");
+
+        // Full photo layout background
+        setFullPhotoBackground();
       }
 
       function getState(){
@@ -913,6 +1097,7 @@ input:focus, select:focus, textarea:focus{
           message: el.message.value,
           from: el.from.value,
           theme: el.theme.value,
+          layout: el.layout.value,
           toggles: {
             decor: !!el.togDecor.checked,
             watermark: !!el.togWatermark.checked
@@ -932,6 +1117,7 @@ input:focus, select:focus, textarea:focus{
         el.message.value = s.message ?? "";
         el.from.value = s.from ?? "";
         el.theme.value = s.theme ?? "golden";
+        el.layout.value = s.layout ?? "classic";
 
         const decor = s.toggles?.decor ?? true;
         const watermark = s.toggles?.watermark ?? false;
@@ -963,6 +1149,7 @@ input:focus, select:focus, textarea:focus{
         el.message.value = "Wishing you both a lifetime of love, laughter, and togetherness. Happy Anniversary! 💛";
         el.from.value = "Champak Roy";
         el.theme.value = "golden";
+        el.layout.value = "classic";
         el.togDecor.checked = true;
         el.togWatermark.checked = false;
 
@@ -981,7 +1168,7 @@ input:focus, select:focus, textarea:focus{
           showToast("Saved ✅");
         }catch(e){
           console.error(e);
-          showToast("Save failed");
+          showToast("Save failed (photo too large?)");
         }
       }
 
@@ -1023,6 +1210,7 @@ input:focus, select:focus, textarea:focus{
           el.photoImg.style.display = "block";
           el.photoHint.style.display = "none";
           el.photoImg.dataset.url = url;
+          setFullPhotoBackground();
           showToast("Photo added ✅");
         };
         reader.onerror = () => showToast("Photo load failed");
@@ -1045,14 +1233,8 @@ input:focus, select:focus, textarea:focus{
         if(since) lines.push("❤️ Together Since: " + since);
         if(dateNice) lines.push("📅 Date: " + dateNice);
         if(city) lines.push("📍 Place: " + city);
-        if(msg) {
-          lines.push("");
-          lines.push(msg);
-        }
-        if(from) {
-          lines.push("");
-          lines.push("— " + from);
-        }
+        if(msg) { lines.push(""); lines.push(msg); }
+        if(from) { lines.push(""); lines.push("— " + from); }
         return lines.join("\n");
       }
 
@@ -1068,7 +1250,6 @@ input:focus, select:focus, textarea:focus{
           await navigator.clipboard.writeText(text);
           showToast("Copied ✅");
         }catch(e){
-          // Fallback
           const ta = document.createElement("textarea");
           ta.value = text;
           ta.style.position = "fixed";
@@ -1088,7 +1269,7 @@ input:focus, select:focus, textarea:focus{
       // Wire events
       const liveInputs = [
         el.husband, el.wife, el.annivType, el.date, el.since, el.city,
-        el.message, el.from, el.theme, el.togDecor, el.togWatermark
+        el.message, el.from, el.theme, el.layout, el.togDecor, el.togWatermark
       ];
       liveInputs.forEach(n => n.addEventListener("input", updatePreview));
       liveInputs.forEach(n => n.addEventListener("change", updatePreview));
@@ -1108,8 +1289,8 @@ input:focus, select:focus, textarea:focus{
       el.btnWhatsApp.addEventListener("click", shareWhatsApp);
       el.btnCopyMsg.addEventListener("click", copyMessage);
 
-      // Init
       updatePreview();
     })();
-  </script></body>
+  </script>
+</body>
 </html>
