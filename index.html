@@ -1,757 +1,300 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>3D Rubik’s Cube Solver — Three.js + Kociemba (cube.js)</title>
-  <meta name="description" content="3D Rubik’s Cube in the browser with scramble + Kociemba-based solve + animated moves." />
-  <style>
-    :root{
-      /* Light saffron theme */
-      --bg:#fff7e6;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --border:#eadcc5;
-      --shadow:0 18px 45px rgba(31,41,55,.14);
-      --ok:#166534;
-      --danger:#b91c1c;
-      --soft:#fff1d6;
-      --codebg:#0b1220;
-      --codeink:#e5e7eb;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background: radial-gradient(900px 420px at 20% 0%, #fff1d6 0%, var(--bg) 55%, #fffaf1 100%);
-      color:var(--ink);
-    }
-    .wrap{
-      max-width:1200px;
-      margin:18px auto 28px;
-      padding:14px;
-      display:grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .wrap{grid-template-columns: 1fr}
-    }
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .hero{
-      padding:14px 16px;
-      border-bottom:1px solid var(--border);
-      background: linear-gradient(135deg, #fff 0%, #fff7ea 60%, #fff 100%);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .title{
-      margin:0;
-      font-size:18px;
-      line-height:1.25;
-    }
-    .sub{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      background:var(--soft);
-      border:1px solid var(--border);
-      border-radius:999px;
-      color:#7a4b00;
-      font-weight:700;
-      font-size:12px;
-      white-space:nowrap;
-    }
-    .dot{
-      width:9px;height:9px;border-radius:99px;background:var(--brand2);
-      box-shadow:0 0 0 3px rgba(245,158,11,.2);
-    }
-    .stage{
-      position:relative;
-      height:580px;
-      background: radial-gradient(1200px 500px at 50% 15%, #ffffff 0%, #fff7ea 40%, #fff3dd 100%);
-    }
-    @media (max-width: 980px){
-      .stage{height:520px}
-    }
-    canvas{display:block}
-    .hud{
-      position:absolute;
-      left:12px; top:12px;
-      background: rgba(255,255,255,.82);
-      border:1px solid rgba(234,220,197,.9);
-      border-radius:14px;
-      padding:10px 12px;
-      box-shadow:0 12px 30px rgba(31,41,55,.12);
-      max-width: 420px;
-      backdrop-filter: blur(6px);
-    }
-    .hud .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-    .btn{
-      appearance:none;
-      border:1px solid var(--border);
-      background: linear-gradient(180deg, #fff 0%, #fff5df 100%);
-      color:var(--ink);
-      border-radius:12px;
-      padding:9px 11px;
-      font-weight:700;
-      cursor:pointer;
-      box-shadow:0 8px 18px rgba(31,41,55,.10);
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn:active{transform:translateY(0px)}
-    .btn.primary{
-      border-color: rgba(217,119,6,.45);
-      background: linear-gradient(180deg, #fffbf2 0%, #ffe5b4 100%);
-    }
-    .btn.danger{
-      border-color: rgba(185,28,28,.35);
-      background: linear-gradient(180deg, #fff5f5 0%, #ffd6d6 100%);
-    }
-    .btn:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      transform:none;
-    }
-    .k{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12px;
-      padding:2px 6px;
-      border:1px solid rgba(234,220,197,.9);
-      border-radius:10px;
-      background:#fff;
-      color:#6b4a1a;
-    }
-    .panel{
-      padding:12px 14px;
-    }
-    .label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      margin-bottom:6px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .status{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin:10px 0 0;
-      padding:10px 12px;
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:14px;
-    }
-    .status b{color:var(--brand)}
-    .small{font-size:12px;color:var(--muted)}
-    .moves{
-      margin-top:10px;
-      background:var(--codebg);
-      color:var(--codeink);
-      border-radius:14px;
-      padding:10px 12px;
-      border:1px solid rgba(234,220,197,.35);
-      min-height: 86px;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12.5px;
-      line-height:1.45;
-    }
-    input[type="range"]{width:100%}
-    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
-    @media (max-width: 480px){.grid2{grid-template-columns:1fr}}
-    .hint{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
-    }
-    .hint code{background:#fff;border:1px solid var(--border);padding:1px 6px;border-radius:10px}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>3D Rubik’s Cube Solver — Three.js + Kociemba</title>
 
-  <!-- cube.js (Rubik’s cube model + Kociemba solver via worker) -->
-  <script src="https://ldez.github.io/cubejs/lib/cube.js"></script>
-  <script src="https://ldez.github.io/cubejs/lib/async.js"></script>
+<style>
+:root{
+  --bg:#fff7e6;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --brand:#d97706;
+  --brand2:#f59e0b;
+  --border:#eadcc5;
+  --shadow:0 18px 40px rgba(0,0,0,.15);
+}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:var(--bg);
+  color:var(--ink);
+}
+header{
+  padding:12px 16px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+h1{margin:0;font-size:18px;color:var(--brand)}
+.controls{
+  display:flex;
+  gap:10px;
+  padding:10px;
+}
+button{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+button.primary{
+  background:#ffe5b4;
+  border-color:var(--brand);
+}
+#moves{
+  padding:10px;
+  font-family:monospace;
+  background:#0b1220;
+  color:#e5e7eb;
+  margin:10px;
+  border-radius:10px;
+  min-height:70px;
+}
+#stage{
+  width:100%;
+  height:520px;
+}
+</style>
+
+<!-- cube.js solver -->
+<script src="https://ldez.github.io/cubejs/lib/cube.js"></script>
+<script src="https://ldez.github.io/cubejs/lib/async.js"></script>
 </head>
+
 <body>
-  <div class="wrap">
-    <section class="card">
-      <div class="hero">
-        <div>
-          <h1 class="title">3D Rubik’s Cube Solver</h1>
-          <p class="sub">Three.js 3D view + real solver (cube.js / Kociemba) + animated solution.</p>
-          <p class="sub">Drag to orbit. Scroll to zoom.</p>
-        </div>
-        <div class="badge"><span class="dot"></span> 3×3 • Solve + Animate</div>
-      </div>
+<header>
+  <h1>3D Rubik’s Cube Solver (Three.js + Kociemba)</h1>
+</header>
 
-      <div class="stage" id="stage">
-        <div class="hud">
-          <div class="row">
-            <button class="btn primary" id="btnScramble">Scramble</button>
-            <button class="btn primary" id="btnSolve">Solve</button>
-            <button class="btn" id="btnStep">Step</button>
-            <button class="btn" id="btnPlay">Play</button>
-            <button class="btn danger" id="btnReset">Reset</button>
-          </div>
+<div class="controls">
+  <button class="primary" id="scramble">Scramble</button>
+  <button class="primary" id="solve">Solve</button>
+  <button id="step">Step</button>
+  <button id="play">Play</button>
+  <button id="reset">Reset</button>
+</div>
 
-          <div class="status">
-            <div class="small">
-              <div><b id="solverState">Solver:</b> <span id="solverText">initializing…</span></div>
-              <div>Queue: <span class="k" id="queueCount">0</span> • Busy: <span class="k" id="busyFlag">no</span></div>
-            </div>
-            <div class="small" style="text-align:right">
-              <div>Speed</div>
-              <div class="k" id="speedLabel">280 ms / quarter</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+<div id="moves">Moves will appear here</div>
+<div id="stage"></div>
 
-    <aside class="card">
-      <div class="hero">
-        <div>
-          <h2 class="title" style="font-size:16px;margin:0">Controls & Output</h2>
-          <p class="sub" style="margin:6px 0 0">Scramble, solve, then watch it animate.</p>
-        </div>
-        <div class="badge"><span class="dot"></span> Light Saffron UI</div>
-      </div>
+<script type="module">
+/* =========================
+   THREE.JS IMPORT (FIXED)
+========================= */
+import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
 
-      <div class="panel">
-        <div class="grid2">
-          <div>
-            <div class="label">Animation speed <span class="k" id="speedMini">280ms</span></div>
-            <input id="speed" type="range" min="120" max="650" value="280" />
-          </div>
-          <div>
-            <div class="label">Scramble length <span class="k" id="scrMini">20</span></div>
-            <input id="scrLen" type="range" min="5" max="35" value="20" />
-          </div>
-        </div>
+/* =========================
+   BASIC SETUP
+========================= */
+const stage = document.getElementById("stage");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xfff7e6);
 
-        <div style="margin-top:10px">
-          <div class="label">Moves</div>
-          <div class="moves" id="movesBox">—</div>
-        </div>
+const camera = new THREE.PerspectiveCamera(45, stage.clientWidth/stage.clientHeight, 0.1, 100);
+camera.position.set(7,6,8);
 
-        <div class="hint">
-          <div><b>Notes</b></div>
-          <ul style="margin:6px 0 0;padding-left:18px">
-            <li>First time solver init can take a few seconds (tables). 1</li>
-            <li>We use cube.js worker init/solve like their demo (<code>Cube.asyncInit</code> + <code>Cube.asyncSolve</code>). 2</li>
-            <li>Current cube state is tracked in both: <code>cube.js</code> model + 3D pieces.</li>
-          </ul>
-        </div>
-      </div>
-    </aside>
-  </div>
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(stage.clientWidth, stage.clientHeight);
+stage.appendChild(renderer.domElement);
 
-  <script type="module">
-    import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
-    import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
-    // ---------------------------
-    // UI helpers
-    // ---------------------------
-    const $ = (id)=>document.getElementById(id);
-    const btnScramble = $("btnScramble");
-    const btnSolve = $("btnSolve");
-    const btnStep = $("btnStep");
-    const btnPlay = $("btnPlay");
-    const btnReset = $("btnReset");
-    const movesBox = $("movesBox");
-    const queueCount = $("queueCount");
-    const busyFlag = $("busyFlag");
-    const solverText = $("solverText");
-    const speed = $("speed");
-    const speedLabel = $("speedLabel");
-    const speedMini = $("speedMini");
-    const scrLen = $("scrLen");
-    const scrMini = $("scrMini");
+/* =========================
+   LIGHTS
+========================= */
+scene.add(new THREE.AmbientLight(0xffffff,0.6));
+const d = new THREE.DirectionalLight(0xffffff,0.9);
+d.position.set(6,8,6);
+scene.add(d);
 
-    function setStatus(text){
-      solverText.textContent = text;
-    }
-    function setBusy(v){
-      busyFlag.textContent = v ? "yes" : "no";
-    }
-    function setQueue(n){
-      queueCount.textContent = String(n);
-    }
+/* =========================
+   RUBIK CUBE VISUAL
+========================= */
+const cubeGroup = new THREE.Group();
+scene.add(cubeGroup);
 
-    // ---------------------------
-    // cube.js (Rubik model + solver)
-    // ---------------------------
-    let model = new Cube(); // solved
-    let solverReady = false;
+const SIZE=1, GAP=0.06, STEP=SIZE+GAP;
 
-    // Use the worker hosted by cube.js demo site
-    Cube.asyncInit("https://ldez.github.io/cubejs/lib/worker.js", () => {
-      solverReady = true;
-      setStatus("ready ✅");
-      btnSolve.disabled = false;
-    });
+const COLORS={
+  U:0xffffff, D:0xffd400,
+  F:0x00a651, B:0x0047ab,
+  R:0xb71234, L:0xff6a00,
+  K:0x111111
+};
 
-    // (While initializing, show animated dots)
-    (function initDots(){
-      let t = 0;
-      const tick = () => {
-        if(solverReady) return;
-        t++;
-        setStatus("initializing" + ".".repeat((t%4)));
-        requestAnimationFrame(tick);
-      };
-      tick();
-    })();
+const cubies=[];
 
-    // ---------------------------
-    // Three.js scene
-    // ---------------------------
-    const stage = document.getElementById("stage");
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0xffffff, 8, 22);
+function cubie(x,y,z){
+  const g=new THREE.BoxGeometry(SIZE,SIZE,SIZE);
+  const m=new THREE.MeshStandardMaterial({color:COLORS.K});
+  const c=new THREE.Mesh(g,m);
+  c.position.set(x*STEP,y*STEP,z*STEP);
+  c.userData={x,y,z};
 
-    const camera = new THREE.PerspectiveCamera(45, stage.clientWidth / stage.clientHeight, 0.1, 100);
-    camera.position.set(7.3, 6.1, 8.3);
+  const p=new THREE.PlaneGeometry(0.9,0.9);
+  const o=SIZE/2+0.01;
+  const s=(col,pos,rot)=>{
+    const f=new THREE.Mesh(p,new THREE.MeshStandardMaterial({color:col}));
+    f.position.copy(pos);
+    f.rotation.set(rot.x,rot.y,rot.z);
+    c.add(f);
+  };
+  if(y==1)s(COLORS.U,new THREE.Vector3(0,o,0),new THREE.Euler(-Math.PI/2,0,0));
+  if(y==-1)s(COLORS.D,new THREE.Vector3(0,-o,0),new THREE.Euler(Math.PI/2,0,0));
+  if(z==1)s(COLORS.F,new THREE.Vector3(0,0,o),new THREE.Euler(0,0,0));
+  if(z==-1)s(COLORS.B,new THREE.Vector3(0,0,-o),new THREE.Euler(0,Math.PI,0));
+  if(x==1)s(COLORS.R,new THREE.Vector3(o,0,0),new THREE.Euler(0,-Math.PI/2,0));
+  if(x==-1)s(COLORS.L,new THREE.Vector3(-o,0,0),new THREE.Euler(0,Math.PI/2,0));
 
-    const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-    renderer.setSize(stage.clientWidth, stage.clientHeight);
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    stage.appendChild(renderer.domElement);
+  return c;
+}
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-
-    // lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-    const key = new THREE.DirectionalLight(0xffffff, 0.9);
-    key.position.set(6, 8, 4);
-    scene.add(key);
-    const fill = new THREE.DirectionalLight(0xffffff, 0.35);
-    fill.position.set(-6, 3, -7);
-    scene.add(fill);
-
-    // base shadow-ish disk
-    const disk = new THREE.Mesh(
-      new THREE.CircleGeometry(5.1, 64),
-      new THREE.MeshStandardMaterial({ color: 0xffffff, transparent:true, opacity:0.65 })
-    );
-    disk.rotation.x = -Math.PI/2;
-    disk.position.y = -2.25;
-    scene.add(disk);
-
-    // ---------------------------
-    // 3D Cube construction
-    // ---------------------------
-    const cubeGroup = new THREE.Group();
-    scene.add(cubeGroup);
-
-    const SIZE = 1.0;          // cubie size
-    const GAP = 0.06;          // spacing between cubies
-    const STEP = SIZE + GAP;   // distance between centers
-    const half = STEP;         // since indices are -1,0,1
-
-    // Sticker colors (common scheme)
-    const COLORS = {
-      U: 0xffffff, // white
-      D: 0xffd400, // yellow
-      F: 0x00a651, // green
-      B: 0x0047ab, // blue
-      R: 0xb71234, // red
-      L: 0xff6a00, // orange
-      K: 0x101317  // plastic
-    };
-
-    function makeCubie(ix, iy, iz){
-      // black plastic cube
-      const geo = new THREE.BoxGeometry(SIZE, SIZE, SIZE);
-      const mat = new THREE.MeshStandardMaterial({ color: COLORS.K, roughness: 0.55, metalness: 0.05 });
-      const mesh = new THREE.Mesh(geo, mat);
-
-      mesh.position.set(ix * STEP, iy * STEP, iz * STEP);
-      mesh.userData.index = { x: ix, y: iy, z: iz };
-
-      // stickers: planes slightly offset
-      const s = SIZE * 0.92;
-      const pgeo = new THREE.PlaneGeometry(s, s);
-
-      function sticker(color, pos, rot){
-        const m = new THREE.Mesh(
-          pgeo,
-          new THREE.MeshStandardMaterial({ color, roughness:0.35, metalness:0.02 })
-        );
-        m.position.copy(pos);
-        m.rotation.set(rot.x, rot.y, rot.z);
-        mesh.add(m);
-      }
-
-      const o = SIZE/2 + 0.01; // offset outwards
-
-      if(iy ===  1) sticker(COLORS.U, new THREE.Vector3(0,  o, 0), new THREE.Euler(-Math.PI/2, 0, 0));
-      if(iy === -1) sticker(COLORS.D, new THREE.Vector3(0, -o, 0), new THREE.Euler( Math.PI/2, 0, 0));
-      if(iz ===  1) sticker(COLORS.F, new THREE.Vector3(0, 0,  o), new THREE.Euler(0, 0, 0));
-      if(iz === -1) sticker(COLORS.B, new THREE.Vector3(0, 0, -o), new THREE.Euler(0, Math.PI, 0));
-      if(ix ===  1) sticker(COLORS.R, new THREE.Vector3( o, 0, 0), new THREE.Euler(0, -Math.PI/2, 0));
-      if(ix === -1) sticker(COLORS.L, new THREE.Vector3(-o, 0, 0), new THREE.Euler(0,  Math.PI/2, 0));
-
-      return mesh;
-    }
-
-    const cubies = [];
-    function buildSolvedVisual(){
-      cubeGroup.clear();
-      cubies.length = 0;
-      for(let x=-1; x<=1; x++){
-        for(let y=-1; y<=1; y++){
-          for(let z=-1; z<=1; z++){
-            const c = makeCubie(x,y,z);
-            cubies.push(c);
-            cubeGroup.add(c);
-          }
-        }
-      }
-    }
-    buildSolvedVisual();
-
-    // ---------------------------
-    // Move engine (queue + animation)
-    // ---------------------------
-    let moveQueue = [];
-    let playing = false;
-    let animating = false;
-
-    function parseAlg(alg){
-      // cube.js returns like: "D2 B' R' ..." (spaces)
-      return alg.trim().split(/\s+/).filter(Boolean);
-    }
-
-    function updateMovesBox(extraText=""){
-      const preview = moveQueue.slice(0, 40).join(" ");
-      const more = moveQueue.length > 40 ? ` … (+${moveQueue.length-40} more)` : "";
-      const head = preview.length ? preview + more : "—";
-      movesBox.textContent = extraText ? `${extraText}\n\n${head}` : head;
-      setQueue(moveQueue.length);
-    }
-
-    function axisForMove(face){
-      // Coordinate system: x right, y up, z front
-      // We use angles so that standard cube notation turns correctly.
-      // (Empirically consistent mapping for this coordinate system.)
-      switch(face){
-        case "R": return { axis: new THREE.Vector3(1,0,0), layer: {k:"x", v:  1}, baseDeg: -90 };
-        case "L": return { axis: new THREE.Vector3(1,0,0), layer: {k:"x", v: -1}, baseDeg:  90 };
-        case "U": return { axis: new THREE.Vector3(0,1,0), layer: {k:"y", v:  1}, baseDeg:  90 };
-        case "D": return { axis: new THREE.Vector3(0,1,0), layer: {k:"y", v: -1}, baseDeg: -90 };
-        case "F": return { axis: new THREE.Vector3(0,0,1), layer: {k:"z", v:  1}, baseDeg: -90 };
-        case "B": return { axis: new THREE.Vector3(0,0,1), layer: {k:"z", v: -1}, baseDeg:  90 };
-        default: return null;
-      }
-    }
-
-    function selectLayer(layer){
-      // layer: {k:"x|y|z", v:-1|0|1}
-      const eps = 0.35; // tolerance for float drift
-      return cubies.filter(c => Math.abs(c.userData.index[layer.k] - layer.v) < eps);
-    }
-
-    function roundIndexFromPosition(v){
-      // convert position to -1,0,1 based on STEP
-      const r = Math.round(v / STEP);
-      return Math.max(-1, Math.min(1, r));
-    }
-
-    function resyncIndicesFromWorld(){
-      for(const c of cubies){
-        c.userData.index = {
-          x: roundIndexFromPosition(c.position.x),
-          y: roundIndexFromPosition(c.position.y),
-          z: roundIndexFromPosition(c.position.z),
-        };
-        // snap to exact grid
-        c.position.set(c.userData.index.x * STEP, c.userData.index.y * STEP, c.userData.index.z * STEP);
-        // snap rotation to quarter turns
-        const e = new THREE.Euler().setFromQuaternion(c.quaternion, "XYZ");
-        const snap = (a) => Math.round(a / (Math.PI/2)) * (Math.PI/2);
-        c.rotation.set(snap(e.x), snap(e.y), snap(e.z));
-      }
-    }
-
-    function enqueueMoves(moves, label=""){
-      moveQueue.push(...moves);
-      updateMovesBox(label);
-    }
-
-    function clearQueue(){
-      moveQueue = [];
-      updateMovesBox();
-    }
-
-    function applyModelMove(move){
-      // Keep cube.js model in sync with visuals
-      model.move(move);
-    }
-
-    async function animateMove(move){
-      // move like "R", "U2", "F'", etc.
-      const face = move[0];
-      const info = axisForMove(face);
-      if(!info) return;
-
-      let turns = 1;
-      let dir = 1;
-      if(move.endsWith("2")) turns = 2;
-      if(move.endsWith("'")) dir = -1;
-
-      const totalDeg = info.baseDeg * dir * turns;
-      const totalRad = THREE.MathUtils.degToRad(totalDeg);
-
-      // Collect cubies in this layer and parent them under a temp group
-      const layerCubies = selectLayer(info.layer);
-      const pivot = new THREE.Group();
-      cubeGroup.add(pivot);
-
-      // Reparent while preserving world transforms
-      for(const c of layerCubies){
-        THREE.SceneUtils?.detach?.(c, cubeGroup, pivot);
-      }
-      // If SceneUtils is not present (modern builds), do manual detach/attach:
-      if(!THREE.SceneUtils){
-        for(const c of layerCubies){
-          cubeGroup.updateMatrixWorld(true);
-          pivot.updateMatrixWorld(true);
-
-          const worldPos = new THREE.Vector3();
-          const worldQuat = new THREE.Quaternion();
-          c.getWorldPosition(worldPos);
-          c.getWorldQuaternion(worldQuat);
-
-          cubeGroup.remove(c);
-          pivot.add(c);
-
-          c.position.copy(pivot.worldToLocal(worldPos.clone()));
-          c.quaternion.copy(worldQuat).premultiply(pivot.getWorldQuaternion(new THREE.Quaternion()).invert());
-        }
-      }
-
-      // Animate pivot rotation
-      const duration = Number(speed.value); // ms per quarter; doubles for 180 naturally
-      const start = performance.now();
-      animating = true;
-      setBusy(true);
-
-      await new Promise(resolve => {
-        const tick = (now) => {
-          const t = Math.min(1, (now - start) / duration);
-          // easeInOut
-          const tt = t<0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
-          pivot.setRotationFromAxisAngle(info.axis, totalRad * tt);
-          if(t < 1){
-            requestAnimationFrame(tick);
-          } else {
-            resolve();
-          }
-        };
-        requestAnimationFrame(tick);
-      });
-
-      // Bake pivot transform into children then restore parent to cubeGroup
-      pivot.updateMatrixWorld(true);
-      for(const c of [...pivot.children]){
-        c.applyMatrix4(pivot.matrix);
-        pivot.remove(c);
+function buildCube(){
+  cubeGroup.clear();
+  cubies.length=0;
+  for(let x=-1;x<=1;x++)
+    for(let y=-1;y<=1;y++)
+      for(let z=-1;z<=1;z++){
+        const c=cubie(x,y,z);
+        cubies.push(c);
         cubeGroup.add(c);
       }
-      cubeGroup.remove(pivot);
+}
+buildCube();
 
-      // Snap positions/rotations and refresh discrete indices
-      resyncIndicesFromWorld();
+/* =========================
+   SOLVER MODEL
+========================= */
+let model=new Cube();
+let queue=[];
+let playing=false;
 
-      animating = false;
-      setBusy(false);
+Cube.asyncInit("https://ldez.github.io/cubejs/lib/worker.js");
+
+/* =========================
+   MOVE ENGINE
+========================= */
+function axis(face){
+  return {
+    R:{a:new THREE.Vector3(1,0,0),k:"x",v:1,s:-1},
+    L:{a:new THREE.Vector3(1,0,0),k:"x",v:-1,s:1},
+    U:{a:new THREE.Vector3(0,1,0),k:"y",v:1,s:1},
+    D:{a:new THREE.Vector3(0,1,0),k:"y",v:-1,s:-1},
+    F:{a:new THREE.Vector3(0,0,1),k:"z",v:1,s:-1},
+    B:{a:new THREE.Vector3(0,0,1),k:"z",v:-1,s:1}
+  }[face];
+}
+
+async function turn(move){
+  const f=move[0],info=axis(f);
+  let t=1,d=1;
+  if(move.endsWith("2"))t=2;
+  if(move.endsWith("'"))d=-1;
+
+  const angle=Math.PI/2*t*d*info.s;
+  const layer=cubies.filter(c=>c.userData[info.k]==info.v);
+
+  const g=new THREE.Group();
+  cubeGroup.add(g);
+  layer.forEach(c=>g.attach(c));
+
+  let s=performance.now();
+  await new Promise(r=>{
+    function anim(n){
+      let p=Math.min(1,(n-s)/300);
+      g.setRotationFromAxisAngle(info.a,angle*p);
+      if(p<1)requestAnimationFrame(anim);
+      else r();
     }
+    requestAnimationFrame(anim);
+  });
 
-    async function stepOne(){
-      if(animating) return;
-      const mv = moveQueue.shift();
-      updateMovesBox();
-      if(!mv) return;
+  g.updateMatrixWorld();
+  layer.forEach(c=>{
+    c.applyMatrix4(g.matrix);
+    cubeGroup.attach(c);
+    c.userData={
+      x:Math.round(c.position.x/STEP),
+      y:Math.round(c.position.y/STEP),
+      z:Math.round(c.position.z/STEP)
+    };
+  });
+  cubeGroup.remove(g);
+}
 
-      // Apply to both model + visual
-      applyModelMove(mv);
-      await animateMove(mv);
-    }
+async function step(){
+  if(!queue.length)return;
+  const m=queue.shift();
+  model.move(m);
+  await turn(m);
+  showMoves();
+}
 
-    async function playLoop(){
-      while(playing){
-        if(!moveQueue.length){ playing = false; btnPlay.textContent = "Play"; break; }
-        await stepOne();
-        // small gap
-        await new Promise(r => setTimeout(r, 30));
-      }
-    }
+async function play(){
+  playing=true;
+  while(queue.length && playing) await step();
+  playing=false;
+}
 
-    // ---------------------------
-    // Scramble / Solve / Reset
-    // ---------------------------
-    function randomScramble(n){
-      const faces = ["R","L","U","D","F","B"];
-      const suff = ["", "'", "2"];
-      const out = [];
-      let last = "";
-      while(out.length < n){
-        const f = faces[Math.floor(Math.random()*faces.length)];
-        if(f === last) continue;
-        last = f;
-        out.push(f + suff[Math.floor(Math.random()*suff.length)]);
-      }
-      return out;
-    }
+/* =========================
+   UI
+========================= */
+const movesBox=document.getElementById("moves");
+function showMoves(){
+  movesBox.textContent=queue.join(" ");
+}
 
-    async function applyMovesInstantToVisual(moves){
-      // We still animate (it looks nicer). If you want instant, set duration tiny.
-      enqueueMoves(moves, "Queued moves:");
-    }
+document.getElementById("scramble").onclick=()=>{
+  queue=[];
+  model=new Cube();
+  buildCube();
+  const faces=["R","L","U","D","F","B"];
+  const suf=["","'","2"];
+  for(let i=0;i<20;i++){
+    const m=faces[Math.random()*6|0]+suf[Math.random()*3|0];
+    queue.push(m);
+    model.move(m);
+  }
+  showMoves();
+};
 
-    function resetAll(){
-      playing = false;
-      btnPlay.textContent = "Play";
-      clearQueue();
+document.getElementById("solve").onclick=()=>{
+  Cube.asyncSolve(new Cube(model),(alg)=>{
+    queue=alg.trim().split(/\s+/);
+    showMoves();
+  });
+};
 
-      // reset model + visuals
-      model = new Cube();
-      buildSolvedVisual();
-      updateMovesBox("—");
-    }
+document.getElementById("step").onclick=step;
+document.getElementById("play").onclick=play;
+document.getElementById("reset").onclick=()=>{
+  queue=[];
+  model=new Cube();
+  buildCube();
+  showMoves();
+};
 
-    async function solveCurrent(){
-      if(!solverReady){
-        setStatus("still initializing…");
-        return;
-      }
-      if(animating) return;
+/* =========================
+   RENDER LOOP
+========================= */
+function animate(){
+  controls.update();
+  renderer.render(scene,camera);
+  requestAnimationFrame(animate);
+}
+animate();
 
-      setStatus("solving…");
-      btnSolve.disabled = true;
-      btnScramble.disabled = true;
-      btnStep.disabled = true;
-      btnPlay.disabled = true;
-
-      // Solve using cube.js worker
-      const cubeToSolve = new Cube(model); // clone
-      Cube.asyncSolve(cubeToSolve, (alg) => {
-        const moves = parseAlg(alg);
-        enqueueMoves(moves, "Solution:");
-        setStatus(`ready ✅ (solution: ${moves.length} moves)`);
-
-        btnSolve.disabled = false;
-        btnScramble.disabled = false;
-        btnStep.disabled = false;
-        btnPlay.disabled = false;
-      });
-    }
-
-    // ---------------------------
-    // Wire UI
-    // ---------------------------
-    btnSolve.disabled = true;
-
-    btnScramble.addEventListener("click", async () => {
-      if(animating) return;
-      playing = false; btnPlay.textContent = "Play";
-      clearQueue();
-
-      const n = Number(scrLen.value);
-      const moves = randomScramble(n);
-
-      // Update model instantly by applying moves in order (so solver sees correct state)
-      for(const mv of moves) model.move(mv);
-
-      // Animate them
-      enqueueMoves(moves, "Scramble:");
-      setStatus("ready ✅ (scrambled)");
-    });
-
-    btnStep.addEventListener("click", async () => {
-      playing = false; btnPlay.textContent = "Play";
-      await stepOne();
-    });
-
-    btnPlay.addEventListener("click", async () => {
-      if(playing){
-        playing = false;
-        btnPlay.textContent = "Play";
-        return;
-      }
-      playing = true;
-      btnPlay.textContent = "Pause";
-      await playLoop();
-    });
-
-    btnReset.addEventListener("click", () => {
-      resetAll();
-      setStatus(solverReady ? "ready ✅" : "initializing…");
-    });
-
-    // speed + scramble UI
-    function refreshLabels(){
-      speedLabel.textContent = `${Number(speed.value)} ms / quarter`;
-      speedMini.textContent = `${Number(speed.value)}ms`;
-      scrMini.textContent = `${Number(scrLen.value)}`;
-    }
-    speed.addEventListener("input", refreshLabels);
-    scrLen.addEventListener("input", refreshLabels);
-    refreshLabels();
-
-    // ---------------------------
-    // Render loop + resize
-    // ---------------------------
-    function render(){
-      controls.update();
-      renderer.render(scene, camera);
-      requestAnimationFrame(render);
-    }
-    render();
-
-    function onResize(){
-      const w = stage.clientWidth;
-      const h = stage.clientHeight;
-      camera.aspect = w/h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w,h);
-    }
-    window.addEventListener("resize", onResize);
-
-    // Start in a nice orientation
-    cubeGroup.rotation.y = Math.PI * 0.15;
-    cubeGroup.rotation.x = -Math.PI * 0.08;
-
-    // Initial text
-    updateMovesBox("—");
-    setBusy(false);
-  </script>
+window.onresize=()=>{
+  camera.aspect=stage.clientWidth/stage.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(stage.clientWidth,stage.clientHeight);
+};
+</script>
 </body>
 </html>
