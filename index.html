@@ -3,9 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Birthday Card Maker — Templates + Print + WhatsApp | Champak Roy</title>
-  <meta name="description" content="Create beautiful birthday cards with templates, photo, live preview, print-ready layout, download, and WhatsApp sharing. Built by Champak Roy." />
-  <meta name="author" content="Champak Roy" />
+  <title>3D Rubik’s Cube Solver — Three.js + Kociemba (cube.js)</title>
+  <meta name="description" content="3D Rubik’s Cube in the browser with scramble + Kociemba-based solve + animated moves." />
   <style>
     :root{
       /* Light saffron theme */
@@ -19,1285 +18,740 @@
       --shadow:0 18px 45px rgba(31,41,55,.14);
       --ok:#166534;
       --danger:#b91c1c;
-
-      --radius:18px;
-      --radius2:24px;
+      --soft:#fff1d6;
+      --codebg:#0b1220;
+      --codeink:#e5e7eb;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background: radial-gradient(1200px 700px at 20% 0%, #fff2d3 0%, var(--bg) 45%, #fff 100%);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background: radial-gradient(900px 420px at 20% 0%, #fff1d6 0%, var(--bg) 55%, #fffaf1 100%);
       color:var(--ink);
     }
-
     .wrap{
-      max-width:1180px;
-      margin:22px auto 34px;
-      padding:16px;
-    }
-
-    .topbar{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      background: rgba(255,255,255,.72);
-      border:1px solid var(--border);
-      border-radius: var(--radius2);
-      padding:14px 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-    }
-
-    .brand{
-      display:flex; gap:12px; align-items:center;
-      min-width: 240px;
-    }
-    .logo{
-      width:44px; height:44px;
-      border-radius:14px;
-      background: radial-gradient(circle at 30% 30%, var(--brand2), var(--brand));
-      box-shadow: 0 10px 22px rgba(217,119,6,.25);
-      display:grid; place-items:center;
-      color:#fff; font-weight:900;
-      letter-spacing:.5px;
-    }
-    .brand h1{
-      font-size:16px; margin:0;
-      line-height:1.2;
-    }
-    .brand p{
-      margin:3px 0 0;
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .actions{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-      justify-content:flex-end;
-    }
-
-    button, .btn{
-      border:1px solid var(--border);
-      background:#fff;
-      color:var(--ink);
-      padding:10px 12px;
-      border-radius:14px;
-      cursor:pointer;
-      font-weight:650;
-      box-shadow: 0 10px 22px rgba(31,41,55,.08);
-      transition: transform .08s ease, box-shadow .18s ease, border-color .18s ease;
-      user-select:none;
-    }
-    button:hover, .btn:hover{
-      border-color:#e6c999;
-      box-shadow: 0 14px 28px rgba(31,41,55,.12);
-      transform: translateY(-1px);
-    }
-    .primary{
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      color:#fff;
-      border-color: rgba(0,0,0,.05);
-    }
-    .danger{
-      border-color: rgba(185,28,28,.25);
-      color: var(--danger);
-    }
-
-    .grid{
+      max-width:1200px;
+      margin:18px auto 28px;
+      padding:14px;
       display:grid;
-      grid-template-columns: 420px 1fr;
-      gap:16px;
-      margin-top:16px;
+      grid-template-columns: 1.6fr 1fr;
+      gap:14px;
     }
     @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
+      .wrap{grid-template-columns: 1fr}
     }
-
-    .panel{
-      background: rgba(255,255,255,.78);
-      border:1px solid var(--border);
-      border-radius: var(--radius2);
-      box-shadow: var(--shadow);
-      padding:14px;
-      backdrop-filter: blur(6px);
-    }
-    .panel h2{
-      margin:0 0 10px;
-      font-size:14px;
-      color: var(--brand);
-      letter-spacing:.2px;
-    }
-
-    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
-    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
-    @media (max-width:520px){
-      .row,.row3{grid-template-columns:1fr}
-    }
-
-    label{
-      display:block;
-      font-size:12px;
-      color:var(--muted);
-      margin:8px 0 6px;
-      font-weight:650;
-    }
-    input, textarea, select{
-      width:100%;
-      padding:10px 11px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background:#fff;
-      outline:none;
-      font-size:14px;
-      color:var(--ink);
-    }
-    textarea{min-height:88px; resize:vertical}
-
-    .hint{
-      margin:8px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-    .chip{
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:#fff;
-      cursor:pointer;
-      font-size:12px;
-      font-weight:750;
-      color: var(--ink);
-      transition: transform .08s ease, border-color .18s ease;
-    }
-    .chip:hover{transform: translateY(-1px); border-color:#e6c999}
-    .chip.active{
-      border-color: rgba(217,119,6,.4);
-      background: linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.12));
-    }
-
-    /* Preview */
-    .previewWrap{
-      display:grid;
-      gap:14px;
-    }
-
-    .previewTop{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; flex-wrap:wrap;
-    }
-    .previewTop .meta{
-      font-size:12px; color:var(--muted);
-    }
-
-    .stage{
-      display:grid;
-      place-items:center;
-      padding:14px;
-      border-radius: var(--radius2);
-      border: 1px dashed #e6c999;
-      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
-      min-height: 520px;
-    }
-
     .card{
-      width: 760px;
-      height: 520px;
-      border-radius: 26px;
-      border: 1px solid rgba(0,0,0,.06);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
       overflow:hidden;
-      box-shadow: 0 26px 60px rgba(31,41,55,.18);
-      position:relative;
-      background: #fff;
-      transform-origin: center;
     }
-    @media (max-width: 980px){
-      .card{width: 92vw; max-width: 760px; height: calc(min(520px, 68vw));}
+    .hero{
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      background: linear-gradient(135deg, #fff 0%, #fff7ea 60%, #fff 100%);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
     }
-
-    .card .bg{
-      position:absolute; inset:0;
-      background: var(--cardBg, linear-gradient(135deg,#fff,#fff7e6));
-    }
-    .card .decor{
-      position:absolute; inset:0;
-      pointer-events:none;
-      opacity: var(--decorOpacity, .95);
-    }
-
-    .card .content{
-      position:absolute; inset:0;
-      padding: 26px 28px;
-      display:grid;
-      grid-template-columns: 1fr 260px;
-      gap:18px;
-      align-items: center;
-    }
-    @media (max-width: 700px){
-      .card .content{
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
-        padding: 18px 16px;
-      }
-    }
-
     .title{
-      font-size: var(--titleSize, 48px);
       margin:0;
-      line-height:1.05;
-      letter-spacing:.2px;
-      color: var(--titleColor, #1f2937);
-      text-shadow: 0 10px 30px rgba(0,0,0,.08);
-      font-weight: 900;
-      font-family: var(--titleFont, system-ui);
-      word-break: break-word;
+      font-size:18px;
+      line-height:1.25;
     }
     .sub{
-      margin:10px 0 0;
-      font-size: var(--subSize, 18px);
-      color: var(--subColor, #374151);
-      font-weight: 700;
-      font-family: var(--bodyFont, system-ui);
-      word-break: break-word;
-    }
-    .msg{
-      margin:12px 0 0;
-      font-size: var(--msgSize, 16px);
-      color: var(--msgColor, #374151);
-      line-height:1.45;
-      white-space: pre-wrap;
-      font-family: var(--bodyFont, system-ui);
-      word-break: break-word;
-    }
-    .footer{
-      position:absolute;
-      left: 24px;
-      bottom: 16px;
-      right: 24px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-end;
-      font-size:12px;
-      color: rgba(55,65,81,.8);
-      font-weight:650;
-      font-family: var(--bodyFont, system-ui);
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
     }
     .badge{
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       padding:8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.08);
-      background: rgba(255,255,255,.65);
-      backdrop-filter: blur(6px);
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:#7a4b00;
+      font-weight:700;
+      font-size:12px;
+      white-space:nowrap;
     }
     .dot{
-      width:9px; height:9px; border-radius:99px;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      box-shadow: 0 8px 18px rgba(217,119,6,.25);
+      width:9px;height:9px;border-radius:99px;background:var(--brand2);
+      box-shadow:0 0 0 3px rgba(245,158,11,.2);
     }
-
-    /* Photo */
-    .photoBox{
+    .stage{
       position:relative;
-      width: 260px;
-      height: 260px;
-      border-radius: var(--photoRadius, 22px);
-      border: 2px solid rgba(255,255,255,.75);
-      box-shadow: 0 22px 55px rgba(31,41,55,.18);
-      overflow:hidden;
-      background: rgba(255,255,255,.55);
-      backdrop-filter: blur(6px);
-      justify-self:end;
+      height:580px;
+      background: radial-gradient(1200px 500px at 50% 15%, #ffffff 0%, #fff7ea 40%, #fff3dd 100%);
     }
-    @media (max-width:700px){
-      .photoBox{justify-self:center; width: 220px; height:220px;}
+    @media (max-width: 980px){
+      .stage{height:520px}
     }
-    .photoBox .ph{
-      position:absolute; inset:0;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(245,158,11,.18), rgba(217,119,6,.08) 45%, rgba(255,255,255,.75) 70%),
-        linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,247,230,.85));
-      display:grid; place-items:center;
-      color: rgba(55,65,81,.75);
-      font-weight: 900;
-      text-align:center;
-      padding: 18px;
-    }
-    .photoBox img{
+    canvas{display:block}
+    .hud{
       position:absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      transform-origin: center;
-      user-select:none;
-      -webkit-user-drag:none;
-      max-width: none;
-      width: auto;
-      height: auto;
-      min-width: 100%;
-      min-height: 100%;
-      cursor: grab;
-    }
-    .photoBox img:active{cursor: grabbing;}
-
-    .miniActions{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;
-    }
-
-    .twoCols{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    @media (max-width:520px){
-      .twoCols{grid-template-columns:1fr}
-    }
-
-    .note{
-      margin-top:10px;
+      left:12px; top:12px;
+      background: rgba(255,255,255,.82);
+      border:1px solid rgba(234,220,197,.9);
+      border-radius:14px;
       padding:10px 12px;
-      border-radius:16px;
-      background: rgba(245,158,11,.12);
-      border:1px solid rgba(217,119,6,.18);
-      color:#6b4a1b;
+      box-shadow:0 12px 30px rgba(31,41,55,.12);
+      max-width: 420px;
+      backdrop-filter: blur(6px);
+    }
+    .hud .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, #fff 0%, #fff5df 100%);
+      color:var(--ink);
+      border-radius:12px;
+      padding:9px 11px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(31,41,55,.10);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0px)}
+    .btn.primary{
+      border-color: rgba(217,119,6,.45);
+      background: linear-gradient(180deg, #fffbf2 0%, #ffe5b4 100%);
+    }
+    .btn.danger{
+      border-color: rgba(185,28,28,.35);
+      background: linear-gradient(180deg, #fff5f5 0%, #ffd6d6 100%);
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .k{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      padding:2px 6px;
+      border:1px solid rgba(234,220,197,.9);
+      border-radius:10px;
+      background:#fff;
+      color:#6b4a1a;
+    }
+    .panel{
+      padding:12px 14px;
+    }
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      margin-bottom:6px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .status{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:10px 0 0;
+      padding:10px 12px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+    }
+    .status b{color:var(--brand)}
+    .small{font-size:12px;color:var(--muted)}
+    .moves{
+      margin-top:10px;
+      background:var(--codebg);
+      color:var(--codeink);
+      border-radius:14px;
+      padding:10px 12px;
+      border:1px solid rgba(234,220,197,.35);
+      min-height: 86px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12.5px;
+      line-height:1.45;
+    }
+    input[type="range"]{width:100%}
+    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 480px){.grid2{grid-template-columns:1fr}}
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
       font-size:12px;
       line-height:1.45;
-      font-weight:650;
     }
-
-    /* Print */
-    @media print{
-      body{background:#fff}
-      .wrap{max-width:none; margin:0; padding:0}
-      .topbar,.panel,.previewTop,.note{display:none !important}
-      .stage{border:none; background:#fff; min-height:auto; padding:0}
-      .card{box-shadow:none; border:none}
-    }
+    .hint code{background:#fff;border:1px solid var(--border);padding:1px 6px;border-radius:10px}
   </style>
-</head>
 
+  <!-- cube.js (Rubik’s cube model + Kociemba solver via worker) -->
+  <script src="https://ldez.github.io/cubejs/lib/cube.js"></script>
+  <script src="https://ldez.github.io/cubejs/lib/async.js"></script>
+</head>
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">CR</div>
+    <section class="card">
+      <div class="hero">
         <div>
-          <h1>Birthday Card Maker</h1>
-          <p>Templates • Photo • Print • WhatsApp • <strong>Champak Roy</strong></p>
+          <h1 class="title">3D Rubik’s Cube Solver</h1>
+          <p class="sub">Three.js 3D view + real solver (cube.js / Kociemba) + animated solution.</p>
+          <p class="sub">Drag to orbit. Scroll to zoom.</p>
+        </div>
+        <div class="badge"><span class="dot"></span> 3×3 • Solve + Animate</div>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="hud">
+          <div class="row">
+            <button class="btn primary" id="btnScramble">Scramble</button>
+            <button class="btn primary" id="btnSolve">Solve</button>
+            <button class="btn" id="btnStep">Step</button>
+            <button class="btn" id="btnPlay">Play</button>
+            <button class="btn danger" id="btnReset">Reset</button>
+          </div>
+
+          <div class="status">
+            <div class="small">
+              <div><b id="solverState">Solver:</b> <span id="solverText">initializing…</span></div>
+              <div>Queue: <span class="k" id="queueCount">0</span> • Busy: <span class="k" id="busyFlag">no</span></div>
+            </div>
+            <div class="small" style="text-align:right">
+              <div>Speed</div>
+              <div class="k" id="speedLabel">280 ms / quarter</div>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="actions">
-        <button id="btnRandom">🎲 Random Template</button>
-        <button id="btnSave">💾 Save</button>
-        <button id="btnLoad">📂 Load</button>
-        <button id="btnReset" class="danger">♻ Reset</button>
-        <button id="btnDownload" class="primary">⬇ Download PNG</button>
-        <button id="btnPrint" class="primary">🖨 Print</button>
-        <button id="btnWhatsApp" class="primary">🟢 WhatsApp</button>
+    <aside class="card">
+      <div class="hero">
+        <div>
+          <h2 class="title" style="font-size:16px;margin:0">Controls & Output</h2>
+          <p class="sub" style="margin:6px 0 0">Scramble, solve, then watch it animate.</p>
+        </div>
+        <div class="badge"><span class="dot"></span> Light Saffron UI</div>
       </div>
-    </div>
 
-    <div class="grid">
-      <!-- Left controls -->
       <div class="panel">
-        <h2>1) Card Details</h2>
-
-        <div class="row">
+        <div class="grid2">
           <div>
-            <label>To (Name)</label>
-            <input id="toName" placeholder="e.g., Riya" value="Riya" />
+            <div class="label">Animation speed <span class="k" id="speedMini">280ms</span></div>
+            <input id="speed" type="range" min="120" max="650" value="280" />
           </div>
           <div>
-            <label>From (Your name)</label>
-            <input id="fromName" placeholder="e.g., Champak" value="Champak" />
+            <div class="label">Scramble length <span class="k" id="scrMini">20</span></div>
+            <input id="scrLen" type="range" min="5" max="35" value="20" />
           </div>
         </div>
 
-        <div class="row">
-          <div>
-            <label>Age (optional)</label>
-            <input id="age" type="number" min="0" placeholder="e.g., 12" value="12" />
-          </div>
-          <div>
-            <label>Date (optional)</label>
-            <input id="date" type="date" />
-          </div>
+        <div style="margin-top:10px">
+          <div class="label">Moves</div>
+          <div class="moves" id="movesBox">—</div>
         </div>
 
-        <label>Message</label>
-        <textarea id="message" placeholder="Write a sweet birthday message...">Wishing you a day full of smiles, surprises, and cake! 🎂✨</textarea>
-
-        <div class="twoCols">
-          <div>
-            <label>Title Style</label>
-            <select id="titleStyle">
-              <option value="classic">Classic</option>
-              <option value="fun" selected>Fun</option>
-              <option value="elegant">Elegant</option>
-              <option value="bold">Bold</option>
-            </select>
-          </div>
-          <div>
-            <label>Photo Shape</label>
-            <select id="photoShape">
-              <option value="rounded" selected>Rounded</option>
-              <option value="circle">Circle</option>
-              <option value="square">Square</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="twoCols">
-          <div>
-            <label>Title Size</label>
-            <input id="titleSize" type="range" min="34" max="64" value="50" />
-          </div>
-          <div>
-            <label>Message Size</label>
-            <input id="msgSize" type="range" min="12" max="22" value="16" />
-          </div>
-        </div>
-
-        <div class="note">
-          ✅ Tip: Upload a photo, then <b>drag</b> to position it. Use the slider to <b>zoom</b>.
-        </div>
-
-        <h2 style="margin-top:14px;">2) Choose a Template</h2>
-        <div id="templateChips" class="chips"></div>
-
-        <h2 style="margin-top:14px;">3) Add a Photo</h2>
-        <div class="row">
-          <div>
-            <label>Upload Photo</label>
-            <input id="photo" type="file" accept="image/*" />
-          </div>
-          <div>
-            <label>Photo Zoom</label>
-            <input id="photoZoom" type="range" min="1" max="2.8" step="0.01" value="1.2" />
-          </div>
-        </div>
-
-        <div class="miniActions">
-          <button id="btnClearPhoto">🗑 Clear Photo</button>
-          <button id="btnCenterPhoto">🎯 Center Photo</button>
-        </div>
-
-        <p class="hint">
-          Download PNG works best on modern browsers. WhatsApp share opens WhatsApp with your message —
-          attach the downloaded image manually if you want to send the card image.
-        </p>
-      </div>
-
-      <!-- Right preview -->
-      <div class="previewWrap">
-        <div class="panel previewTop">
-          <div>
-            <div style="font-weight:900;color:var(--brand);">Live Preview</div>
-            <div class="meta">Card updates as you type • Print-ready • 1-click download</div>
-          </div>
-          <div class="meta" id="activeTemplateMeta">Template: —</div>
-        </div>
-
-        <div class="stage">
-          <div id="card" class="card">
-            <div class="bg" id="cardBg"></div>
-            <div class="decor" id="decor"></div>
-
-            <div class="content">
-              <div>
-                <h1 class="title" id="titleText">Happy Birthday</h1>
-                <div class="sub" id="subText">Riya — 12</div>
-                <div class="msg" id="msgText"></div>
-              </div>
-
-              <div class="photoBox" id="photoBox">
-                <div class="ph" id="photoPlaceholder">
-                  <div>
-                    <div style="font-size:28px;">📸</div>
-                    <div style="margin-top:6px;">Upload Photo</div>
-                  </div>
-                </div>
-                <img id="photoImg" alt="Uploaded photo" style="display:none;" />
-              </div>
-            </div>
-
-            <div class="footer">
-              <div class="badge">
-                <span class="dot"></span>
-                <span id="footerLeft">Made with ❤️</span>
-              </div>
-              <div class="badge" id="footerRight">— Champak Roy</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
-            <div style="font-weight:900;">Quick Share Text</div>
-            <div class="meta">Copy & use anywhere</div>
-          </div>
-          <textarea id="shareText" readonly></textarea>
+        <div class="hint">
+          <div><b>Notes</b></div>
+          <ul style="margin:6px 0 0;padding-left:18px">
+            <li>First time solver init can take a few seconds (tables). 1</li>
+            <li>We use cube.js worker init/solve like their demo (<code>Cube.asyncInit</code> + <code>Cube.asyncSolve</code>). 2</li>
+            <li>Current cube state is tracked in both: <code>cube.js</code> model + 3D pieces.</li>
+          </ul>
         </div>
       </div>
-    </div>
+    </aside>
   </div>
 
-  <!-- html2canvas for PNG download -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+    import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
 
-  <script>
-    // -----------------------------
-    // Templates
-    // -----------------------------
-    const templates = [
-      {
-        id: "balloons",
-        name: "Balloons Pop",
-        bg: "linear-gradient(135deg,#fff 0%, #fff7e6 35%, #fff 100%)",
-        titleColor: "#111827",
-        subColor: "#374151",
-        msgColor: "#374151",
-        decorOpacity: 1,
-        decor: balloonsSVG()
-      },
-      {
-        id: "confetti",
-        name: "Confetti Party",
-        bg: "linear-gradient(135deg,#ffffff 0%, #fff1d6 45%, #ffffff 100%)",
-        titleColor: "#1f2937",
-        subColor: "#374151",
-        msgColor: "#374151",
-        decorOpacity: 1,
-        decor: confettiSVG()
-      },
-      {
-        id: "minimal",
-        name: "Minimal Classy",
-        bg: "linear-gradient(135deg,#ffffff 0%, #ffffff 60%, #fff7e6 100%)",
-        titleColor: "#111827",
-        subColor: "#374151",
-        msgColor: "#374151",
-        decorOpacity: .7,
-        decor: minimalLinesSVG()
-      },
-      {
-        id: "kids",
-        name: "Kids Fun",
-        bg: "radial-gradient(900px 600px at 20% 10%, rgba(245,158,11,.20), transparent 55%), linear-gradient(135deg,#ffffff 0%, #fff7e6 45%, #ffffff 100%)",
-        titleColor: "#0f172a",
-        subColor: "#1f2937",
-        msgColor: "#1f2937",
-        decorOpacity: 1,
-        decor: kidsDoodlesSVG()
-      },
-      {
-        id: "floral",
-        name: "Floral Soft",
-        bg: "linear-gradient(135deg,#ffffff 0%, #fff7e6 40%, #ffffff 100%)",
-        titleColor: "#1f2937",
-        subColor: "#374151",
-        msgColor: "#374151",
-        decorOpacity: .95,
-        decor: floralSVG()
+    // ---------------------------
+    // UI helpers
+    // ---------------------------
+    const $ = (id)=>document.getElementById(id);
+    const btnScramble = $("btnScramble");
+    const btnSolve = $("btnSolve");
+    const btnStep = $("btnStep");
+    const btnPlay = $("btnPlay");
+    const btnReset = $("btnReset");
+    const movesBox = $("movesBox");
+    const queueCount = $("queueCount");
+    const busyFlag = $("busyFlag");
+    const solverText = $("solverText");
+    const speed = $("speed");
+    const speedLabel = $("speedLabel");
+    const speedMini = $("speedMini");
+    const scrLen = $("scrLen");
+    const scrMini = $("scrMini");
+
+    function setStatus(text){
+      solverText.textContent = text;
+    }
+    function setBusy(v){
+      busyFlag.textContent = v ? "yes" : "no";
+    }
+    function setQueue(n){
+      queueCount.textContent = String(n);
+    }
+
+    // ---------------------------
+    // cube.js (Rubik model + solver)
+    // ---------------------------
+    let model = new Cube(); // solved
+    let solverReady = false;
+
+    // Use the worker hosted by cube.js demo site
+    Cube.asyncInit("https://ldez.github.io/cubejs/lib/worker.js", () => {
+      solverReady = true;
+      setStatus("ready ✅");
+      btnSolve.disabled = false;
+    });
+
+    // (While initializing, show animated dots)
+    (function initDots(){
+      let t = 0;
+      const tick = () => {
+        if(solverReady) return;
+        t++;
+        setStatus("initializing" + ".".repeat((t%4)));
+        requestAnimationFrame(tick);
+      };
+      tick();
+    })();
+
+    // ---------------------------
+    // Three.js scene
+    // ---------------------------
+    const stage = document.getElementById("stage");
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xffffff, 8, 22);
+
+    const camera = new THREE.PerspectiveCamera(45, stage.clientWidth / stage.clientHeight, 0.1, 100);
+    camera.position.set(7.3, 6.1, 8.3);
+
+    const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+    renderer.setSize(stage.clientWidth, stage.clientHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    stage.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
+    // lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+    const key = new THREE.DirectionalLight(0xffffff, 0.9);
+    key.position.set(6, 8, 4);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.35);
+    fill.position.set(-6, 3, -7);
+    scene.add(fill);
+
+    // base shadow-ish disk
+    const disk = new THREE.Mesh(
+      new THREE.CircleGeometry(5.1, 64),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, transparent:true, opacity:0.65 })
+    );
+    disk.rotation.x = -Math.PI/2;
+    disk.position.y = -2.25;
+    scene.add(disk);
+
+    // ---------------------------
+    // 3D Cube construction
+    // ---------------------------
+    const cubeGroup = new THREE.Group();
+    scene.add(cubeGroup);
+
+    const SIZE = 1.0;          // cubie size
+    const GAP = 0.06;          // spacing between cubies
+    const STEP = SIZE + GAP;   // distance between centers
+    const half = STEP;         // since indices are -1,0,1
+
+    // Sticker colors (common scheme)
+    const COLORS = {
+      U: 0xffffff, // white
+      D: 0xffd400, // yellow
+      F: 0x00a651, // green
+      B: 0x0047ab, // blue
+      R: 0xb71234, // red
+      L: 0xff6a00, // orange
+      K: 0x101317  // plastic
+    };
+
+    function makeCubie(ix, iy, iz){
+      // black plastic cube
+      const geo = new THREE.BoxGeometry(SIZE, SIZE, SIZE);
+      const mat = new THREE.MeshStandardMaterial({ color: COLORS.K, roughness: 0.55, metalness: 0.05 });
+      const mesh = new THREE.Mesh(geo, mat);
+
+      mesh.position.set(ix * STEP, iy * STEP, iz * STEP);
+      mesh.userData.index = { x: ix, y: iy, z: iz };
+
+      // stickers: planes slightly offset
+      const s = SIZE * 0.92;
+      const pgeo = new THREE.PlaneGeometry(s, s);
+
+      function sticker(color, pos, rot){
+        const m = new THREE.Mesh(
+          pgeo,
+          new THREE.MeshStandardMaterial({ color, roughness:0.35, metalness:0.02 })
+        );
+        m.position.copy(pos);
+        m.rotation.set(rot.x, rot.y, rot.z);
+        mesh.add(m);
       }
-    ];
 
-    // -----------------------------
-    // Elements
-    // -----------------------------
-    const el = (id) => document.getElementById(id);
+      const o = SIZE/2 + 0.01; // offset outwards
 
-    const toName = el("toName");
-    const fromName = el("fromName");
-    const age = el("age");
-    const date = el("date");
-    const message = el("message");
-    const titleStyle = el("titleStyle");
-    const photoShape = el("photoShape");
-    const titleSize = el("titleSize");
-    const msgSize = el("msgSize");
+      if(iy ===  1) sticker(COLORS.U, new THREE.Vector3(0,  o, 0), new THREE.Euler(-Math.PI/2, 0, 0));
+      if(iy === -1) sticker(COLORS.D, new THREE.Vector3(0, -o, 0), new THREE.Euler( Math.PI/2, 0, 0));
+      if(iz ===  1) sticker(COLORS.F, new THREE.Vector3(0, 0,  o), new THREE.Euler(0, 0, 0));
+      if(iz === -1) sticker(COLORS.B, new THREE.Vector3(0, 0, -o), new THREE.Euler(0, Math.PI, 0));
+      if(ix ===  1) sticker(COLORS.R, new THREE.Vector3( o, 0, 0), new THREE.Euler(0, -Math.PI/2, 0));
+      if(ix === -1) sticker(COLORS.L, new THREE.Vector3(-o, 0, 0), new THREE.Euler(0,  Math.PI/2, 0));
 
-    const card = el("card");
-    const cardBg = el("cardBg");
-    const decor = el("decor");
-    const titleText = el("titleText");
-    const subText = el("subText");
-    const msgText = el("msgText");
-    const footerLeft = el("footerLeft");
-    const footerRight = el("footerRight");
-    const shareText = el("shareText");
-    const activeTemplateMeta = el("activeTemplateMeta");
-
-    const templateChips = el("templateChips");
-
-    const photoInput = el("photo");
-    const photoImg = el("photoImg");
-    const photoPlaceholder = el("photoPlaceholder");
-    const photoBox = el("photoBox");
-    const photoZoom = el("photoZoom");
-    const btnClearPhoto = el("btnClearPhoto");
-    const btnCenterPhoto = el("btnCenterPhoto");
-
-    // Top buttons
-    const btnRandom = el("btnRandom");
-    const btnSave = el("btnSave");
-    const btnLoad = el("btnLoad");
-    const btnReset = el("btnReset");
-    const btnDownload = el("btnDownload");
-    const btnPrint = el("btnPrint");
-    const btnWhatsApp = el("btnWhatsApp");
-
-    // -----------------------------
-    // State
-    // -----------------------------
-    let activeTemplateId = templates[1].id; // default: Confetti Party
-
-    // Photo drag state
-    let imgLoaded = false;
-    let drag = { active:false, startX:0, startY:0, imgX:0, imgY:0 };
-    let imgPos = { x: 0, y: 0, scale: parseFloat(photoZoom.value) };
-
-    // -----------------------------
-    // Helpers
-    // -----------------------------
-    function safeText(s){ return (s ?? "").toString().trim(); }
-
-    function computeSubline(){
-      const name = safeText(toName.value) || "Friend";
-      const a = safeText(age.value);
-      const d = safeText(date.value);
-      let parts = [name];
-      if (a) parts.push(a);
-      if (d) parts.push(formatDate(d));
-      return parts.join(" — ");
+      return mesh;
     }
 
-    function formatDate(iso){
-      // iso: YYYY-MM-DD
-      try{
-        const [y,m,dd] = iso.split("-").map(Number);
-        const dt = new Date(y, m-1, dd);
-        const opts = { day:"2-digit", month:"short", year:"numeric" };
-        return dt.toLocaleDateString(undefined, opts);
-      }catch(e){
-        return iso;
+    const cubies = [];
+    function buildSolvedVisual(){
+      cubeGroup.clear();
+      cubies.length = 0;
+      for(let x=-1; x<=1; x++){
+        for(let y=-1; y<=1; y++){
+          for(let z=-1; z<=1; z++){
+            const c = makeCubie(x,y,z);
+            cubies.push(c);
+            cubeGroup.add(c);
+          }
+        }
+      }
+    }
+    buildSolvedVisual();
+
+    // ---------------------------
+    // Move engine (queue + animation)
+    // ---------------------------
+    let moveQueue = [];
+    let playing = false;
+    let animating = false;
+
+    function parseAlg(alg){
+      // cube.js returns like: "D2 B' R' ..." (spaces)
+      return alg.trim().split(/\s+/).filter(Boolean);
+    }
+
+    function updateMovesBox(extraText=""){
+      const preview = moveQueue.slice(0, 40).join(" ");
+      const more = moveQueue.length > 40 ? ` … (+${moveQueue.length-40} more)` : "";
+      const head = preview.length ? preview + more : "—";
+      movesBox.textContent = extraText ? `${extraText}\n\n${head}` : head;
+      setQueue(moveQueue.length);
+    }
+
+    function axisForMove(face){
+      // Coordinate system: x right, y up, z front
+      // We use angles so that standard cube notation turns correctly.
+      // (Empirically consistent mapping for this coordinate system.)
+      switch(face){
+        case "R": return { axis: new THREE.Vector3(1,0,0), layer: {k:"x", v:  1}, baseDeg: -90 };
+        case "L": return { axis: new THREE.Vector3(1,0,0), layer: {k:"x", v: -1}, baseDeg:  90 };
+        case "U": return { axis: new THREE.Vector3(0,1,0), layer: {k:"y", v:  1}, baseDeg:  90 };
+        case "D": return { axis: new THREE.Vector3(0,1,0), layer: {k:"y", v: -1}, baseDeg: -90 };
+        case "F": return { axis: new THREE.Vector3(0,0,1), layer: {k:"z", v:  1}, baseDeg: -90 };
+        case "B": return { axis: new THREE.Vector3(0,0,1), layer: {k:"z", v: -1}, baseDeg:  90 };
+        default: return null;
       }
     }
 
-    function applyFonts(){
-      const style = titleStyle.value;
-      let titleFont = "system-ui";
-      let bodyFont = "system-ui";
-      if (style === "fun"){
-        titleFont = "ui-rounded, system-ui, Segoe UI, Arial";
-        bodyFont = "system-ui, Segoe UI, Arial";
-      } else if (style === "elegant"){
-        titleFont = "Georgia, 'Times New Roman', serif";
-        bodyFont = "system-ui, Segoe UI, Arial";
-      } else if (style === "bold"){
-        titleFont = "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif";
-        bodyFont = "system-ui, Segoe UI, Arial";
+    function selectLayer(layer){
+      // layer: {k:"x|y|z", v:-1|0|1}
+      const eps = 0.35; // tolerance for float drift
+      return cubies.filter(c => Math.abs(c.userData.index[layer.k] - layer.v) < eps);
+    }
+
+    function roundIndexFromPosition(v){
+      // convert position to -1,0,1 based on STEP
+      const r = Math.round(v / STEP);
+      return Math.max(-1, Math.min(1, r));
+    }
+
+    function resyncIndicesFromWorld(){
+      for(const c of cubies){
+        c.userData.index = {
+          x: roundIndexFromPosition(c.position.x),
+          y: roundIndexFromPosition(c.position.y),
+          z: roundIndexFromPosition(c.position.z),
+        };
+        // snap to exact grid
+        c.position.set(c.userData.index.x * STEP, c.userData.index.y * STEP, c.userData.index.z * STEP);
+        // snap rotation to quarter turns
+        const e = new THREE.Euler().setFromQuaternion(c.quaternion, "XYZ");
+        const snap = (a) => Math.round(a / (Math.PI/2)) * (Math.PI/2);
+        c.rotation.set(snap(e.x), snap(e.y), snap(e.z));
       }
-      card.style.setProperty("--titleFont", titleFont);
-      card.style.setProperty("--bodyFont", bodyFont);
     }
 
-    function applySizes(){
-      card.style.setProperty("--titleSize", `${titleSize.value}px`);
-      card.style.setProperty("--msgSize", `${msgSize.value}px`);
+    function enqueueMoves(moves, label=""){
+      moveQueue.push(...moves);
+      updateMovesBox(label);
     }
 
-    function applyPhotoShape(){
-      const v = photoShape.value;
-      let r = "22px";
-      if (v === "circle") r = "999px";
-      if (v === "square") r = "10px";
-      photoBox.style.setProperty("--photoRadius", r);
+    function clearQueue(){
+      moveQueue = [];
+      updateMovesBox();
     }
 
-    function renderChips(){
-      templateChips.innerHTML = "";
-      templates.forEach(t=>{
-        const b = document.createElement("button");
-        b.className = "chip" + (t.id===activeTemplateId ? " active" : "");
-        b.type = "button";
-        b.textContent = t.name;
-        b.addEventListener("click", ()=> setTemplate(t.id));
-        templateChips.appendChild(b);
+    function applyModelMove(move){
+      // Keep cube.js model in sync with visuals
+      model.move(move);
+    }
+
+    async function animateMove(move){
+      // move like "R", "U2", "F'", etc.
+      const face = move[0];
+      const info = axisForMove(face);
+      if(!info) return;
+
+      let turns = 1;
+      let dir = 1;
+      if(move.endsWith("2")) turns = 2;
+      if(move.endsWith("'")) dir = -1;
+
+      const totalDeg = info.baseDeg * dir * turns;
+      const totalRad = THREE.MathUtils.degToRad(totalDeg);
+
+      // Collect cubies in this layer and parent them under a temp group
+      const layerCubies = selectLayer(info.layer);
+      const pivot = new THREE.Group();
+      cubeGroup.add(pivot);
+
+      // Reparent while preserving world transforms
+      for(const c of layerCubies){
+        THREE.SceneUtils?.detach?.(c, cubeGroup, pivot);
+      }
+      // If SceneUtils is not present (modern builds), do manual detach/attach:
+      if(!THREE.SceneUtils){
+        for(const c of layerCubies){
+          cubeGroup.updateMatrixWorld(true);
+          pivot.updateMatrixWorld(true);
+
+          const worldPos = new THREE.Vector3();
+          const worldQuat = new THREE.Quaternion();
+          c.getWorldPosition(worldPos);
+          c.getWorldQuaternion(worldQuat);
+
+          cubeGroup.remove(c);
+          pivot.add(c);
+
+          c.position.copy(pivot.worldToLocal(worldPos.clone()));
+          c.quaternion.copy(worldQuat).premultiply(pivot.getWorldQuaternion(new THREE.Quaternion()).invert());
+        }
+      }
+
+      // Animate pivot rotation
+      const duration = Number(speed.value); // ms per quarter; doubles for 180 naturally
+      const start = performance.now();
+      animating = true;
+      setBusy(true);
+
+      await new Promise(resolve => {
+        const tick = (now) => {
+          const t = Math.min(1, (now - start) / duration);
+          // easeInOut
+          const tt = t<0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+          pivot.setRotationFromAxisAngle(info.axis, totalRad * tt);
+          if(t < 1){
+            requestAnimationFrame(tick);
+          } else {
+            resolve();
+          }
+        };
+        requestAnimationFrame(tick);
       });
+
+      // Bake pivot transform into children then restore parent to cubeGroup
+      pivot.updateMatrixWorld(true);
+      for(const c of [...pivot.children]){
+        c.applyMatrix4(pivot.matrix);
+        pivot.remove(c);
+        cubeGroup.add(c);
+      }
+      cubeGroup.remove(pivot);
+
+      // Snap positions/rotations and refresh discrete indices
+      resyncIndicesFromWorld();
+
+      animating = false;
+      setBusy(false);
     }
 
-    function setTemplate(id){
-      const t = templates.find(x=>x.id===id) || templates[0];
-      activeTemplateId = t.id;
+    async function stepOne(){
+      if(animating) return;
+      const mv = moveQueue.shift();
+      updateMovesBox();
+      if(!mv) return;
 
-      card.style.setProperty("--cardBg", t.bg);
-      card.style.setProperty("--titleColor", t.titleColor);
-      card.style.setProperty("--subColor", t.subColor);
-      card.style.setProperty("--msgColor", t.msgColor);
-      card.style.setProperty("--decorOpacity", t.decorOpacity);
-
-      decor.innerHTML = t.decor;
-      activeTemplateMeta.textContent = `Template: ${t.name}`;
-      renderChips();
-      update();
+      // Apply to both model + visual
+      applyModelMove(mv);
+      await animateMove(mv);
     }
 
-    function update(){
-      // Text
-      const who = safeText(toName.value) || "Friend";
-      const from = safeText(fromName.value) || "Someone";
-      const msg = safeText(message.value) || "Have a wonderful day! 🎉";
-      titleText.textContent = "Happy Birthday";
-      subText.textContent = computeSubline();
-      msgText.textContent = msg;
+    async function playLoop(){
+      while(playing){
+        if(!moveQueue.length){ playing = false; btnPlay.textContent = "Play"; break; }
+        await stepOne();
+        // small gap
+        await new Promise(r => setTimeout(r, 30));
+      }
+    }
 
-      footerLeft.textContent = `To: ${who}`;
-      footerRight.textContent = `— From ${from} • Champak Roy`;
+    // ---------------------------
+    // Scramble / Solve / Reset
+    // ---------------------------
+    function randomScramble(n){
+      const faces = ["R","L","U","D","F","B"];
+      const suff = ["", "'", "2"];
+      const out = [];
+      let last = "";
+      while(out.length < n){
+        const f = faces[Math.floor(Math.random()*faces.length)];
+        if(f === last) continue;
+        last = f;
+        out.push(f + suff[Math.floor(Math.random()*suff.length)]);
+      }
+      return out;
+    }
 
-      applyFonts();
-      applySizes();
-      applyPhotoShape();
-
-      // Share text
-      const a = safeText(age.value);
-      const d = safeText(date.value);
-      const niceDate = d ? `\nDate: ${formatDate(d)}` : "";
-      const niceAge = a ? `\nAge: ${a}` : "";
-      shareText.value =
-`🎉 Happy Birthday, ${who}! 🎂${niceAge}${niceDate}
-
-${msg}
-
-— ${from}
-
-(Generated using Birthday Card Maker by Champak Roy)`;
+    async function applyMovesInstantToVisual(moves){
+      // We still animate (it looks nicer). If you want instant, set duration tiny.
+      enqueueMoves(moves, "Queued moves:");
     }
 
     function resetAll(){
-      toName.value = "Riya";
-      fromName.value = "Champak";
-      age.value = "12";
-      date.value = "";
-      message.value = "Wishing you a day full of smiles, surprises, and cake! 🎂✨";
-      titleStyle.value = "fun";
-      photoShape.value = "rounded";
-      titleSize.value = 50;
-      msgSize.value = 16;
+      playing = false;
+      btnPlay.textContent = "Play";
+      clearQueue();
 
-      clearPhoto();
-      setTemplate("confetti");
-      update();
+      // reset model + visuals
+      model = new Cube();
+      buildSolvedVisual();
+      updateMovesBox("—");
     }
 
-    // -----------------------------
-    // Photo handling (upload + drag + zoom)
-    // -----------------------------
-    function clearPhoto(){
-      imgLoaded = false;
-      photoImg.style.display = "none";
-      photoPlaceholder.style.display = "grid";
-      photoImg.src = "";
-      photoInput.value = "";
-      imgPos = { x: 0, y: 0, scale: parseFloat(photoZoom.value) };
-      applyImageTransform();
-    }
-
-    function centerPhoto(){
-      imgPos.x = 0;
-      imgPos.y = 0;
-      applyImageTransform();
-    }
-
-    function applyImageTransform(){
-      if(!imgLoaded) return;
-      const s = imgPos.scale;
-      photoImg.style.transform = `translate(calc(-50% + ${imgPos.x}px), calc(-50% + ${imgPos.y}px)) scale(${s})`;
-    }
-
-    photoInput.addEventListener("change", (e)=>{
-      const file = e.target.files && e.target.files[0];
-      if(!file) return;
-      const url = URL.createObjectURL(file);
-      photoImg.onload = () => {
-        imgLoaded = true;
-        photoPlaceholder.style.display = "none";
-        photoImg.style.display = "block";
-        // Start a bit zoomed-in for nicer framing
-        imgPos.scale = parseFloat(photoZoom.value);
-        imgPos.x = 0; imgPos.y = 0;
-        applyImageTransform();
-      };
-      photoImg.src = url;
-    });
-
-    photoZoom.addEventListener("input", ()=>{
-      imgPos.scale = parseFloat(photoZoom.value);
-      applyImageTransform();
-    });
-
-    // Dragging
-    function getPoint(evt){
-      if (evt.touches && evt.touches[0]) return {x: evt.touches[0].clientX, y: evt.touches[0].clientY};
-      return {x: evt.clientX, y: evt.clientY};
-    }
-
-    function onDown(evt){
-      if(!imgLoaded) return;
-      evt.preventDefault();
-      drag.active = true;
-      const p = getPoint(evt);
-      drag.startX = p.x;
-      drag.startY = p.y;
-      drag.imgX = imgPos.x;
-      drag.imgY = imgPos.y;
-    }
-    function onMove(evt){
-      if(!drag.active || !imgLoaded) return;
-      const p = getPoint(evt);
-      const dx = p.x - drag.startX;
-      const dy = p.y - drag.startY;
-      imgPos.x = drag.imgX + dx;
-      imgPos.y = drag.imgY + dy;
-      applyImageTransform();
-    }
-    function onUp(){
-      drag.active = false;
-    }
-
-    photoBox.addEventListener("mousedown", onDown);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-
-    photoBox.addEventListener("touchstart", onDown, {passive:false});
-    window.addEventListener("touchmove", onMove, {passive:false});
-    window.addEventListener("touchend", onUp);
-
-    btnClearPhoto.addEventListener("click", clearPhoto);
-    btnCenterPhoto.addEventListener("click", centerPhoto);
-
-    // -----------------------------
-    // Save / Load
-    // -----------------------------
-    const STORAGE_KEY = "birthday_card_maker_v1_champak_roy";
-
-    function getState(){
-      // Note: we do not store the actual photo file; only layout settings.
-      return {
-        toName: toName.value,
-        fromName: fromName.value,
-        age: age.value,
-        date: date.value,
-        message: message.value,
-        titleStyle: titleStyle.value,
-        photoShape: photoShape.value,
-        titleSize: titleSize.value,
-        msgSize: msgSize.value,
-        templateId: activeTemplateId,
-        photoZoom: photoZoom.value,
-        photoPos: imgPos
-      };
-    }
-
-    function setState(s){
-      if(!s) return;
-      toName.value = s.toName ?? "";
-      fromName.value = s.fromName ?? "";
-      age.value = s.age ?? "";
-      date.value = s.date ?? "";
-      message.value = s.message ?? "";
-      titleStyle.value = s.titleStyle ?? "fun";
-      photoShape.value = s.photoShape ?? "rounded";
-      titleSize.value = s.titleSize ?? 50;
-      msgSize.value = s.msgSize ?? 16;
-
-      photoZoom.value = s.photoZoom ?? 1.2;
-      imgPos = s.photoPos ?? {x:0,y:0,scale: parseFloat(photoZoom.value)};
-
-      setTemplate(s.templateId ?? "confetti");
-      update();
-      applyImageTransform();
-    }
-
-    btnSave.addEventListener("click", ()=>{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
-      toast("Saved ✅");
-    });
-
-    btnLoad.addEventListener("click", ()=>{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw){ toast("No saved design found."); return; }
-      try{
-        const s = JSON.parse(raw);
-        setState(s);
-        toast("Loaded ✅");
-      }catch(e){
-        toast("Saved data is corrupted.");
+    async function solveCurrent(){
+      if(!solverReady){
+        setStatus("still initializing…");
+        return;
       }
-    });
+      if(animating) return;
 
-    btnReset.addEventListener("click", ()=>{
-      if(confirm("Reset everything?")){
-        localStorage.removeItem(STORAGE_KEY);
-        resetAll();
-        toast("Reset ✅");
-      }
-    });
+      setStatus("solving…");
+      btnSolve.disabled = true;
+      btnScramble.disabled = true;
+      btnStep.disabled = true;
+      btnPlay.disabled = true;
 
-    // -----------------------------
-    // Random template
-    // -----------------------------
-    btnRandom.addEventListener("click", ()=>{
-      const i = Math.floor(Math.random() * templates.length);
-      setTemplate(templates[i].id);
-      toast("Random template applied 🎲");
-    });
+      // Solve using cube.js worker
+      const cubeToSolve = new Cube(model); // clone
+      Cube.asyncSolve(cubeToSolve, (alg) => {
+        const moves = parseAlg(alg);
+        enqueueMoves(moves, "Solution:");
+        setStatus(`ready ✅ (solution: ${moves.length} moves)`);
 
-    // -----------------------------
-    // Download PNG
-    // -----------------------------
-    btnDownload.addEventListener("click", async ()=>{
-      // Make it crisp
-      const scale = 2;
-      const canvas = await html2canvas(card, {
-        backgroundColor: null,
-        scale,
-        useCORS: true
+        btnSolve.disabled = false;
+        btnScramble.disabled = false;
+        btnStep.disabled = false;
+        btnPlay.disabled = false;
       });
-      const a = document.createElement("a");
-      const who = safeText(toName.value) || "birthday-card";
-      a.download = `birthday-card-${who.replace(/\s+/g,"-").toLowerCase()}.png`;
-      a.href = canvas.toDataURL("image/png");
-      a.click();
-      toast("Downloaded PNG ✅");
+    }
+
+    // ---------------------------
+    // Wire UI
+    // ---------------------------
+    btnSolve.disabled = true;
+
+    btnScramble.addEventListener("click", async () => {
+      if(animating) return;
+      playing = false; btnPlay.textContent = "Play";
+      clearQueue();
+
+      const n = Number(scrLen.value);
+      const moves = randomScramble(n);
+
+      // Update model instantly by applying moves in order (so solver sees correct state)
+      for(const mv of moves) model.move(mv);
+
+      // Animate them
+      enqueueMoves(moves, "Scramble:");
+      setStatus("ready ✅ (scrambled)");
     });
 
-    // -----------------------------
-    // Print
-    // -----------------------------
-    btnPrint.addEventListener("click", ()=>{
-      // Print only the card by opening a print window
-      const t = templates.find(x=>x.id===activeTemplateId) || templates[0];
-      const printWin = window.open("", "_blank");
-      const photoHTML = imgLoaded
-        ? `<img src="${photoImg.src}" style="position:absolute;left:50%;top:50%;transform:${photoImg.style.transform};max-width:none;min-width:100%;min-height:100%;user-select:none;-webkit-user-drag:none;" />`
-        : `<div style="position:absolute;inset:0;display:grid;place-items:center;color:rgba(55,65,81,.75);font-weight:900;background:rgba(255,255,255,.55);">
-            <div style="text-align:center">
-              <div style="font-size:28px">📸</div>
-              <div style="margin-top:6px">No Photo</div>
-            </div>
-          </div>`;
-
-      const photoRadius = getComputedStyle(photoBox).getPropertyValue("--photoRadius") || "22px";
-
-      printWin.document.write(`
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Print Birthday Card</title>
-  <style>
-    @page { size: A4; margin: 10mm; }
-    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#fff; }
-    .sheet{ display:grid; place-items:center; min-height: 100vh; padding: 10mm; }
-    .card{
-      width: 180mm; height: 120mm;
-      border-radius: 26px;
-      overflow:hidden;
-      position:relative;
-      border: 1px solid rgba(0,0,0,.08);
-    }
-    .bg{ position:absolute; inset:0; background: ${t.bg}; }
-    .decor{ position:absolute; inset:0; opacity:${t.decorOpacity}; }
-    .content{
-      position:absolute; inset:0;
-      padding: 18mm 18mm;
-      display:grid;
-      grid-template-columns: 1fr 70mm;
-      gap: 10mm;
-      align-items:center;
-    }
-    .title{
-      font-size: ${titleSize.value}px;
-      margin:0;
-      line-height:1.05;
-      font-weight:900;
-      color: ${t.titleColor};
-      font-family: ${getComputedStyle(card).getPropertyValue("--titleFont") || "system-ui"};
-    }
-    .sub{
-      margin:6mm 0 0;
-      font-size: 18px;
-      font-weight:800;
-      color: ${t.subColor};
-    }
-    .msg{
-      margin:6mm 0 0;
-      font-size: ${msgSize.value}px;
-      line-height:1.45;
-      color: ${t.msgColor};
-      white-space: pre-wrap;
-    }
-    .photoBox{
-      width: 70mm; height: 70mm;
-      border-radius: ${photoRadius};
-      border: 2px solid rgba(255,255,255,.8);
-      overflow:hidden;
-      position:relative;
-      background: rgba(255,255,255,.55);
-    }
-    .footer{
-      position:absolute;
-      left: 12mm; right: 12mm; bottom: 8mm;
-      display:flex; justify-content:space-between; gap:8mm;
-      font-size: 12px;
-      color: rgba(55,65,81,.85);
-      font-weight:700;
-    }
-    .badge{ padding:6px 10px; border-radius:999px; border:1px solid rgba(0,0,0,.10); background: rgba(255,255,255,.7); }
-  </style>
-</head>
-<body>
-  <div class="sheet">
-    <div class="card">
-      <div class="bg"></div>
-      <div class="decor">${t.decor}</div>
-      <div class="content">
-        <div>
-          <h1 class="title">Happy Birthday</h1>
-          <div class="sub">${escapeHTML(computeSubline())}</div>
-          <div class="msg">${escapeHTML(safeText(message.value) || "")}</div>
-        </div>
-        <div class="photoBox">
-          ${photoHTML}
-        </div>
-      </div>
-      <div class="footer">
-        <div class="badge">To: ${escapeHTML(safeText(toName.value) || "Friend")}</div>
-        <div class="badge">From ${escapeHTML(safeText(fromName.value) || "Someone")} • Champak Roy</div>
-      </div>
-    </div>
-  </div>
-  <script>
-    window.onload = () => setTimeout(()=>window.print(), 200);
-  </script>
-</body>
-</html>`);
-      printWin.document.close();
+    btnStep.addEventListener("click", async () => {
+      playing = false; btnPlay.textContent = "Play";
+      await stepOne();
     });
 
-    // -----------------------------
-    // WhatsApp Share
-    // -----------------------------
-    btnWhatsApp.addEventListener("click", ()=>{
-      const text = shareText.value || "";
-      const url = "https://wa.me/?text=" + encodeURIComponent(text);
-      window.open(url, "_blank");
+    btnPlay.addEventListener("click", async () => {
+      if(playing){
+        playing = false;
+        btnPlay.textContent = "Play";
+        return;
+      }
+      playing = true;
+      btnPlay.textContent = "Pause";
+      await playLoop();
     });
 
-    // -----------------------------
-    // Input listeners
-    // -----------------------------
-    [toName, fromName, age, date, message, titleStyle, photoShape, titleSize, msgSize].forEach(x=>{
-      x.addEventListener("input", update);
-      x.addEventListener("change", update);
+    btnReset.addEventListener("click", () => {
+      resetAll();
+      setStatus(solverReady ? "ready ✅" : "initializing…");
     });
 
-    // -----------------------------
-    // Toast
-    // -----------------------------
-    let toastTimer = null;
-    function toast(msg){
-      let t = document.getElementById("toast");
-      if(!t){
-        t = document.createElement("div");
-        t.id = "toast";
-        t.style.position = "fixed";
-        t.style.left = "50%";
-        t.style.bottom = "18px";
-        t.style.transform = "translateX(-50%)";
-        t.style.background = "rgba(17,24,39,.92)";
-        t.style.color = "#fff";
-        t.style.padding = "10px 12px";
-        t.style.borderRadius = "14px";
-        t.style.fontWeight = "800";
-        t.style.fontSize = "13px";
-        t.style.boxShadow = "0 18px 40px rgba(0,0,0,.25)";
-        t.style.zIndex = "9999";
-        t.style.maxWidth = "92vw";
-        document.body.appendChild(t);
-      }
-      t.textContent = msg;
-      t.style.opacity = "1";
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ t.style.opacity = "0"; }, 1300);
+    // speed + scramble UI
+    function refreshLabels(){
+      speedLabel.textContent = `${Number(speed.value)} ms / quarter`;
+      speedMini.textContent = `${Number(speed.value)}ms`;
+      scrMini.textContent = `${Number(scrLen.value)}`;
     }
+    speed.addEventListener("input", refreshLabels);
+    scrLen.addEventListener("input", refreshLabels);
+    refreshLabels();
 
-    // -----------------------------
-    // SVG Decor Generators
-    // -----------------------------
-    function balloonsSVG(){
-      return `
-<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="g1" cx="30%" cy="20%">
-      <stop offset="0" stop-color="rgba(245,158,11,.85)"/>
-      <stop offset="1" stop-color="rgba(217,119,6,.9)"/>
-    </radialGradient>
-    <radialGradient id="g2" cx="30%" cy="20%">
-      <stop offset="0" stop-color="rgba(255,255,255,.95)"/>
-      <stop offset="1" stop-color="rgba(245,158,11,.65)"/>
-    </radialGradient>
-  </defs>
-
-  <g opacity="0.95">
-    <circle cx="80" cy="90" r="46" fill="url(#g1)"/>
-    <circle cx="150" cy="70" r="34" fill="url(#g2)"/>
-    <circle cx="690" cy="110" r="48" fill="url(#g2)"/>
-    <circle cx="630" cy="60" r="30" fill="url(#g1)"/>
-
-    <path d="M80 136 C78 200, 90 260, 70 330" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
-    <path d="M150 104 C145 160, 160 230, 140 300" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
-    <path d="M690 158 C675 210, 700 270, 675 340" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
-    <path d="M630 90 C620 155, 640 220, 615 290" stroke="rgba(31,41,55,.35)" stroke-width="2" fill="none"/>
-  </g>
-
-  <g opacity="0.25">
-    <circle cx="260" cy="450" r="140" fill="rgba(245,158,11,.25)"/>
-    <circle cx="560" cy="440" r="160" fill="rgba(217,119,6,.18)"/>
-  </g>
-</svg>`;
+    // ---------------------------
+    // Render loop + resize
+    // ---------------------------
+    function render(){
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
     }
+    render();
 
-    function confettiSVG(){
-      // Simple confetti rectangles + streamers
-      const pieces = [];
-      for(let i=0;i<90;i++){
-        const x = Math.random()*760;
-        const y = Math.random()*520;
-        const w = 6 + Math.random()*10;
-        const h = 3 + Math.random()*10;
-        const r = (Math.random()*70)-35;
-        const op = 0.18 + Math.random()*0.28;
-        pieces.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"
-          rx="2" fill="rgba(217,119,6,${op.toFixed(2)})" transform="rotate(${r.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`);
-      }
-      return `
-<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <path d="M-10 120 C 140 40, 260 200, 420 120 S 650 120, 770 60" stroke="rgba(245,158,11,.25)" stroke-width="12" fill="none" stroke-linecap="round"/>
-  <path d="M-10 180 C 170 110, 330 250, 510 170 S 660 150, 770 120" stroke="rgba(217,119,6,.18)" stroke-width="10" fill="none" stroke-linecap="round"/>
-  ${pieces.join("")}
-</svg>`;
+    function onResize(){
+      const w = stage.clientWidth;
+      const h = stage.clientHeight;
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w,h);
     }
+    window.addEventListener("resize", onResize);
 
-    function minimalLinesSVG(){
-      return `
-<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <g opacity="0.22" stroke="rgba(217,119,6,.55)" stroke-width="2" fill="none">
-    <path d="M40 80 H720" stroke-dasharray="6 10"/>
-    <path d="M60 120 H700" stroke-dasharray="6 10"/>
-    <path d="M40 440 H720" stroke-dasharray="6 10"/>
-    <path d="M60 400 H700" stroke-dasharray="6 10"/>
-  </g>
-  <g opacity="0.20">
-    <circle cx="90" cy="260" r="120" fill="rgba(245,158,11,.18)"/>
-    <circle cx="670" cy="260" r="140" fill="rgba(217,119,6,.12)"/>
-  </g>
-</svg>`;
-    }
+    // Start in a nice orientation
+    cubeGroup.rotation.y = Math.PI * 0.15;
+    cubeGroup.rotation.x = -Math.PI * 0.08;
 
-    function kidsDoodlesSVG(){
-      return `
-<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <g opacity="0.9">
-    <circle cx="90" cy="80" r="26" fill="rgba(245,158,11,.45)"/>
-    <circle cx="140" cy="110" r="14" fill="rgba(217,119,6,.30)"/>
-    <circle cx="680" cy="90" r="22" fill="rgba(245,158,11,.35)"/>
-    <circle cx="620" cy="130" r="12" fill="rgba(217,119,6,.28)"/>
-  </g>
-  <g opacity="0.24" stroke="rgba(217,119,6,.85)" stroke-width="5" fill="none" stroke-linecap="round">
-    <path d="M90 430 C 160 360, 240 520, 330 440"/>
-    <path d="M430 450 C 520 380, 610 520, 720 420"/>
-  </g>
-  <g opacity="0.18">
-    <polygon points="80,250 95,280 128,284 103,304 110,336 80,320 50,336 57,304 32,284 65,280" fill="rgba(245,158,11,.55)"/>
-    <polygon points="690,260 705,290 738,294 713,314 720,346 690,330 660,346 667,314 642,294 675,290" fill="rgba(217,119,6,.45)"/>
-  </g>
-</svg>`;
-    }
-
-    function floralSVG(){
-      return `
-<svg viewBox="0 0 760 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <g opacity="0.22">
-    <circle cx="90" cy="430" r="120" fill="rgba(245,158,11,.22)"/>
-    <circle cx="680" cy="420" r="140" fill="rgba(217,119,6,.16)"/>
-  </g>
-  <g opacity="0.9">
-    ${flower(70, 420, 34)}
-    ${flower(120, 460, 24)}
-    ${flower(690, 430, 38)}
-    ${flower(640, 470, 22)}
-  </g>
-</svg>`;
-    }
-
-    function flower(cx, cy, r){
-      // petals
-      const petals = [];
-      for(let i=0;i<6;i++){
-        const a = (Math.PI*2/6)*i;
-        const px = cx + Math.cos(a)*r*0.9;
-        const py = cy + Math.sin(a)*r*0.9;
-        petals.push(`<ellipse cx="${px}" cy="${py}" rx="${r*0.55}" ry="${r*0.32}" fill="rgba(245,158,11,.35)"/>`);
-      }
-      return `
-<g>
-  ${petals.join("")}
-  <circle cx="${cx}" cy="${cy}" r="${r*0.32}" fill="rgba(217,119,6,.42)"/>
-  <circle cx="${cx}" cy="${cy}" r="${r*0.18}" fill="rgba(255,255,255,.75)"/>
-</g>`;
-    }
-
-    // -----------------------------
-    // Utilities
-    // -----------------------------
-    function escapeHTML(str){
-      return (str ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;")
-        .replaceAll("\n","<br/>");
-    }
-
-    // -----------------------------
-    // Init
-    // -----------------------------
-    function init(){
-      // Default date empty; user can set
-      renderChips();
-      setTemplate(activeTemplateId);
-      update();
-
-      // Try auto-load a saved state (non-blocking)
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(raw){
-        try{ setState(JSON.parse(raw)); }catch(e){}
-      }
-    }
-    init();
+    // Initial text
+    updateMovesBox("—");
+    setBusy(false);
   </script>
 </body>
 </html>
