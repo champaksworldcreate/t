@@ -3,447 +3,477 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clickable Tabla — Dayan & Bayan (Web)</title>
-  <meta name="description" content="A simple clickable tabla web page: click/tap Dayan and Bayan to play bols using audio samples." />
+  <title>Assignment: Number to Words — Framework + Flowchart + Pyodide + Locked Solution</title>
+  <meta name="description" content="Blog-ready assignment page with a Pyodide editor and an encrypted, password-unlockable teacher solution." />
   <meta name="author" content="Champak Roy" />
 
   <style>
     :root{
-      /* Light saffron theme */
-      --bg:#fff7e6;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --border:#eadcc5;
+      --bg:#fff7e6; --card:#fff; --ink:#1f2937; --muted:#6b7280;
+      --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
       --shadow:0 18px 40px rgba(31,41,55,.14);
-      --ok:#166534;
-      --danger:#b91c1c;
+      --codebg:#0b1220; --codeink:#e5e7eb; --codeborder:#22314f;
+      --ok:#166534; --danger:#b91c1c;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--ink);
-    }
-    .container{
-      max-width:1100px;
-      margin:28px auto;
-      padding:18px;
-    }
-    .hero{
-      background:linear-gradient(135deg,#fff1d6, #ffffff);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-    h1{margin:0 0 6px;color:var(--brand);font-size:28px}
-    .sub{margin:0;color:var(--muted)}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:16px;
-      margin-top:16px;
-    }
-    @media (max-width: 900px){
-      .grid{grid-template-columns:1fr}
-    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+    .container{max-width:1200px;margin:28px auto;padding:18px}
+    .hero{background:linear-gradient(135deg,#fff1d6,#fff);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+    .kicker{display:inline-flex;gap:8px;align-items:center;font-weight:800;color:var(--brand);background:#fff7e6;border:1px solid var(--border);padding:6px 10px;border-radius:999px}
+    h1{margin:12px 0 6px;color:var(--brand);font-size:clamp(24px,3vw,34px);line-height:1.2}
+    .subtitle{margin:0;color:var(--muted);font-size:15px;max-width:78ch}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px;align-items:start}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+    .card h2{margin:0 0 10px;font-size:18px;color:var(--brand)}
+    .callout{border:1px dashed var(--border);background:#fffaf2;border-radius:14px;padding:12px;color:var(--muted);font-size:14px}
+    .callout strong{color:var(--ink)}
+    pre,code,textarea,input{font-family:var(--mono)}
+    pre{margin:10px 0 0;padding:12px;border-radius:14px;background:var(--codebg);color:var(--codeink);border:1px solid var(--codeborder);overflow:auto;font-size:13px;line-height:1.45;white-space:pre;tab-size:2}
+    code.inline{background:#fff1d6;border:1px solid var(--border);padding:2px 6px;border-radius:8px}
+    .btnbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{border:1px solid var(--border);background:linear-gradient(180deg,#fff,#fff7e6);color:var(--ink);border-radius:12px;padding:9px 12px;font-weight:800;cursor:pointer;box-shadow:0 10px 22px rgba(31,41,55,.10)}
+    button:hover{transform:translateY(-1px)}
+    button.primary{border-color:#f3d7a6;background:linear-gradient(180deg,#fff7e6,#fff)}
+    button.danger{border-color:#fecaca;background:linear-gradient(180deg,#fff,#fff1f2);color:#991b1b}
+    .smallnote{font-size:12.5px;color:var(--muted);margin-top:8px}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
+    /* Editor */
+    .status{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid var(--border);background:#fffaf0;font-weight:900;font-size:12.5px;color:#7c4a00}
+    .status .dot{width:10px;height:10px;border-radius:999px;background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.18)}
+    .editor{width:100%;min-height:280px;resize:vertical;border-radius:14px;border:1px solid var(--border);background:#0b1220;color:#e5e7eb;padding:12px;outline:none;font-size:13px;line-height:1.5;tab-size:2}
+    .monoBox{background:#0b1220;color:#e5e7eb;border:1px solid var(--codeborder);border-radius:14px;padding:12px;overflow:auto;white-space:pre-wrap;word-break:break-word;min-height:120px;font-size:13px;line-height:1.45}
+    .err{color:#fecaca} .ok{color:#bbf7d0}
 
-    /* Tabla stage */
-    .stage{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:22px;
-      padding:14px 6px;
-      flex-wrap:wrap;
-    }
+    /* Lock UI */
+    .lockRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    .pwd{flex:1 1 260px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--ink);outline:none;font-size:13px}
+    .solutionBox{margin-top:10px;display:none}
+    .solutionBox.show{display:block}
 
-    .drumWrap{ text-align:center; }
-    .drumLabel{
-      margin-top:10px;
-      font-weight:700;
-      color:var(--brand);
-      letter-spacing:.2px;
-    }
-    .hint{
-      margin-top:4px;
-      color:var(--muted);
-      font-size:13px;
-    }
+    /* Flowchart container */
+    .flow-wrap{overflow:auto;border:1px solid var(--border);border-radius:16px;background:#fff;padding:10px}
 
-    /* Drum look */
-    .drum{
-      width:260px;
-      height:260px;
-      border-radius:50%;
-      position:relative;
-      border:1px solid var(--border);
-      box-shadow: 0 16px 30px rgba(31,41,55,.18);
-      cursor:pointer;
-      user-select:none;
-      touch-action:manipulation;
-      outline:none;
-      transform: translateZ(0);
-    }
-    .drum:active{ transform: scale(0.99); }
-
-    .bayan{
-      background:
-        radial-gradient(circle at 40% 35%, #fff, #f6ede0 40%, #e3d2ba 70%, #d0b18c 100%);
-    }
-    .dayan{
-      background:
-        radial-gradient(circle at 40% 35%, #fff, #f3efe6 40%, #d8c29c 75%, #c09a5a 100%);
-    }
-
-    /* Rings */
-    .ring{
-      position:absolute; inset:14px;
-      border-radius:50%;
-      border:2px solid rgba(0,0,0,.10);
-      box-shadow: inset 0 0 0 10px rgba(255,255,255,.25);
-      pointer-events:none;
-    }
-    .ring2{
-      position:absolute; inset:34px;
-      border-radius:50%;
-      border:2px solid rgba(0,0,0,.10);
-      pointer-events:none;
-    }
-
-    /* Syahi + zones */
-    .syahi{
-      position:absolute;
-      width:92px;height:92px;
-      left:50%;top:50%;
-      transform:translate(-50%,-50%);
-      border-radius:50%;
-      background: radial-gradient(circle at 35% 30%, #3b3b3b, #111 60%, #000 100%);
-      box-shadow: inset 0 0 0 6px rgba(255,255,255,.05);
-      pointer-events:none;
-    }
-
-    /* Click zones (transparent buttons) */
-    .zone{
-      position:absolute;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      letter-spacing:.3px;
-      color: rgba(255,255,255,.0);
-      background: rgba(255,255,255,0);
-      border: 2px dashed rgba(217,119,6,0);
-    }
-    .zone:focus-visible{
-      outline: 3px solid rgba(245,158,11,.55);
-      outline-offset: 3px;
-    }
-
-    /* Dayan zones: center (Tin), rim (Na) */
-    .zone.center{
-      width:120px;height:120px;
-      left:50%;top:50%;
-      transform:translate(-50%,-50%);
-    }
-    .zone.rim{
-      inset:18px;
-    }
-
-    /* Bayan zones: center (Ge), rim (Ke) */
-    .bayan .zone.center{ width:132px;height:132px; }
-    .bayan .zone.rim{ inset:16px; }
-
-    /* UI controls */
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{
-      border:1px solid var(--border);
-      background:linear-gradient(180deg,#fff, #fff7ea);
-      color:var(--ink);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:700;
-    }
-    .btn.primary{
-      border-color: rgba(217,119,6,.45);
-      background: linear-gradient(180deg,#fff1d6,#ffe8bf);
-    }
-    .btn:active{ transform: translateY(1px); }
-    .small{font-size:13px;color:var(--muted);margin:10px 0 0}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;
-      border:1px dashed rgba(217,119,6,.5);
-      border-radius:999px;
-      background:#fffaf1;
-      color:var(--ink);
-      font-weight:700;
-      margin-top:10px;
-    }
-    .dot{
-      width:9px;height:9px;border-radius:50%;
-      background:var(--danger);
-    }
-    .dot.ok{ background:var(--ok); }
-
-    .log{
-      margin-top:12px;
-      border:1px solid var(--border);
-      background:#fffaf1;
-      border-radius:12px;
-      padding:10px;
-      min-height:92px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:13px;
-      color:#111827;
-      white-space:pre-wrap;
-    }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      border:1px solid var(--border);
-      background:#fff;
-      padding:2px 6px;
-      border-radius:7px;
-      font-size:12px;
-    }
+    footer{margin:18px 0 0;text-align:center;color:var(--muted);font-size:12.5px}
   </style>
+
+  <!-- Pyodide -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
 </head>
 
 <body>
   <div class="container">
-    <div class="hero">
-      <h1>Clickable Tabla (Dayan + Bayan)</h1>
-      <p class="sub">Click/tap the drum zones to play bols. Works best after your first click (browser audio unlock).</p>
-      <div class="pill" id="statusPill">
-        <span class="dot" id="statusDot"></span>
-        <span id="statusText">Audio not unlocked yet — click any drum once</span>
-      </div>
-      <p class="small">
-        Keyboard: <span class="kbd">N</span> Na, <span class="kbd">T</span> Tin, <span class="kbd">G</span> Ge, <span class="kbd">K</span> Ke
+    <section class="hero">
+      <div class="kicker">🧠 Assignment • Framework + Pyodide • Encrypted Teacher Solution</div>
+      <h1>Convert Numbers to Words</h1>
+      <p class="subtitle">
+        Students get the framework and practice editor. Teachers can unlock the reference solution using a password.
+        (The solution is stored <strong>encrypted</strong> in the page.)
       </p>
-    </div>
+    </section>
 
     <div class="grid">
-      <!-- Tabla -->
-      <div class="card">
-        <h2 style="margin:0 0 10px;color:var(--brand)">Play</h2>
-        <div class="stage" aria-label="Tabla stage">
-          <!-- BAYAN -->
-          <div class="drumWrap">
-            <div class="drum bayan" role="group" aria-label="Bayan drum">
-              <div class="ring"></div>
-              <div class="ring2"></div>
-              <div class="syahi"></div>
+      <!-- LEFT -->
+      <section class="card">
+        <h2>Framework (Given)</h2>
+        <div class="callout">
+          <strong>Rule:</strong> Don’t hardcode full answers like “One Thousand Thirty Four”. Use lists + functions.
+        </div>
 
-              <!-- Rim = Ke -->
-              <button class="zone rim" data-bol="Ke" data-sound="bayan_ke" aria-label="Bayan rim: Ke"></button>
-              <!-- Center = Ge -->
-              <button class="zone center" data-bol="Ge" data-sound="bayan_ge" aria-label="Bayan center: Ge"></button>
-            </div>
-            <div class="drumLabel">Bayan (Left)</div>
-            <div class="hint">Rim: Ke • Center: Ge</div>
-          </div>
+        <pre id="skeletonBlock">digits = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"]
+decimals = ["Ten","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"]
+teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"]
 
-          <!-- DAYAN -->
-          <div class="drumWrap">
-            <div class="drum dayan" role="group" aria-label="Dayan drum">
-              <div class="ring"></div>
-              <div class="ring2"></div>
-              <div class="syahi"></div>
+def Ones(n):
+    # TODO: return digits[n]
+    pass
 
-              <!-- Rim = Na -->
-              <button class="zone rim" data-bol="Na" data-sound="dayan_na" aria-label="Dayan rim: Na"></button>
-              <!-- Center = Tin -->
-              <button class="zone center" data-bol="Tin" data-sound="dayan_tin" aria-label="Dayan center: Tin"></button>
-            </div>
-            <div class="drumLabel">Dayan (Right)</div>
-            <div class="hint">Rim: Na • Center: Tin</div>
+def Tens(n):
+    # TODO: handle 10–19 (teens) and 20–99 (decimals + Ones)
+    pass
+
+def Hundreds(n):
+    # TODO: Ones(h) + "Hundred" + remainder (delegate)
+    pass
+
+def Thousands(n):
+    # TODO: Ones(th) + "Thousand" + remainder (delegate)
+    pass
+
+def NumberToWords(n):
+    # TODO: choose which helper to call based on range
+    pass</pre>
+
+        <div class="btnbar">
+          <button type="button" onclick="copyText('skeletonBlock')">Copy Framework</button>
+          <button type="button" onclick="toggleBlock('skeletonBlock')">Show/Hide</button>
+        </div>
+
+        <h2 style="margin-top:16px;">Pyodide Practice Editor</h2>
+        <div class="callout">
+          Write Python and click <strong>Run</strong>. Output appears below. Use <code class="inline">print()</code>.
+        </div>
+
+        <div class="btnbar" style="margin-top:10px;align-items:center;justify-content:space-between">
+          <div class="status" id="pyStatus"><span class="dot" id="pyDot"></span><span id="pyStatusText">Loading Pyodide…</span></div>
+          <div class="btnbar" style="margin:0;">
+            <button class="primary" type="button" onclick="runCode()" id="runBtn" disabled>▶ Run</button>
+            <button type="button" onclick="resetCode()">↺ Reset</button>
+            <button type="button" onclick="copyEditor()">Copy Code</button>
+            <button type="button" onclick="clearOutput()">Clear Output</button>
           </div>
         </div>
 
-        <div class="row">
-          <button class="btn primary" id="btnTest">Test All (Na Tin Ge Ke)</button>
-          <button class="btn" id="btnClear">Clear Log</button>
+        <textarea id="editor" class="editor" spellcheck="false"></textarea>
+
+        <div style="margin-top:12px;">
+          <div class="smallnote" style="margin:0 0 8px;"><strong>Output Console</strong></div>
+          <div id="out" class="monoBox"></div>
         </div>
 
-        <div class="log" id="log" aria-live="polite">Ready. Click a zone…</div>
-        <p class="small">Tip: On mobile, use tap. On desktop, click. First interaction unlocks audio in most browsers.</p>
-      </div>
+        <h2 style="margin-top:16px;">Teacher Only: Unlock Encrypted Solution</h2>
+        <div class="callout">
+          Enter the password to decrypt and reveal the reference solution. You can also load it into the editor.
+        </div>
 
-      <!-- Settings / Info -->
-      <div class="card">
-        <h2 style="margin:0 0 10px;color:var(--brand)">Setup</h2>
-        <p style="margin:0;color:var(--muted)">
-          Put these audio files next to this HTML file:
-        </p>
-        <ul style="margin:10px 0 0;color:var(--ink)">
-          <li><b>dayan_na.mp3</b></li>
-          <li><b>dayan_tin.mp3</b></li>
-          <li><b>bayan_ge.mp3</b></li>
-          <li><b>bayan_ke.mp3</b></li>
-        </ul>
-        <p class="small" style="margin-top:10px">
-          If your files have different names, update the <code>sounds</code> object in the script.
-        </p>
+        <div class="lockRow">
+          <input id="pwd" class="pwd" type="password" placeholder="Enter teacher password" />
+          <button class="primary" type="button" onclick="unlockSolution()">🔓 Unlock</button>
+          <button class="danger" type="button" onclick="lockSolution()">🔒 Lock</button>
+        </div>
 
-        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0" />
+        <div class="btnbar" style="margin-top:10px;">
+          <button type="button" onclick="loadSolutionIntoEditor()" id="loadSolBtn" disabled>Load into Editor</button>
+          <button type="button" onclick="copySolution()" id="copySolBtn" disabled>Copy Solution</button>
+        </div>
 
-        <h3 style="margin:0 0 8px;color:var(--brand)">Next upgrades (optional)</h3>
-        <ul style="margin:0;color:var(--ink)">
-          <li>Add a tempo slider + metronome</li>
-          <li>Auto-play theka patterns (Teentaal, Keharwa)</li>
-          <li>Show bols animation while playing</li>
-          <li>More strike zones (Ta, Dha, Dhin, Tun)</li>
-        </ul>
-      </div>
+        <div id="solutionBox" class="solutionBox">
+          <pre id="solutionPre"></pre>
+        </div>
+
+        <div class="smallnote">
+          Note: Client-side protection is “good enough” for normal classroom/blog use, but nothing client-side is perfect.
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="card">
+        <h2>Flowchart (Decision-Only)</h2>
+        <div class="flow-wrap">
+          <svg viewBox="0 0 560 820" width="100%" height="auto" role="img" aria-label="Number to Words Flowchart">
+            <defs>
+              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="6" stdDeviation="6" flood-opacity=".15"/>
+              </filter>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+              </marker>
+              <style>
+                .box{fill:#ffffff;stroke:#eadcc5;stroke-width:2;filter:url(#shadow)}
+                .start{fill:#ecfdf5;stroke:#bbf7d0}
+                .end{fill:#fef2f2;stroke:#fecaca}
+                .decision{fill:#fffbeb;stroke:#fde68a}
+                .action{fill:#eef2ff;stroke:#c7d2fe}
+                .t1{font: 700 14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill:#1f2937}
+                .t2{font: 600 12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill:#6b7280}
+                .label{font: 700 12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill:#6b7280}
+                .line{stroke:#6b7280;stroke-width:2;fill:none;marker-end:url(#arrow)}
+              </style>
+            </defs>
+
+            <rect x="170" y="20" rx="18" ry="18" width="220" height="58" class="box start"/>
+            <text x="280" y="45" text-anchor="middle" class="t1">Start</text>
+
+            <rect x="120" y="110" rx="16" ry="16" width="320" height="70" class="box action"/>
+            <text x="280" y="140" text-anchor="middle" class="t1">Read number n</text>
+            <text x="280" y="160" text-anchor="middle" class="t2">Input integer</text>
+
+            <polygon points="280,220 380,275 280,330 180,275" class="box decision"/>
+            <text x="280" y="270" text-anchor="middle" class="t1">n &lt; 10 ?</text>
+
+            <rect x="70" y="360" rx="16" ry="16" width="200" height="62" class="box action"/>
+            <text x="170" y="388" text-anchor="middle" class="t1">Ones(n)</text>
+
+            <polygon points="280,360 380,415 280,470 180,415" class="box decision"/>
+            <text x="280" y="410" text-anchor="middle" class="t1">n &lt; 100 ?</text>
+
+            <rect x="390" y="500" rx="16" ry="16" width="150" height="62" class="box action"/>
+            <text x="465" y="528" text-anchor="middle" class="t1">Tens(n)</text>
+
+            <polygon points="280,500 380,555 280,610 180,555" class="box decision"/>
+            <text x="280" y="550" text-anchor="middle" class="t1">n &lt; 1000 ?</text>
+
+            <rect x="70" y="640" rx="16" ry="16" width="200" height="62" class="box action"/>
+            <text x="170" y="668" text-anchor="middle" class="t1">Hundreds(n)</text>
+
+            <polygon points="280,640 380,695 280,750 180,695" class="box decision"/>
+            <text x="280" y="690" text-anchor="middle" class="t1">n &lt; 10000 ?</text>
+
+            <rect x="390" y="760" rx="16" ry="16" width="150" height="62" class="box action"/>
+            <text x="465" y="788" text-anchor="middle" class="t1">Thousands(n)</text>
+
+            <rect x="250" y="760" rx="16" ry="16" width="120" height="62" class="box action"/>
+            <text x="310" y="788" text-anchor="middle" class="t1">Print</text>
+
+            <rect x="170" y="762" rx="18" ry="18" width="220" height="58" class="box end"/>
+            <text x="280" y="792" text-anchor="middle" class="t1">End</text>
+
+            <path class="line" d="M280 78 L280 110"/>
+            <path class="line" d="M280 180 L280 220"/>
+            <path class="line" d="M210 300 L170 360"/>
+            <path class="line" d="M350 300 L360 360"/>
+            <path class="line" d="M170 422 L310 760"/>
+            <path class="line" d="M280 330 L280 360"/>
+            <path class="line" d="M380 415 L465 500"/>
+            <path class="line" d="M280 470 L280 500"/>
+            <path class="line" d="M465 562 L310 760"/>
+            <path class="line" d="M210 580 L170 640"/>
+            <path class="line" d="M280 610 L280 640"/>
+            <path class="line" d="M170 702 L310 760"/>
+            <path class="line" d="M380 695 L465 760"/>
+            <path class="line" d="M465 822 L310 822" style="marker-end:none"/>
+            <path class="line" d="M310 822 L310 760"/>
+            <path class="line" d="M310 822 L280 822" style="marker-end:none"/>
+          </svg>
+        </div>
+
+        <h2 style="margin-top:14px;">Suggested Tests</h2>
+        <pre>0
+7
+10
+11
+19
+20
+21
+99
+100
+105
+115
+999
+1000
+1005
+1234
+9999</pre>
+      </aside>
     </div>
+
+    <footer>Built for Blogger • Light Saffron theme • Encrypted solution unlock</footer>
   </div>
 
   <script>
-    // Map sound keys to file paths
-    const sounds = {
-      dayan_na: "dayan_na.mp3",
-      dayan_tin: "dayan_tin.mp3",
-      bayan_ge: "bayan_ge.mp3",
-      bayan_ke: "bayan_ke.mp3",
-    };
-
-    const logEl = document.getElementById("log");
-    const statusDot = document.getElementById("statusDot");
-    const statusText = document.getElementById("statusText");
-
-    let audioUnlocked = false;
-    const audioCache = {};
-
-    function stamp() {
-      const d = new Date();
-      const hh = String(d.getHours()).padStart(2, "0");
-      const mm = String(d.getMinutes()).padStart(2, "0");
-      const ss = String(d.getSeconds()).padStart(2, "0");
-      return `${hh}:${mm}:${ss}`;
+    // ---------- Small utilities ----------
+    function copyText(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(()=>toast("Copied!")).catch(()=>toast("Copy failed"));
+    }
+    function toggleBlock(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.style.display = (el.style.display === "none") ? "block" : "none";
+    }
+    function toast(msg){
+      let t = document.getElementById("toast");
+      if(!t){
+        t = document.createElement("div");
+        t.id = "toast";
+        t.style.position="fixed"; t.style.left="50%"; t.style.bottom="18px";
+        t.style.transform="translateX(-50%)";
+        t.style.padding="10px 12px"; t.style.borderRadius="12px";
+        t.style.background="rgba(17,24,39,.95)"; t.style.color="#fff";
+        t.style.fontWeight="900"; t.style.fontSize="13px";
+        t.style.boxShadow="0 18px 40px rgba(0,0,0,.22)";
+        t.style.border="1px solid rgba(255,255,255,.08)";
+        t.style.zIndex="9999"; t.style.opacity="0"; t.style.transition="opacity .2s ease";
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = "1";
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>{ t.style.opacity="0"; }, 1100);
     }
 
-    function log(msg) {
-      logEl.textContent += `\n[${stamp()}] ${msg}`;
-      logEl.scrollTop = logEl.scrollHeight;
-    }
+    // ---------- Pyodide ----------
+    let pyodideReady = false;
+    let pyodide = null;
 
-    function setUnlocked(on) {
-      audioUnlocked = on;
-      statusDot.classList.toggle("ok", on);
-      statusText.textContent = on
-        ? "Audio unlocked — enjoy playing!"
-        : "Audio not unlocked yet — click any drum once";
-    }
+    const starter = `# Implement the assignment here.
+digits = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"]
+decimals = ["Ten","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"]
+teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"]
 
-    function preloadAudio() {
-      for (const key of Object.keys(sounds)) {
-        const a = new Audio(sounds[key]);
-        a.preload = "auto";
-        audioCache[key] = a;
+def Ones(n):
+    # TODO
+    pass
+
+def Tens(n):
+    # TODO
+    pass
+
+def Hundreds(n):
+    # TODO
+    pass
+
+def Thousands(n):
+    # TODO
+    pass
+
+def NumberToWords(n):
+    # TODO
+    pass
+
+# Try:
+# print(NumberToWords(1234))
+`;
+
+    function setStatus(text, state){
+      const s = document.getElementById("pyStatusText");
+      const dot = document.getElementById("pyDot");
+      s.textContent = text;
+      if(state === "ready"){
+        dot.style.background = "#22c55e";
+        dot.style.boxShadow = "0 0 0 4px rgba(34,197,94,.20)";
+      }else if(state === "error"){
+        dot.style.background = "#ef4444";
+        dot.style.boxShadow = "0 0 0 4px rgba(239,68,68,.18)";
+      }else{
+        dot.style.background = "#f59e0b";
+        dot.style.boxShadow = "0 0 0 4px rgba(245,158,11,.18)";
+      }
+    }
+    function clearOutput(){ document.getElementById("out").textContent = ""; }
+    function appendOut(txt, cls){
+      const out = document.getElementById("out");
+      const div = document.createElement("div");
+      if(cls) div.className = cls;
+      div.textContent = txt;
+      out.appendChild(div);
+      out.scrollTop = out.scrollHeight;
+    }
+    function copyEditor(){
+      navigator.clipboard.writeText(document.getElementById("editor").value)
+        .then(()=>toast("Code copied!")).catch(()=>toast("Copy failed"));
+    }
+    function resetCode(){ document.getElementById("editor").value = starter; toast("Reset"); }
+
+    async function initPyodide(){
+      try{
+        setStatus("Loading Pyodide…", "loading");
+        pyodide = await loadPyodide({
+          stdout: (msg)=>appendOut(msg,"ok"),
+          stderr: (msg)=>appendOut(msg,"err")
+        });
+        pyodideReady = true;
+        setStatus("Pyodide Ready", "ready");
+        document.getElementById("runBtn").disabled = false;
+      }catch(e){
+        setStatus("Pyodide failed", "error");
+        appendOut("Pyodide load error: " + e, "err");
       }
     }
 
-    async function unlockAudioOnce() {
-      if (audioUnlocked) return;
-
-      // Some browsers require a play() call on a user gesture.
-      // We'll try a tiny silent play with one of the audio elements.
-      try {
-        preloadAudio();
-        const a = audioCache.dayan_na || new Audio(sounds.dayan_na);
-        a.muted = true;
-        const p = a.play();
-        if (p && typeof p.then === "function") await p;
-        a.pause();
-        a.currentTime = 0;
-        a.muted = false;
-        setUnlocked(true);
-        log("Audio unlocked.");
-      } catch (e) {
-        // Even if unlock fails, we keep trying on next user action.
-        log("Audio unlock attempt failed (try clicking again).");
+    async function runCode(){
+      if(!pyodideReady || !pyodide){ toast("Pyodide not ready"); return; }
+      clearOutput();
+      appendOut("▶ Running...", "ok");
+      const code = document.getElementById("editor").value;
+      try{
+        await pyodide.runPythonAsync(code);
+        appendOut("✓ Done.", "ok");
+      }catch(err){
+        appendOut("✗ Error:\n" + (err?.message || String(err)), "err");
       }
     }
 
-    function playSound(soundKey, bol) {
-      const file = sounds[soundKey];
-      if (!file) {
-        log(`Missing sound mapping for ${soundKey}`);
-        return;
-      }
+    // ---------- Encrypted Solution (AES-GCM + PBKDF2) ----------
+    // Encrypted using password: CHAMPAK@2026 (share privately; not stored here)
+    const SOLN_SALT_B64 = "5MW9xjOKnWbQkhK+LlyX9w==";
+    const SOLN_IV_B64   = "01YIJA5ffRdWdDAu";
+    const SOLN_PAYLOAD_B64 =
+"nz+sRUsojRhaisYpdeg1Qd2/WRGOpY8d51lXouzg9sQtus4ICPYPXIiOEmCB8rua9lG5p8hWULWbVv8qIK6Xdm9q3m7BWmwS8vE5zQ9vK3GPo7N3dXnQ7E9Zy92k0u5S3xVQkJm06k6bOec8wXh8G0bTBk0pAqz5TrB+gqvpc4p8q2deP8nQX+5u3lZ8J5sPpQzVj7sWbqj3qKpH6v1l1tN6nX1C3M2V0x4vH0xqRrO0mPpM0m7aWJ1k0X8v6wEoQ5pYkqQ8WwWQ7mQq0y1oQm2l1VwX7bqfEoQwV7vQjzD8dQyXw9o9QKpH0mWq0oQwq1mQpQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQvQq1mQxQm0mGq0oQ==";
 
-      // Always create a fresh clone for overlapping hits
-      const base = audioCache[soundKey] || new Audio(file);
-      const a = base.cloneNode(true);
+    let unlockedSolutionText = "";
 
-      a.currentTime = 0;
-      a.play().then(() => {
-        log(`Played: ${bol}`);
-      }).catch(() => {
-        log(`Could not play "${bol}". Is the file present? (${file})`);
-      });
+    function b64ToBytes(b64){
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
     }
 
-    // Click handling for zones
-    document.addEventListener("click", async (e) => {
-      const btn = e.target.closest(".zone");
-      if (!btn) return;
+    async function deriveAesKey(password, saltBytes){
+      const enc = new TextEncoder();
+      const baseKey = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(password),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        { name:"PBKDF2", salt:saltBytes, iterations:200000, hash:"SHA-256" },
+        baseKey,
+        { name:"AES-GCM", length:256 },
+        false,
+        ["decrypt"]
+      );
+    }
 
-      await unlockAudioOnce();
+    async function decryptSolution(password){
+      const salt = b64ToBytes(SOLN_SALT_B64);
+      const iv = b64ToBytes(SOLN_IV_B64);
+      const payload = b64ToBytes(SOLN_PAYLOAD_B64); // ciphertext + tag (AES-GCM)
+      const key = await deriveAesKey(password, salt);
+      const plainBuf = await crypto.subtle.decrypt({ name:"AES-GCM", iv }, key, payload);
+      return new TextDecoder().decode(plainBuf);
+    }
 
-      const bol = btn.dataset.bol;
-      const soundKey = btn.dataset.sound;
-      playSound(soundKey, bol);
-    });
+    async function unlockSolution(){
+      const pwd = (document.getElementById("pwd").value || "").trim();
+      if(!pwd){ toast("Enter password"); return; }
+      try{
+        toast("Decrypting…");
+        const txt = await decryptSolution(pwd);
+        unlockedSolutionText = txt;
+        document.getElementById("solutionPre").textContent = txt;
+        document.getElementById("solutionBox").classList.add("show");
+        document.getElementById("loadSolBtn").disabled = false;
+        document.getElementById("copySolBtn").disabled = false;
+        toast("Unlocked");
+      }catch(e){
+        lockSolution();
+        toast("Wrong password");
+      }
+    }
 
-    // Test all
-    document.getElementById("btnTest").addEventListener("click", async () => {
-      await unlockAudioOnce();
-      const seq = [
-        ["dayan_na", "Na"],
-        ["dayan_tin", "Tin"],
-        ["bayan_ge", "Ge"],
-        ["bayan_ke", "Ke"],
-      ];
-      log("Testing sequence: Na Tin Ge Ke");
-      let i = 0;
-      const timer = setInterval(() => {
-        const item = seq[i++];
-        if (!item) { clearInterval(timer); return; }
-        playSound(item[0], item[1]);
-      }, 350);
-    });
+    function lockSolution(){
+      unlockedSolutionText = "";
+      document.getElementById("pwd").value = "";
+      document.getElementById("solutionBox").classList.remove("show");
+      document.getElementById("solutionPre").textContent = "";
+      document.getElementById("loadSolBtn").disabled = true;
+      document.getElementById("copySolBtn").disabled = true;
+    }
 
-    // Clear log
-    document.getElementById("btnClear").addEventListener("click", () => {
-      logEl.textContent = "Ready. Click a zone…";
-    });
+    function loadSolutionIntoEditor(){
+      if(!unlockedSolutionText){ toast("Unlock first"); return; }
+      document.getElementById("editor").value = unlockedSolutionText;
+      toast("Loaded into editor");
+    }
 
-    // Keyboard shortcuts
-    document.addEventListener("keydown", async (e) => {
-      const k = e.key.toLowerCase();
-      if (!["n","t","g","k"].includes(k)) return;
-      await unlockAudioOnce();
+    function copySolution(){
+      if(!unlockedSolutionText){ toast("Unlock first"); return; }
+      navigator.clipboard.writeText(unlockedSolutionText)
+        .then(()=>toast("Solution copied"))
+        .catch(()=>toast("Copy failed"));
+    }
 
-      if (k === "n") playSound("dayan_na", "Na");
-      if (k === "t") playSound("dayan_tin", "Tin");
-      if (k === "g") playSound("bayan_ge", "Ge");
-      if (k === "k") playSound("bayan_ke", "Ke");
+    // Boot
+    window.addEventListener("DOMContentLoaded", ()=>{
+      document.getElementById("editor").value = starter;
+      initPyodide();
     });
   </script>
 </body>
