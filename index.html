@@ -1,551 +1,1861 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clickable Tabla + Command Loops (1-4 + xN)</title>
-  <meta name="description" content="Clickable Tabla (Dayan/Bayan) + command sequence player with loop syntax like: 1,2 x4" />
-  <meta name="author" content="Champak Roy" />
+  <title>Varanasi Tourism Planner — Build Your Own Tour</title>
+  <meta name="description" content="Varanasi tourism page with destinations and a DIY tour builder. Each destination has a sliding picture carousel, search on the right, save tour in localStorage, share tour on WhatsApp, and view selected destinations on a map."/>
 
   <style>
     :root{
-      /* Light saffron theme */
-      --bg:#fff7e6;
+      --bg:#fff7e6;          /* light saffron */
       --card:#ffffff;
       --ink:#1f2937;
       --muted:#6b7280;
       --brand:#d97706;
       --brand2:#f59e0b;
       --border:#eadcc5;
-      --shadow:0 18px 40px rgba(31,41,55,.14);
-      --ok:#166534;
-      --danger:#b91c1c;
+      --shadow:0 18px 40px rgba(0,0,0,.12);
+      --r:18px;
+      --ok:#059669;
+      --warn:#b45309;
+      --bad:#dc2626;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background:var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
       color:var(--ink);
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(245,158,11,.20), transparent 60%),
+        radial-gradient(900px 700px at 100% 0%, rgba(217,119,6,.16), transparent 55%),
+        var(--bg);
     }
-    .container{max-width:1120px;margin:28px auto;padding:18px}
-    .hero{
-      background:linear-gradient(135deg,#fff1d6, #ffffff);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:18px;
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(10px);
+      background: rgba(255,247,230,.78);
+      border-bottom:1px solid var(--border);
     }
-    h1{margin:0 0 6px;color:var(--brand);font-size:28px}
-    .sub{margin:0;color:var(--muted)}
+    .topbar-inner{
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px;
+    }
+    .logo{
+      display:flex; align-items:center; gap:10px;
+      font-weight:950;
+      letter-spacing:.2px;
+      min-width: 220px;
+    }
+    .logo-badge{
+      width:40px;height:40px;border-radius:14px;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      box-shadow: 0 12px 26px rgba(217,119,6,.22);
+      display:grid; place-items:center; color:white; font-weight:950;
+    }
     .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;
-      border:1px dashed rgba(217,119,6,.5);
+      flex:1;
+      display:flex; align-items:center; gap:10px;
+      border:1px solid var(--border);
       border-radius:999px;
-      background:#fffaf1;
-      color:var(--ink);
-      font-weight:700;
+      padding:8px 12px;
+      background: rgba(255,255,255,.86);
+      min-width: 220px;
+    }
+    .pill input{
+      border:none; outline:none; background:transparent;
+      width:100%;
+      font-size:14px;
+    }
+    .btn{
+      border:none;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      color:white;
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      box-shadow: 0 12px 24px rgba(217,119,6,.18);
+      transition: transform .12s ease, filter .12s ease;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px); filter:saturate(1.02)}
+    .btn:active{transform: translateY(0px)}
+    .btn.secondary{
+      background: rgba(255,255,255,.92);
+      color: var(--ink);
+      border:1px solid var(--border);
+      box-shadow:none;
+    }
+    .btn.danger{
+      background: rgba(220,38,38,.10);
+      border:1px solid rgba(220,38,38,.25);
+      color: #991b1b;
+      box-shadow:none;
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:16px 14px 40px;}
+    .hero{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
+      margin-top:8px;
+    }
+    @media (max-width: 980px){
+      .hero{grid-template-columns: 1fr;}
+      .right{position:relative !important; top:auto !important;}
+    }
+    .panel{
+      background: rgba(255,255,255,.88);
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: 0 10px 28px rgba(0,0,0,.08);
+      overflow:hidden;
+    }
+    .panel-h{
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      background: rgba(255,247,230,.62);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    }
+    .panel-h h1,.panel-h h2{margin:0}
+    .panel-h h1{font-size:24px; font-weight:950; letter-spacing:.2px}
+    .panel-h h2{font-size:16px; font-weight:950}
+    .panel-h p{margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.45}
+    .panel-b{padding:14px}
+
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .chip{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.85);
+      color: var(--muted);
+    }
+    .chip.hot{color:#92400e; border-color: rgba(217,119,6,.35)}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns: 1fr;}
+    }
+    .card{
+      border:1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255,255,255,.92);
+      overflow:hidden;
+      display:flex; flex-direction:column;
+      box-shadow: 0 10px 22px rgba(0,0,0,.06);
+    }
+
+    /* --- Sliding pictures / carousel --- */
+    .carousel{
+      position:relative;
+      height: 170px;
+      background: linear-gradient(180deg, rgba(245,158,11,.16), rgba(255,255,255,0));
+      overflow:hidden;
+    }
+    .track{
+      height:100%;
+      display:flex;
+      transition: transform .45s ease;
+      will-change: transform;
+    }
+    .slide{
+      min-width:100%;
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding:12px;
+    }
+    .slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      box-shadow: 0 14px 30px rgba(0,0,0,.12);
+      user-select:none;
+      pointer-events:none;
+    }
+    .car-nav{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 10px;
+      pointer-events:none;
+    }
+    .car-btn{
+      pointer-events:auto;
+      width:38px;height:38px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.82);
+      cursor:pointer;
+      display:grid; place-items:center;
+      box-shadow: 0 10px 20px rgba(0,0,0,.10);
+    }
+    .car-btn:hover{filter:brightness(.98)}
+    .dots{
+      position:absolute;
+      left:0; right:0; bottom:10px;
+      display:flex; gap:6px;
+      justify-content:center;
+      pointer-events:none;
+    }
+    .dot{
+      width:7px; height:7px;
+      border-radius:999px;
+      background: rgba(107,114,128,.35);
+      border:1px solid rgba(234,220,197,.9);
+    }
+    .dot.active{background: rgba(217,119,6,.85)}
+    .car-tag{
+      position:absolute;
+      top:10px; left:10px;
+      font-size:11px;
+      padding:5px 9px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.86);
+      color: var(--muted);
+    }
+
+    .card-top{
+      padding:12px 12px 10px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .title{
+      margin:0;
+      font-weight:950;
+      line-height:1.2;
+      font-size:15px;
+    }
+    .meta{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .badges{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+    .badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.88);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .badge.cat{color:#92400e; border-color: rgba(217,119,6,.35)}
+    .badge.time{color:#0f766e; border-color: rgba(13,148,136,.28)}
+    .badge.cost{color:#6d28d9; border-color: rgba(109,40,217,.25)}
+    .card-mid{padding:0 12px 12px}
+    .desc{
+      margin:0;
+      color: var(--ink);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .card-actions{
+      padding:12px;
+      border-top:1px dashed rgba(234,220,197,.95);
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:auto;
+    }
+    .card-actions .btn{flex:1}
+    .card-actions .btn.secondary{flex:1}
+
+    .right{
+      position: sticky;
+      top: 70px;
+      height: fit-content;
+    }
+    .field{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 10px;
+      background: rgba(255,255,255,.92);
+      outline:none;
+    }
+    .label{font-size:12px; color:var(--muted); margin:0 0 6px;}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .row > *{flex:1}
+    .tourlist{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .touritem{
+      border:1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,.92);
+      padding:10px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      align-items:center;
+    }
+    .touritem b{font-weight:950}
+    .touritem small{display:block; color:var(--muted); font-size:12px; margin-top:3px}
+    .tinybtn{
+      border:none;
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      background: rgba(255,255,255,.9);
+      border:1px solid var(--border);
+    }
+    .tinybtn:hover{filter:brightness(.98)}
+    .tinybtn.remove{color:#991b1b; border-color: rgba(220,38,38,.22); background: rgba(220,38,38,.08)}
+    .tinybtn.up,.tinybtn.down{color:#0f766e}
+
+    .note{
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.45;
+      border-top:1px dashed rgba(234,220,197,.95);
+      padding-top:10px;
       margin-top:10px;
     }
-    .dot{width:9px;height:9px;border-radius:50%;background:var(--danger)}
-    .dot.ok{background:var(--ok)}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px}
-    @media (max-width: 920px){.grid{grid-template-columns:1fr}}
-    .card{
-      background:var(--card);
+    .countpill{
+      font-size:12px;
+      padding:3px 10px;
+      border-radius:999px;
       border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:16px;
+      background: rgba(255,255,255,.86);
+      color: var(--muted);
+      white-space:nowrap;
     }
 
-    /* Tabla stage */
-    .stage{display:flex;align-items:center;justify-content:center;gap:22px;padding:14px 6px;flex-wrap:wrap}
-    .drumWrap{text-align:center}
-    .drumLabel{margin-top:10px;font-weight:800;color:var(--brand);letter-spacing:.2px}
-    .hint{margin-top:4px;color:var(--muted);font-size:13px}
-
-    .drum{
-      width:260px;height:260px;border-radius:50%;position:relative;
-      border:1px solid var(--border);
-      box-shadow:0 16px 30px rgba(31,41,55,.18);
-      cursor:pointer;user-select:none;touch-action:manipulation;
-      outline:none;transform:translateZ(0);
+    /* Floating WhatsApp share button */
+    .fab{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 50;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:flex-end;
     }
-    .drum:active{transform:scale(0.99)}
-    .bayan{
-      background:radial-gradient(circle at 40% 35%, #fff, #f6ede0 40%, #e3d2ba 70%, #d0b18c 100%);
-    }
-    .dayan{
-      background:radial-gradient(circle at 40% 35%, #fff, #f3efe6 40%, #d8c29c 75%, #c09a5a 100%);
-    }
-    .ring{
-      position:absolute;inset:14px;border-radius:50%;
-      border:2px solid rgba(0,0,0,.10);
-      box-shadow:inset 0 0 0 10px rgba(255,255,255,.25);
-      pointer-events:none;
-    }
-    .ring2{position:absolute;inset:34px;border-radius:50%;border:2px solid rgba(0,0,0,.10);pointer-events:none}
-    .syahi{
-      position:absolute;width:92px;height:92px;left:50%;top:50%;
-      transform:translate(-50%,-50%);border-radius:50%;
-      background:radial-gradient(circle at 35% 30%, #3b3b3b, #111 60%, #000 100%);
-      box-shadow:inset 0 0 0 6px rgba(255,255,255,.05);
-      pointer-events:none;
-    }
-
-    /* click zones */
-    .zone{
-      position:absolute;border-radius:50%;
-      background:rgba(255,255,255,0);
-      border:2px dashed rgba(217,119,6,0);
-      color:transparent;
+    .wabtn{
+      border:none;
       cursor:pointer;
+      border-radius: 18px;
+      padding:12px 14px;
+      color:white;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      box-shadow: 0 18px 34px rgba(0,0,0,.18);
+      display:inline-flex; align-items:center; gap:10px;
+      font-weight:900;
     }
-    .zone:focus-visible{outline:3px solid rgba(245,158,11,.55);outline-offset:3px}
-    .zone.center{width:120px;height:120px;left:50%;top:50%;transform:translate(-50%,-50%)}
-    .zone.rim{inset:18px}
-    .bayan .zone.center{width:132px;height:132px}
-    .bayan .zone.rim{inset:16px}
+    .wabtn small{display:block; font-weight:700; opacity:.9}
+    .wabtn:hover{transform: translateY(-1px)}
+    .wabtn:active{transform: translateY(0px)}
 
-    /* controls */
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 60;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .t{
+      background: rgba(255,255,255,.92);
       border:1px solid var(--border);
-      background:linear-gradient(180deg,#fff, #fff7ea);
-      color:var(--ink);
-      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800;
+      border-radius: 16px;
+      padding:10px 12px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.14);
+      display:flex; gap:10px; align-items:flex-start;
+      max-width: 420px;
     }
-    .btn.primary{
-      border-color:rgba(217,119,6,.45);
-      background:linear-gradient(180deg,#fff1d6,#ffe8bf);
+    .t .okdot{width:10px;height:10px;border-radius:999px;background:var(--ok); margin-top:4px}
+    .t .msg{font-size:13px}
+    .t .msg small{display:block; color:var(--muted); margin-top:2px}
+
+    /* --- Map modal --- */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(15,23,42,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 120;
+      padding: 16px;
     }
-    .btn:active{transform:translateY(1px)}
-    .small{font-size:13px;color:var(--muted);margin:10px 0 0}
-    .log{
-      margin-top:12px;border:1px solid var(--border);
-      background:#fffaf1;border-radius:12px;padding:10px;min-height:110px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size:13px;color:#111827;white-space:pre-wrap;
-      overflow:auto;
+    .modal.show{display:flex}
+    .modal-card{
+      width:min(1100px, 100%);
+      height:min(78vh, 760px);
+      background: rgba(255,255,255,.95);
+      border:1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-h{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 12px;
+      background: rgba(255,247,230,.75);
+      border-bottom:1px solid var(--border);
+    }
+    .modal-h b{font-weight:950}
+    .modal-h small{color:var(--muted)}
+    .modal-b{
+      flex:1;
+      background: #fff;
+      position:relative;
+    }
+    .modal-b iframe{
+      width:100%;
+      height:100%;
+      border:0;
     }
     .kbd{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      border:1px solid var(--border);background:#fff;padding:2px 6px;border-radius:7px;font-size:12px
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      padding:2px 6px;
+      border:1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,.8);
+      color: var(--muted);
     }
 
-    /* command UI */
-    label{display:block;font-weight:800;color:var(--ink)}
-    input[type="text"]{
-      width:100%;margin-top:6px;padding:10px 12px;border-radius:12px;
-      border:1px solid var(--border);background:#fffaf1;font-size:15px
+    /* ===========================
+       CHATBOT (NEW)
+       =========================== */
+    .chatfab{
+      position: fixed;
+      right: 16px;
+      bottom: 86px; /* sits above WhatsApp share */
+      z-index: 70;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:10px;
     }
-    .bpmRow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    input[type="range"]{width:min(520px,100%)}
-    .chip{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid var(--border);background:#fffaf1;border-radius:999px;
-      padding:6px 10px;font-weight:800;color:var(--ink)
+    .chat-open{
+      border:none;
+      cursor:pointer;
+      border-radius: 18px;
+      padding:12px 14px;
+      color:white;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      box-shadow: 0 18px 34px rgba(0,0,0,.18);
+      display:inline-flex; align-items:center; gap:10px;
+      font-weight:950;
     }
-    .now{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid rgba(217,119,6,.35);
-      background:#fff1d6;border-radius:12px;
-      padding:8px 10px;font-weight:900;color:#7c2d12;
-      margin-top:10px;
+    .chat-open small{display:block; font-weight:800; opacity:.9}
+    .chat-panel{
+      width: min(380px, calc(100vw - 32px));
+      height: min(520px, calc(100vh - 160px));
+      background: rgba(255,255,255,.96);
+      border:1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:none;
+      flex-direction:column;
     }
-    .pulse{
-      width:10px;height:10px;border-radius:50%;
-      background:var(--brand2);
-      box-shadow:0 0 0 0 rgba(245,158,11,.6);
-      animation:pulse 1s infinite;
+    .chat-panel.show{display:flex}
+    .chat-h{
+      padding:12px 12px;
+      background: rgba(255,247,230,.78);
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
-    @keyframes pulse{
-      0%{box-shadow:0 0 0 0 rgba(245,158,11,.55)}
-      70%{box-shadow:0 0 0 12px rgba(245,158,11,0)}
-      100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}
+    .chat-h .ttl{
+      display:flex; gap:10px; align-items:center;
+      font-weight:950;
     }
-    code{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      background:#fff;border:1px solid var(--border);padding:1px 6px;border-radius:7px
+    .chat-h .ttl .dot{
+      width:10px;height:10px;border-radius:999px;background:var(--ok);
+      border:1px solid rgba(0,0,0,.05);
     }
+    .chat-h small{color:var(--muted); font-weight:800}
+    .chat-x{
+      border:none;
+      cursor:pointer;
+      border-radius: 14px;
+      padding:8px 10px;
+      background: rgba(220,38,38,.10);
+      border:1px solid rgba(220,38,38,.25);
+      color:#991b1b;
+      font-weight:950;
+    }
+    .chat-body{
+      flex:1;
+      padding:12px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      background:
+        radial-gradient(900px 420px at 0% 0%, rgba(245,158,11,.12), transparent 60%),
+        radial-gradient(700px 420px at 100% 0%, rgba(217,119,6,.10), transparent 55%),
+        #fff;
+    }
+    .bubble{
+      max-width: 92%;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid var(--border);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+      font-size:13px;
+      line-height:1.45;
+      white-space:pre-wrap;
+    }
+    .bubble.bot{
+      align-self:flex-start;
+      background: rgba(255,255,255,.94);
+    }
+    .bubble.user{
+      align-self:flex-end;
+      background: rgba(245,158,11,.14);
+      border-color: rgba(217,119,6,.22);
+    }
+    .chat-foot{
+      padding:10px;
+      border-top:1px solid var(--border);
+      background: rgba(255,255,255,.92);
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .chat-foot input{
+      flex:1;
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding:10px 10px;
+      outline:none;
+      background: rgba(255,255,255,.96);
+    }
+    .chat-send{
+      border:none;
+      cursor:pointer;
+      border-radius: 14px;
+      padding:10px 12px;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      color:white;
+      font-weight:950;
+      box-shadow: 0 12px 22px rgba(217,119,6,.18);
+    }
+    .chat-suggest{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding:10px 10px 0;
+      background: rgba(255,255,255,.92);
+      border-top:1px dashed rgba(234,220,197,.95);
+    }
+    .sbtn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.9);
+      color: var(--muted);
+      cursor:pointer;
+      border-radius: 999px;
+      padding:6px 10px;
+      font-size:12px;
+      font-weight:850;
+    }
+    .sbtn:hover{filter:brightness(.98)}
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="hero">
-      <h1>Clickable Tabla + Command Loops</h1>
-      <p class="sub">Click/tap the drums to play. Or run number commands like <code>1,2 x4</code> (repeat 1,2 four times).</p>
-
-      <div class="pill">
-        <span class="dot" id="statusDot"></span>
-        <span id="statusText">Audio not unlocked yet — click any drum once</span>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo" aria-label="Varanasi Tourism Planner">
+        <div class="logo-badge">ॐ</div>
+        <div>
+          <div style="line-height:1; font-size:14px;">Varanasi Tourism Planner</div>
+          <div style="line-height:1; font-size:12px; color:var(--muted); font-weight:800;">Select destinations • Build your own tour</div>
+        </div>
       </div>
 
-      <p class="small" style="margin-top:10px">
-        Keyboard: <span class="kbd">N</span> Na, <span class="kbd">T</span> Tin, <span class="kbd">G</span> Ge, <span class="kbd">K</span> Ke
-      </p>
+      <div class="pill" title="Quick search (same as right-side search)">
+        🔎 <input id="topSearch" type="search" placeholder="Search: Champak's Home, Sarnath, ghats..." autocomplete="off"/>
+      </div>
+
+      <button class="btn secondary" id="saveTourBtn" title="Save current tour in browser">💾 Save Tour</button>
     </div>
+  </div>
 
-    <div class="grid">
-      <!-- LEFT: Tabla + Player -->
-      <div class="card">
-        <h2 style="margin:0 0 10px;color:var(--brand)">Play</h2>
-
-        <div class="stage" aria-label="Tabla stage">
-          <!-- BAYAN -->
-          <div class="drumWrap">
-            <div class="drum bayan" role="group" aria-label="Bayan drum">
-              <div class="ring"></div><div class="ring2"></div><div class="syahi"></div>
-              <button class="zone rim" data-bol="Ke" data-sound="bayan_ke" aria-label="Bayan rim: Ke"></button>
-              <button class="zone center" data-bol="Ge" data-sound="bayan_ge" aria-label="Bayan center: Ge"></button>
+  <div class="wrap">
+    <div class="hero">
+      <!-- LEFT: DESTINATIONS -->
+      <section class="panel">
+        <div class="panel-h">
+          <div>
+            <h1>Explore Varanasi</h1>
+            <p>
+              Choose places you want to visit and build your personal tour plan.
+              Your tour is saved in <b>localStorage</b> so it stays even after refresh.
+            </p>
+            <div class="chips">
+              <span class="chip hot">Start Point</span>
+              <span class="chip hot">Ghats</span>
+              <span class="chip hot">Temples</span>
+              <span class="chip hot">Heritage</span>
+              <span class="chip hot">Sarnath</span>
+              <span class="chip">Food</span>
+              <span class="chip">Shopping</span>
             </div>
-            <div class="drumLabel">Bayan (Left)</div>
-            <div class="hint">Rim: Ke • Center: Ge</div>
+          </div>
+          <div class="countpill"><span id="destCount">0</span> destinations</div>
+        </div>
+
+        <div class="panel-b">
+          <div class="grid" id="destGrid"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: SEARCH + TOUR BUILDER -->
+      <aside class="panel right">
+        <div class="panel-h">
+          <div>
+            <h2>Search (Right Side)</h2>
+            <p>Filter destinations and add them to your tour. Reorder your tour items here.</p>
+          </div>
+          <span class="countpill"><span id="tourCount">0</span> in tour</span>
+        </div>
+
+        <div class="panel-b">
+          <div class="label">Search destinations</div>
+          <input id="rightSearch" class="field" type="search" placeholder="Type to search..." autocomplete="off"/>
+
+          <div style="height:12px"></div>
+
+          <div class="label">Quick filters</div>
+          <div class="row">
+            <select id="filterType" class="field" aria-label="Filter by type">
+              <option value="all">All types</option>
+            </select>
+            <select id="filterTime" class="field" aria-label="Filter by best time">
+              <option value="all">Any time</option>
+              <option value="sunrise">Sunrise</option>
+              <option value="day">Day</option>
+              <option value="evening">Evening</option>
+              <option value="night">Night</option>
+            </select>
           </div>
 
-          <!-- DAYAN -->
-          <div class="drumWrap">
-            <div class="drum dayan" role="group" aria-label="Dayan drum">
-              <div class="ring"></div><div class="ring2"></div><div class="syahi"></div>
-              <button class="zone rim" data-bol="Na" data-sound="dayan_na" aria-label="Dayan rim: Na"></button>
-              <button class="zone center" data-bol="Tin" data-sound="dayan_tin" aria-label="Dayan center: Tin"></button>
-            </div>
-            <div class="drumLabel">Dayan (Right)</div>
-            <div class="hint">Rim: Na • Center: Tin</div>
+          <div style="height:14px"></div>
+
+          <div class="label">Your tour (reorder)</div>
+          <div class="tourlist" id="tourList"></div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn" id="makePlanBtn">🧭 Make Tour Summary</button>
+            <button class="btn secondary" id="viewMapBtn">🗺️ View Tour Map</button>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <button class="btn danger" id="clearTourBtn">🧹 Clear</button>
+            <button class="btn secondary" id="openMapsBtn" title="Open in Google Maps (new tab)">↗️ Open in Maps</button>
+          </div>
+
+          <div class="note" id="summaryBox" style="display:none;"></div>
+
+          <div class="note">
+            <b>Tip:</b> “View Tour Map” shows your selected destinations as a route in an embedded map.
+            Use <span class="kbd">Esc</span> or Close to exit the map.
           </div>
         </div>
+      </aside>
+    </div>
+  </div>
 
-        <div class="row">
-          <button class="btn primary" id="btnTest">Test All (Na Tin Ge Ke)</button>
-          <button class="btn" id="btnClear">Clear Log</button>
+  <!-- Map Modal -->
+  <div class="modal" id="mapModal" aria-hidden="true" role="dialog" aria-label="Tour Map Modal">
+    <div class="modal-card">
+      <div class="modal-h">
+        <div>
+          <b>Tour Map</b><br/>
+          <small>Route built from your selected destinations (order matters)</small>
         </div>
-
-        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0" />
-
-        <h3 style="margin:0 0 10px;color:var(--brand)">Command Player (with loops)</h3>
-
-        <label>
-          Enter commands (numbers 1–4). Loop with <code>xN</code> like <code>1,2 x4</code>
-          <input id="cmdInput" type="text" value="1,1,1  2,2,1  1,2 x4" />
-        </label>
-
-        <div class="bpmRow" style="margin-top:10px">
-          <label style="margin:0;min-width:160px">Tempo (BPM)</label>
-          <input id="bpm" type="range" min="40" max="240" value="120" />
-          <span class="chip"><span id="bpmLabel">120</span> BPM</span>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <a class="btn secondary" id="openMapsLink" href="#" target="_blank" rel="noopener">↗️ Open in Maps</a>
+          <button class="btn danger" id="closeMapBtn">✕ Close</button>
         </div>
-
-        <div class="row">
-          <button class="btn primary" id="cmdPlay">Play Commands</button>
-          <button class="btn" id="cmdStop">Stop</button>
-          <button class="btn" id="presetA">Preset: 1,2 x4</button>
-          <button class="btn" id="presetB">Preset: 1,1,1 2,2,1</button>
-        </div>
-
-        <div class="small" style="margin-top:8px;line-height:1.55">
-          Mapping:
-          <b>1=Na</b>, <b>2=Tin</b>, <b>3=Ge</b>, <b>4=Ke</b>.
-          <br/>
-          Loop rule: <code>xN</code> repeats the phrase since start or since the last repeat/boundary.
-          Example: <code>1,2 x4</code> → 1,2,1,2,1,2,1,2.
-        </div>
-
-        <div class="now" id="nowPlaying" style="display:none">
-          <span class="pulse"></span>
-          <span id="nowText">Now: …</span>
-        </div>
-
-        <div class="log" id="log" aria-live="polite">Ready. Click a zone or run commands…</div>
       </div>
-
-      <!-- RIGHT: Setup -->
-      <div class="card">
-        <h2 style="margin:0 0 10px;color:var(--brand)">Audio Files</h2>
-        <p style="margin:0;color:var(--muted)">
-          Put these audio files next to this HTML file:
-        </p>
-        <ul style="margin:10px 0 0;color:var(--ink)">
-          <li><b>dayan_na.mp3</b></li>
-          <li><b>dayan_tin.mp3</b></li>
-          <li><b>bayan_ge.mp3</b></li>
-          <li><b>bayan_ke.mp3</b></li>
-        </ul>
-        <p class="small">
-          If your files are named differently, update the <code>sounds</code> object in the script.
-        </p>
-
-        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0" />
-
-        <h3 style="margin:0 0 8px;color:var(--brand)">Commands Cheatsheet</h3>
-        <div class="small" style="line-height:1.7">
-          • Simple: <code>1 2 3 4</code><br/>
-          • Commas ok: <code>1,1,1, 2,2,1</code><br/>
-          • Loop: <code>1,2 x4</code><br/>
-          • Mix: <code>1,1,1  2,2,1  1,2 x4</code><br/>
-        </div>
-
-        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0" />
-
-        <h3 style="margin:0 0 8px;color:var(--brand)">Keyboard</h3>
-        <div class="small" style="line-height:1.9">
-          <span class="kbd">N</span> Na &nbsp;|&nbsp;
-          <span class="kbd">T</span> Tin &nbsp;|&nbsp;
-          <span class="kbd">G</span> Ge &nbsp;|&nbsp;
-          <span class="kbd">K</span> Ke
-        </div>
+      <div class="modal-b">
+        <iframe id="mapFrame" title="Selected destinations map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </div>
 
-  <script>
-    // Map sound keys to file paths (place these files next to this HTML)
-    const sounds = {
-      dayan_na: "dayan_na.mp3",
-      dayan_tin: "dayan_tin.mp3",
-      bayan_ge: "bayan_ge.mp3",
-      bayan_ke: "bayan_ke.mp3",
+  <!-- Floating WhatsApp share -->
+  <div class="fab">
+    <button class="wabtn" id="waShare">
+      🟢 WhatsApp
+      <span style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.1;">
+        <small>Share your tour</small>
+      </span>
+    </button>
+  </div>
+
+  <!-- ===========================
+       CHATBOT UI (NEW)
+       =========================== -->
+  <div class="chatfab" aria-label="Chatbot">
+    <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Tour Chatbot">
+      <div class="chat-h">
+        <div class="ttl">
+          <span class="dot"></span>
+          <div>
+            Tour Assistant<br/>
+            <small>Ask about places, best time, route, costs…</small>
+          </div>
+        </div>
+        <button class="chat-x" id="chatClose">✕</button>
+      </div>
+
+      <div class="chat-body" id="chatBody"></div>
+
+      <div class="chat-suggest" id="chatSuggest">
+        <button class="sbtn" data-say="Best time for Assi Ghat?">Best time: Assi</button>
+        <button class="sbtn" data-say="Make me a 1-day plan">1-day plan</button>
+        <button class="sbtn" data-say="What is in my tour now?">My tour</button>
+        <button class="sbtn" data-say="Connect me on WhatsApp">WhatsApp</button>
+      </div>
+
+      <div class="chat-foot">
+        <input id="chatInput" type="text" placeholder="Type a question… (e.g., 'Add Sarnath', 'best time for aarti')" autocomplete="off"/>
+        <button class="chat-send" id="chatSend">Send</button>
+      </div>
+    </div>
+
+    <button class="chat-open" id="chatOpen">
+      🤖 Chat
+      <span style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.1;">
+        <small>Ask anything</small>
+      </span>
+    </button>
+  </div>
+
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(() => {
+  const LS_TOUR = "varanasi_tour_v1";
+
+  // --- Simple "photo-like" SVG images (offline, no external links) ---
+  function svgDataURI(svg){ return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg); }
+  function escapeXML(s){
+    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&apos;");
+  }
+  function photoSVG(title, subtitle, hue){
+    const h = Number(hue)||30;
+    return svgDataURI(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="hsl(${h}, 90%, 60%)" stop-opacity=".95"/>
+            <stop offset="1" stop-color="hsl(${h+40}, 85%, 55%)" stop-opacity=".92"/>
+          </linearGradient>
+          <radialGradient id="r" cx="30%" cy="20%" r="80%">
+            <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="s" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity=".22"/>
+          </filter>
+        </defs>
+        <rect width="1200" height="700" fill="url(#g)"/>
+        <rect width="1200" height="700" fill="url(#r)"/>
+        <path d="M0 520 C 200 490, 320 560, 520 530 C 720 500, 900 580, 1200 520 L1200 700 L0 700 Z"
+              fill="#ffffff" fill-opacity=".20"/>
+        <path d="M0 560 C 240 540, 360 610, 600 580 C 840 550, 980 640, 1200 580 L1200 700 L0 700 Z"
+              fill="#ffffff" fill-opacity=".18"/>
+        <circle cx="960" cy="160" r="90" fill="#fff" fill-opacity=".22"/>
+        <g filter="url(#s)">
+          <rect x="60" y="60" width="820" height="210" rx="28" fill="#fff" fill-opacity=".86"/>
+          <rect x="60" y="60" width="820" height="210" rx="28" fill="none" stroke="#eadcc5" stroke-width="6"/>
+          <text x="105" y="150" font-size="56" font-family="Arial, sans-serif" font-weight="800" fill="#1f2937">${escapeXML(title)}</text>
+          <text x="105" y="210" font-size="26" font-family="Arial, sans-serif" font-weight="700" fill="#6b7280">${escapeXML(subtitle)}</text>
+        </g>
+        <g fill="#1f2937" fill-opacity=".22">
+          <rect x="160" y="440" width="90" height="60" rx="10"/>
+          <rect x="265" y="410" width="120" height="90" rx="12"/>
+          <rect x="395" y="430" width="110" height="70" rx="12"/>
+          <rect x="520" y="400" width="140" height="100" rx="14"/>
+          <rect x="670" y="430" width="110" height="70" rx="12"/>
+        </g>
+      </svg>
+    `);
+  }
+
+  // --- NEW: Champak's Home as first destination ---
+  const HOME = {
+    id:"d0",
+    name:"Champak's Home",
+    type:"Start Point",
+    bestTime:"day",
+    timeNeeded:"—",
+    cost:"—",
+    highlights:"Your starting point (25.349304, 83.001256).",
+    map:"https://www.google.com/maps/search/?api=1&query=25.349304,83.001256",
+    mapShort:"https://maps.app.goo.gl/bknSLrV9C48gY4yK6",
+    photos:[
+      photoSVG("Champak's Home", "Start here • 25.349304, 83.001256", 35),
+      photoSVG("Champak's Home", "Plan your route from here", 22),
+      photoSVG("Champak's Home", "Ready for Varanasi tour", 44),
+    ]
+  };
+
+  // Destinations (HOME first)
+  const DEST = [
+    HOME,
+    {
+      id:"d1",
+      name:"Shri Kashi Vishwanath Temple",
+      type:"Temple",
+      bestTime:"day",
+      timeNeeded:"1–2 hrs",
+      cost:"Depends (donations / queue services)",
+      highlights:"One of the most revered Shiva temples; spiritual heart of Kashi.",
+      map:"https://www.google.com/maps/search/?api=1&query=Kashi+Vishwanath+Temple+Varanasi",
+      photos:[
+        photoSVG("Kashi Vishwanath", "Temple & corridor vibes", 28),
+        photoSVG("Kashi Vishwanath", "Morning darshan energy", 36),
+        photoSVG("Kashi Vishwanath", "Evening lanes nearby", 20),
+      ]
+    },
+    {
+      id:"d2",
+      name:"Dashashwamedh Ghat",
+      type:"Ghat",
+      bestTime:"evening",
+      timeNeeded:"1–2 hrs",
+      cost:"Free (Aarti seating may cost)",
+      highlights:"Famous for the Ganga Aarti; lively atmosphere by the river.",
+      map:"https://www.google.com/maps/search/?api=1&query=Dashashwamedh+Ghat+Varanasi",
+      photos:[
+        photoSVG("Dashashwamedh Ghat", "Ganga Aarti (evening)", 18),
+        photoSVG("Dashashwamedh Ghat", "Crowd & lamps glow", 26),
+        photoSVG("Dashashwamedh Ghat", "Riverfront view", 14),
+      ]
+    },
+    {
+      id:"d3",
+      name:"Assi Ghat",
+      type:"Ghat",
+      bestTime:"sunrise",
+      timeNeeded:"1–2 hrs",
+      cost:"Free",
+      highlights:"Calmer vibe; sunrise scenes and morning walks by the ghats.",
+      map:"https://www.google.com/maps/search/?api=1&query=Assi+Ghat+Varanasi",
+      photos:[
+        photoSVG("Assi Ghat", "Sunrise calm", 40),
+        photoSVG("Assi Ghat", "Morning walk & chai", 34),
+        photoSVG("Assi Ghat", "Boats & soft light", 46),
+      ]
+    },
+    {
+      id:"d4",
+      name:"Manikarnika Ghat",
+      type:"Ghat",
+      bestTime:"day",
+      timeNeeded:"30–60 min",
+      cost:"Free",
+      highlights:"A major cremation ghat; deeply traditional and powerful to witness (be respectful).",
+      map:"https://www.google.com/maps/search/?api=1&query=Manikarnika+Ghat+Varanasi",
+      photos:[
+        photoSVG("Manikarnika Ghat", "Oldest traditions", 10),
+        photoSVG("Manikarnika Ghat", "Historic riverfront", 16),
+        photoSVG("Manikarnika Ghat", "Respectful viewing", 6),
+      ]
+    },
+    {
+      id:"d5",
+      name:"Sarnath (Dhamek Stupa & ruins)",
+      type:"Sarnath",
+      bestTime:"day",
+      timeNeeded:"2–4 hrs",
+      cost:"Tickets may apply",
+      highlights:"Buddhist pilgrimage site; serene monuments and historical ruins.",
+      map:"https://www.google.com/maps/search/?api=1&query=Dhamek+Stupa+Sarnath",
+      photos:[
+        photoSVG("Sarnath", "Dhamek Stupa", 120),
+        photoSVG("Sarnath", "Peaceful lawns", 140),
+        photoSVG("Sarnath", "Ruins & history", 110),
+      ]
+    },
+    {
+      id:"d6",
+      name:"Sarnath Museum (Archaeological Museum)",
+      type:"Sarnath",
+      bestTime:"day",
+      timeNeeded:"1–2 hrs",
+      cost:"Tickets apply",
+      highlights:"Artifacts from Sarnath; iconic Ashokan lion capital association.",
+      map:"https://www.google.com/maps/search/?api=1&query=Sarnath+Museum",
+      photos:[
+        photoSVG("Sarnath Museum", "Artifacts & sculpture", 200),
+        photoSVG("Sarnath Museum", "Heritage exhibits", 190),
+        photoSVG("Sarnath Museum", "Learning stop", 210),
+      ]
+    },
+    {
+      id:"d7",
+      name:"Ramnagar Fort",
+      type:"Heritage",
+      bestTime:"day",
+      timeNeeded:"1–2 hrs",
+      cost:"Tickets may apply",
+      highlights:"Historic fort across the Ganga; museum and royal-era collections.",
+      map:"https://www.google.com/maps/search/?api=1&query=Ramnagar+Fort+Varanasi",
+      photos:[
+        photoSVG("Ramnagar Fort", "Fort & museum", 260),
+        photoSVG("Ramnagar Fort", "Royal collections", 240),
+        photoSVG("Ramnagar Fort", "Ganga-side view", 280),
+      ]
+    },
+    {
+      id:"d8",
+      name:"BHU & Bharat Kala Bhavan",
+      type:"Heritage",
+      bestTime:"day",
+      timeNeeded:"2–4 hrs",
+      cost:"Often free/entry rules vary",
+      highlights:"Campus stroll + art museum; peaceful green spaces.",
+      map:"https://www.google.com/maps/search/?api=1&query=BHU+Bharat+Kala+Bhavan+Varanasi",
+      photos:[
+        photoSVG("BHU", "Green campus walk", 90),
+        photoSVG("Bharat Kala Bhavan", "Art & culture", 70),
+        photoSVG("BHU", "Quiet evenings", 100),
+      ]
+    },
+    {
+      id:"d9",
+      name:"Kaal Bhairav Temple",
+      type:"Temple",
+      bestTime:"day",
+      timeNeeded:"45–90 min",
+      cost:"Free",
+      highlights:"Popular local deity temple; often a dedicated queue.",
+      map:"https://www.google.com/maps/search/?api=1&query=Kaal+Bhairav+Temple+Varanasi",
+      photos:[
+        photoSVG("Kaal Bhairav", "Local devotion", 320),
+        photoSVG("Kaal Bhairav", "Queue & darshan", 300),
+        photoSVG("Kaal Bhairav", "Temple street", 340),
+      ]
+    },
+    {
+      id:"d10",
+      name:"Sankat Mochan Hanuman Temple",
+      type:"Temple",
+      bestTime:"day",
+      timeNeeded:"45–90 min",
+      cost:"Free",
+      highlights:"Beloved Hanuman temple; close to BHU area.",
+      map:"https://www.google.com/maps/search/?api=1&query=Sankat+Mochan+Temple+Varanasi",
+      photos:[
+        photoSVG("Sankat Mochan", "Hanuman temple", 30),
+        photoSVG("Sankat Mochan", "Prasad & prayers", 22),
+        photoSVG("Sankat Mochan", "Near BHU area", 38),
+      ]
+    },
+    {
+      id:"d11",
+      name:"Boat Ride on the Ganga (Ghats stretch)",
+      type:"Experience",
+      bestTime:"sunrise",
+      timeNeeded:"1–2 hrs",
+      cost:"Paid",
+      highlights:"Classic Varanasi experience—see ghats from the river (sunrise is magical).",
+      map:"https://www.google.com/maps/search/?api=1&query=Boat+ride+Varanasi+ghats",
+      photos:[
+        photoSVG("Boat Ride", "Sunrise on Ganga", 48),
+        photoSVG("Boat Ride", "Ghats panorama", 54),
+        photoSVG("Boat Ride", "Quiet water moments", 42),
+      ]
+    },
+    {
+      id:"d12",
+      name:"Vishalakshi Temple / Shakti Peeth area",
+      type:"Temple",
+      bestTime:"day",
+      timeNeeded:"45–90 min",
+      cost:"Free",
+      highlights:"Close to the Vishwanath corridor region; devotional circuit-friendly.",
+      map:"https://www.google.com/maps/search/?api=1&query=Vishalakshi+Temple+Varanasi",
+      photos:[
+        photoSVG("Vishalakshi Temple", "Shakti Peeth area", 15),
+        photoSVG("Vishalakshi Temple", "Temple lane", 24),
+        photoSVG("Vishalakshi Temple", "Devotional circuit", 12),
+      ]
+    },
+    {
+      id:"d13",
+      name:"Godowlia Market (Shopping & street life)",
+      type:"Market",
+      bestTime:"evening",
+      timeNeeded:"1–2 hrs",
+      cost:"Free",
+      highlights:"Local shopping + lanes; great for Banarasi items and snacks.",
+      map:"https://www.google.com/maps/search/?api=1&query=Godowlia+Market+Varanasi",
+      photos:[
+        photoSVG("Godowlia Market", "Street life & shops", 5),
+        photoSVG("Godowlia Market", "Snacks & lanes", 18),
+        photoSVG("Godowlia Market", "Evening lights", 10),
+      ]
+    },
+    {
+      id:"d14",
+      name:"Banaras Silk & Weaving lanes (Saree experience)",
+      type:"Market",
+      bestTime:"day",
+      timeNeeded:"2–3 hrs",
+      cost:"Free",
+      highlights:"Explore famous Banarasi silk craft (buy only from trusted sellers).",
+      map:"https://www.google.com/maps/search/?api=1&query=Banarasi+silk+weaving+Varanasi",
+      photos:[
+        photoSVG("Banarasi Silk", "Weaving craft", 285),
+        photoSVG("Banarasi Silk", "Patterns & zari", 300),
+        photoSVG("Banarasi Silk", "Shopping tip: trusted", 270),
+      ]
+    }
+  ];
+
+  // ------- LocalStorage Tour Helpers -------
+  function readTour(){
+    try { return JSON.parse(localStorage.getItem(LS_TOUR) || "[]"); }
+    catch { return []; }
+  }
+  function writeTour(ids){
+    localStorage.setItem(LS_TOUR, JSON.stringify(ids));
+  }
+
+  // Ensure Home is ALWAYS first in the tour (even if older saved tours exist)
+  function normalizeTour(){
+    let ids = readTour().filter(Boolean);
+    ids = ids.filter(id => id !== HOME.id);
+    ids.unshift(HOME.id);
+    const exists = new Set(DEST.map(d=>d.id));
+    ids = ids.filter(id => exists.has(id));
+    ids = [...new Set(ids)];
+    writeTour(ids);
+  }
+  normalizeTour();
+
+  // ------- UI refs -------
+  const destGrid = document.getElementById("destGrid");
+  const destCount = document.getElementById("destCount");
+  const tourList = document.getElementById("tourList");
+  const tourCount = document.getElementById("tourCount");
+  const topSearch = document.getElementById("topSearch");
+  const rightSearch = document.getElementById("rightSearch");
+  const filterType = document.getElementById("filterType");
+  const filterTime = document.getElementById("filterTime");
+  const summaryBox = document.getElementById("summaryBox");
+
+  // Map modal refs
+  const mapModal = document.getElementById("mapModal");
+  const mapFrame = document.getElementById("mapFrame");
+  const openMapsLink = document.getElementById("openMapsLink");
+
+  const toastWrap = document.getElementById("toast");
+  function toast(title, detail){
+    const el = document.createElement("div");
+    el.className = "t";
+    el.innerHTML = `<div class="okdot"></div><div class="msg"><b>${title}</b><small>${detail}</small></div>`;
+    toastWrap.appendChild(el);
+    setTimeout(()=> el.remove(), 2600);
+  }
+
+  // ------- Filters -------
+  const TYPES = ["all", ...new Set(DEST.map(d=>d.type))].sort((a,b)=>{
+    if(a==="all") return -1; if(b==="all") return 1;
+    return a.localeCompare(b);
+  });
+  TYPES.forEach(t=>{
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t==="all" ? "All types" : t;
+    filterType.appendChild(opt);
+  });
+
+  const state = { q:"", type:"all", time:"all" };
+
+  function setSearch(v){
+    state.q = (v || "");
+    topSearch.value = state.q;
+    rightSearch.value = state.q;
+    renderDestinations();
+  }
+  topSearch.addEventListener("input", e => setSearch(e.target.value));
+  rightSearch.addEventListener("input", e => setSearch(e.target.value));
+
+  filterType.addEventListener("change", e=>{ state.type = e.target.value; renderDestinations(); });
+  filterTime.addEventListener("change", e=>{ state.time = e.target.value; renderDestinations(); });
+
+  function prettyTime(t){
+    const m = {sunrise:"Sunrise", day:"Daytime", evening:"Evening", night:"Night"};
+    return m[t] || t;
+  }
+
+  function filteredDest(){
+    const q = state.q.trim().toLowerCase();
+    return DEST.filter(d=>{
+      const matchesQ = !q || (d.name + " " + d.type + " " + d.bestTime + " " + d.highlights).toLowerCase().includes(q);
+      const matchesType = state.type === "all" || d.type === state.type;
+      const matchesTime = state.time === "all" || d.bestTime === state.time;
+      return matchesQ && matchesType && matchesTime;
+    });
+  }
+
+  // ------- Tour ops -------
+  function addToTour(id){
+    let ids = readTour();
+    if(ids.includes(id)){
+      toast("Already added", "This destination is already in your tour.");
+      return;
+    }
+    ids.push(id);
+    writeTour(ids);
+    normalizeTour();
+    renderTour();
+    toast("Added to tour", DEST.find(x=>x.id===id)?.name || id);
+  }
+  function removeFromTour(id){
+    if(id === HOME.id){
+      toast("Pinned", "Champak's Home is the fixed start point.");
+      return;
+    }
+    writeTour(readTour().filter(x=>x!==id));
+    normalizeTour();
+    renderTour();
+  }
+  function moveTour(id, dir){
+    if(id === HOME.id) return;
+
+    const ids = readTour();
+    const idx = ids.indexOf(id);
+    if(idx === -1) return;
+
+    const newIdx = dir === "up" ? idx-1 : idx+1;
+    if(newIdx < 1 || newIdx >= ids.length) return;
+
+    [ids[idx], ids[newIdx]] = [ids[newIdx], ids[idx]];
+    writeTour(ids);
+    normalizeTour();
+    renderTour();
+  }
+  function clearTour(){
+    writeTour([HOME.id]);
+    normalizeTour();
+    renderTour();
+    summaryBox.style.display="none";
+    summaryBox.textContent="";
+    toast("Cleared", "Tour cleared (start point kept).");
+  }
+
+  // ------- Build a Google Maps route URL from selected destinations -------
+  function placeQuery(d){
+    if(d.coords) return d.coords;
+    return `${d.name} Varanasi`;
+  }
+  HOME.coords = "25.349304,83.001256";
+
+  function buildRouteUrlFromTour(){
+    const ids = readTour();
+    if(ids.length === 0) return null;
+
+    const places = ids.map(id => DEST.find(x=>x.id===id)).filter(Boolean);
+    if(places.length === 0) return null;
+
+    if(places.length === 1){
+      const q = encodeURIComponent(placeQuery(places[0]));
+      return `https://www.google.com/maps/search/?api=1&query=${q}`;
+    }
+
+    const origin = encodeURIComponent(placeQuery(places[0]));
+    const destination = encodeURIComponent(placeQuery(places[places.length - 1]));
+    const middle = places.slice(1, -1).map(p => encodeURIComponent(placeQuery(p)));
+    const waypoints = middle.slice(0, 20).join("%7C");
+
+    const base = `https://www.google.com/maps/dir/?api=1&travelmode=walking&origin=${origin}&destination=${destination}`;
+    return waypoints ? `${base}&waypoints=${waypoints}` : base;
+  }
+
+  function openMapModal(){
+    const url = buildRouteUrlFromTour();
+    if(!url){
+      toast("Tour empty", "Add destinations first, then view the map.");
+      return;
+    }
+    mapFrame.src = url;
+    openMapsLink.href = url;
+    mapModal.classList.add("show");
+    mapModal.setAttribute("aria-hidden", "false");
+  }
+  function closeMapModal(){
+    mapModal.classList.remove("show");
+    mapModal.setAttribute("aria-hidden", "true");
+    mapFrame.src = "about:blank";
+  }
+
+  document.getElementById("viewMapBtn").addEventListener("click", openMapModal);
+  document.getElementById("closeMapBtn").addEventListener("click", closeMapModal);
+  mapModal.addEventListener("click", (e)=>{ if(e.target === mapModal) closeMapModal(); });
+  window.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && mapModal.classList.contains("show")) closeMapModal(); });
+
+  document.getElementById("openMapsBtn").addEventListener("click", ()=>{
+    const url = buildRouteUrlFromTour();
+    if(!url){
+      toast("Tour empty", "Add destinations first, then open maps.");
+      return;
+    }
+    window.open(url, "_blank", "noopener");
+  });
+
+  // ------- Carousel state -------
+  const carIdx = new Map();
+  const carTimers = new Map();
+
+  function setDotActive(dotsWrap, idx){
+    [...dotsWrap.children].forEach((dot,i)=> dot.classList.toggle("active", i===idx));
+  }
+
+  function mountCarouselHandlers(cardEl, d){
+    const track = cardEl.querySelector(".track");
+    const dotsWrap = cardEl.querySelector(".dots");
+    const prevBtn = cardEl.querySelector('[data-prev]');
+    const nextBtn = cardEl.querySelector('[data-next]');
+
+    const total = d.photos.length;
+    let idx = carIdx.get(d.id) ?? 0;
+
+    function go(newIdx){
+      idx = (newIdx + total) % total;
+      carIdx.set(d.id, idx);
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      setDotActive(dotsWrap, idx);
+    }
+
+    prevBtn.addEventListener("click", (e)=>{ e.preventDefault(); go(idx - 1); });
+    nextBtn.addEventListener("click", (e)=>{ e.preventDefault(); go(idx + 1); });
+
+    const start = () => {
+      stop();
+      const t = setInterval(()=> go(idx + 1), 4500);
+      carTimers.set(d.id, t);
+    };
+    const stop = () => {
+      const t = carTimers.get(d.id);
+      if(t) clearInterval(t);
+      carTimers.delete(d.id);
     };
 
-    const logEl = document.getElementById("log");
-    const statusDot = document.getElementById("statusDot");
-    const statusText = document.getElementById("statusText");
-    const nowPlaying = document.getElementById("nowPlaying");
-    const nowText = document.getElementById("nowText");
+    cardEl.querySelector(".carousel").addEventListener("mouseenter", stop);
+    cardEl.querySelector(".carousel").addEventListener("mouseleave", start);
 
-    let audioUnlocked = false;
-    const audioCache = {};
+    go(idx);
+    start();
+  }
 
-    function stamp() {
-      const d = new Date();
-      const hh = String(d.getHours()).padStart(2, "0");
-      const mm = String(d.getMinutes()).padStart(2, "0");
-      const ss = String(d.getSeconds()).padStart(2, "0");
-      return `${hh}:${mm}:${ss}`;
+  // ------- Render destinations -------
+  function renderDestinations(){
+    for(const t of carTimers.values()) clearInterval(t);
+    carTimers.clear();
+
+    const list = filteredDest();
+    destCount.textContent = String(list.length);
+    destGrid.innerHTML = "";
+
+    const tourIds = new Set(readTour());
+
+    list.forEach(d=>{
+      const inTour = tourIds.has(d.id);
+
+      const el = document.createElement("article");
+      el.className = "card";
+
+      const dots = d.photos.map((_,i)=> `<span class="dot ${i===0?"active":""}"></span>`).join("");
+      const slides = d.photos.map(src => `
+        <div class="slide"><img src="${src}" alt="${d.name} photo"></div>
+      `).join("");
+
+      const openMapHref = d.mapShort ? d.mapShort : d.map;
+
+      el.innerHTML = `
+        <div class="carousel" aria-label="Sliding pictures">
+          <span class="car-tag">Sliding photos</span>
+          <div class="track">${slides}</div>
+
+          <div class="car-nav" aria-hidden="false">
+            <button class="car-btn" data-prev="${d.id}" aria-label="Previous photo">‹</button>
+            <button class="car-btn" data-next="${d.id}" aria-label="Next photo">›</button>
+          </div>
+
+          <div class="dots" aria-label="Slide indicators">${dots}</div>
+        </div>
+
+        <div class="card-top">
+          <div>
+            <p class="title">${d.name}</p>
+            <p class="meta">${d.highlights}</p>
+          </div>
+          <div class="badges">
+            <span class="badge cat">${d.type}</span>
+            <span class="badge time">${prettyTime(d.bestTime)}</span>
+            <span class="badge cost">${d.timeNeeded}</span>
+          </div>
+        </div>
+
+        <div class="card-mid">
+          <p class="desc">
+            <b>Time needed:</b> ${d.timeNeeded}<br/>
+            <b>Best time:</b> ${prettyTime(d.bestTime)}<br/>
+            <b>Cost:</b> ${d.cost}
+          </p>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn ${inTour ? "secondary":""}" data-add="${d.id}">
+            ${inTour ? "✓ Added" : "➕ Add to Tour"}
+          </button>
+          <a class="btn secondary" href="${openMapHref}" target="_blank" rel="noopener">📍 Open Map</a>
+        </div>
+      `;
+
+      destGrid.appendChild(el);
+      mountCarouselHandlers(el, d);
+    });
+  }
+
+  // ------- Render tour -------
+  function renderTour(){
+    const ids = readTour();
+    tourCount.textContent = String(ids.length);
+
+    tourList.innerHTML = "";
+    if(ids.length === 0){
+      tourList.innerHTML = `
+        <div class="note" style="border-top:none; margin-top:0;">
+          Your tour is empty. Add destinations from the left list.
+        </div>
+      `;
+      renderDestinations();
+      return;
     }
 
-    function log(msg) {
-      logEl.textContent += `\n[${stamp()}] ${msg}`;
-      logEl.scrollTop = logEl.scrollHeight;
-    }
+    ids.forEach((id, idx)=>{
+      const d = DEST.find(x=>x.id===id);
+      if(!d) return;
 
-    function setUnlocked(on) {
-      audioUnlocked = on;
-      statusDot.classList.toggle("ok", on);
-      statusText.textContent = on
-        ? "Audio unlocked — enjoy playing!"
-        : "Audio not unlocked yet — click any drum once";
-    }
+      const isHome = (id === HOME.id);
 
-    function preloadAudio() {
-      for (const key of Object.keys(sounds)) {
-        const a = new Audio(sounds[key]);
-        a.preload = "auto";
-        audioCache[key] = a;
+      const item = document.createElement("div");
+      item.className = "touritem";
+      item.innerHTML = `
+        <div>
+          <b>${idx+1}. ${d.name}${isHome ? " (Start)" : ""}</b>
+          <small>${d.type} • ${prettyTime(d.bestTime)} • ${d.timeNeeded}</small>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="tinybtn up" title="Move up" data-up="${id}" ${isHome ? "disabled" : ""}>▲</button>
+          <button class="tinybtn down" title="Move down" data-down="${id}" ${isHome ? "disabled" : ""}>▼</button>
+          <button class="tinybtn remove" title="Remove" data-rm="${id}" ${isHome ? "disabled" : ""}>Remove</button>
+        </div>
+      `;
+      tourList.appendChild(item);
+    });
+
+    renderDestinations();
+  }
+
+  // Tour list events
+  tourList.addEventListener("click", (e)=>{
+    const rm = e.target?.getAttribute?.("data-rm");
+    const up = e.target?.getAttribute?.("data-up");
+    const down = e.target?.getAttribute?.("data-down");
+    if(rm) removeFromTour(rm);
+    if(up) moveTour(up, "up");
+    if(down) moveTour(down, "down");
+  });
+
+  // Destination grid events
+  destGrid.addEventListener("click", (e)=>{
+    const id = e.target?.getAttribute?.("data-add");
+    if(!id) return;
+    addToTour(id);
+  });
+
+  // Summary generator
+  function makeSummaryText(){
+    const ids = readTour();
+    const places = ids.map((id, i)=>{
+      const d = DEST.find(x=>x.id===id);
+      if(!d) return null;
+      const mapLink = d.mapShort ? d.mapShort : d.map;
+      return `${i+1}) ${d.name} — ${d.type} — Best: ${prettyTime(d.bestTime)} — Time: ${d.timeNeeded}\n   Map: ${mapLink}`;
+    }).filter(Boolean);
+
+    const header = `Varanasi Tour Plan (DIY)\n-----------------------`;
+    const footer = `\nTips:\n• Start early for ghats/boat ride.\n• Keep buffer time for queues.\n• Be respectful at sensitive places (e.g., Manikarnika Ghat).`;
+    return `${header}\n${places.join("\n")}${footer}`;
+  }
+
+  document.getElementById("makePlanBtn").addEventListener("click", ()=>{
+    const ids = readTour();
+    if(ids.length === 0){
+      toast("Tour empty", "Add destinations first.");
+      return;
+    }
+    const text = makeSummaryText();
+    summaryBox.style.display = "block";
+    summaryBox.innerHTML = `<b>Your Tour Summary</b><br/><pre style="white-space:pre-wrap; margin:8px 0 0; font:inherit; font-size:12px; color:var(--ink)"></pre>`;
+    summaryBox.querySelector("pre").textContent = text;
+    toast("Summary created", "You can share it on WhatsApp.");
+  });
+
+  document.getElementById("clearTourBtn").addEventListener("click", clearTour);
+
+  document.getElementById("saveTourBtn").addEventListener("click", ()=>{
+    toast("Saved", "Your tour is saved in this browser.");
+  });
+
+  // WhatsApp share button
+  document.getElementById("waShare").addEventListener("click", ()=>{
+    const ids = readTour();
+    if(ids.length === 0){
+      toast("Tour empty", "Add destinations to share.");
+      return;
+    }
+    const text = makeSummaryText();
+    const url = "https://wa.me/?text=" + encodeURIComponent(text);
+    window.open(url, "_blank", "noopener");
+  });
+
+  // init
+  renderTour();
+  renderDestinations();
+
+  /* ==========================================================
+     EXPOSE APP DATA (so chatbot can answer using DEST/tour)
+     ========================================================== */
+  window.VARANASI_APP = {
+    DEST, HOME,
+    prettyTime,
+    readTour,
+    addToTour,
+    buildRouteUrlFromTour,
+    makeSummaryText
+  };
+})();
+</script>
+
+<script>
+/* ==========================================================
+   CHATBOT LOGIC (NEW) — light NLP + WhatsApp connect intent
+   - If user says "connect me on whatsapp" -> link to 919335874326
+   - Answers questions about destinations, best time, cost, etc.
+   - Supports: "add <place>", "what is in my tour", "make plan"
+   ========================================================== */
+(() => {
+  const WA_NUMBER = "919335874326";
+  const WA_LINK = `https://wa.me/${WA_NUMBER}`;
+
+  const app = () => window.VARANASI_APP;
+
+  // UI refs
+  const chatOpen = document.getElementById("chatOpen");
+  const chatPanel = document.getElementById("chatPanel");
+  const chatClose = document.getElementById("chatClose");
+  const chatBody = document.getElementById("chatBody");
+  const chatInput = document.getElementById("chatInput");
+  const chatSend = document.getElementById("chatSend");
+  const chatSuggest = document.getElementById("chatSuggest");
+
+  function showPanel(){
+    chatPanel.classList.add("show");
+    chatOpen.style.display = "none";
+    chatInput.focus();
+    if(chatBody.childElementCount === 0){
+      bot(
+        "Namaste 🙏 I’m your Varanasi Tour Assistant.\n\nTry:\n• “Best time for Assi Ghat?”\n• “Add Sarnath”\n• “What is in my tour?”\n• “Connect me on WhatsApp”"
+      );
+    }
+  }
+  function hidePanel(){
+    chatPanel.classList.remove("show");
+    chatOpen.style.display = "inline-flex";
+  }
+
+  chatOpen.addEventListener("click", showPanel);
+  chatClose.addEventListener("click", hidePanel);
+
+  // Bubbles
+  function bubble(text, who){
+    const el = document.createElement("div");
+    el.className = `bubble ${who}`;
+    el.textContent = text;
+    chatBody.appendChild(el);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+  function bot(text){ bubble(text, "bot"); }
+  function user(text){ bubble(text, "user"); }
+
+  // Mini NLP helpers
+  function norm(s){
+    return String(s || "")
+      .toLowerCase()
+      .replace(/[’']/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function containsAny(s, arr){
+    return arr.some(k => s.includes(k));
+  }
+
+  // Levenshtein distance (small, for fuzzy match)
+  function levenshtein(a, b){
+    a = a || ""; b = b || "";
+    const m = a.length, n = b.length;
+    const dp = Array.from({length:m+1}, ()=> Array(n+1).fill(0));
+    for(let i=0;i<=m;i++) dp[i][0]=i;
+    for(let j=0;j<=n;j++) dp[0][j]=j;
+    for(let i=1;i<=m;i++){
+      for(let j=1;j<=n;j++){
+        const cost = a[i-1]===b[j-1] ? 0 : 1;
+        dp[i][j] = Math.min(
+          dp[i-1][j] + 1,
+          dp[i][j-1] + 1,
+          dp[i-1][j-1] + cost
+        );
+      }
+    }
+    return dp[m][n];
+  }
+
+  function bestDestinationMatch(q){
+    const A = app();
+    if(!A) return null;
+
+    const query = norm(q);
+    if(!query) return null;
+
+    const list = A.DEST || [];
+    let best = null;
+    let bestScore = -Infinity;
+
+    for(const d of list){
+      const name = norm(d.name);
+      // score components
+      const tokenOverlap = (() => {
+        const qt = new Set(query.split(" ").filter(Boolean));
+        const nt = new Set(name.split(" ").filter(Boolean));
+        let inter = 0;
+        for(const t of qt) if(nt.has(t)) inter++;
+        return inter / Math.max(1, Math.min(qt.size, nt.size));
+      })();
+
+      const dist = levenshtein(query, name);
+      const distScore = 1 - (dist / Math.max(1, Math.max(query.length, name.length)));
+
+      // boost if query contains a short key like "assi", "sarnath", "bhu"
+      const boost = (name.includes("assi") && query.includes("assi")) ||
+                    (name.includes("sarnath") && query.includes("sarnath")) ||
+                    (name.includes("vishwanath") && (query.includes("vishwanath") || query.includes("kashi"))) ||
+                    (name.includes("dashashwamedh") && (query.includes("dashashwamedh") || query.includes("aarti"))) ||
+                    (name.includes("godowlia") && query.includes("godowlia"))
+                    ? 0.15 : 0;
+
+      const score = (0.58 * tokenOverlap) + (0.42 * distScore) + boost;
+
+      if(score > bestScore){
+        bestScore = score;
+        best = d;
       }
     }
 
-    async function unlockAudioOnce() {
-      if (audioUnlocked) return;
+    // require a minimum confidence
+    if(bestScore < 0.32) return null;
+    return best;
+  }
 
-      try {
-        preloadAudio();
-        const a = audioCache.dayan_na || new Audio(sounds.dayan_na);
-        a.muted = true;
-        const p = a.play();
-        if (p && typeof p.then === "function") await p;
-        a.pause();
-        a.currentTime = 0;
-        a.muted = false;
-        setUnlocked(true);
-        log("Audio unlocked.");
-      } catch (e) {
-        log("Audio unlock attempt failed (click again).");
+  // Intent detection (light NLP)
+  function detectIntent(text){
+    const t = norm(text);
+
+    const whatsappIntent =
+      (t.includes("whatsapp") && (t.includes("connect") || t.includes("link") || t.includes("number") || t.includes("contact"))) ||
+      t.includes("connect me on whatsapp") ||
+      t.includes("whats app") && t.includes("connect");
+
+    if(whatsappIntent) return { intent:"whatsapp" };
+
+    if(containsAny(t, ["hi", "hello", "hey", "namaste", "hola"])) return { intent:"greet" };
+    if(containsAny(t, ["help", "what can you do", "commands", "how to"])) return { intent:"help" };
+
+    if(containsAny(t, ["what is in my tour", "my tour", "tour list", "show tour", "current tour"])) return { intent:"tour_status" };
+    if(containsAny(t, ["make plan", "make me a plan", "tour summary", "summary"])) return { intent:"summary" };
+    if(containsAny(t, ["open map", "route", "map for my tour", "view map"])) return { intent:"route" };
+
+    // Add intent
+    if(t.startsWith("add ") || t.includes(" add ") || containsAny(t, ["include ", "put ", "select "])){
+      return { intent:"add_place" };
+    }
+
+    // Questions about a place
+    if(containsAny(t, ["best time", "when to go", "time to visit", "sunrise", "evening", "cost", "ticket", "fees", "how long", "time needed", "duration", "where is", "map", "location", "what is"])){
+      return { intent:"place_info" };
+    }
+
+    // Itinerary request
+    if(containsAny(t, ["1 day", "one day", "day plan", "itinerary", "schedule", "2 day", "two day"])){
+      return { intent:"itinerary" };
+    }
+
+    return { intent:"fallback" };
+  }
+
+  function formatPlace(d){
+    const A = app();
+    return [
+      `${d.name}`,
+      `Type: ${d.type}`,
+      `Best time: ${A.prettyTime(d.bestTime)}`,
+      `Time needed: ${d.timeNeeded}`,
+      `Cost: ${d.cost}`,
+      `Highlights: ${d.highlights}`,
+      `Map: ${d.mapShort ? d.mapShort : d.map}`,
+    ].join("\n");
+  }
+
+  function make1DayPlan(){
+    const A = app();
+    const tourIds = A.readTour();
+    const places = tourIds.map(id => A.DEST.find(x=>x.id===id)).filter(Boolean);
+
+    // Simple time-bucket plan using bestTime
+    const sunrise = places.filter(p => p.bestTime === "sunrise");
+    const day = places.filter(p => p.bestTime === "day");
+    const evening = places.filter(p => p.bestTime === "evening");
+    const night = places.filter(p => p.bestTime === "night");
+
+    // If tour is tiny, suggest core circuit
+    const hasOnlyHome = places.length <= 1;
+
+    if(hasOnlyHome){
+      return (
+        "Here’s a simple 1-day classic plan (starting from Champak’s Home):\n\n" +
+        "🌅 Sunrise: Assi Ghat / Boat Ride\n" +
+        "☀️ Day: Kashi Vishwanath + nearby temples/lanes\n" +
+        "🌆 Evening: Dashashwamedh Ghat (Ganga Aarti)\n" +
+        "🛍️ Night: Godowlia Market (snacks + shopping)\n\n" +
+        "Tip: Add these places to your tour and I’ll plan using your exact order."
+      );
+    }
+
+    function listBlock(title, arr){
+      if(arr.length===0) return "";
+      return `${title}\n` + arr.map((p,i)=>`  ${i+1}. ${p.name}`).join("\n") + "\n";
+    }
+
+    let text = "Your 1-day plan (based on your current tour):\n\n";
+    text += listBlock("🌅 Sunrise", sunrise);
+    text += listBlock("☀️ Day", day);
+    text += listBlock("🌆 Evening", evening);
+    text += listBlock("🌙 Night", night);
+
+    // If no sunrise/evening, suggest
+    if(sunrise.length===0) text += "\nSuggestion: Add Assi Ghat or Boat Ride for sunrise vibes.\n";
+    if(evening.length===0) text += "Suggestion: Add Dashashwamedh Ghat for evening Aarti.\n";
+
+    text += "\nIf you want, say: “Open map” or “Make summary”.";
+    return text;
+  }
+
+  function handle(text){
+    const A = app();
+    if(!A){
+      bot("App is still loading—please try again in a second.");
+      return;
+    }
+
+    const raw = String(text || "").trim();
+    if(!raw) return;
+
+    user(raw);
+
+    const { intent } = detectIntent(raw);
+    const t = norm(raw);
+
+    // 1) WhatsApp connect intent (YOUR REQUIRED FEATURE)
+    if(intent === "whatsapp"){
+      bot(`Sure ✅ Click to connect on WhatsApp:\n${WA_LINK}`);
+      return;
+    }
+
+    if(intent === "greet"){
+      bot("Namaste 🙏 Ask me about places, best time, costs, or your tour. Try: “Best time for Dashashwamedh?”");
+      return;
+    }
+
+    if(intent === "help"){
+      bot(
+        "I can help with:\n" +
+        "• Place info: “Best time for Assi Ghat?” / “Cost of Sarnath Museum?”\n" +
+        "• Tour status: “What is in my tour?”\n" +
+        "• Add places: “Add Sarnath” / “Add Kashi Vishwanath”\n" +
+        "• Plan: “Make me a 1-day plan”\n" +
+        "• Route: “Open map” (or “Open in Maps”)"
+      );
+      return;
+    }
+
+    if(intent === "tour_status"){
+      const ids = A.readTour();
+      const places = ids.map((id,i)=> {
+        const d = A.DEST.find(x=>x.id===id);
+        return d ? `${i+1}. ${d.name}` : null;
+      }).filter(Boolean);
+
+      bot(places.length ? `Your current tour:\n${places.join("\n")}` : "Your tour is empty. Add destinations from the left list.");
+      return;
+    }
+
+    if(intent === "summary"){
+      const ids = A.readTour();
+      if(ids.length === 0){
+        bot("Your tour is empty. Add destinations first, then I’ll create a summary.");
+        return;
       }
+      bot(A.makeSummaryText());
+      bot("Want to share? Click the green WhatsApp button (bottom-right).");
+      return;
     }
 
-    function playSound(soundKey, bol) {
-      const file = sounds[soundKey];
-      if (!file) { log(`Missing sound mapping for ${soundKey}`); return; }
-
-      // clone so rapid hits can overlap
-      const base = audioCache[soundKey] || new Audio(file);
-      const a = base.cloneNode(true);
-      a.currentTime = 0;
-
-      a.play().then(() => {
-        nowText.textContent = `Now: ${bol}`;
-        nowPlaying.style.display = "inline-flex";
-        log(`Played: ${bol}`);
-      }).catch(() => {
-        log(`Could not play "${bol}". Is the file present? (${file})`);
-      });
-    }
-
-    // Click-to-play zones
-    document.addEventListener("click", async (e) => {
-      const btn = e.target.closest(".zone");
-      if (!btn) return;
-
-      await unlockAudioOnce();
-      playSound(btn.dataset.sound, btn.dataset.bol);
-    });
-
-    // Test all
-    document.getElementById("btnTest").addEventListener("click", async () => {
-      await unlockAudioOnce();
-      log("Testing sequence: Na Tin Ge Ke");
-      const seq = [
-        ["dayan_na", "Na"],
-        ["dayan_tin", "Tin"],
-        ["bayan_ge", "Ge"],
-        ["bayan_ke", "Ke"],
-      ];
-      let i = 0;
-      const timer = setInterval(() => {
-        const item = seq[i++];
-        if (!item) { clearInterval(timer); return; }
-        playSound(item[0], item[1]);
-      }, 350);
-    });
-
-    // Clear log
-    document.getElementById("btnClear").addEventListener("click", () => {
-      logEl.textContent = "Ready. Click a zone or run commands…";
-      nowPlaying.style.display = "none";
-    });
-
-    // Keyboard shortcuts
-    document.addEventListener("keydown", async (e) => {
-      const k = e.key.toLowerCase();
-      if (!["n","t","g","k"].includes(k)) return;
-      await unlockAudioOnce();
-      if (k === "n") playSound("dayan_na", "Na");
-      if (k === "t") playSound("dayan_tin", "Tin");
-      if (k === "g") playSound("bayan_ge", "Ge");
-      if (k === "k") playSound("bayan_ke", "Ke");
-    });
-
-    // -------- Command Player with loops (xN) --------
-    const cmdInput = document.getElementById("cmdInput");
-    const cmdPlay = document.getElementById("cmdPlay");
-    const cmdStop = document.getElementById("cmdStop");
-    const bpm = document.getElementById("bpm");
-    const bpmLabel = document.getElementById("bpmLabel");
-    const presetA = document.getElementById("presetA");
-    const presetB = document.getElementById("presetB");
-
-    bpm.addEventListener("input", () => (bpmLabel.textContent = bpm.value));
-    presetA.addEventListener("click", () => (cmdInput.value = "1,2 x4"));
-    presetB.addEventListener("click", () => (cmdInput.value = "1,1,1  2,2,1"));
-
-    // number -> [soundKey, bol]
-    const numToBol = {
-      1: ["dayan_na", "Na"],
-      2: ["dayan_tin", "Tin"],
-      3: ["bayan_ge", "Ge"],
-      4: ["bayan_ke", "Ke"],
-    };
-
-    let cmdTimer = null;
-    let cmdIndex = 0;
-    let cmdSeq = [];
-
-    function stopCommands() {
-      if (cmdTimer) clearInterval(cmdTimer);
-      cmdTimer = null;
-      cmdIndex = 0;
-      nowPlaying.style.display = "none";
-    }
-
-    cmdStop.addEventListener("click", () => {
-      stopCommands();
-      log("Command player stopped.");
-    });
-
-    // Tokenizes: numbers (1-4) and repeats (xN / XN)
-    // Accepts separators: spaces/commas. Ignores unknown tokens.
-    // Loop rule: "xN" repeats the phrase since start OR since last repeat boundary.
-    // Example: "1,2 x4" => 1,2,1,2,1,2,1,2
-    function expandCommands(text) {
-      const tokens = (text || "")
-        .trim()
-        .split(/[\s,]+/)
-        .filter(Boolean);
-
-      const out = [];
-      let phraseStart = 0; // index in out where current phrase began
-
-      for (const tRaw of tokens) {
-        const t = tRaw.trim();
-        if (!t) continue;
-
-        // repeat token like x4 or X12
-        const m = /^x(\d+)$/i.exec(t);
-        if (m) {
-          const times = Math.max(0, Number(m[1]) || 0);
-          const phrase = out.slice(phraseStart);
-          if (phrase.length === 0) {
-            // nothing to repeat
-            continue;
-          }
-          // already have 1 phrase; add (times-1) more
-          for (let r = 1; r < times; r++) out.push(...phrase);
-          // after applying repeat, start a new phrase boundary
-          phraseStart = out.length;
-          continue;
-        }
-
-        // number token 1..4
-        const n = Number(t);
-        if (Number.isFinite(n) && n >= 1 && n <= 4) {
-          out.push(n);
-          continue;
-        }
-
-        // allow "1|2|3" style accidentally pasted? Try to extract digits 1-4
-        const digs = t.match(/[1-4]/g);
-        if (digs && digs.length) {
-          for (const d of digs) out.push(Number(d));
-        }
+    if(intent === "route"){
+      const url = A.buildRouteUrlFromTour();
+      if(!url){
+        bot("Your tour is empty. Add a destination first.");
+        return;
       }
-      return out;
+      bot("Here is your route link (opens in Google Maps):\n" + url + "\n\nTip: Click “View Tour Map” on the right panel too.");
+      return;
     }
 
-    cmdPlay.addEventListener("click", async () => {
-      await unlockAudioOnce();
+    if(intent === "itinerary"){
+      bot(make1DayPlan());
+      return;
+    }
 
-      cmdSeq = expandCommands(cmdInput.value);
-      if (cmdSeq.length === 0) {
-        log("No valid commands found. Use numbers 1-4 and loops like x4.");
+    // Add place intent
+    if(intent === "add_place"){
+      // Try to extract after "add"
+      let q = raw;
+      const m = raw.match(/(?:^|\s)add\s+(.+)$/i);
+      if(m && m[1]) q = m[1];
+
+      const d = bestDestinationMatch(q);
+      if(!d){
+        bot("I couldn’t find that place. Try the exact name like “Assi Ghat”, “Sarnath”, or “Kashi Vishwanath”.");
+        return;
+      }
+      A.addToTour(d.id);
+      bot(`Done ✅ Added: ${d.name}\n\nWant info?\n• “Best time for ${d.name}?”\n• “Open map”`);
+      return;
+    }
+
+    // Place info intent
+    if(intent === "place_info"){
+      const d = bestDestinationMatch(raw);
+      if(!d){
+        bot("Which place are you asking about? Example: “Best time for Assi Ghat?”");
         return;
       }
 
-      stopCommands();
-      cmdIndex = 0;
+      // Answer focused based on keywords
+      const wantsTime = containsAny(t, ["best time", "when to go", "time to visit", "sunrise", "evening", "night", "daytime", "day"]);
+      const wantsCost = containsAny(t, ["cost", "ticket", "fees", "price"]);
+      const wantsDuration = containsAny(t, ["how long", "time needed", "duration"]);
+      const wantsMap = containsAny(t, ["map", "location", "where", "directions"]);
+      const wantsHighlight = containsAny(t, ["what is", "highlights", "about", "tell me"]);
 
-      const beatMs = Math.max(60, Math.round(60000 / Number(bpm.value || 120)));
-      log(`Command player started @ ${bpm.value} BPM`);
-      log(`Expanded sequence (${cmdSeq.length} steps): ${cmdSeq.join(",")}`);
+      let ans = `${d.name}\n`;
+      if(wantsTime) ans += `• Best time: ${A.prettyTime(d.bestTime)}\n`;
+      if(wantsDuration) ans += `• Time needed: ${d.timeNeeded}\n`;
+      if(wantsCost) ans += `• Cost: ${d.cost}\n`;
+      if(wantsHighlight) ans += `• Highlights: ${d.highlights}\n`;
+      if(wantsMap) ans += `• Map: ${d.mapShort ? d.mapShort : d.map}\n`;
 
-      // play immediately
-      const first = numToBol[cmdSeq[0]];
-      if (first) playSound(first[0], first[1]);
-      cmdIndex = 1;
+      // If question was general, give full card
+      if(!wantsTime && !wantsCost && !wantsDuration && !wantsMap && !wantsHighlight){
+        ans = formatPlace(d);
+      }
 
-      cmdTimer = setInterval(() => {
-        if (cmdIndex >= cmdSeq.length) {
-          stopCommands();
-          log("Command sequence finished.");
-          return;
-        }
-        const step = cmdSeq[cmdIndex++];
-        const m = numToBol[step];
-        if (m) playSound(m[0], m[1]);
-      }, beatMs);
-    });
-  </script>
+      bot(ans.trim());
+      bot(`Quick actions:\n• Say “Add ${d.name}”\n• Say “Open map”\n• Say “Connect me on WhatsApp”`);
+      return;
+    }
+
+    // fallback
+    const d = bestDestinationMatch(raw);
+    if(d){
+      bot("I think you mean:\n" + formatPlace(d));
+      return;
+    }
+
+    bot(
+      "I can help, but I need a bit more detail 🙂\n" +
+      "Try:\n• “Best time for Dashashwamedh Ghat?”\n• “Add Sarnath”\n• “What is in my tour?”\n• “Connect me on WhatsApp”"
+    );
+  }
+
+  function send(){
+    const v = chatInput.value;
+    chatInput.value = "";
+    handle(v);
+  }
+
+  chatSend.addEventListener("click", send);
+  chatInput.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") send();
+  });
+
+  chatSuggest.addEventListener("click", (e)=>{
+    const s = e.target?.getAttribute?.("data-say");
+    if(!s) return;
+    handle(s);
+  });
+
+  // Optional: open chatbot with Ctrl+/
+  window.addEventListener("keydown", (e)=>{
+    if(e.ctrlKey && e.key === "/"){
+      if(chatPanel.classList.contains("show")) hidePanel();
+      else showPanel();
+    }
+  });
+})();
+</script>
 </body>
 </html>
+```0
