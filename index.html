@@ -32,6 +32,62 @@ textarea{resize:vertical}
 .small{font-size:12px;color:var(--muted);line-height:1.35;margin-top:8px}
 hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 
+/* HELP */
+.helpToggle{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.helpBox{
+  margin-top:10px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 10px 24px rgba(31,41,55,.08);
+  overflow:hidden;
+}
+.helpHdr{
+  padding:10px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:linear-gradient(135deg, rgba(217,119,6,.10), rgba(245,158,11,.12));
+}
+.helpHdr b{color:var(--brand)}
+.helpBody{padding:12px}
+.helpBody details{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff;margin-top:10px}
+.helpBody summary{cursor:pointer;font-weight:1000;color:var(--ink)}
+kbd{
+  display:inline-block;
+  padding:2px 6px;
+  border:1px solid var(--border);
+  border-bottom-width:2px;
+  border-radius:7px;
+  background:#fff;
+  font-weight:1000;
+  font-size:12px;
+  color:var(--ink);
+}
+.helpChips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip2{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:1000;
+  color:var(--ink);
+}
+.tip{
+  padding:10px 12px;border-radius:12px;
+  border:1px dashed var(--border);
+  background:rgba(245,158,11,.08);
+  margin-top:10px;
+}
+.tip b{color:var(--brand)}
+.mono{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;
+  background:rgba(0,0,0,.04);
+  border:1px solid var(--border);
+  padding:8px 10px;border-radius:12px;
+  overflow:auto;
+}
+
 /* BOARD */
 .boardWrap{position:relative}
 #board{
@@ -191,7 +247,7 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 </head>
 <body>
 <div class="wrap">
-  <h1>🧠 Programming Whiteboard PRO (Arrows + Circles + Annotations)</h1>
+  <h1>🧠 Programming Whiteboard PRO (Arrows + Circles + Help)</h1>
 
   <div class="grid">
     <!-- LEFT -->
@@ -264,6 +320,91 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
       <div class="small">
         Recommendation: Use <b>Arrow</b> for flow, <b>Circle</b> to highlight, <b>Highlighter</b> for marking important lines.
       </div>
+
+      <hr>
+
+      <!-- HELP SECTION (Added) -->
+      <div class="pill helpToggle">
+        <span><b>Help</b> <span class="small" style="margin:0">Quick guide + shortcuts</span></span>
+        <button class="btn secondary" id="helpBtn" type="button">Show Help</button>
+      </div>
+
+      <div class="helpBox" id="helpBox" style="display:none">
+        <div class="helpHdr">
+          <b>How to use this Whiteboard</b>
+          <button class="btn ghost" id="helpClose" type="button">Close</button>
+        </div>
+
+        <div class="helpBody">
+          <div class="tip">
+            <b>Fast start:</b> Add a <b>Shape</b> (decision/step), write logic in <b>Code</b>, connect blocks, then annotate arrows/circles on top.
+          </div>
+
+          <div class="helpChips">
+            <span class="chip2">Drag blocks</span>
+            <span class="chip2">Resize corners</span>
+            <span class="chip2">Rotate top dot</span>
+            <span class="chip2">Shift+Click multi-select</span>
+            <span class="chip2">Connect 2 selected</span>
+            <span class="chip2">Export PNG</span>
+          </div>
+
+          <details open>
+            <summary>Keyboard & selection</summary>
+            <div class="small" style="margin-top:8px">
+              • Multi-select: <kbd>Shift</kbd> + click blocks<br>
+              • Delete selected blocks: <kbd>Delete</kbd> / <kbd>Backspace</kbd><br>
+              • Tip: Turn off Annotating to drag/select blocks.
+            </div>
+          </details>
+
+          <details>
+            <summary>Connectors (block-to-block arrows)</summary>
+            <div class="small" style="margin-top:8px">
+              1) Select exactly two blocks (Shift+Click).<br>
+              2) Press <b>Connect</b> → an arrow is drawn between them.<br>
+              3) To remove: select blocks and press <b>Remove Links</b> (or remove all links with none selected).
+            </div>
+          </details>
+
+          <details>
+            <summary>Annotations (pen, arrows, circles)</summary>
+            <div class="small" style="margin-top:8px">
+              • Click <b>Start Annotating</b> to draw on the board overlay.<br>
+              • Tools:
+              <ul style="margin:8px 0 0 18px">
+                <li><b>Pen</b> / <b>Highlighter</b>: freehand on canvas</li>
+                <li><b>Arrow</b>, <b>Line</b>, <b>Rectangle</b>, <b>Circle</b>: vector shapes on SVG (clean edges)</li>
+              </ul>
+              • Choose <b>Color</b> + <b>Stroke</b> width. Use <b>Fill</b> for Rect/Circle.<br>
+              • Clear all annotations: <b>Clear Annotations</b>.
+            </div>
+          </details>
+
+          <details>
+            <summary>Code block runner (JS)</summary>
+            <div class="small" style="margin-top:8px">
+              • Click <b>Run</b> inside a Code Block.<br>
+              • Output goes to the nearest Output block (or auto-created).<br>
+              • Use <span class="mono">print("hello")</span> to write lines.
+            </div>
+          </details>
+
+          <details>
+            <summary>Save / Load / JSON</summary>
+            <div class="small" style="margin-top:8px">
+              • <b>Save (Local)</b> stores board in your browser.<br>
+              • <b>Load (Local)</b> restores it.<br>
+              • <b>Layout JSON</b> can be copied/shared and applied later.
+            </div>
+          </details>
+
+          <div class="tip">
+            <b>Recommended flowchart set:</b> Diamond for decision, Rounded/Oval for Start/End, Rectangle for process, then arrows to connect.
+          </div>
+        </div>
+      </div>
+      <!-- /HELP SECTION -->
 
       <hr>
 
@@ -343,7 +484,6 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
               <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(245,158,11,.95)"></path>
             </marker>
 
-            <!-- annotation arrowhead (color will be set via stroke, fill uses currentColor-ish by replacing on create) -->
             <marker id="annoArrowHead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
               <path id="annoArrowPath" d="M 0 0 L 10 5 L 0 10 z" fill="rgba(245,158,11,.95)"></path>
             </marker>
@@ -382,9 +522,9 @@ const state = {
   version: 2,
   boardBg:"#0a0a0a",
   els: {},
-  links: [],        // connectors between blocks: {id, from, to}
-  ink: null,        // canvas (pen/highlighter) as dataURL
-  annos: []         // vector annotations: {id,type,x1,y1,x2,y2,color,w,fill}
+  links: [],
+  ink: null,
+  annos: []
 };
 
 function uid(){ return "el_" + Math.random().toString(16).slice(2,10); }
@@ -425,23 +565,38 @@ function snapValue(val, targets, threshold=8){
   return best;
 }
 
+/* ================== HELP (Added JS) ================== */
+function setHelp(open){
+  const box = $("#helpBox");
+  const btn = $("#helpBtn");
+  if(!box || !btn) return;
+  box.style.display = open ? "block" : "none";
+  btn.textContent = open ? "Hide Help" : "Show Help";
+}
+$("#helpBtn").addEventListener("click", ()=>{
+  const box = $("#helpBox");
+  const open = !(box && box.style.display !== "none");
+  // if display=="" treat as hidden initially
+  const isOpen = box && box.style.display === "block";
+  setHelp(!isOpen);
+});
+$("#helpClose").addEventListener("click", ()=> setHelp(false));
+/* ================== /HELP ================== */
+
 /* ================== Board sizing ================== */
 function fitOverlaySizes(){
   const r = board.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
 
-  // canvas
   drawCanvas.width = Math.round(r.width * dpr);
   drawCanvas.height = Math.round(r.height * dpr);
   drawCanvas.style.width = r.width + "px";
   drawCanvas.style.height = r.height + "px";
   dctx.setTransform(dpr,0,0,dpr,0,0);
 
-  // svg viewBoxes
   linksSvg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
   annoSvg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
 
-  // restore ink
   if(state.ink){
     const img = new Image();
     img.onload = ()=>{ dctx.clearRect(0,0,r.width,r.height); dctx.drawImage(img,0,0,r.width,r.height); };
@@ -560,15 +715,12 @@ function addCode(){
     id,type:"code",title:"Code (JS)",
     x:520,y:70,w:560,h:330,rot:0,opacity:1,lang:"js",
     code:
-`// Example: circle highlight + arrow annotations exist on the board.
-// Code runs as JavaScript.
-
+`// Example: write output using print()
 function sum(n){
   let s = 0;
   for(let i=1;i<=n;i++) s += i;
   return s;
 }
-
 print("sum(10) =", sum(10));`,
     z:++zTop
   };
@@ -666,6 +818,7 @@ function runCodeBlock(id){
 }
 
 /* ================== Links between blocks ================== */
+function lid(){ return "ln_" + Math.random().toString(16).slice(2,10); }
 function centerOf(id){
   const d = state.els[id];
   if(!d) return {x:0,y:0};
@@ -708,7 +861,7 @@ function renderLinks(){
   }
 }
 
-/* ================== Annotations (Arrows / Circles / Rect / Line) ================== */
+/* ================== Annotations ================== */
 function annoSettings(){
   const tool = $("#drawTool").value;
   const w = +$("#penSize").value || 6;
@@ -735,7 +888,6 @@ function renderAnnos(){
     const node = buildAnnoNode(a);
     if(node) annoSvg.appendChild(node);
   }
-  // temp preview on top
   if(drawMode.tempNode){
     annoSvg.appendChild(drawMode.tempNode);
   }
@@ -749,15 +901,12 @@ function buildAnnoNode(a){
     const p = svgEl("path");
     const d = `M ${x1} ${y1} L ${x2} ${y2}`;
     p.setAttribute("d", d);
-    p.setAttribute("class","aStroke");
     p.setAttribute("stroke", stroke);
     p.setAttribute("stroke-width", sw);
     p.setAttribute("fill","none");
-    if(type==="arrow"){
-      p.setAttribute("marker-end","url(#annoArrowHead)");
-      // update arrowhead color by cloning a marker? simplest: keep marker fill same as stroke-ish
-      // We approximate by setting marker path fill via CSS-ish not possible; keep default saffron.
-    }
+    p.setAttribute("stroke-linecap","round");
+    p.setAttribute("stroke-linejoin","round");
+    if(type==="arrow") p.setAttribute("marker-end","url(#annoArrowHead)");
     return p;
   }
 
@@ -854,7 +1003,7 @@ function renderAll(){
   renderAnnos();
 }
 
-/* ================== Drag/Resize/Rotate (with snapping) ================== */
+/* ================== Drag/Resize/Rotate ================== */
 function enableDragResizeRotate(node){
   let mode=null;
   let start=null;
@@ -951,7 +1100,6 @@ function enableDragResizeRotate(node){
       return;
     }
 
-    // resize
     const minW=140, minH=90;
     let x=d.x, y=d.y, w=d.w, h=d.h;
 
@@ -1032,12 +1180,6 @@ board.addEventListener("pointerdown", (e)=>{
   }
 });
 
-function withSingle(fn){
-  const ids=[...selected];
-  if(ids.length!==1) return;
-  fn(ids[0], state.els[ids[0]]);
-}
-
 /* Props */
 $("#pRot").addEventListener("input", ()=>{
   const val = Math.max(-180, Math.min(180, +$("#pRot").value||0));
@@ -1050,19 +1192,22 @@ $("#pOpacity").addEventListener("input", ()=>{
   for(const id of selected){ state.els[id].opacity = val; renderEl(id); }
   syncJSONBoxDebounced();
 });
-$("#pShapeType").addEventListener("change", ()=>withSingle((id,d)=>{
+$("#pShapeType").addEventListener("change", ()=>{
+  const ids=[...selected];
+  if(ids.length!==1) return;
+  const id=ids[0], d=state.els[id];
   if(d.type!=="shape") return;
   d.shape = $("#pShapeType").value;
   renderEl(id);
   syncJSONBoxDebounced();
-}));
+});
 $("#boardBg").addEventListener("input", ()=>{
   state.boardBg = $("#boardBg").value;
   board.style.background = state.boardBg;
   syncJSONBoxDebounced();
 });
 
-/* Delete selected blocks */
+/* Delete selected */
 $("#deleteSel").addEventListener("click", ()=>{
   for(const id of [...selected]) removeEl(id);
   selected.clear(); activePrimary=null;
@@ -1081,6 +1226,33 @@ $("#sendBack").addEventListener("click", ()=>{
   Object.values(state.els).forEach(x=>{ if(!selected.has(x.id)) x.z=(x.z||2)+1; });
   zTop = Math.max(...Object.values(state.els).map(x=>x.z||2), 10);
   renderAll(); refreshList(); syncJSONBoxDebounced();
+});
+
+/* UI toggles & buttons */
+$("#gridToggle").addEventListener("change", ()=> board.classList.toggle("gridOn", $("#gridToggle").checked));
+$("#safeToggle").addEventListener("change", ()=> safeArea.style.display = $("#safeToggle").checked ? "block" : "none");
+
+$("#addCodeBtn").addEventListener("click", addCode);
+$("#addNoteBtn").addEventListener("click", addNote);
+$("#addOutBtn").addEventListener("click", addOutput);
+$("#addShapeBtn").addEventListener("click", addShape);
+
+$("#connectBtn").addEventListener("click", ()=>{
+  const ids = [...selected];
+  if(ids.length !== 2) return alert("Select exactly 2 blocks (Shift+Click) to connect.");
+  addLink(ids[0], ids[1]);
+});
+$("#delLinksBtn").addEventListener("click", ()=>{
+  if(selected.size===0){
+    state.links = [];
+    renderLinks();
+    syncJSONBoxDebounced();
+    return;
+  }
+  const set = new Set([...selected]);
+  state.links = state.links.filter(l => !(set.has(l.from) || set.has(l.to)));
+  renderLinks();
+  syncJSONBoxDebounced();
 });
 
 /* List */
@@ -1118,7 +1290,7 @@ function refreshList(){
   }
 }
 
-/* Remove element */
+/* Remove */
 function removeEl(id){
   if(!state.els[id]) return;
   state.links = state.links.filter(l => !(l.from===id || l.to===id));
@@ -1129,7 +1301,7 @@ function removeEl(id){
   syncJSONBoxDebounced();
 }
 
-/* ================== JSON Save/Load ================== */
+/* JSON */
 function runtimeStrippedCopy(){
   const copy = JSON.parse(JSON.stringify(state));
   copy.ink = drawCanvas.toDataURL("image/png");
@@ -1163,7 +1335,6 @@ $("#clearAll").addEventListener("click", ()=>{
   state.annos = [];
   selected.clear(); activePrimary=null;
   board.querySelectorAll(".el").forEach(n=>n.remove());
-  // clear ink
   state.ink = null;
   dctx.clearRect(0,0,board.clientWidth,board.clientHeight);
   renderLinks();
@@ -1178,7 +1349,6 @@ function loadFromObject(obj){
   board.style.background = state.boardBg;
   $("#boardBg").value = state.boardBg;
 
-  // elements
   for(const id of Object.keys(obj.els||{})){
     const d = obj.els[id];
     d.z = d.z || (++zTop);
@@ -1247,14 +1417,10 @@ function loadFromObject(obj){
     renderEl(id);
   }
 
-  // links
   state.links = Array.isArray(obj.links) ? obj.links.filter(x=>x && x.from && x.to) : [];
   renderLinks();
 
-  // ink
   state.ink = obj.ink || null;
-
-  // annos
   state.annos = Array.isArray(obj.annos) ? obj.annos.filter(a=>a && a.type) : [];
 
   fitOverlaySizes();
@@ -1264,40 +1430,8 @@ function loadFromObject(obj){
   updateSelectionUI(); refreshList(); syncJSONBox();
 }
 
-/* ================== UI Buttons ================== */
-$("#gridToggle").addEventListener("change", ()=> board.classList.toggle("gridOn", $("#gridToggle").checked));
-$("#safeToggle").addEventListener("change", ()=> safeArea.style.display = $("#safeToggle").checked ? "block" : "none");
-
-$("#addCodeBtn").addEventListener("click", addCode);
-$("#addNoteBtn").addEventListener("click", addNote);
-$("#addOutBtn").addEventListener("click", addOutput);
-$("#addShapeBtn").addEventListener("click", addShape);
-
-$("#connectBtn").addEventListener("click", ()=>{
-  const ids = [...selected];
-  if(ids.length !== 2) return alert("Select exactly 2 blocks (Shift+Click) to connect.");
-  addLink(ids[0], ids[1]);
-});
-$("#delLinksBtn").addEventListener("click", ()=>{
-  if(selected.size===0){
-    state.links = [];
-    renderLinks();
-    syncJSONBoxDebounced();
-    return;
-  }
-  const set = new Set([...selected]);
-  state.links = state.links.filter(l => !(set.has(l.from) || set.has(l.to)));
-  renderLinks();
-  syncJSONBoxDebounced();
-});
-
 /* ================== Draw/Annotate Mode ================== */
-const drawMode = {
-  on:false,
-  drawing:false,
-  start:null,
-  tempNode:null
-};
+const drawMode = { on:false, drawing:false, start:null, tempNode:null };
 
 function setDrawMode(on){
   drawMode.on = !!on;
@@ -1305,32 +1439,32 @@ function setDrawMode(on){
   drawMode.start = null;
   drawMode.tempNode = null;
 
-  // enable appropriate layer
   const tool = $("#drawTool").value;
   const penTools = (tool==="pen" || tool==="highlighter");
   drawCanvas.style.pointerEvents = (on && penTools) ? "auto" : "none";
   annoSvg.style.pointerEvents = on ? "auto" : "none";
 
   $("#drawToggle").textContent = on ? "🧲 Stop Annotating" : "✏️ Start Annotating";
-  $("#drawToggle").classList.toggle("btn", !on);
-  $("#drawToggle").classList.toggle("btn.secondary", on);
-
   renderAnnos();
 }
 
 $("#drawTool").addEventListener("change", ()=>{
   if(drawMode.on) setDrawMode(true);
 });
-
 $("#drawToggle").addEventListener("click", ()=> setDrawMode(!drawMode.on));
 
 function inkSettings(){
-  const {w,color} = annoSettings();
+  const w = +$("#penSize").value || 6;
+  const color = $("#penColor").value || "#f59e0b";
   const tool = $("#drawTool").value;
   return { w, color, tool };
 }
+function boardPointFromEvent2(e){
+  const r = board.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
 
-/* Pen/highlighter on canvas */
+/* Pen/highlighter */
 drawCanvas.addEventListener("pointerdown", (e)=>{
   if(!drawMode.on) return;
   const tool = $("#drawTool").value;
@@ -1338,18 +1472,16 @@ drawCanvas.addEventListener("pointerdown", (e)=>{
 
   drawMode.drawing = true;
   drawCanvas.setPointerCapture(e.pointerId);
-  const p = boardPointFromEvent(e);
+  const p = boardPointFromEvent2(e);
   drawMode.start = p;
-
   e.preventDefault();
 });
-
 drawCanvas.addEventListener("pointermove", (e)=>{
   if(!drawMode.on || !drawMode.drawing) return;
   const tool = $("#drawTool").value;
   if(tool!=="pen" && tool!=="highlighter") return;
 
-  const p = boardPointFromEvent(e);
+  const p = boardPointFromEvent2(e);
   const {w,color} = inkSettings();
 
   dctx.lineCap = "round";
@@ -1366,7 +1498,6 @@ drawCanvas.addEventListener("pointermove", (e)=>{
   dctx.globalAlpha = 1;
   drawMode.start = p;
 });
-
 drawCanvas.addEventListener("pointerup", ()=>{
   if(!drawMode.on) return;
   const tool = $("#drawTool").value;
@@ -1378,7 +1509,7 @@ drawCanvas.addEventListener("pointerup", ()=>{
   syncJSONBoxDebounced();
 });
 
-/* Vector tools on annoSvg */
+/* Vector tools */
 annoSvg.addEventListener("pointerdown", (e)=>{
   if(!drawMode.on) return;
   const tool = $("#drawTool").value;
@@ -1389,14 +1520,12 @@ annoSvg.addEventListener("pointerdown", (e)=>{
   const p = boardPointFromEvent(e);
   drawMode.start = p;
 
-  // create temp node
   const s = annoSettings();
   const temp = { id: "temp", type: tool, x1:p.x, y1:p.y, x2:p.x, y2:p.y, color:s.color, w:s.w, fill:s.fill };
   drawMode.tempNode = buildAnnoNode(temp);
   renderAnnos();
   e.preventDefault();
 });
-
 annoSvg.addEventListener("pointermove", (e)=>{
   if(!drawMode.on || !drawMode.drawing) return;
   const tool = $("#drawTool").value;
@@ -1407,12 +1536,10 @@ annoSvg.addEventListener("pointermove", (e)=>{
   const st = drawMode.start;
   if(!st) return;
 
-  // rebuild temp node live
   const temp = { id:"temp", type: tool, x1:st.x, y1:st.y, x2:p.x, y2:p.y, color:s.color, w:s.w, fill:s.fill };
   drawMode.tempNode = buildAnnoNode(temp);
   renderAnnos();
 });
-
 annoSvg.addEventListener("pointerup", (e)=>{
   if(!drawMode.on) return;
   const tool = $("#drawTool").value;
@@ -1425,7 +1552,6 @@ annoSvg.addEventListener("pointerup", (e)=>{
   const s = annoSettings();
   const st = drawMode.start || p;
 
-  // ignore tiny drags
   if(Math.abs(p.x-st.x) < 3 && Math.abs(p.y-st.y) < 3){
     drawMode.start = null;
     drawMode.tempNode = null;
@@ -1452,22 +1578,19 @@ annoSvg.addEventListener("pointerup", (e)=>{
 $("#clearAnno").addEventListener("click", ()=>{
   state.annos = [];
   renderAnnos();
-  // also clear ink to be true "clear annotations"
   dctx.clearRect(0,0,board.clientWidth,board.clientHeight);
   state.ink = null;
   syncJSONBoxDebounced();
 });
 
-/* ================== Export PNG ================== */
+/* Export PNG */
 function exportPNG(){
   const bw = board.clientWidth, bh = board.clientHeight;
 
   const clone = board.cloneNode(true);
-  // remove handles/buttons/guides
   clone.querySelectorAll(".handle,.rhandle,.rstick,.hdr .mini,.guide").forEach(n=>n.remove());
   clone.querySelectorAll(".el").forEach(n=>n.classList.remove("selected"));
 
-  // replace drawCanvas with image snapshot
   const cnv = clone.querySelector("#drawCanvas");
   if(cnv){
     const img = document.createElement("img");
@@ -1514,7 +1637,7 @@ function exportPNG(){
 }
 $("#exportPNG").addEventListener("click", exportPNG);
 
-/* ================== Init ================== */
+/* Init */
 function init(){
   state.boardBg = "#0a0a0a";
   board.style.background = state.boardBg;
@@ -1541,6 +1664,9 @@ function init(){
   refreshList();
   renderLinks();
   renderAnnos();
+
+  // start with help closed
+  setHelp(false);
 }
 init();
 
