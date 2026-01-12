@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Share Tracker — BUY/SELL/PRICE (FIFO + Unrealized)</title>
+  <title>Share Tracker — Multi-Stock + Charts (FIFO)</title>
   <style>
     :root{
       --bg:#fff7e6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
@@ -20,7 +20,7 @@
                   var(--bg);
       color:var(--ink);
     }
-    .wrap{max-width:1100px;margin:22px auto;padding:16px}
+    .wrap{max-width:1200px;margin:22px auto;padding:16px}
     .hero{
       background: linear-gradient(135deg, #fff 0%, #fff6e5 70%, #fff 100%);
       border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow);
@@ -28,7 +28,8 @@
     }
     h1{margin:0;font-size:20px;color:var(--brand)}
     .sub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
-    .grid{display:grid;grid-template-columns: 1.1fr .9fr; gap:14px; margin-top:14px}
+    .topActions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .grid{display:grid;grid-template-columns: 1.15fr .85fr; gap:14px; margin-top:14px}
     @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
     .card{
       background:var(--card); border:1px solid var(--border); border-radius:20px;
@@ -37,10 +38,11 @@
     .card h2{margin:0 0 10px;font-size:15px;color:var(--brand)}
     .row{display:flex; gap:10px; flex-wrap:wrap}
     label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
-    input, select{
+    input, select, textarea{
       width:100%; padding:10px 11px; border:1px solid var(--border);
       border-radius:12px; outline:none; font-size:14px; background:#fff;
     }
+    textarea{min-height:92px; font-family:var(--mono); font-size:12px}
     .field{flex:1; min-width:160px}
     .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
     button{
@@ -59,7 +61,7 @@
       color:#111;
     }
     table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--border); border-radius:14px}
-    th, td{padding:9px 10px; border-bottom:1px solid var(--border); font-size:13px; text-align:left}
+    th, td{padding:9px 10px; border-bottom:1px solid var(--border); font-size:13px; text-align:left; vertical-align:top}
     th{background:var(--soft); color:#92400e; font-size:12px}
     tr:last-child td{border-bottom:none}
     .mono{font-family:var(--mono)}
@@ -78,28 +80,59 @@
       border:1px dashed var(--border); background:#fffdf7; color:var(--muted); font-size:13px;
       max-height:180px; overflow:auto;
     }
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px; border:1px solid var(--border); border-radius:999px; background:#fff;
+      font-size:12px; color:var(--muted);
+    }
+    .chip b{color:var(--ink)}
+    .small{font-size:12px;color:var(--muted)}
+    canvas{width:100%; height:220px; border:1px solid var(--border); border-radius:14px; background:#fff}
+    .chartTitle{margin:8px 0 6px; font-size:12px; color:var(--muted)}
+    .split{display:grid; grid-template-columns:1fr; gap:12px}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="hero">
       <div>
-        <h1>Share Tracker — BUY / SELL / PRICE (FIFO + Unrealized)</h1>
+        <h1>Share Tracker — Multi-Stock + Charts (FIFO)</h1>
         <div class="sub">
-          Use <b>PRICE</b> to record current market price anytime (even without a trade). We show
-          <b>realized</b> and <b>unrealized</b> P/L.
+          Add <b>BUY</b>, <b>SELL</b>, or <b>PRICE</b> updates for multiple symbols. See realized/unrealized P/L and charts per symbol.
         </div>
       </div>
-      <div class="row" style="align-items:center;justify-content:flex-end">
+      <div class="topActions">
         <button class="secondary" id="btnDemo">Load demo</button>
+        <button class="secondary" id="btnExport">Export JSON</button>
+        <button class="secondary" id="btnImport">Import JSON</button>
         <button class="danger" id="btnClear">Clear all</button>
       </div>
     </div>
 
     <div class="grid">
+      <!-- LEFT: Entry + table -->
       <div class="card">
         <h2>Add entry</h2>
         <div class="row">
+          <div class="field">
+            <label>Symbol</label>
+            <div class="row" style="gap:8px">
+              <div class="field" style="min-width:190px">
+                <select id="symbolSelect"></select>
+              </div>
+              <div class="field" style="min-width:190px">
+                <input id="symbolNew" placeholder="Add new symbol (e.g. TCS)" />
+              </div>
+              <div style="display:flex;align-items:flex-end">
+                <button class="secondary" id="btnAddSymbol" type="button">Add</button>
+              </div>
+            </div>
+            <div class="small" style="margin-top:6px">Each symbol is tracked separately (lots, price, P/L).</div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
           <div class="field">
             <label>Type</label>
             <select id="type">
@@ -116,34 +149,27 @@
             <label>Price (per share)</label>
             <input id="price" type="number" min="0" step="0.01" placeholder="e.g. 125.50" />
           </div>
+          <div class="field">
+            <label>Date/Time</label>
+            <input id="dt" type="datetime-local" />
+          </div>
         </div>
 
         <div class="btns">
-          <button id="btnAdd">Add</button>
+          <button id="btnAdd">Add entry</button>
           <button class="secondary" id="btnRecalc">Recalculate</button>
         </div>
 
         <div class="log" id="log"></div>
-      </div>
-
-      <div class="card">
-        <h2>Summary</h2>
-        <div class="kpis">
-          <div class="kpi"><div class="t">Holdings (shares)</div><div class="v mono" id="kHold">0</div></div>
-          <div class="kpi"><div class="t">Remaining cost basis</div><div class="v mono" id="kRemainCost">0.00</div></div>
-          <div class="kpi"><div class="t">Current market price</div><div class="v mono" id="kMktPrice">—</div></div>
-          <div class="kpi"><div class="t">Market value</div><div class="v mono" id="kMktValue">0.00</div></div>
-          <div class="kpi"><div class="t">Net realized P/L</div><div class="v mono" id="kRealized">0.00</div></div>
-          <div class="kpi"><div class="t">Unrealized P/L</div><div class="v mono" id="kUnreal">0.00</div></div>
-          <div class="kpi"><div class="t">Total P/L</div><div class="v mono" id="kTotal">0.00</div></div>
-        </div>
 
         <div style="margin-top:12px">
-          <h2 style="margin:0 0 10px;font-size:15px;color:var(--brand)">Entries</h2>
+          <h2 style="margin:0 0 10px;font-size:15px;color:var(--brand)">Entries (all symbols)</h2>
           <table>
             <thead>
               <tr>
                 <th>#</th>
+                <th>When</th>
+                <th>Symbol</th>
                 <th>Type</th>
                 <th class="mono">Qty</th>
                 <th class="mono">Price</th>
@@ -152,22 +178,80 @@
             </thead>
             <tbody id="tbody"></tbody>
           </table>
+          <div class="small" style="margin-top:8px">Realized P/L is shown on <b>SELL</b> rows (FIFO).</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Summary + charts for selected symbol -->
+      <div class="card">
+        <h2>Selected symbol summary</h2>
+
+        <div class="chips" id="symChips"></div>
+
+        <div class="kpis" style="margin-top:10px">
+          <div class="kpi"><div class="t">Holdings (shares)</div><div class="v mono" id="kHold">0</div></div>
+          <div class="kpi"><div class="t">Remaining cost basis</div><div class="v mono" id="kRemainCost">0.00</div></div>
+          <div class="kpi"><div class="t">Last market price</div><div class="v mono" id="kMktPrice">—</div></div>
+          <div class="kpi"><div class="t">Market value</div><div class="v mono" id="kMktValue">0.00</div></div>
+          <div class="kpi"><div class="t">Net realized P/L</div><div class="v mono" id="kRealized">0.00</div></div>
+          <div class="kpi"><div class="t">Unrealized P/L</div><div class="v mono" id="kUnreal">0.00</div></div>
+          <div class="kpi"><div class="t">Total P/L</div><div class="v mono" id="kTotal">0.00</div></div>
+        </div>
+
+        <div class="split" style="margin-top:12px">
+          <div>
+            <div class="chartTitle">Price over time (for selected symbol)</div>
+            <canvas id="priceChart" width="900" height="280"></canvas>
+            <div class="small">Shows PRICE entries (and trade prices) plotted in time order.</div>
+          </div>
+          <div>
+            <div class="chartTitle">Holdings value over time (shares × last known price)</div>
+            <canvas id="valueChart" width="900" height="280"></canvas>
+            <div class="small">Uses last known price up to that time; value updates after BUY/SELL/PRICE.</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <h2 style="margin:0 0 10px;font-size:15px;color:var(--brand)">Import/Export</h2>
+          <div class="small">Export JSON, keep backup, then import later. Works offline.</div>
+          <textarea id="jsonBox" placeholder="JSON will appear here on Export. Paste JSON here to Import."></textarea>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // entries: BUY/SELL have qty+price; PRICE has price only (qty null)
-    const entries = [];
-    let currentPrice = null;
+    // ===================== Storage =====================
+    const KEY = "shareTrackerMulti_v1";
+
+    // entries: {id, dtISO, symbol, type, qty|null, price}
+    let entries = [];
+    let symbols = ["TCS", "INFY", "RELIANCE"];
+    let selectedSymbol = "TCS";
+
+    function save(){
+      localStorage.setItem(KEY, JSON.stringify({entries, symbols, selectedSymbol}));
+    }
+    function load(){
+      try{
+        const raw = localStorage.getItem(KEY);
+        if(!raw) return;
+        const obj = JSON.parse(raw);
+        if(obj && Array.isArray(obj.entries)) entries = obj.entries;
+        if(obj && Array.isArray(obj.symbols) && obj.symbols.length) symbols = obj.symbols;
+        if(obj && typeof obj.selectedSymbol === "string") selectedSymbol = obj.selectedSymbol;
+      }catch(e){}
+    }
+
+    // ===================== Helpers =====================
+    const $ = (id)=>document.getElementById(id);
 
     function money(n){
       const x = Number(n || 0);
       return x.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
     }
     function log(msg, kind=""){
-      const el = document.getElementById("log");
+      const el = $("log");
       const d = document.createElement("div");
       d.textContent = msg;
       if(kind==="good") d.style.color = "var(--ok)";
@@ -175,24 +259,51 @@
       el.appendChild(d);
       el.scrollTop = el.scrollHeight;
     }
-    function clearLog(){ document.getElementById("log").innerHTML=""; }
+    function clearLog(){ $("log").innerHTML=""; }
 
-    function recalc(){
+    function nowLocalInputValue(){
+      const d = new Date();
+      const pad = (n)=>String(n).padStart(2,"0");
+      const yyyy = d.getFullYear();
+      const mm = pad(d.getMonth()+1);
+      const dd = pad(d.getDate());
+      const hh = pad(d.getHours());
+      const mi = pad(d.getMinutes());
+      return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+    }
+    function toISOFromLocalInput(v){
+      // v is like "2026-01-12T20:30" in local time
+      const d = new Date(v);
+      return d.toISOString();
+    }
+    function fmtWhen(iso){
+      const d = new Date(iso);
+      return d.toLocaleString();
+    }
+    function uid(){
+      return Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
+    }
+
+    // ===================== Core calc per symbol (FIFO) =====================
+    function calcForSymbol(symbol){
       const lots = []; // {qty, price}
       let realized = 0;
-      let proceeds = 0;
-      let soldCost = 0;
+      let lastPrice = null;
 
-      const perRowPL = new Array(entries.length).fill("");
+      const symEntries = entries
+        .filter(e=>e.symbol===symbol)
+        .slice()
+        .sort((a,b)=> new Date(a.dtISO) - new Date(b.dtISO));
+
+      const perEntryRealizedPL = new Map(); // id -> number
 
       const totalAvailable = () => lots.reduce((a,l)=>a + l.qty, 0);
 
       function fifoSell(qty, sellPrice){
         const available = totalAvailable();
-        if(qty > available) throw new Error(`Not enough shares to sell. You have ${available}, tried to sell ${qty}.`);
+        if(qty > available) throw new Error(`Not enough shares to sell for ${symbol}. You have ${available}, tried to sell ${qty}.`);
         let remaining = qty;
         let cost = 0;
-
         while(remaining > 0){
           const lot = lots[0];
           const take = Math.min(lot.qty, remaining);
@@ -201,132 +312,476 @@
           remaining -= take;
           if(lot.qty === 0) lots.shift();
         }
-        const p = qty * sellPrice;
-        return {proceeds: p, cost, pl: p - cost};
+        const proceeds = qty * sellPrice;
+        return {pl: proceeds - cost, cost};
       }
 
-      // replay entries in order
-      currentPrice = null;
-      entries.forEach((e, idx)=>{
+      for(const e of symEntries){
         if(e.type === "BUY"){
           lots.push({qty:e.qty, price:e.price});
+          lastPrice = (lastPrice == null) ? e.price : lastPrice; // keep last PRICE if set; else allow buy price as fallback
         } else if(e.type === "SELL"){
           const r = fifoSell(e.qty, e.price);
-          proceeds += r.proceeds;
-          soldCost += r.cost;
           realized += r.pl;
-          perRowPL[idx] = (r.pl >= 0 ? "+" : "-") + money(Math.abs(r.pl));
+          perEntryRealizedPL.set(e.id, r.pl);
+          lastPrice = (lastPrice == null) ? e.price : lastPrice;
         } else if(e.type === "PRICE"){
-          currentPrice = e.price;
-          perRowPL[idx] = ""; // no realized PL
+          lastPrice = e.price;
         }
-      });
+      }
 
       const holdQty = totalAvailable();
       const remainCost = lots.reduce((a,l)=>a + l.qty*l.price, 0);
-      const mkt = (currentPrice == null) ? 0 : holdQty * currentPrice;
-      const unreal = (currentPrice == null) ? 0 : (mkt - remainCost);
+      const mktValue = (lastPrice == null) ? 0 : holdQty * lastPrice;
+      const unreal = (lastPrice == null) ? 0 : (mktValue - remainCost);
       const total = realized + unreal;
 
-      // KPIs
-      document.getElementById("kHold").textContent = String(holdQty);
-      document.getElementById("kRemainCost").textContent = money(remainCost);
-      document.getElementById("kMktPrice").textContent = (currentPrice == null) ? "—" : money(currentPrice);
-      document.getElementById("kMktValue").textContent = money(mkt);
+      return {symbol, symEntries, perEntryRealizedPL, holdQty, remainCost, lastPrice, mktValue, realized, unreal, total};
+    }
 
-      const kReal = document.getElementById("kRealized");
-      kReal.textContent = money(realized);
-      kReal.classList.toggle("good", realized >= 0);
-      kReal.classList.toggle("bad", realized < 0);
+    // ===================== Charting (no external libs) =====================
+    function drawLineChart(canvas, points, yLabel){
+      // points: [{x:number(ms), y:number}]
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
 
-      const kUn = document.getElementById("kUnreal");
-      kUn.textContent = money(unreal);
-      kUn.classList.toggle("good", unreal >= 0);
-      kUn.classList.toggle("bad", unreal < 0);
+      // clear
+      ctx.clearRect(0,0,w,h);
 
-      const kTot = document.getElementById("kTotal");
-      kTot.textContent = money(total);
-      kTot.classList.toggle("good", total >= 0);
-      kTot.classList.toggle("bad", total < 0);
+      // background
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0,0,w,h);
 
-      // table
-      const tbody = document.getElementById("tbody");
+      // margins
+      const m = {l:56, r:16, t:12, b:34};
+      const iw = w - m.l - m.r;
+      const ih = h - m.t - m.b;
+
+      // if no data
+      if(!points.length){
+        ctx.fillStyle = "#6b7280";
+        ctx.font = "14px system-ui";
+        ctx.fillText("No data for chart (add PRICE or trades).", m.l, m.t + 24);
+        return;
+      }
+
+      // bounds
+      const xs = points.map(p=>p.x);
+      const ys = points.map(p=>p.y);
+      let xmin = Math.min(...xs), xmax = Math.max(...xs);
+      let ymin = Math.min(...ys), ymax = Math.max(...ys);
+
+      if(xmin === xmax){ xmax = xmin + 1; }
+      if(ymin === ymax){ ymax = ymin + 1; }
+
+      // pad y a bit
+      const ypad = (ymax - ymin) * 0.08;
+      ymin -= ypad; ymax += ypad;
+
+      const xToPx = (x)=> m.l + ( (x - xmin) / (xmax - xmin) ) * iw;
+      const yToPx = (y)=> m.t + (1 - ( (y - ymin) / (ymax - ymin) )) * ih;
+
+      // grid
+      ctx.strokeStyle = "rgba(234,220,197,.9)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const gridN = 5;
+      for(let i=0;i<=gridN;i++){
+        const y = m.t + (i/gridN)*ih;
+        ctx.moveTo(m.l, y);
+        ctx.lineTo(m.l+iw, y);
+      }
+      ctx.stroke();
+
+      // axes
+      ctx.strokeStyle = "rgba(31,41,55,.35)";
+      ctx.beginPath();
+      ctx.moveTo(m.l, m.t);
+      ctx.lineTo(m.l, m.t+ih);
+      ctx.lineTo(m.l+iw, m.t+ih);
+      ctx.stroke();
+
+      // line
+      ctx.strokeStyle = "rgba(217,119,6,.95)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      points.forEach((p, idx)=>{
+        const px = xToPx(p.x);
+        const py = yToPx(p.y);
+        if(idx===0) ctx.moveTo(px,py);
+        else ctx.lineTo(px,py);
+      });
+      ctx.stroke();
+
+      // points
+      ctx.fillStyle = "rgba(245,158,11,.9)";
+      for(const p of points){
+        const px = xToPx(p.x);
+        const py = yToPx(p.y);
+        ctx.beginPath();
+        ctx.arc(px, py, 3.2, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // labels
+      ctx.fillStyle = "#6b7280";
+      ctx.font = "12px system-ui";
+
+      // y labels (min/mid/max)
+      const yVals = [ymax, (ymin+ymax)/2, ymin];
+      yVals.forEach((yv, i)=>{
+        const py = yToPx(yv);
+        ctx.fillText(money(yv), 8, py + 4);
+      });
+
+      // x labels start/end
+      const d0 = new Date(xmin), d1 = new Date(xmax);
+      const x0 = d0.toLocaleDateString();
+      const x1 = d1.toLocaleDateString();
+      ctx.fillText(x0, m.l, h - 10);
+      const wText = ctx.measureText(x1).width;
+      ctx.fillText(x1, m.l + iw - wText, h - 10);
+
+      // y axis label
+      ctx.fillStyle = "#374151";
+      ctx.font = "12px system-ui";
+      ctx.fillText(yLabel, m.l, 12);
+    }
+
+    // Build chart series for selected symbol:
+    // - priceSeries: uses PRICE entries; if none, use trade prices
+    // - valueSeries: replay entries; after each entry, compute holdings * lastPrice
+    function buildChartSeries(calc){
+      const sym = calc.symEntries;
+
+      // price series points (PRICE entries preferred)
+      let pricePoints = sym
+        .filter(e=>e.type==="PRICE")
+        .map(e=>({x:+new Date(e.dtISO), y:e.price}));
+
+      if(pricePoints.length === 0){
+        // fallback: use trade prices if no PRICE entries
+        pricePoints = sym
+          .filter(e=>e.type==="BUY" || e.type==="SELL")
+          .map(e=>({x:+new Date(e.dtISO), y:e.price}));
+      }
+
+      // value series: replay entries and track holdings & lastPrice over time
+      let lots = [];
+      let hold = 0;
+      let lastP = null;
+
+      const totalAvailable = () => lots.reduce((a,l)=>a+l.qty,0);
+
+      function fifoSell(qty){
+        let remaining = qty;
+        while(remaining>0){
+          const lot = lots[0];
+          const take = Math.min(lot.qty, remaining);
+          lot.qty -= take;
+          remaining -= take;
+          if(lot.qty===0) lots.shift();
+        }
+      }
+
+      const valuePoints = [];
+      for(const e of sym){
+        if(e.type==="BUY"){
+          lots.push({qty:e.qty, price:e.price});
+        } else if(e.type==="SELL"){
+          fifoSell(e.qty);
+        } else if(e.type==="PRICE"){
+          lastP = e.price;
+        }
+
+        hold = totalAvailable();
+
+        // if still no PRICE, use latest trade price as proxy
+        if(lastP == null && (e.type==="BUY" || e.type==="SELL")){
+          lastP = e.price;
+        }
+        const value = (lastP == null) ? 0 : hold * lastP;
+        valuePoints.push({x:+new Date(e.dtISO), y:value});
+      }
+
+      return {pricePoints, valuePoints};
+    }
+
+    // ===================== Rendering =====================
+    function syncSymbolSelect(){
+      const sel = $("symbolSelect");
+      sel.innerHTML = "";
+      symbols.forEach(s=>{
+        const o = document.createElement("option");
+        o.value = s; o.textContent = s;
+        if(s === selectedSymbol) o.selected = true;
+        sel.appendChild(o);
+      });
+    }
+    function renderSymbolChips(){
+      const box = $("symChips");
+      box.innerHTML = "";
+      symbols.forEach(s=>{
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.innerHTML = `Symbol: <b>${s}</b>`;
+        chip.style.cursor = "pointer";
+        chip.title = "Click to select";
+        chip.addEventListener("click", ()=>{
+          selectedSymbol = s;
+          $("symbolSelect").value = s;
+          recalcAndRender();
+        });
+        if(s === selectedSymbol){
+          chip.style.borderColor = "rgba(217,119,6,.6)";
+          chip.style.boxShadow = "0 0 0 4px rgba(245,158,11,.18)";
+        }
+        box.appendChild(chip);
+      });
+    }
+
+    function renderTable(calcAll){
+      // calcAll: Map(symbol -> calc)
+      const tbody = $("tbody");
       tbody.innerHTML = "";
-      entries.forEach((e, idx)=>{
+
+      const sorted = entries.slice().sort((a,b)=> new Date(a.dtISO) - new Date(b.dtISO));
+
+      sorted.forEach((e, idx)=>{
+        const symCalc = calcAll.get(e.symbol);
+        const pl = (e.type==="SELL") ? symCalc.perEntryRealizedPL.get(e.id) : null;
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${idx+1}</td>
-          <td><b>${e.type}</b></td>
-          <td class="mono">${e.qty == null ? "" : e.qty}</td>
+          <td>${fmtWhen(e.dtISO)}</td>
+          <td><b>${e.symbol}</b></td>
+          <td>${e.type}</td>
+          <td class="mono">${e.qty==null ? "" : e.qty}</td>
           <td class="mono">${money(e.price)}</td>
-          <td class="mono">${perRowPL[idx]}</td>
+          <td class="mono">${pl==null ? "" : (pl>=0?"+":"-")+money(Math.abs(pl))}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function addEntry(type, qty, price){
-      if(!Number.isFinite(price) || price < 0) throw new Error("Price must be >= 0.");
-      if(type === "PRICE"){
-        entries.push({type, qty:null, price:Number(price)});
-        return;
-      }
-      if(!Number.isFinite(qty) || qty <= 0) throw new Error("Quantity must be > 0.");
-      entries.push({type, qty:Math.floor(qty), price:Number(price)});
+    function renderSummary(calc){
+      $("kHold").textContent = String(calc.holdQty);
+      $("kRemainCost").textContent = money(calc.remainCost);
+      $("kMktPrice").textContent = (calc.lastPrice==null) ? "—" : money(calc.lastPrice);
+      $("kMktValue").textContent = money(calc.mktValue);
+
+      const setPL = (id, val)=>{
+        const el = $(id);
+        el.textContent = money(val);
+        el.classList.toggle("good", val >= 0);
+        el.classList.toggle("bad", val < 0);
+      };
+
+      setPL("kRealized", calc.realized);
+      setPL("kUnreal", calc.unreal);
+      setPL("kTotal", calc.total);
     }
 
-    // show/hide qty input based on type
-    const typeSel = document.getElementById("type");
-    const qtyField = document.getElementById("qtyField");
-    function syncTypeUI(){
-      const t = typeSel.value;
-      qtyField.style.display = (t === "PRICE") ? "none" : "block";
+    function recalcAndRender(){
+      // compute for all symbols
+      const calcAll = new Map();
+      for(const s of symbols){
+        try{ calcAll.set(s, calcForSymbol(s)); }
+        catch(e){
+          clearLog();
+          log("Error: " + e.message, "bad");
+          // still set something minimal
+          calcAll.set(s, {symbol:s, symEntries:[], perEntryRealizedPL:new Map(), holdQty:0, remainCost:0, lastPrice:null, mktValue:0, realized:0, unreal:0, total:0});
+        }
+      }
+
+      // render selected
+      if(!symbols.includes(selectedSymbol)) selectedSymbol = symbols[0];
+      const calcSel = calcAll.get(selectedSymbol);
+
+      renderSymbolChips();
+      renderSummary(calcSel);
+      renderTable(calcAll);
+
+      // charts
+      const series = buildChartSeries(calcSel);
+      drawLineChart($("priceChart"), series.pricePoints, "Price");
+      drawLineChart($("valueChart"), series.valuePoints, "Value");
+
+      // json box (keep as-is unless export/import)
+      save();
     }
-    typeSel.addEventListener("change", syncTypeUI);
+
+    // ===================== UI Actions =====================
+    function syncTypeUI(){
+      const t = $("type").value;
+      $("qtyField").style.display = (t === "PRICE") ? "none" : "block";
+    }
+
+    function addSymbol(){
+      const raw = $("symbolNew").value.trim().toUpperCase();
+      if(!raw) return;
+      const sym = raw.replace(/[^A-Z0-9._-]/g,"");
+      if(!sym) return;
+      if(!symbols.includes(sym)) symbols.push(sym);
+      selectedSymbol = sym;
+      $("symbolNew").value = "";
+      syncSymbolSelect();
+      recalcAndRender();
+      clearLog();
+      log("Added symbol: " + sym, "good");
+    }
+
+    function addEntry(){
+      const symbol = $("symbolSelect").value;
+      const type = $("type").value;
+      const price = Number($("price").value);
+      const dtLocal = $("dt").value || nowLocalInputValue();
+      const dtISO = toISOFromLocalInput(dtLocal);
+
+      if(!Number.isFinite(price) || price < 0) throw new Error("Price must be >= 0.");
+
+      let qty = null;
+      if(type !== "PRICE"){
+        qty = Number($("qty").value);
+        if(!Number.isFinite(qty) || qty <= 0) throw new Error("Quantity must be > 0.");
+        qty = Math.floor(qty);
+      }
+
+      entries.push({id:uid(), dtISO, symbol, type, qty, price});
+    }
+
+    function exportJSON(){
+      const obj = {entries, symbols, selectedSymbol};
+      $("jsonBox").value = JSON.stringify(obj, null, 2);
+      clearLog();
+      log("Exported JSON to the box below. Copy & save it.", "good");
+    }
+
+    function importJSON(){
+      const txt = $("jsonBox").value.trim();
+      if(!txt) throw new Error("Paste JSON into the box first.");
+      const obj = JSON.parse(txt);
+      if(!obj || !Array.isArray(obj.entries) || !Array.isArray(obj.symbols)) throw new Error("Invalid JSON format.");
+      entries = obj.entries;
+      symbols = obj.symbols;
+      selectedSymbol = obj.selectedSymbol || symbols[0] || "TCS";
+      syncSymbolSelect();
+      recalcAndRender();
+      clearLog();
+      log("Imported JSON successfully.", "good");
+    }
+
+    function clearAll(){
+      entries = [];
+      clearLog();
+      log("Cleared all entries.", "good");
+      recalcAndRender();
+    }
+
+    function loadDemo(){
+      entries = [];
+      symbols = ["TCS","INFY","RELIANCE"];
+      selectedSymbol = "TCS";
+
+      const add = (sym, type, qty, price, dtLocal)=>{
+        entries.push({
+          id: uid(),
+          dtISO: toISOFromLocalInput(dtLocal),
+          symbol: sym,
+          type,
+          qty: (type==="PRICE" ? null : qty),
+          price
+        });
+      };
+
+      // TCS
+      add("TCS","BUY",10,3200, "2026-01-02T10:00");
+      add("TCS","PRICE",null,3300, "2026-01-03T10:00");
+      add("TCS","BUY",5,3400, "2026-01-05T10:00");
+      add("TCS","PRICE",null,3500, "2026-01-06T10:00");
+      add("TCS","SELL",8,3550, "2026-01-07T10:00");
+      add("TCS","PRICE",null,3480, "2026-01-08T10:00");
+
+      // INFY
+      add("INFY","BUY",20,1500, "2026-01-03T11:00");
+      add("INFY","PRICE",null,1560, "2026-01-06T11:00");
+      add("INFY","SELL",5,1540, "2026-01-08T11:00");
+
+      // RELIANCE
+      add("RELIANCE","BUY",4,2400, "2026-01-04T12:00");
+      add("RELIANCE","PRICE",null,2350, "2026-01-09T12:00");
+
+      syncSymbolSelect();
+      recalcAndRender();
+      clearLog();
+      log("Demo loaded (3 symbols + PRICE updates + charts).", "good");
+    }
+
+    // ===================== Init =====================
+    load();
+
+    // ensure dt default
+    $("dt").value = nowLocalInputValue();
+
+    // fill symbols
+    syncSymbolSelect();
+
+    // type UI
+    $("type").addEventListener("change", syncTypeUI);
     syncTypeUI();
 
-    document.getElementById("btnAdd").addEventListener("click", ()=>{
-      const type = typeSel.value;
-      const qty = Number(document.getElementById("qty").value);
-      const price = Number(document.getElementById("price").value);
+    $("symbolSelect").addEventListener("change", (e)=>{
+      selectedSymbol = e.target.value;
+      recalcAndRender();
+    });
+
+    $("btnAddSymbol").addEventListener("click", ()=>{
+      try{ addSymbol(); }catch(e){ clearLog(); log("Error: "+e.message, "bad"); }
+    });
+    $("symbolNew").addEventListener("keydown", (e)=>{
+      if(e.key==="Enter"){ e.preventDefault(); $("btnAddSymbol").click(); }
+    });
+
+    $("btnAdd").addEventListener("click", ()=>{
       try{
-        addEntry(type, qty, price);
+        addEntry();
         clearLog();
-        log(`Added ${type}: ${type==="PRICE" ? "" : Math.floor(qty)+" @ "}${money(price)}`, "good");
-        recalc();
+        log("Added entry for " + $("symbolSelect").value + ".", "good");
+        recalcAndRender();
       }catch(e){
+        clearLog();
         log("Error: " + e.message, "bad");
       }
     });
 
-    document.getElementById("btnRecalc").addEventListener("click", ()=>{
+    $("btnRecalc").addEventListener("click", ()=>{
       clearLog();
-      try{ recalc(); log("Recalculated.", "good"); }
-      catch(e){ log("Error: " + e.message, "bad"); }
+      recalcAndRender();
+      log("Recalculated.", "good");
     });
 
-    document.getElementById("btnClear").addEventListener("click", ()=>{
-      entries.length = 0;
-      currentPrice = null;
-      clearLog();
-      log("Cleared all entries.", "good");
-      recalc();
+    $("btnClear").addEventListener("click", ()=>{
+      clearAll();
     });
 
-    document.getElementById("btnDemo").addEventListener("click", ()=>{
-      entries.length = 0;
-      clearLog();
-      addEntry("BUY", 10, 100);
-      addEntry("BUY", 5, 120);
-      addEntry("PRICE", null, 130);
-      addEntry("SELL", 8, 130);
-      addEntry("PRICE", null, 90);
-      log("Loaded demo entries (includes PRICE updates).", "good");
-      recalc();
+    $("btnExport").addEventListener("click", ()=>{
+      exportJSON();
     });
 
-    recalc();
-    log("Ready. Add BUY/SELL trades or PRICE updates.", "good");
+    $("btnImport").addEventListener("click", ()=>{
+      try{ importJSON(); }
+      catch(e){ clearLog(); log("Error: " + e.message, "bad"); }
+    });
+
+    $("btnDemo").addEventListener("click", ()=>{
+      loadDemo();
+    });
+
+    recalcAndRender();
+    clearLog();
+    log("Ready. Add BUY/SELL trades or PRICE updates. Select a symbol to see charts.", "good");
   </script>
 </body>
 </html>
