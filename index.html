@@ -437,6 +437,28 @@ function snapValue(val, targets, threshold=8){
   return best;
 }
 
+/* ===== PATCH: missing z-order helpers used by header buttons ===== */
+function bringToFront(id){
+  const d = state.els[id]; if(!d) return;
+  d.z = ++zTop;
+  renderEl(id);
+  refreshList();
+  syncJSONBoxDebounced();
+}
+function sendToBack(id){
+  const d = state.els[id]; if(!d) return;
+  d.z = 1;
+  // bump others up a bit to keep ordering stable
+  Object.values(state.els).forEach(x=>{
+    if(x.id !== id) x.z = Math.max(2, (x.z||2));
+  });
+  zTop = Math.max(10, ...Object.values(state.els).map(x=>x.z||10));
+  renderAll();
+  refreshList();
+  syncJSONBoxDebounced();
+}
+/* ================================================================ */
+
 /* ================== Canvas sizing ================== */
 function fitDrawCanvas(){
   const r = board.getBoundingClientRect();
@@ -446,15 +468,18 @@ function fitDrawCanvas(){
   drawCanvas.style.width = r.width + "px";
   drawCanvas.style.height = r.height + "px";
   dctx.setTransform(dpr,0,0,dpr,0,0); // draw in CSS pixels
-  // reload ink if any
+
   if(state.ink){
     const img = new Image();
-    img.onload = ()=>{ dctx.clearRect(0,0,r.width,r.height); dctx.drawImage(img,0,0,r.width,r.height); };
+    img.onload = ()=>{
+      dctx.clearRect(0,0,r.width,r.height);
+      dctx.drawImage(img,0,0,r.width,r.height);
+    };
     img.src = state.ink;
   }else{
     dctx.clearRect(0,0,r.width,r.height);
   }
-  // links viewBox match board
+
   linksSvg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
 }
 window.addEventListener("resize", ()=>{ fitDrawCanvas(); renderLinks(); });
@@ -572,6 +597,7 @@ function addOutput(){
   renderEl(id);
   selected.clear(); selected.add(id); activePrimary = id;
   updateSelectionUI(); refreshList(); syncJSONBox();
+  return id; // PATCH: return new output id for callers
 }
 
 function addCode(){
@@ -612,6 +638,7 @@ print("sum(10) =", sum(10));`,
   clrBtn.textContent = "🧹 Clear Out";
   clrBtn.addEventListener("click", ()=>{
     const out = getNearestOutputFor(id, true);
+    if(!out) return;
     out.text = "";
     renderEl(out.id);
     syncJSONBoxDebounced();
@@ -669,10 +696,14 @@ function addShape(){
 function getNearestOutputFor(codeId, createIfMissing=false){
   const code = state.els[codeId];
   const outs = Object.values(state.els).filter(x=>x.type==="output");
+
+  // PATCH: robust create + return newly created output
   if(outs.length===0){
-    if(createIfMissing){ addOutput(); return state.els[activePrimary] || outs[0]; }
-    return null;
+    if(!createIfMissing) return null;
+    const newId = addOutput();
+    return state.els[newId] || null;
   }
+
   // nearest by center distance
   const cx = code.x + code.w/2, cy = code.y + code.h/2;
   let best = outs[0], bestD = Infinity;
@@ -689,11 +720,12 @@ function runCodeBlock(id){
   if(!d || d.type!=="code") return;
 
   const out = getNearestOutputFor(id, true);
+  if(!out) return;
+
   const lines = [];
   const print = (...args)=>lines.push(args.map(x=>String(x)).join(" "));
 
   try{
-    // provide only print + a small safe scope
     const fn = new Function("print", `"use strict";\n${d.code}\n`);
     fn(print);
     out.text = lines.join("\n") || "(no output)";
@@ -713,7 +745,6 @@ function centerOf(id){
 
 function addLink(from, to){
   if(!state.els[from] || !state.els[to] || from===to) return;
-  // avoid duplicates
   if(state.links.some(l => (l.from===from && l.to===to))) return;
   state.links.push({ id: lid(), from, to });
   renderLinks();
@@ -731,7 +762,6 @@ function removeLinksOfSelected(){
 function renderLinks(){
   const bw = board.clientWidth, bh = board.clientHeight;
   linksSvg.setAttribute("viewBox", `0 0 ${bw} ${bh}`);
-  // wipe old paths
   linksSvg.querySelectorAll("path.link,path.linkShadow").forEach(p=>p.remove());
 
   for(const l of state.links){
@@ -739,7 +769,6 @@ function renderLinks(){
     const a = centerOf(l.from);
     const b = centerOf(l.to);
 
-    // simple curved path
     const dx = b.x - a.x;
     const c1x = a.x + dx*0.35;
     const c2x = a.x + dx*0.65;
@@ -796,7 +825,7 @@ function renderEl(id){
     if(!s) return;
     s.classList.remove("rect","round","diamond");
     s.classList.add(d.shape || "rect");
-    // diamond uses rotate on container; keep internal label counter-rotate
+
     if((d.shape||"rect")==="diamond"){
       s.style.transform = "rotate(45deg)";
       const label = s.querySelector(".label");
@@ -906,6 +935,10 @@ function enableDragResizeRotate(node){
 
         if(bestX.hit){ nx += bestX.delta; showV(bestX.guide); } else vGuide.style.display="none";
         if(bestY.hit){ ny += bestY.delta; showH(bestY.guide); } else hGuide.style.display="none";
+
+        // PATCH: clamp again after snapping
+        nx = clamp(nx, 0, bw - d.w);
+        ny = clamp(ny, 0, bh - d.h);
       }else hideGuides();
 
       d.x = nx; d.y = ny;
@@ -947,6 +980,12 @@ function enableDragResizeRotate(node){
 
       if(sxR.hit){ w = clamp(w + sxR.delta, minW, bw - x); showV(sxR.guide); } else vGuide.style.display="none";
       if(syB.hit){ h = clamp(h + syB.delta, minH, bh - y); showH(syB.guide); } else hGuide.style.display="none";
+
+      // PATCH: clamp again after snapping
+      w = clamp(w, minW, bw - x);
+      h = clamp(h, minH, bh - y);
+      x = clamp(x, 0, bw - w);
+      y = clamp(y, 0, bh - h);
     }else hideGuides();
 
     d.x=x; d.y=y; d.w=w; d.h=h;
@@ -985,7 +1024,6 @@ function updateSelectionUI(){
   $("#pRot").value = Math.round(d.rot || 0);
   $("#pOpacity").value = (d.opacity ?? 1);
 
-  // Shape props only when single shape selected
   $("#shapeProps").style.display = (ids.length===1 && d.type==="shape") ? "block" : "none";
   if(ids.length===1 && d.type==="shape"){
     $("#pShapeType").value = d.shape || "rect";
@@ -1040,16 +1078,12 @@ $("#deleteSel").addEventListener("click", ()=>{
   updateSelectionUI();
 });
 
-/* Z order */
+/* Z order (panel buttons) */
 $("#bringFront").addEventListener("click", ()=>{
-  for(const id of selected){ state.els[id].z = ++zTop; renderEl(id); }
-  refreshList(); syncJSONBoxDebounced();
+  for(const id of selected){ bringToFront(id); }
 });
 $("#sendBack").addEventListener("click", ()=>{
-  for(const id of selected){ state.els[id].z = 1; }
-  Object.values(state.els).forEach(x=>{ if(!selected.has(x.id)) x.z=(x.z||2)+1; });
-  zTop = Math.max(...Object.values(state.els).map(x=>x.z||2), 10);
-  renderAll(); refreshList(); syncJSONBoxDebounced();
+  for(const id of selected){ sendToBack(id); }
 });
 
 /* List */
@@ -1090,7 +1124,6 @@ function refreshList(){
 /* Remove */
 function removeEl(id){
   if(!state.els[id]) return;
-  // remove links attached
   state.links = state.links.filter(l => !(l.from===id || l.to===id));
   const node = board.querySelector(`.el[data-id="${id}"]`);
   if(node) node.remove();
@@ -1102,7 +1135,6 @@ function removeEl(id){
 /* ================== JSON Save/Load ================== */
 function runtimeStrippedCopy(){
   const copy = JSON.parse(JSON.stringify(state));
-  // store ink as current canvas snapshot
   copy.ink = drawCanvas.toDataURL("image/png");
   return copy;
 }
@@ -1133,7 +1165,6 @@ $("#clearAll").addEventListener("click", ()=>{
   state.links = [];
   selected.clear(); activePrimary=null;
   board.querySelectorAll(".el").forEach(n=>n.remove());
-  // clear ink
   state.ink = null;
   dctx.clearRect(0,0,board.clientWidth,board.clientHeight);
   renderLinks();
@@ -1147,7 +1178,6 @@ function loadFromObject(obj){
   board.style.background = state.boardBg;
   $("#boardBg").value = state.boardBg;
 
-  // load elements
   for(const id of Object.keys(obj.els||{})){
     const d = obj.els[id];
     d.z = d.z || (++zTop);
@@ -1188,6 +1218,7 @@ function loadFromObject(obj){
       clrBtn.type="button"; clrBtn.textContent="🧹 Clear Out";
       clrBtn.addEventListener("click", ()=>{
         const out = getNearestOutputFor(id, true);
+        if(!out) return;
         out.text = "";
         renderEl(out.id);
         syncJSONBoxDebounced();
@@ -1216,11 +1247,9 @@ function loadFromObject(obj){
     renderEl(id);
   }
 
-  // links
   state.links = Array.isArray(obj.links) ? obj.links.filter(x=>x && x.from && x.to) : [];
   renderLinks();
 
-  // ink
   state.ink = obj.ink || null;
   fitDrawCanvas();
 
@@ -1261,16 +1290,17 @@ function setDrawMode(on){
   drawMode.drawing = false;
   drawMode.last = null;
   drawCanvas.style.pointerEvents = on ? "auto" : "none";
-  $("#drawToggle").textContent = on ? "🧲 Stop Drawing" : "✏️ Start Drawing";
-  $("#drawToggle").classList.toggle("btn", !on);
-  $("#drawToggle").classList.toggle("btn.secondary", on);
+
+  // PATCH: keep button classes consistent
+  const btn = $("#drawToggle");
+  btn.textContent = on ? "🧲 Stop Drawing" : "✏️ Start Drawing";
+  btn.className = on ? "btn" : "btn secondary";
 }
 $("#drawToggle").addEventListener("click", ()=> setDrawMode(!drawMode.on));
 
 function inkSettings(){
   return { w: +$("#penSize").value||6, color: $("#penColor").value || "#f59e0b" };
 }
-
 function boardPointFromEvent(e){
   const r = board.getBoundingClientRect();
   return { x: e.clientX - r.left, y: e.clientY - r.top };
@@ -1284,7 +1314,6 @@ drawCanvas.addEventListener("pointerdown", (e)=>{
   drawMode.last = p;
   e.preventDefault();
 });
-
 drawCanvas.addEventListener("pointermove", (e)=>{
   if(!drawMode.on || !drawMode.drawing) return;
   const p = boardPointFromEvent(e);
@@ -1301,7 +1330,6 @@ drawCanvas.addEventListener("pointermove", (e)=>{
 
   drawMode.last = p;
 });
-
 drawCanvas.addEventListener("pointerup", ()=>{
   if(!drawMode.on) return;
   drawMode.drawing = false;
@@ -1318,17 +1346,12 @@ $("#clearInk").addEventListener("click", ()=>{
 
 /* ================== Export PNG ================== */
 function exportPNG(){
-  // quick export: compose board screenshot by serializing DOM via SVG foreignObject (simple approach)
-  // Works in most modern browsers. If not, you can still use browser screenshot.
   const bw = board.clientWidth, bh = board.clientHeight;
 
-  // clone board
   const clone = board.cloneNode(true);
-  // remove guides, handles visuals? keep them off by removing selected styles
   clone.querySelectorAll(".handle,.rhandle,.rstick,.hdr .mini,.guide").forEach(n=>n.remove());
   clone.querySelectorAll(".el").forEach(n=>n.classList.remove("selected"));
-  // keep links + ink
-  // ensure canvas -> image
+
   const cnv = clone.querySelector("#drawCanvas");
   if(cnv){
     const img = document.createElement("img");
@@ -1345,6 +1368,12 @@ function exportPNG(){
   wrapper.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
   wrapper.style.width = bw+"px";
   wrapper.style.height = bh+"px";
+
+  // PATCH: include styles so foreignObject renders correctly
+  const style = document.createElement("style");
+  style.textContent = Array.from(document.querySelectorAll("style")).map(s=>s.textContent||"").join("\n");
+  wrapper.appendChild(style);
+
   wrapper.appendChild(clone);
 
   const svg = `
@@ -1386,12 +1415,11 @@ function init(){
   $("#safeToggle").checked = false;
   $("#snapToggle").checked = true;
 
-  // starter blocks
   addShape();
   addNote();
   addCode();
   addOutput();
-  // connect shape -> code -> output
+
   const ids = Object.keys(state.els);
   const shapeId = ids.find(x=>state.els[x].type==="shape");
   const codeId  = ids.find(x=>state.els[x].type==="code");
