@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pyodide Editor PRO (Collision-Proof)</title>
+  <title>Seriously Good Pyodide Editor — Collision-Proof (Fixed)</title>
+  <meta name="description" content="A robust Pyodide editor with collision-proof CSS, tabs, stdin, package installs, share/save, and safe output handling." />
 
   <style>
     :root{
@@ -18,12 +19,10 @@
       --pp-sans: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    /* --------- HARD RESET ONLY INSIDE OUR APP --------- */
+    /* HARD RESET INSIDE APP ONLY */
     .pp-app, .pp-app *{ box-sizing:border-box; }
     .pp-app{ font-family:var(--pp-sans); color:var(--pp-ink); }
-    .pp-app button, .pp-app input, .pp-app select, .pp-app textarea{
-      font-family:inherit;
-    }
+    .pp-app button, .pp-app input, .pp-app select, .pp-app textarea{ font-family:inherit; }
 
     body{
       margin:0;
@@ -158,7 +157,7 @@
     .pp-tab.pp-active{background:linear-gradient(180deg,var(--pp-brand2),var(--pp-brand));border-color:transparent}
 
     .pp-editorarea{
-      background:var(--pp-codebg) !important;   /* make it unbreakable */
+      background:var(--pp-codebg) !important;
       border-top:1px solid rgba(255,255,255,.06);
       border-bottom:1px solid rgba(255,255,255,.06);
       position:relative;
@@ -252,6 +251,7 @@
     .pp-toast.show{opacity:1;transform:translateX(-50%) translateY(-2px)}
   </style>
 
+  <!-- Pyodide -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 </head>
 
@@ -264,7 +264,7 @@
           <div class="pp-logo" aria-hidden="true"></div>
           <div>
             <h1 class="pp-title">Seriously Good Pyodide Editor</h1>
-            <div class="pp-sub">Collision-proof tabs + editor • stdin • packages • share</div>
+            <div class="pp-sub">Collision-proof CSS • tabs • stdin • packages • share/save • fixed stderr bug</div>
           </div>
         </div>
         <div class="pp-actions">
@@ -282,7 +282,7 @@
           <div class="pp-cardhead">
             <div>
               <h2>Editor</h2>
-              <div class="pp-small">This version prevents the “giant vertical tab bar” bug.</div>
+              <div class="pp-small">If your site CSS is aggressive, this stays stable.</div>
             </div>
             <div class="pp-toolbar">
               <select id="ppExample" class="pp-select" title="Load example">
@@ -338,8 +338,7 @@
             <div class="pp-pad">
               <textarea class="pp-textarea pp-io" id="ppStdin" spellcheck="false" placeholder="5&#10;10&#10;hello"></textarea>
               <div class="pp-small" style="margin-top:8px">
-                Tip: Your screenshot shows <b>print(&quot;Hello&quot;)</b> accidentally in stdin 🙂
-                Put code in the <b>Editor</b> (left), stdin is only for inputs.
+                Tip: stdin is only for inputs. Put Python code in the left editor.
               </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
                 <span class="pp-chip" data-pkg="numpy">+numpy</span>
@@ -373,7 +372,7 @@
             <div class="pp-cardhead">
               <div>
                 <h2>Output</h2>
-                <div class="pp-small">Newlines preserved (pre-wrap) + errors highlighted.</div>
+                <div class="pp-small">Newlines preserved + errors highlighted.</div>
               </div>
               <div class="pp-toolbar">
                 <button class="pp-btn pp-btn-ghost" id="ppCopyOut">📋 Copy</button>
@@ -388,6 +387,7 @@
       </div>
 
     </div>
+
     <div class="pp-toast" id="ppToast"></div>
   </div>
 
@@ -395,25 +395,41 @@
     const $ = (id)=>document.getElementById(id);
 
     const ui = {
-      tabs: $("ppTabs"), code: $("ppCode"), gutter: $("ppGutter"),
-      out: $("ppOut"), stdin: $("ppStdin"), pkgs: $("ppPkgs"),
-      example: $("ppExample"), indent: $("ppIndent"),
-      pyText: $("ppPyText"), dot: $("ppDot"), status: $("ppStatus"),
-      bar: $("ppBar"), autorun: $("ppAutoRun"), timer: $("ppTimer"),
+      tabs: $("ppTabs"),
+      code: $("ppCode"),
+      gutter: $("ppGutter"),
+      out: $("ppOut"),
+      stdin: $("ppStdin"),
+      pkgs: $("ppPkgs"),
+      example: $("ppExample"),
+      indent: $("ppIndent"),
+      pyText: $("ppPyText"),
+      dot: $("ppDot"),
+      status: $("ppStatus"),
+      bar: $("ppBar"),
+      autorun: $("ppAutoRun"),
+      timer: $("ppTimer"),
       toast: $("ppToast"),
     };
 
     const btn = {
-      run:$("ppRun"), stop:$("ppStop"), format:$("ppFormat"),
-      save:$("ppSave"), share:$("ppShare"),
-      newTab:$("ppNewTab"), delTab:$("ppDelTab"),
-      install:$("ppInstall"), list:$("ppList"),
-      sample:$("ppStdinSample"), clearStdin:$("ppStdinClear"),
-      copyOut:$("ppCopyOut"), clearOut:$("ppClearOut"),
+      run: $("ppRun"),
+      stop: $("ppStop"),
+      format: $("ppFormat"),
+      save: $("ppSave"),
+      share: $("ppShare"),
+      newTab: $("ppNewTab"),
+      delTab: $("ppDelTab"),
+      install: $("ppInstall"),
+      list: $("ppList"),
+      sample: $("ppStdinSample"),
+      clearStdin: $("ppStdinClear"),
+      copyOut: $("ppCopyOut"),
+      clearOut: $("ppClearOut"),
     };
 
-    const STORAGE_KEY="pp_pyodide_editor_v2_ns";
-    const STORAGE_STDIN="pp_pyodide_stdin_v2_ns";
+    const STORAGE_KEY="pp_pyodide_editor_v2_fixed";
+    const STORAGE_STDIN="pp_pyodide_stdin_v2_fixed";
 
     const EXAMPLES = [
       { title:"Hello + loops", code:`print("Hello")\nfor i in range(5):\n    print("i =", i)\n` },
@@ -422,29 +438,37 @@
       { title:"Matplotlib plot", code:`import matplotlib.pyplot as plt\nxs=[1,2,3,4,5]\nys=[x*x for x in xs]\nplt.plot(xs,ys)\nplt.title("Squares")\nplt.show()\nprint("Plot done.")\n` },
     ];
 
-    const DEFAULT_TABS = [{name:"main.py", code:
-`# Welcome Champak 👋\n# Ctrl+Enter to run\n\nprint("Namaste!")\nfor i in range(1,6):\n    print(i, i*i)\n`
+    const DEFAULT_TABS = [{
+      name:"main.py",
+      code:`# Welcome Champak 👋\n# Ctrl+Enter to run\n\nprint("Namaste!")\nfor i in range(1,6):\n    print(i, i*i)\n`
     }];
 
     let state = loadState();
     let currentTab = clamp(state.currentTab||0, 0, state.tabs.length-1);
 
-    let pyodide=null;
-    let runtimeId=0;
+    let pyodide = null;
+    let runtimeId = 0;
 
-    function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+    function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
+
     function toast(msg){
       ui.toast.textContent=msg;
       ui.toast.classList.add("show");
       clearTimeout(toast._t);
       toast._t=setTimeout(()=>ui.toast.classList.remove("show"), 1600);
     }
+
     function setStatus(text, kind){
       ui.status.textContent=text;
       ui.dot.className="pp-dot"+(kind?(" "+kind):"");
     }
+
     function setProgress(p){ ui.bar.style.width = clamp(p,0,100)+"%"; }
-    function escapeHtml(s){ return (s+"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+    function escapeHtml(s){
+      return (s+"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+
     function writeOut(html, append=true){
       if(!append) ui.out.innerHTML="";
       ui.out.innerHTML += html;
@@ -461,13 +485,20 @@
       }catch(e){}
       return {tabs:structuredClone(DEFAULT_TABS), currentTab:0};
     }
+
     function saveState(){
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify({tabs:state.tabs, currentTab}));
       }catch(e){}
     }
-    function loadStdin(){ try{ ui.stdin.value = localStorage.getItem(STORAGE_STDIN) || ""; }catch(e){} }
-    function saveStdin(){ try{ localStorage.setItem(STORAGE_STDIN, ui.stdin.value || ""); }catch(e){} }
+
+    function loadStdin(){
+      try{ ui.stdin.value = localStorage.getItem(STORAGE_STDIN) || ""; }catch(e){}
+    }
+
+    function saveStdin(){
+      try{ localStorage.setItem(STORAGE_STDIN, ui.stdin.value || ""); }catch(e){}
+    }
 
     function renderTabs(){
       ui.tabs.innerHTML="";
@@ -480,7 +511,8 @@
         ui.tabs.appendChild(b);
       });
 
-      ui.example.innerHTML = `<option value="">Examples…</option>` +
+      ui.example.innerHTML =
+        `<option value="">Examples…</option>` +
         EXAMPLES.map((e,i)=>`<option value="${i}">${e.title}</option>`).join("");
     }
 
@@ -503,6 +535,7 @@
       renderTabs(); updateGutter(); saveState();
       toast("New tab created");
     }
+
     function delTab(){
       if(state.tabs.length<=1){ toast("Can't delete last tab"); return; }
       state.tabs[currentTab].code = ui.code.value;
@@ -549,8 +582,8 @@
       toast("Formatted");
     }
 
-    // Output bridge from Python
-    window.__pp_write = (text, isErr)=>{
+    /* ===== JS bridge for Python stdout/stderr (NO double-underscore!) ===== */
+    window.pp_write = (text, isErr)=>{
       const safe = escapeHtml(text);
       writeOut(isErr ? `<span class="err">${safe}</span>` : safe, true);
     };
@@ -563,6 +596,7 @@
 
     async function ensurePyodide(){
       if(pyodide) return pyodide;
+
       setStatus("Loading Pyodide…","warn");
       ui.pyText.textContent="loading…";
       setProgress(12);
@@ -573,19 +607,23 @@
       await pyodide.loadPackage("micropip");
       setProgress(80);
 
+      /* IMPORTANT: import pp_write (not __pp_write) to avoid Python name-mangling */
       await pyodide.runPythonAsync(`
 import sys, builtins
-from js import __pp_write
+from js import pp_write
 
 class _PPWriter:
-    def __init__(self, is_err=False): self.is_err=is_err
+    def __init__(self, is_err=False):
+        self.is_err = is_err
     def write(self, s):
-        __pp_write(str(s), self.is_err)
+        pp_write(str(s), self.is_err)
         return len(s)
-    def flush(self): pass
+    def flush(self):
+        pass
 `);
       setProgress(100);
       setTimeout(()=>setProgress(0), 450);
+
       ui.pyText.textContent="ready";
       setStatus("Pyodide ready.","ok");
       return pyodide;
@@ -603,6 +641,7 @@ class _PPWriter:
       const thisRun = ++runtimeId;
       btn.run.disabled=true;
       btn.stop.disabled=false;
+
       ui.out.innerHTML = `<span class="dim">— Running —</span>\n`;
 
       state.tabs[currentTab].code = ui.code.value;
@@ -613,17 +652,21 @@ class _PPWriter:
         if(thisRun !== runtimeId) return;
 
         const nextIn = stdinQueue();
-        window.__pp_input = ()=> nextIn();
+        window.pp_input = ()=> nextIn();
 
         await py.runPythonAsync(`
 import sys, builtins
-from js import __pp_input
+from js import pp_input
 from __main__ import _PPWriter
+
 sys.stdout = _PPWriter(False)
 sys.stderr = _PPWriter(True)
+
 def _input(prompt=""):
-    if prompt: sys.stdout.write(str(prompt))
-    return str(__pp_input())
+    if prompt:
+        sys.stdout.write(str(prompt))
+    return str(pp_input())
+
 builtins.input = _input
 `);
 
@@ -653,16 +696,20 @@ builtins.input = _input
       const raw=(ui.pkgs.value||"").trim();
       if(!raw){ toast("No packages"); return; }
       const pkgs = raw.split(/[, ]+/).map(s=>s.trim()).filter(Boolean);
+
       ui.out.innerHTML = `<span class="dim">— Installing —</span>\n`;
       setStatus("Installing…","warn");
+
       const thisRun = ++runtimeId;
       try{
         const py = await ensurePyodide();
         if(thisRun !== runtimeId) return;
+
         await py.runPythonAsync(`
 import micropip
-await micropip.install(${JSON.stringify(pkgs)})
-print("Installed:", ", ".join(${JSON.stringify(pkgs)}))
+pkgs = ${JSON.stringify(pkgs)}
+await micropip.install(pkgs)
+print("Installed:", ", ".join(pkgs))
 `);
         setStatus("Packages installed.","ok");
       }catch(err){
@@ -678,6 +725,7 @@ print("Installed:", ", ".join(${JSON.stringify(pkgs)}))
       try{
         const py = await ensurePyodide();
         if(thisRun !== runtimeId) return;
+
         await py.runPythonAsync(`
 import pkgutil
 names = sorted({m.name for m in pkgutil.iter_modules()})
@@ -711,6 +759,7 @@ print("\\n".join(names[:4000]))
         for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
         const json=new TextDecoder().decode(bytes);
         const payload=JSON.parse(json);
+
         if(payload?.tabs?.length){
           state.tabs = payload.tabs;
           currentTab = clamp(payload.currentTab||0, 0, state.tabs.length-1);
@@ -722,7 +771,7 @@ print("\\n".join(names[:4000]))
       }catch(e){}
     }
 
-    // bindings
+    // Buttons
     btn.run.onclick = run;
     btn.stop.onclick = resetRuntime;
     btn.format.onclick = basicFormat;
@@ -753,6 +802,7 @@ print("\\n".join(names[:4000]))
       ui.example.value="";
     };
 
+    // Package chips
     document.querySelectorAll(".pp-chip[data-pkg]").forEach(ch=>{
       ch.onclick = ()=>{
         const p = ch.getAttribute("data-pkg");
@@ -772,8 +822,8 @@ print("\\n".join(names[:4000]))
         const ins = (mode==="tab") ? "\t" : " ".repeat(parseInt(mode,10)||4);
         const el=ui.code;
         const s=el.selectionStart, t=el.selectionEnd;
+
         if(s!==t){
-          // indent selected lines
           const v=el.value;
           const ls=v.lastIndexOf("\n", s-1)+1;
           const le=v.indexOf("\n", t);
@@ -789,7 +839,7 @@ print("\\n".join(names[:4000]))
       }
     });
 
-    // init
+    // Init
     loadFromHash();
     renderTabs();
     loadStdin();
