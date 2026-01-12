@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Programming Whiteboard PRO — Drag • Resize • Rotate • Draw • Connect • Save/Export</title>
+<title>Programming Whiteboard PRO — Drag • Resize • Rotate • Draw • Shapes • Arrows • Save/Export</title>
 <style>
 :root{
   --bg:#fff7e6;--card:#fff;--ink:#1f2937;--muted:#6b7280;--brand:#d97706;--brand2:#f59e0b;
@@ -13,13 +13,12 @@
   --safe:rgba(255,255,255,.18);
   --codebg:#0b1220;--codeink:#e5e7eb;
   --note:#fff6cc;
-  --shape:#111827;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
-.wrap{max-width:1500px;margin:18px auto;padding:14px}
+.wrap{max-width:1520px;margin:18px auto;padding:14px}
 h1{margin:6px 0 14px;text-align:center;color:var(--brand)}
-.grid{display:grid;grid-template-columns:400px 1fr;gap:14px;align-items:start}
+.grid{display:grid;grid-template-columns:410px 1fr;gap:14px;align-items:start}
 .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px}
 label{display:block;font-size:13px;font-weight:900;margin-top:10px}
 input,select,textarea,button{width:100%;margin-top:6px;padding:9px 10px;border-radius:10px;border:1px solid var(--border);font-size:14px}
@@ -62,34 +61,33 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 #vGuide{width:2px;top:0;bottom:0}
 #hGuide{height:2px;left:0;right:0}
 
-/* Connections layer */
+/* Links (block connectors) */
 #linksSvg{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  z-index:3;
-  pointer-events:none;
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:3;pointer-events:none;
 }
-#linksSvg .link{
-  stroke:rgba(245,158,11,.95);
-  stroke-width:3;
-  fill:none;
-}
-#linksSvg .linkShadow{
-  stroke:rgba(0,0,0,.45);
-  stroke-width:6;
-  fill:none;
-}
+#linksSvg .link{stroke:rgba(245,158,11,.95);stroke-width:3;fill:none}
+#linksSvg .linkShadow{stroke:rgba(0,0,0,.45);stroke-width:6;fill:none}
 
-/* Drawing layer */
-#drawCanvas{
-  position:absolute;inset:0;
-  width:100%;height:100%;
+/* Annotations (drawn shapes/arrows) */
+#annoSvg{
+  position:absolute;inset:0;width:100%;height:100%;
   z-index:4;
   pointer-events:none; /* enabled only in draw mode */
 }
+#annoSvg .aStroke{stroke:rgba(245,158,11,.95);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#annoSvg .aFill{fill:rgba(245,158,11,.12);stroke:rgba(245,158,11,.95);stroke-width:4}
+#annoSvg .aHi{stroke-width:14;opacity:.35}
+
+/* Pen layer */
+#drawCanvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:5;
+  pointer-events:none; /* enabled only in draw mode when tool=pen/highlighter */
+}
 
 /* ELEMENT */
-.el{position:absolute;border-radius:14px;overflow:visible;user-select:none;touch-action:none;z-index:5}
+.el{position:absolute;border-radius:14px;overflow:visible;user-select:none;touch-action:none;z-index:6}
 .el .box{
   position:absolute;inset:0;border:1px solid rgba(255,255,255,.15);
   border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.35);
@@ -127,31 +125,17 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
   width:100%;height:100%;
   padding:40px 12px 12px;
   background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(0,0,0,0)), var(--note);
-  color:#111827;
-  font-weight:800;
+  color:#111827;font-weight:800;
 }
 .note textarea{
   width:100%;height:100%;
-  border:0;outline:none;
-  background:transparent;
-  font-weight:800;
-  font-size:18px;
-  color:#111827;
-  resize:none;
+  border:0;outline:none;background:transparent;
+  font-weight:800;font-size:18px;color:#111827;resize:none;
 }
 
 /* Code block */
-.codeWrap{
-  width:100%;height:100%;
-  display:flex;flex-direction:column;
-  background:rgba(0,0,0,.10);
-}
-.codeTop{
-  margin-top:32px;
-  display:flex;gap:8px;
-  padding:8px 10px;
-  align-items:center;
-}
+.codeWrap{width:100%;height:100%;display:flex;flex-direction:column;background:rgba(0,0,0,.10)}
+.codeTop{margin-top:32px;display:flex;gap:8px;padding:8px 10px;align-items:center;flex-wrap:wrap}
 .codeTop .chip{
   width:auto;border:1px solid rgba(255,255,255,.18);
   background:rgba(0,0,0,.25);color:#fff;
@@ -159,81 +143,55 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
   font-size:12px;font-weight:900;
 }
 .codeTop button{
-  width:auto;margin:0;
-  padding:7px 10px;border-radius:10px;
+  width:auto;margin:0;padding:7px 10px;border-radius:10px;
   border:1px solid rgba(255,255,255,.20);
-  background:rgba(0,0,0,.25);
-  color:#fff;cursor:pointer;font-weight:900;
+  background:rgba(0,0,0,.25);color:#fff;cursor:pointer;font-weight:900;
 }
 .codeTop button:hover{background:rgba(0,0,0,.40)}
-.codeArea{
-  flex:1;
-  padding:0 10px 10px;
-}
+.codeArea{flex:1;padding:0 10px 10px}
 .codeArea textarea{
   width:100%;height:100%;
   border:1px solid rgba(255,255,255,.16);
-  background:var(--codebg);
-  color:var(--codeink);
+  background:var(--codebg);color:var(--codeink);
   border-radius:12px;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:14px;
-  line-height:1.35;
-  padding:10px;
-  outline:none;
-  resize:none;
+  font-size:14px;line-height:1.35;padding:10px;outline:none;resize:none;
 }
 
-/* Output block */
-.outputWrap{
-  width:100%;height:100%;
-  background:rgba(255,255,255,.06);
-  padding:40px 12px 12px;
-}
+/* Output */
+.outputWrap{width:100%;height:100%;background:rgba(255,255,255,.06);padding:40px 12px 12px}
 .outputWrap pre{
-  margin:0;height:100%;
-  overflow:auto;
+  margin:0;height:100%;overflow:auto;
   border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.45);
-  color:#e5e7eb;
-  border-radius:12px;
-  padding:10px;
+  background:rgba(0,0,0,.45);color:#e5e7eb;
+  border-radius:12px;padding:10px;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:13px;
-  line-height:1.35;
+  font-size:13px;line-height:1.35;
 }
 
-/* Shapes */
+/* Shapes block */
 .shape{
   width:100%;height:100%;
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-weight:1000;
-  padding:38px 10px 10px;
-  text-align:center;
+  padding:38px 10px 10px;text-align:center;
+  background:rgba(17,24,39,.70);
 }
 .shape .label{
-  pointer-events:auto;
-  border:0;outline:none;
-  background:transparent;
-  color:#fff;font-weight:1000;
-  font-size:20px;
-  width:100%;
-  text-align:center;
+  pointer-events:auto;border:0;outline:none;background:transparent;
+  color:#fff;font-weight:1000;font-size:20px;width:100%;text-align:center;
 }
-.shape.rect{background:rgba(17,24,39,.70)}
-.shape.round{background:rgba(17,24,39,.70);border-radius:999px}
-.shape.diamond{
-  background:rgba(17,24,39,.70);
-  transform:rotate(45deg);
-}
+.shape.rect{border-radius:14px}
+.shape.round{border-radius:999px}
+.shape.diamond{transform:rotate(45deg)}
 .shape.diamond .label{transform:rotate(-45deg)}
 
-@media (max-width: 1050px){ .grid{grid-template-columns:1fr} }
+@media (max-width: 1080px){ .grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>🧠 Programming Whiteboard PRO</h1>
+  <h1>🧠 Programming Whiteboard PRO (Arrows + Circles + Annotations)</h1>
 
   <div class="grid">
     <!-- LEFT -->
@@ -257,7 +215,7 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 
       <div class="row">
         <button class="btn" id="addOutBtn">🧾 Output</button>
-        <button class="btn" id="addShapeBtn">⬛ Shape</button>
+        <button class="btn" id="addShapeBtn">⬛ Shape Block</button>
       </div>
 
       <div class="row">
@@ -267,28 +225,50 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 
       <hr>
 
-      <div class="pill"><b>Draw Mode</b></div>
+      <div class="pill"><b>Annotations</b></div>
       <div class="row">
-        <button class="btn secondary" id="drawToggle">✏️ Start Drawing</button>
-        <button class="btn ghost" id="clearInk">🧽 Clear Ink</button>
+        <button class="btn secondary" id="drawToggle">✏️ Start Annotating</button>
+        <button class="btn ghost" id="clearAnno">🧽 Clear Annotations</button>
       </div>
 
       <div class="row">
         <div>
-          <label>Pen Size</label>
-          <input type="range" id="penSize" min="2" max="28" value="6">
+          <label>Tool</label>
+          <select id="drawTool">
+            <option value="pen">Pen (freehand)</option>
+            <option value="highlighter">Highlighter</option>
+            <option value="arrow">Arrow</option>
+            <option value="line">Line</option>
+            <option value="rect">Rectangle</option>
+            <option value="circle">Circle / Ellipse</option>
+          </select>
         </div>
         <div>
-          <label>Pen Color</label>
-          <input type="color" id="penColor" value="#f59e0b">
+          <label>Stroke (px)</label>
+          <input type="range" id="penSize" min="2" max="28" value="6">
         </div>
       </div>
-      <div class="small">Tip: Turn on Draw Mode to sketch arrows/notes quickly. Turn it off to move blocks again.</div>
+
+      <div class="row">
+        <div>
+          <label>Color</label>
+          <input type="color" id="penColor" value="#f59e0b">
+        </div>
+        <div>
+          <label>Fill (shapes)</label>
+          <input type="checkbox" id="fillShapes" checked style="width:auto;margin-top:12px">
+          <div class="small" style="margin-top:6px">For Rect/Circle only.</div>
+        </div>
+      </div>
+
+      <div class="small">
+        Recommendation: Use <b>Arrow</b> for flow, <b>Circle</b> to highlight, <b>Highlighter</b> for marking important lines.
+      </div>
 
       <hr>
 
       <div id="propsEmpty" class="small">
-        Click an item to edit. Move: drag • Resize: corners • Rotate: top dot • Multi-select: Shift+Click
+        Click a block to edit. Move: drag • Resize: corners • Rotate: top dot • Multi-select: Shift+Click
       </div>
 
       <div id="props" style="display:none">
@@ -297,7 +277,6 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
           <button class="iconBtn" id="deleteSel">Delete</button>
         </div>
 
-        <!-- Common -->
         <div class="row">
           <div>
             <label>Rotation (deg)</label>
@@ -310,7 +289,7 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
         </div>
 
         <div id="shapeProps" style="display:none">
-          <label>Shape Type</label>
+          <label>Shape Type (Block)</label>
           <select id="pShapeType">
             <option value="rect">Rectangle</option>
             <option value="round">Rounded / Oval</option>
@@ -363,9 +342,15 @@ hr{border:none;border-top:1px solid var(--border);margin:14px 0}
             <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(245,158,11,.95)"></path>
             </marker>
+
+            <!-- annotation arrowhead (color will be set via stroke, fill uses currentColor-ish by replacing on create) -->
+            <marker id="annoArrowHead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+              <path id="annoArrowPath" d="M 0 0 L 10 5 L 0 10 z" fill="rgba(245,158,11,.95)"></path>
+            </marker>
           </defs>
         </svg>
 
+        <svg id="annoSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
         <canvas id="drawCanvas"></canvas>
 
         <div id="vGuide" class="guide"></div>
@@ -385,6 +370,7 @@ const safeArea = $("#safeArea");
 const elementsList = $("#elementsList");
 const jsonBox = $("#jsonBox");
 const linksSvg = $("#linksSvg");
+const annoSvg = $("#annoSvg");
 const drawCanvas = $("#drawCanvas");
 const dctx = drawCanvas.getContext("2d");
 
@@ -393,15 +379,17 @@ let selected = new Set();
 let activePrimary = null;
 
 const state = {
-  version: 1,
+  version: 2,
   boardBg:"#0a0a0a",
   els: {},
-  links: [],   // {id, from, to}
-  ink: null    // dataURL of drawing canvas
+  links: [],        // connectors between blocks: {id, from, to}
+  ink: null,        // canvas (pen/highlighter) as dataURL
+  annos: []         // vector annotations: {id,type,x1,y1,x2,y2,color,w,fill}
 };
 
 function uid(){ return "el_" + Math.random().toString(16).slice(2,10); }
 function lid(){ return "ln_" + Math.random().toString(16).slice(2,10); }
+function aid(){ return "an_" + Math.random().toString(16).slice(2,10); }
 function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 function snapOn(){ return $("#snapToggle").checked; }
 function snapGrid(v, size=10){ return $("#gridToggle").checked ? Math.round(v/size)*size : v; }
@@ -437,55 +425,38 @@ function snapValue(val, targets, threshold=8){
   return best;
 }
 
-/* ===== PATCH: missing z-order helpers used by header buttons ===== */
-function bringToFront(id){
-  const d = state.els[id]; if(!d) return;
-  d.z = ++zTop;
-  renderEl(id);
-  refreshList();
-  syncJSONBoxDebounced();
-}
-function sendToBack(id){
-  const d = state.els[id]; if(!d) return;
-  d.z = 1;
-  // bump others up a bit to keep ordering stable
-  Object.values(state.els).forEach(x=>{
-    if(x.id !== id) x.z = Math.max(2, (x.z||2));
-  });
-  zTop = Math.max(10, ...Object.values(state.els).map(x=>x.z||10));
-  renderAll();
-  refreshList();
-  syncJSONBoxDebounced();
-}
-/* ================================================================ */
-
-/* ================== Canvas sizing ================== */
-function fitDrawCanvas(){
+/* ================== Board sizing ================== */
+function fitOverlaySizes(){
   const r = board.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
+
+  // canvas
   drawCanvas.width = Math.round(r.width * dpr);
   drawCanvas.height = Math.round(r.height * dpr);
   drawCanvas.style.width = r.width + "px";
   drawCanvas.style.height = r.height + "px";
-  dctx.setTransform(dpr,0,0,dpr,0,0); // draw in CSS pixels
+  dctx.setTransform(dpr,0,0,dpr,0,0);
 
+  // svg viewBoxes
+  linksSvg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
+  annoSvg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
+
+  // restore ink
   if(state.ink){
     const img = new Image();
-    img.onload = ()=>{
-      dctx.clearRect(0,0,r.width,r.height);
-      dctx.drawImage(img,0,0,r.width,r.height);
-    };
+    img.onload = ()=>{ dctx.clearRect(0,0,r.width,r.height); dctx.drawImage(img,0,0,r.width,r.height); };
     img.src = state.ink;
   }else{
     dctx.clearRect(0,0,r.width,r.height);
   }
 
-  linksSvg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
+  renderLinks();
+  renderAnnos();
 }
-window.addEventListener("resize", ()=>{ fitDrawCanvas(); renderLinks(); });
-fitDrawCanvas();
+window.addEventListener("resize", fitOverlaySizes);
+fitOverlaySizes();
 
-/* ================== Element Building ================== */
+/* ================== Elements ================== */
 function createElementNode({id, title}){
   const el = document.createElement("div");
   el.className = "el";
@@ -525,7 +496,7 @@ function createElementNode({id, title}){
   el.appendChild(rh);
 
   el.addEventListener("pointerdown", (e)=>{
-    if(drawMode.on) return; // don't select when drawing
+    if(drawMode.on) return;
     const actBtn = e.target.closest("button[data-act]");
     if(actBtn){
       e.stopPropagation();
@@ -552,41 +523,25 @@ function createElementNode({id, title}){
   return {el, content};
 }
 
-/* ================== Add Blocks ================== */
 function addNote(){
   const id = uid();
-  state.els[id] = {
-    id, type:"note", title:"Note",
-    x: 60, y: 60, w: 420, h: 240,
-    rot: 0, opacity: 1,
-    text: "Idea:\n• Break problem into functions\n• Add test cases\n• Edge cases?",
-    z: ++zTop
-  };
+  state.els[id] = { id,type:"note",title:"Note",x:60,y:60,w:420,h:240,rot:0,opacity:1,text:"Idea:\n• Steps\n• Edge cases\n• Tests",z:++zTop };
   const {content} = createElementNode({id, title:"Note"});
   const wrap = document.createElement("div");
   wrap.className = "note";
   const ta = document.createElement("textarea");
   ta.value = state.els[id].text;
-  ta.addEventListener("input", ()=>{
-    state.els[id].text = ta.value;
-    refreshList(false); syncJSONBoxDebounced();
-  });
+  ta.addEventListener("input", ()=>{ state.els[id].text = ta.value; refreshList(false); syncJSONBoxDebounced(); });
   wrap.appendChild(ta);
   content.appendChild(wrap);
   renderEl(id);
-  selected.clear(); selected.add(id); activePrimary = id;
+  selected.clear(); selected.add(id); activePrimary=id;
   updateSelectionUI(); refreshList(); syncJSONBox();
 }
 
 function addOutput(){
   const id = uid();
-  state.els[id] = {
-    id, type:"output", title:"Output",
-    x: 560, y: 420, w: 520, h: 260,
-    rot: 0, opacity: 1,
-    text: "Output will appear here...",
-    z: ++zTop
-  };
+  state.els[id] = { id,type:"output",title:"Output",x:560,y:420,w:520,h:260,rot:0,opacity:1,text:"Output will appear here...",z:++zTop };
   const {content} = createElementNode({id, title:"Output"});
   const wrap = document.createElement("div");
   wrap.className = "outputWrap";
@@ -595,20 +550,19 @@ function addOutput(){
   wrap.appendChild(pre);
   content.appendChild(wrap);
   renderEl(id);
-  selected.clear(); selected.add(id); activePrimary = id;
+  selected.clear(); selected.add(id); activePrimary=id;
   updateSelectionUI(); refreshList(); syncJSONBox();
-  return id; // PATCH: return new output id for callers
 }
 
 function addCode(){
   const id = uid();
   state.els[id] = {
-    id, type:"code", title:"Code (JS)",
-    x: 520, y: 70, w: 560, h: 330,
-    rot: 0, opacity: 1,
-    lang: "js",
+    id,type:"code",title:"Code (JS)",
+    x:520,y:70,w:560,h:330,rot:0,opacity:1,lang:"js",
     code:
-`// Example: sum 1..n
+`// Example: circle highlight + arrow annotations exist on the board.
+// Code runs as JavaScript.
+
 function sum(n){
   let s = 0;
   for(let i=1;i<=n;i++) s += i;
@@ -616,10 +570,9 @@ function sum(n){
 }
 
 print("sum(10) =", sum(10));`,
-    z: ++zTop
+    z:++zTop
   };
   const {content} = createElementNode({id, title:"Code (JS)"});
-
   const wrap = document.createElement("div");
   wrap.className = "codeWrap";
 
@@ -628,17 +581,14 @@ print("sum(10) =", sum(10));`,
   top.innerHTML = `<span class="chip">JavaScript</span>`;
 
   const runBtn = document.createElement("button");
-  runBtn.type = "button";
-  runBtn.textContent = "▶ Run";
+  runBtn.type="button"; runBtn.textContent="▶ Run";
   runBtn.addEventListener("click", ()=>runCodeBlock(id));
   top.appendChild(runBtn);
 
   const clrBtn = document.createElement("button");
-  clrBtn.type = "button";
-  clrBtn.textContent = "🧹 Clear Out";
+  clrBtn.type="button"; clrBtn.textContent="🧹 Clear Out";
   clrBtn.addEventListener("click", ()=>{
     const out = getNearestOutputFor(id, true);
-    if(!out) return;
     out.text = "";
     renderEl(out.id);
     syncJSONBoxDebounced();
@@ -649,10 +599,7 @@ print("sum(10) =", sum(10));`,
   area.className = "codeArea";
   const ta = document.createElement("textarea");
   ta.value = state.els[id].code;
-  ta.addEventListener("input", ()=>{
-    state.els[id].code = ta.value;
-    syncJSONBoxDebounced();
-  });
+  ta.addEventListener("input", ()=>{ state.els[id].code = ta.value; syncJSONBoxDebounced(); });
   area.appendChild(ta);
 
   wrap.appendChild(top);
@@ -660,51 +607,36 @@ print("sum(10) =", sum(10));`,
   content.appendChild(wrap);
 
   renderEl(id);
-  selected.clear(); selected.add(id); activePrimary = id;
+  selected.clear(); selected.add(id); activePrimary=id;
   updateSelectionUI(); refreshList(); syncJSONBox();
 }
 
 function addShape(){
   const id = uid();
-  state.els[id] = {
-    id, type:"shape", title:"Flow Shape",
-    x: 120, y: 340, w: 330, h: 180,
-    rot: 0, opacity: 1,
-    shape: "diamond",
-    text: "Is input valid?",
-    z: ++zTop
-  };
+  state.els[id] = { id,type:"shape",title:"Flow Shape",x:120,y:340,w:330,h:180,rot:0,opacity:1,shape:"diamond",text:"Is input valid?",z:++zTop };
   const {content} = createElementNode({id, title:"Flow Shape"});
   const s = document.createElement("div");
   s.className = "shape diamond";
   const input = document.createElement("input");
   input.className = "label";
   input.value = state.els[id].text;
-  input.addEventListener("input", ()=>{
-    state.els[id].text = input.value;
-    syncJSONBoxDebounced(); refreshList(false);
-  });
+  input.addEventListener("input", ()=>{ state.els[id].text = input.value; syncJSONBoxDebounced(); refreshList(false); });
   s.appendChild(input);
   content.appendChild(s);
 
   renderEl(id);
-  selected.clear(); selected.add(id); activePrimary = id;
+  selected.clear(); selected.add(id); activePrimary=id;
   updateSelectionUI(); refreshList(); syncJSONBox();
 }
 
-/* ================== Run code (JS) ================== */
+/* ================== Run JS code ================== */
 function getNearestOutputFor(codeId, createIfMissing=false){
   const code = state.els[codeId];
   const outs = Object.values(state.els).filter(x=>x.type==="output");
-
-  // PATCH: robust create + return newly created output
   if(outs.length===0){
-    if(!createIfMissing) return null;
-    const newId = addOutput();
-    return state.els[newId] || null;
+    if(createIfMissing){ addOutput(); return state.els[activePrimary]; }
+    return null;
   }
-
-  // nearest by center distance
   const cx = code.x + code.w/2, cy = code.y + code.h/2;
   let best = outs[0], bestD = Infinity;
   for(const o of outs){
@@ -714,14 +646,11 @@ function getNearestOutputFor(codeId, createIfMissing=false){
   }
   return best;
 }
-
 function runCodeBlock(id){
   const d = state.els[id];
   if(!d || d.type!=="code") return;
 
   const out = getNearestOutputFor(id, true);
-  if(!out) return;
-
   const lines = [];
   const print = (...args)=>lines.push(args.map(x=>String(x)).join(" "));
 
@@ -736,29 +665,19 @@ function runCodeBlock(id){
   syncJSONBoxDebounced();
 }
 
-/* ================== Links (Connectors) ================== */
+/* ================== Links between blocks ================== */
 function centerOf(id){
   const d = state.els[id];
   if(!d) return {x:0,y:0};
   return { x: d.x + d.w/2, y: d.y + d.h/2 };
 }
-
-function addLink(from, to){
+function addLink(from,to){
   if(!state.els[from] || !state.els[to] || from===to) return;
   if(state.links.some(l => (l.from===from && l.to===to))) return;
   state.links.push({ id: lid(), from, to });
   renderLinks();
   syncJSONBoxDebounced();
 }
-
-function removeLinksOfSelected(){
-  if(selected.size===0) return;
-  const set = new Set([...selected]);
-  state.links = state.links.filter(l => !(set.has(l.from) || set.has(l.to)));
-  renderLinks();
-  syncJSONBoxDebounced();
-}
-
 function renderLinks(){
   const bw = board.clientWidth, bh = board.clientHeight;
   linksSvg.setAttribute("viewBox", `0 0 ${bw} ${bh}`);
@@ -789,7 +708,100 @@ function renderLinks(){
   }
 }
 
-/* ================== Rendering ================== */
+/* ================== Annotations (Arrows / Circles / Rect / Line) ================== */
+function annoSettings(){
+  const tool = $("#drawTool").value;
+  const w = +$("#penSize").value || 6;
+  const color = $("#penColor").value || "#f59e0b";
+  const fill = !!$("#fillShapes").checked;
+  return { tool, w, color, fill };
+}
+function boardPointFromEvent(e){
+  const r = board.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+function clearAnnoSvg(){
+  while(annoSvg.firstChild) annoSvg.removeChild(annoSvg.firstChild);
+}
+function svgEl(name){
+  return document.createElementNS("http://www.w3.org/2000/svg", name);
+}
+function renderAnnos(){
+  const bw = board.clientWidth, bh = board.clientHeight;
+  annoSvg.setAttribute("viewBox", `0 0 ${bw} ${bh}`);
+  clearAnnoSvg();
+
+  for(const a of state.annos){
+    const node = buildAnnoNode(a);
+    if(node) annoSvg.appendChild(node);
+  }
+  // temp preview on top
+  if(drawMode.tempNode){
+    annoSvg.appendChild(drawMode.tempNode);
+  }
+}
+function buildAnnoNode(a){
+  const {type,x1,y1,x2,y2,color,w,fill} = a;
+  const stroke = color || "#f59e0b";
+  const sw = Math.max(1, +w || 4);
+
+  if(type==="line" || type==="arrow"){
+    const p = svgEl("path");
+    const d = `M ${x1} ${y1} L ${x2} ${y2}`;
+    p.setAttribute("d", d);
+    p.setAttribute("class","aStroke");
+    p.setAttribute("stroke", stroke);
+    p.setAttribute("stroke-width", sw);
+    p.setAttribute("fill","none");
+    if(type==="arrow"){
+      p.setAttribute("marker-end","url(#annoArrowHead)");
+      // update arrowhead color by cloning a marker? simplest: keep marker fill same as stroke-ish
+      // We approximate by setting marker path fill via CSS-ish not possible; keep default saffron.
+    }
+    return p;
+  }
+
+  if(type==="rect"){
+    const x = Math.min(x1,x2), y = Math.min(y1,y2);
+    const ww = Math.abs(x2-x1), hh = Math.abs(y2-y1);
+    const r = svgEl("rect");
+    r.setAttribute("x", x); r.setAttribute("y", y);
+    r.setAttribute("width", ww); r.setAttribute("height", hh);
+    r.setAttribute("rx", 12); r.setAttribute("ry", 12);
+    r.setAttribute("stroke", stroke);
+    r.setAttribute("stroke-width", sw);
+    r.setAttribute("fill", fill ? hexToRgba(stroke, 0.12) : "none");
+    return r;
+  }
+
+  if(type==="circle"){
+    const cx = (x1+x2)/2, cy = (y1+y2)/2;
+    const rx = Math.abs(x2-x1)/2, ry = Math.abs(y2-y1)/2;
+    const e = svgEl("ellipse");
+    e.setAttribute("cx", cx); e.setAttribute("cy", cy);
+    e.setAttribute("rx", rx); e.setAttribute("ry", ry);
+    e.setAttribute("stroke", stroke);
+    e.setAttribute("stroke-width", sw);
+    e.setAttribute("fill", fill ? hexToRgba(stroke, 0.12) : "none");
+    return e;
+  }
+
+  return null;
+}
+function hexToRgba(hex, a){
+  const h = String(hex||"").replace("#","").trim();
+  if(h.length===3){
+    const r=parseInt(h[0]+h[0],16), g=parseInt(h[1]+h[1],16), b=parseInt(h[2]+h[2],16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+  if(h.length===6){
+    const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+  return `rgba(245,158,11,${a})`;
+}
+
+/* ================== Rendering blocks ================== */
 function renderEl(id){
   const d = state.els[id];
   const node = board.querySelector(`.el[data-id="${id}"]`);
@@ -799,7 +811,7 @@ function renderEl(id){
   node.style.top  = d.y + "px";
   node.style.width  = d.w + "px";
   node.style.height = d.h + "px";
-  node.style.zIndex = String(d.z ?? 5);
+  node.style.zIndex = String(d.z ?? 6);
   node.style.opacity = String(d.opacity ?? 1);
   node.style.transformOrigin = "center center";
   node.style.transform = `rotate(${d.rot || 0}deg)`;
@@ -809,23 +821,19 @@ function renderEl(id){
     const ta = node.querySelector(".note textarea");
     if(ta && ta.value !== (d.text||"")) ta.value = d.text || "";
   }
-
   if(d.type==="output"){
     const pre = node.querySelector(".outputWrap pre");
     if(pre) pre.textContent = d.text || "";
   }
-
   if(d.type==="code"){
     const ta = node.querySelector(".codeArea textarea");
     if(ta && ta.value !== (d.code||"")) ta.value = d.code || "";
   }
-
   if(d.type==="shape"){
     const s = node.querySelector(".shape");
     if(!s) return;
     s.classList.remove("rect","round","diamond");
     s.classList.add(d.shape || "rect");
-
     if((d.shape||"rect")==="diamond"){
       s.style.transform = "rotate(45deg)";
       const label = s.querySelector(".label");
@@ -839,11 +847,11 @@ function renderEl(id){
     if(label && label.value !== (d.text||"")) label.value = d.text || "";
   }
 }
-
 function renderAll(){
   Object.keys(state.els).forEach(renderEl);
   board.style.background = state.boardBg || "#0a0a0a";
   renderLinks();
+  renderAnnos();
 }
 
 /* ================== Drag/Resize/Rotate (with snapping) ================== */
@@ -866,7 +874,7 @@ function enableDragResizeRotate(node){
       const nr = node.getBoundingClientRect();
       const cx = (nr.left + nr.right)/2;
       const cy = (nr.top + nr.bottom)/2;
-      start = { id, cx, cy, startRot: d.rot || 0 };
+      start = { id, cx, cy };
       node.setPointerCapture(e.pointerId);
       e.preventDefault();
       return;
@@ -900,8 +908,7 @@ function enableDragResizeRotate(node){
       const deg = ang * (180/Math.PI) + 90;
       d.rot = Math.round(deg);
       $("#pRot").value = d.rot;
-      renderEl(id);
-      renderLinks();
+      renderEl(id); renderLinks();
       syncJSONBoxDebounced();
       return;
     }
@@ -935,15 +942,10 @@ function enableDragResizeRotate(node){
 
         if(bestX.hit){ nx += bestX.delta; showV(bestX.guide); } else vGuide.style.display="none";
         if(bestY.hit){ ny += bestY.delta; showH(bestY.guide); } else hGuide.style.display="none";
-
-        // PATCH: clamp again after snapping
-        nx = clamp(nx, 0, bw - d.w);
-        ny = clamp(ny, 0, bh - d.h);
       }else hideGuides();
 
       d.x = nx; d.y = ny;
-      renderEl(id);
-      renderLinks();
+      renderEl(id); renderLinks();
       refreshList(false);
       syncJSONBoxDebounced();
       return;
@@ -980,17 +982,10 @@ function enableDragResizeRotate(node){
 
       if(sxR.hit){ w = clamp(w + sxR.delta, minW, bw - x); showV(sxR.guide); } else vGuide.style.display="none";
       if(syB.hit){ h = clamp(h + syB.delta, minH, bh - y); showH(syB.guide); } else hGuide.style.display="none";
-
-      // PATCH: clamp again after snapping
-      w = clamp(w, minW, bw - x);
-      h = clamp(h, minH, bh - y);
-      x = clamp(x, 0, bw - w);
-      y = clamp(y, 0, bh - h);
     }else hideGuides();
 
     d.x=x; d.y=y; d.w=w; d.h=h;
-    renderEl(id);
-    renderLinks();
+    renderEl(id); renderLinks();
     refreshList(false);
     syncJSONBoxDebounced();
   });
@@ -1017,7 +1012,6 @@ function updateSelectionUI(){
 
   const primaryId = activePrimary || ids[ids.length-1];
   const d = state.els[primaryId];
-
   const nameMap = { code:"Code Block", note:"Note", output:"Output", shape:"Shape" };
   $("#selTitle").textContent = ids.length>1 ? "Multiple Selected" : (nameMap[d.type] || "Selected");
 
@@ -1025,14 +1019,13 @@ function updateSelectionUI(){
   $("#pOpacity").value = (d.opacity ?? 1);
 
   $("#shapeProps").style.display = (ids.length===1 && d.type==="shape") ? "block" : "none";
-  if(ids.length===1 && d.type==="shape"){
-    $("#pShapeType").value = d.shape || "rect";
-  }
+  if(ids.length===1 && d.type==="shape") $("#pShapeType").value = d.shape || "rect";
 
   $("#boardBg").value = state.boardBg || "#0a0a0a";
 }
 
 board.addEventListener("pointerdown", (e)=>{
+  if(drawMode.on) return;
   if(e.target === board){
     selected.clear(); activePrimary=null;
     updateSelectionUI();
@@ -1045,7 +1038,7 @@ function withSingle(fn){
   fn(ids[0], state.els[ids[0]]);
 }
 
-/* Common props apply to all selected */
+/* Props */
 $("#pRot").addEventListener("input", ()=>{
   const val = Math.max(-180, Math.min(180, +$("#pRot").value||0));
   for(const id of selected){ state.els[id].rot = val; renderEl(id); }
@@ -1063,27 +1056,31 @@ $("#pShapeType").addEventListener("change", ()=>withSingle((id,d)=>{
   renderEl(id);
   syncJSONBoxDebounced();
 }));
-
-/* Board bg */
 $("#boardBg").addEventListener("input", ()=>{
   state.boardBg = $("#boardBg").value;
   board.style.background = state.boardBg;
   syncJSONBoxDebounced();
 });
 
-/* Delete */
+/* Delete selected blocks */
 $("#deleteSel").addEventListener("click", ()=>{
   for(const id of [...selected]) removeEl(id);
   selected.clear(); activePrimary=null;
   updateSelectionUI();
 });
 
-/* Z order (panel buttons) */
+/* Z order */
+function bringToFront(id){ state.els[id].z = ++zTop; renderEl(id); refreshList(false); syncJSONBoxDebounced(); }
+function sendToBack(id){ state.els[id].z = 1; renderEl(id); refreshList(false); syncJSONBoxDebounced(); }
 $("#bringFront").addEventListener("click", ()=>{
-  for(const id of selected){ bringToFront(id); }
+  for(const id of selected){ state.els[id].z = ++zTop; renderEl(id); }
+  refreshList(); syncJSONBoxDebounced();
 });
 $("#sendBack").addEventListener("click", ()=>{
-  for(const id of selected){ sendToBack(id); }
+  for(const id of selected){ state.els[id].z = 1; }
+  Object.values(state.els).forEach(x=>{ if(!selected.has(x.id)) x.z=(x.z||2)+1; });
+  zTop = Math.max(...Object.values(state.els).map(x=>x.z||2), 10);
+  renderAll(); refreshList(); syncJSONBoxDebounced();
 });
 
 /* List */
@@ -1121,7 +1118,7 @@ function refreshList(){
   }
 }
 
-/* Remove */
+/* Remove element */
 function removeEl(id){
   if(!state.els[id]) return;
   state.links = state.links.filter(l => !(l.from===id || l.to===id));
@@ -1152,32 +1149,36 @@ $("#applyJSON").addEventListener("click", ()=>{
   catch{ alert("Invalid JSON."); }
 });
 $("#saveLocal").addEventListener("click", ()=>{
-  localStorage.setItem("prog_whiteboard_v1", JSON.stringify(runtimeStrippedCopy()));
+  localStorage.setItem("prog_whiteboard_v2", JSON.stringify(runtimeStrippedCopy()));
   alert("Saved to Local Storage.");
 });
 $("#loadLocal").addEventListener("click", ()=>{
-  const raw = localStorage.getItem("prog_whiteboard_v1");
+  const raw = localStorage.getItem("prog_whiteboard_v2");
   if(!raw) return alert("No saved board found.");
   try{ loadFromObject(JSON.parse(raw)); }catch{ alert("Saved data is corrupted."); }
 });
 $("#clearAll").addEventListener("click", ()=>{
   state.els = {};
   state.links = [];
+  state.annos = [];
   selected.clear(); activePrimary=null;
   board.querySelectorAll(".el").forEach(n=>n.remove());
+  // clear ink
   state.ink = null;
   dctx.clearRect(0,0,board.clientWidth,board.clientHeight);
   renderLinks();
+  renderAnnos();
   updateSelectionUI(); refreshList(); syncJSONBox();
 });
 
 function loadFromObject(obj){
   $("#clearAll").click();
-  state.version = obj.version || 1;
+  state.version = obj.version || 2;
   state.boardBg = obj.boardBg || "#0a0a0a";
   board.style.background = state.boardBg;
   $("#boardBg").value = state.boardBg;
 
+  // elements
   for(const id of Object.keys(obj.els||{})){
     const d = obj.els[id];
     d.z = d.z || (++zTop);
@@ -1218,7 +1219,6 @@ function loadFromObject(obj){
       clrBtn.type="button"; clrBtn.textContent="🧹 Clear Out";
       clrBtn.addEventListener("click", ()=>{
         const out = getNearestOutputFor(id, true);
-        if(!out) return;
         out.text = "";
         renderEl(out.id);
         syncJSONBoxDebounced();
@@ -1247,18 +1247,24 @@ function loadFromObject(obj){
     renderEl(id);
   }
 
+  // links
   state.links = Array.isArray(obj.links) ? obj.links.filter(x=>x && x.from && x.to) : [];
   renderLinks();
 
+  // ink
   state.ink = obj.ink || null;
-  fitDrawCanvas();
+
+  // annos
+  state.annos = Array.isArray(obj.annos) ? obj.annos.filter(a=>a && a.type) : [];
+
+  fitOverlaySizes();
 
   zTop = Math.max(10, ...Object.values(state.els).map(x=>x.z||10));
   selected.clear(); activePrimary=null;
   updateSelectionUI(); refreshList(); syncJSONBox();
 }
 
-/* ================== Buttons ================== */
+/* ================== UI Buttons ================== */
 $("#gridToggle").addEventListener("change", ()=> board.classList.toggle("gridOn", $("#gridToggle").checked));
 $("#safeToggle").addEventListener("change", ()=> safeArea.style.display = $("#safeToggle").checked ? "block" : "none");
 
@@ -1279,66 +1285,174 @@ $("#delLinksBtn").addEventListener("click", ()=>{
     syncJSONBoxDebounced();
     return;
   }
-  removeLinksOfSelected();
+  const set = new Set([...selected]);
+  state.links = state.links.filter(l => !(set.has(l.from) || set.has(l.to)));
+  renderLinks();
+  syncJSONBoxDebounced();
 });
 
-/* ================== Draw Mode ================== */
-const drawMode = { on:false, drawing:false, last:null };
+/* ================== Draw/Annotate Mode ================== */
+const drawMode = {
+  on:false,
+  drawing:false,
+  start:null,
+  tempNode:null
+};
 
 function setDrawMode(on){
   drawMode.on = !!on;
   drawMode.drawing = false;
-  drawMode.last = null;
-  drawCanvas.style.pointerEvents = on ? "auto" : "none";
+  drawMode.start = null;
+  drawMode.tempNode = null;
 
-  // PATCH: keep button classes consistent
-  const btn = $("#drawToggle");
-  btn.textContent = on ? "🧲 Stop Drawing" : "✏️ Start Drawing";
-  btn.className = on ? "btn" : "btn secondary";
+  // enable appropriate layer
+  const tool = $("#drawTool").value;
+  const penTools = (tool==="pen" || tool==="highlighter");
+  drawCanvas.style.pointerEvents = (on && penTools) ? "auto" : "none";
+  annoSvg.style.pointerEvents = on ? "auto" : "none";
+
+  $("#drawToggle").textContent = on ? "🧲 Stop Annotating" : "✏️ Start Annotating";
+  $("#drawToggle").classList.toggle("btn", !on);
+  $("#drawToggle").classList.toggle("btn.secondary", on);
+
+  renderAnnos();
 }
+
+$("#drawTool").addEventListener("change", ()=>{
+  if(drawMode.on) setDrawMode(true);
+});
+
 $("#drawToggle").addEventListener("click", ()=> setDrawMode(!drawMode.on));
 
 function inkSettings(){
-  return { w: +$("#penSize").value||6, color: $("#penColor").value || "#f59e0b" };
-}
-function boardPointFromEvent(e){
-  const r = board.getBoundingClientRect();
-  return { x: e.clientX - r.left, y: e.clientY - r.top };
+  const {w,color} = annoSettings();
+  const tool = $("#drawTool").value;
+  return { w, color, tool };
 }
 
+/* Pen/highlighter on canvas */
 drawCanvas.addEventListener("pointerdown", (e)=>{
   if(!drawMode.on) return;
+  const tool = $("#drawTool").value;
+  if(tool!=="pen" && tool!=="highlighter") return;
+
   drawMode.drawing = true;
   drawCanvas.setPointerCapture(e.pointerId);
   const p = boardPointFromEvent(e);
-  drawMode.last = p;
+  drawMode.start = p;
+
   e.preventDefault();
 });
+
 drawCanvas.addEventListener("pointermove", (e)=>{
   if(!drawMode.on || !drawMode.drawing) return;
+  const tool = $("#drawTool").value;
+  if(tool!=="pen" && tool!=="highlighter") return;
+
   const p = boardPointFromEvent(e);
   const {w,color} = inkSettings();
+
   dctx.lineCap = "round";
   dctx.lineJoin = "round";
   dctx.strokeStyle = color;
-  dctx.lineWidth = w;
+  dctx.lineWidth = (tool==="highlighter") ? Math.max(10, w*2.2) : w;
+  dctx.globalAlpha = (tool==="highlighter") ? 0.35 : 1;
 
   dctx.beginPath();
-  dctx.moveTo(drawMode.last.x, drawMode.last.y);
+  dctx.moveTo(drawMode.start.x, drawMode.start.y);
   dctx.lineTo(p.x, p.y);
   dctx.stroke();
 
-  drawMode.last = p;
+  dctx.globalAlpha = 1;
+  drawMode.start = p;
 });
+
 drawCanvas.addEventListener("pointerup", ()=>{
   if(!drawMode.on) return;
+  const tool = $("#drawTool").value;
+  if(tool!=="pen" && tool!=="highlighter") return;
+
   drawMode.drawing = false;
-  drawMode.last = null;
+  drawMode.start = null;
   state.ink = drawCanvas.toDataURL("image/png");
   syncJSONBoxDebounced();
 });
 
-$("#clearInk").addEventListener("click", ()=>{
+/* Vector tools on annoSvg */
+annoSvg.addEventListener("pointerdown", (e)=>{
+  if(!drawMode.on) return;
+  const tool = $("#drawTool").value;
+  if(tool==="pen" || tool==="highlighter") return;
+
+  drawMode.drawing = true;
+  annoSvg.setPointerCapture(e.pointerId);
+  const p = boardPointFromEvent(e);
+  drawMode.start = p;
+
+  // create temp node
+  const s = annoSettings();
+  const temp = { id: "temp", type: tool, x1:p.x, y1:p.y, x2:p.x, y2:p.y, color:s.color, w:s.w, fill:s.fill };
+  drawMode.tempNode = buildAnnoNode(temp);
+  renderAnnos();
+  e.preventDefault();
+});
+
+annoSvg.addEventListener("pointermove", (e)=>{
+  if(!drawMode.on || !drawMode.drawing) return;
+  const tool = $("#drawTool").value;
+  if(tool==="pen" || tool==="highlighter") return;
+
+  const p = boardPointFromEvent(e);
+  const s = annoSettings();
+  const st = drawMode.start;
+  if(!st) return;
+
+  // rebuild temp node live
+  const temp = { id:"temp", type: tool, x1:st.x, y1:st.y, x2:p.x, y2:p.y, color:s.color, w:s.w, fill:s.fill };
+  drawMode.tempNode = buildAnnoNode(temp);
+  renderAnnos();
+});
+
+annoSvg.addEventListener("pointerup", (e)=>{
+  if(!drawMode.on) return;
+  const tool = $("#drawTool").value;
+  if(tool==="pen" || tool==="highlighter") return;
+
+  if(!drawMode.drawing) return;
+  drawMode.drawing = false;
+
+  const p = boardPointFromEvent(e);
+  const s = annoSettings();
+  const st = drawMode.start || p;
+
+  // ignore tiny drags
+  if(Math.abs(p.x-st.x) < 3 && Math.abs(p.y-st.y) < 3){
+    drawMode.start = null;
+    drawMode.tempNode = null;
+    renderAnnos();
+    return;
+  }
+
+  state.annos.push({
+    id: aid(),
+    type: tool,
+    x1: st.x, y1: st.y,
+    x2: p.x, y2: p.y,
+    color: s.color,
+    w: s.w,
+    fill: s.fill
+  });
+
+  drawMode.start = null;
+  drawMode.tempNode = null;
+  renderAnnos();
+  syncJSONBoxDebounced();
+});
+
+$("#clearAnno").addEventListener("click", ()=>{
+  state.annos = [];
+  renderAnnos();
+  // also clear ink to be true "clear annotations"
   dctx.clearRect(0,0,board.clientWidth,board.clientHeight);
   state.ink = null;
   syncJSONBoxDebounced();
@@ -1349,17 +1463,17 @@ function exportPNG(){
   const bw = board.clientWidth, bh = board.clientHeight;
 
   const clone = board.cloneNode(true);
+  // remove handles/buttons/guides
   clone.querySelectorAll(".handle,.rhandle,.rstick,.hdr .mini,.guide").forEach(n=>n.remove());
   clone.querySelectorAll(".el").forEach(n=>n.classList.remove("selected"));
 
+  // replace drawCanvas with image snapshot
   const cnv = clone.querySelector("#drawCanvas");
   if(cnv){
     const img = document.createElement("img");
     img.src = drawCanvas.toDataURL("image/png");
-    img.style.position="absolute";
-    img.style.inset="0";
-    img.style.width="100%";
-    img.style.height="100%";
+    img.style.position="absolute"; img.style.inset="0";
+    img.style.width="100%"; img.style.height="100%";
     img.style.pointerEvents="none";
     cnv.replaceWith(img);
   }
@@ -1368,12 +1482,6 @@ function exportPNG(){
   wrapper.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
   wrapper.style.width = bw+"px";
   wrapper.style.height = bh+"px";
-
-  // PATCH: include styles so foreignObject renders correctly
-  const style = document.createElement("style");
-  style.textContent = Array.from(document.querySelectorAll("style")).map(s=>s.textContent||"").join("\n");
-  wrapper.appendChild(style);
-
   wrapper.appendChild(clone);
 
   const svg = `
@@ -1400,7 +1508,7 @@ function exportPNG(){
   };
   img.onerror = ()=>{
     URL.revokeObjectURL(url);
-    alert("PNG export failed in this browser. Use a screenshot, or try Chrome/Edge.");
+    alert("PNG export failed in this browser. Try Chrome/Edge, or use a screenshot.");
   };
   img.src = url;
 }
@@ -1420,6 +1528,7 @@ function init(){
   addCode();
   addOutput();
 
+  // connect shape -> code -> output
   const ids = Object.keys(state.els);
   const shapeId = ids.find(x=>state.els[x].type==="shape");
   const codeId  = ids.find(x=>state.els[x].type==="code");
@@ -1431,19 +1540,11 @@ function init(){
   updateSelectionUI();
   refreshList();
   renderLinks();
+  renderAnnos();
 }
 init();
 
-/* board click: deselect */
-board.addEventListener("pointerdown", (e)=>{
-  if(drawMode.on) return;
-  if(e.target === board){
-    selected.clear(); activePrimary=null;
-    updateSelectionUI();
-  }
-});
-
-/* keyboard delete */
+/* keyboard delete for blocks */
 window.addEventListener("keydown", (e)=>{
   if(drawMode.on) return;
   if(e.key==="Delete" || e.key==="Backspace"){
