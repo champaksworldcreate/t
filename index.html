@@ -2,257 +2,344 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Snake & Ladders — Play Online</title>
+<title>Snake & Ladders — 2 Player</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 <style>
 :root{
-  --bg:#fff7e6;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --brand:#d97706;
-  --brand2:#f59e0b;
-  --border:#eadcc5;
+  --bg:#fff7e6;--card:#ffffff;--ink:#1f2937;--muted:#6b7280;
+  --brand:#d97706;--brand2:#f59e0b;--border:#eadcc5;
   --shadow:0 18px 40px rgba(31,41,55,.14);
 }
-
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-}
-
-.wrapper{
-  max-width:1100px;
-  margin:auto;
-  padding:16px;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  padding:14px;
-}
-
-h1{
-  margin:0 0 10px;
-  font-size:22px;
-}
-
-.board-wrap{
-  display:grid;
-  grid-template-columns:1fr 320px;
-  gap:14px;
-}
-
-canvas{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:#fff;
-}
-
-.panel b{display:block;color:var(--muted);font-size:12px}
-.panel span{font-size:20px;font-weight:800}
-
-.panel{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:12px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,var(--brand2),var(--brand));
-  color:#fff;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-button.secondary{
-  background:#fff;
-  color:var(--ink);
-}
-
-.log{
-  margin-top:10px;
-  border:1px dashed var(--border);
-  border-radius:14px;
-  padding:10px;
-  font-size:13px;
-  max-height:220px;
-  overflow:auto;
-}
-
-.footer{
-  margin-top:10px;
-  font-size:13px;
-  color:var(--muted);
-}
-@media(max-width:900px){
-  .board-wrap{grid-template-columns:1fr}
-}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.wrapper{max-width:1100px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px}
+h1{margin:0 0 10px;font-size:22px}
+.board-wrap{display:grid;grid-template-columns:1fr 340px;gap:14px}
+canvas{width:100%;aspect-ratio:1/1;border-radius:14px;border:1px solid var(--border);background:#fff}
+.panel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.mini{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px}
+.mini b{display:block;color:var(--muted);font-size:12px}
+.mini span{font-size:20px;font-weight:800}
+.turn{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.pill{padding:7px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px;background:linear-gradient(180deg,#fff,#fff7e6)}
+.pill.active{border-color:rgba(217,119,6,.55);box-shadow:0 10px 22px rgba(217,119,6,.18)}
+.pill .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+button{flex:1;min-width:140px;padding:12px;border-radius:14px;border:1px solid var(--border);
+  background:linear-gradient(180deg,var(--brand2),var(--brand));color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+button.secondary{background:#fff;color:var(--ink);font-weight:700}
+button:disabled{opacity:.6;cursor:not-allowed}
+.log{margin-top:10px;border:1px dashed var(--border);border-radius:14px;padding:10px;font-size:13px;max-height:240px;overflow:auto;background:linear-gradient(180deg,#fff,#fffaf0)}
+.footer{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.45}
+@media(max-width:900px){.board-wrap{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 <div class="wrapper">
   <div class="card">
-    <h1>🐍 Snake & 🪜 Ladders</h1>
+    <h1>🐍 Snake & 🪜 Ladders — 2 Player</h1>
 
     <div class="board-wrap">
       <canvas id="board" width="900" height="900"></canvas>
 
       <div>
         <div class="panel">
-          <div class="card"><b>Position</b><span id="pos">1</span></div>
-          <div class="card"><b>Dice</b><span id="dice">–</span></div>
-          <div class="card"><b>Moves</b><span id="moves">0</span></div>
-          <div class="card"><b>Best</b><span id="best">–</span></div>
+          <div class="mini"><b>Current Turn</b><span id="turnName">Player 1</span></div>
+          <div class="mini"><b>Last Dice</b><span id="dice">–</span></div>
+          <div class="mini"><b>P1 Position</b><span id="p1pos">1</span></div>
+          <div class="mini"><b>P2 Position</b><span id="p2pos">1</span></div>
+          <div class="mini"><b>P1 Moves</b><span id="p1moves">0</span></div>
+          <div class="mini"><b>P2 Moves</b><span id="p2moves">0</span></div>
         </div>
 
-        <button id="roll">🎲 Roll Dice</button>
-        <button class="secondary" id="reset">🔁 New Game</button>
+        <div class="turn">
+          <div class="pill" id="pill1"><span class="dot" style="background:#d97706"></span><b>Player 1</b></div>
+          <div class="pill" id="pill2"><span class="dot" style="background:#2563eb"></span><b>Player 2</b></div>
+        </div>
 
-        <div class="log" id="log">Game ready. Roll the dice!</div>
+        <div class="btnrow">
+          <button id="roll">🎲 Roll Dice</button>
+          <button class="secondary" id="reset">🔁 New Game</button>
+        </div>
+
+        <div class="log" id="log">
+          <div style="color:#6b7280">Ready. Player 1 starts — roll the dice!</div>
+        </div>
+
+        <div class="footer">
+          Rules: Must reach exactly <b>100</b> to win. Ladders go up, snakes go down.  
+          If both players land on the same square, they can “stack” (no knockout).
+          <br><br>
+          Shortcut: Press <b>Space</b> or <b>Enter</b> to roll.
+        </div>
       </div>
-    </div>
-
-    <div class="footer">
-      Reach exactly <b>100</b> to win. Ladders help, snakes bite 😄  
-      Progress auto-saves in browser.
     </div>
   </div>
 </div>
 
 <script>
+/* ===== 2 Player Snake & Ladders (single-file) ===== */
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 
-const posEl = document.getElementById("pos");
 const diceEl = document.getElementById("dice");
-const movesEl = document.getElementById("moves");
-const bestEl = document.getElementById("best");
+const turnNameEl = document.getElementById("turnName");
+const p1posEl = document.getElementById("p1pos");
+const p2posEl = document.getElementById("p2pos");
+const p1movesEl = document.getElementById("p1moves");
+const p2movesEl = document.getElementById("p2moves");
 const logEl = document.getElementById("log");
+const rollBtn = document.getElementById("roll");
+const resetBtn = document.getElementById("reset");
+const pill1 = document.getElementById("pill1");
+const pill2 = document.getElementById("pill2");
 
 const SIZE = 10;
 const END = 100;
 
-const ladders = {4:14, 9:31, 20:38, 28:84, 40:59, 63:81, 71:91};
-const snakes  = {17:7, 54:34, 62:19, 87:36, 95:75, 99:78};
+// Feel free to edit mappings:
+const ladders = {4:14, 9:31, 20:38, 28:84, 40:59, 51:67, 63:81, 71:91};
+const snakes  = {17:7, 54:34, 62:19, 64:60, 87:36, 93:73, 95:75, 99:78};
 
-let state = JSON.parse(localStorage.getItem("sl_game")) || {
-  pos:1, moves:0, best:null
+let state = {
+  turn: 1,          // 1 or 2
+  p1: {pos:1, moves:0},
+  p2: {pos:1, moves:0},
+  locked:false,
+  gameOver:false
 };
 
-function save(){localStorage.setItem("sl_game", JSON.stringify(state));}
-
-function rc(n){
-  let i=n-1,r=Math.floor(i/10),c=i%10;
-  if(r%2)c=9-c;
-  return {r,c};
+function log(msg, muted=false){
+  const div = document.createElement("div");
+  div.textContent = msg;
+  if(muted) div.style.color = "#6b7280";
+  logEl.prepend(div);
 }
 
+function rc(n){
+  const i=n-1;
+  const r=Math.floor(i/10);
+  let c=i%10;
+  if(r%2===1) c=9-c;          // serpentine
+  return {r,c};               // r=0 is bottom row
+}
 function center(n){
   const {r,c}=rc(n);
-  const w=canvas.width/10;
-  const h=canvas.height/10;
-  return {x:(c+.5)*w,y:canvas.height-(r+.5)*h};
+  const w=canvas.width/10, h=canvas.height/10;
+  return {x:(c+.5)*w, y:canvas.height-(r+.5)*h};
+}
+
+function drawLink(a,b,color,isCurvy=false){
+  const p1=center(a), p2=center(b);
+  ctx.save();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=10;
+  ctx.lineCap="round";
+  ctx.beginPath();
+  if(!isCurvy){
+    ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
+  }else{
+    const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
+    const dx=p2.x-p1.x, dy=p2.y-p1.y;
+    const len=Math.max(1, Math.hypot(dx,dy));
+    const bend=90;
+    const cx=mx + (-dy/len)*bend;
+    const cy=my + ( dx/len)*bend;
+    ctx.moveTo(p1.x,p1.y);
+    ctx.quadraticCurveTo(cx,cy,p2.x,p2.y);
+  }
+  ctx.stroke();
+
+  // endpoints
+  ctx.fillStyle=color;
+  ctx.beginPath(); ctx.arc(p1.x,p1.y,9,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(p2.x,p2.y,9,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawToken(pos, color, label, offsetIdx){
+  const p=center(pos);
+  // if both tokens same cell, offset a bit
+  const offsets = [
+    {dx:-14, dy:-10},
+    {dx: 14, dy: 10}
+  ];
+  const off = offsets[offsetIdx] || {dx:0, dy:0};
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(p.x+off.dx, p.y+off.dy, 18, 0, Math.PI*2);
+  ctx.fillStyle=color;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(p.x+off.dx, p.y+off.dy, 10, 0, Math.PI*2);
+  ctx.fillStyle="rgba(255,255,255,.92)";
+  ctx.fill();
+
+  ctx.fillStyle="#111827";
+  ctx.font="bold 14px system-ui, Arial";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText(label, p.x+off.dx, p.y+off.dy);
+  ctx.restore();
 }
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  const w=canvas.width/10,h=canvas.height/10;
+  const w=canvas.width/10, h=canvas.height/10;
 
-  for(let r=0;r<10;r++)for(let c=0;c<10;c++){
-    ctx.fillStyle=(r+c)%2?"#fff3d6":"#fffaf0";
-    ctx.fillRect(c*w,canvas.height-(r+1)*h,w,h);
-    ctx.strokeStyle="#eadcc5";
-    ctx.strokeRect(c*w,canvas.height-(r+1)*h,w,h);
+  // grid
+  for(let r=0;r<10;r++){
+    for(let c=0;c<10;c++){
+      const x=c*w;
+      const y=canvas.height-(r+1)*h;
+      ctx.fillStyle=((r+c)%2) ? "#fff3d6" : "#fffaf0";
+      ctx.fillRect(x,y,w,h);
+      ctx.strokeStyle="#eadcc5";
+      ctx.lineWidth=2;
+      ctx.strokeRect(x,y,w,h);
+    }
   }
 
+  // numbers
   ctx.fillStyle="#6b7280";
-  ctx.font="16px Arial";
+  ctx.font="bold 16px system-ui, Arial";
+  ctx.textAlign="left";
+  ctx.textBaseline="top";
   for(let n=1;n<=100;n++){
     const p=center(n);
-    ctx.fillText(n,p.x-18,p.y-28);
+    ctx.fillText(String(n), p.x-32, p.y-34);
   }
 
-  for(let k in ladders)link(k,ladders[k],"#f59e0b");
-  for(let k in snakes) link(k,snakes[k],"#b91c1c");
+  // ladders (gold)
+  for(const k in ladders) drawLink(Number(k), ladders[k], "rgba(245,158,11,.9)", false);
 
-  const p=center(state.pos);
-  ctx.beginPath();
-  ctx.arc(p.x,p.y,18,0,Math.PI*2);
-  ctx.fillStyle="#d97706";
-  ctx.fill();
-  ctx.fillStyle="#fff";
-  ctx.font="18px Arial";
-  ctx.fillText("●",p.x-5,p.y+6);
+  // snakes (red curve)
+  for(const k in snakes) drawLink(Number(k), snakes[k], "rgba(185,28,28,.85)", true);
+
+  // tokens
+  const same = state.p1.pos === state.p2.pos;
+  drawToken(state.p1.pos, "#d97706", "P1", same ? 0 : 0);
+  drawToken(state.p2.pos, "#2563eb", "P2", same ? 1 : 0);
+
+  // crown
+  const crown=center(100);
+  ctx.font="42px system-ui, Arial";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText("👑", crown.x, crown.y);
 }
 
-function link(a,b,color){
-  const p1=center(a),p2=center(b);
-  ctx.strokeStyle=color;
-  ctx.lineWidth=8;
-  ctx.beginPath();
-  ctx.moveTo(p1.x,p1.y);
-  ctx.lineTo(p2.x,p2.y);
-  ctx.stroke();
+function updateUI(){
+  diceEl.textContent = state.lastDice ?? "–";
+  turnNameEl.textContent = state.turn === 1 ? "Player 1" : "Player 2";
+  p1posEl.textContent = state.p1.pos;
+  p2posEl.textContent = state.p2.pos;
+  p1movesEl.textContent = state.p1.moves;
+  p2movesEl.textContent = state.p2.moves;
+
+  pill1.classList.toggle("active", state.turn===1);
+  pill2.classList.toggle("active", state.turn===2);
+
+  draw();
 }
 
-function log(msg){logEl.innerHTML=msg+"<br>"+logEl.innerHTML;}
+function rollDice(){ return Math.floor(Math.random()*6)+1; }
 
-function update(){
-  posEl.textContent=state.pos;
-  movesEl.textContent=state.moves;
-  bestEl.textContent=state.best??"–";
-  draw(); save();
+function applyJump(player){
+  const p = player.pos;
+  if(ladders[p]){ player.pos = ladders[p]; return {type:"ladder"}; }
+  if(snakes[p]) { player.pos = snakes[p];  return {type:"snake"}; }
+  return null;
 }
 
-document.getElementById("roll").onclick=()=>{
-  let d=Math.floor(Math.random()*6)+1;
-  diceEl.textContent=d;
-  log("🎲 Rolled "+d);
-  let t=state.pos+d;
-  if(t>100){log("Exact 100 needed");return;}
-  state.pos=t; state.moves++;
+function endTurn(){
+  state.turn = (state.turn === 1) ? 2 : 1;
+  updateUI();
+}
 
-  if(ladders[state.pos]){
-    log("🪜 Ladder!");
-    state.pos=ladders[state.pos];
-  }else if(snakes[state.pos]){
-    log("🐍 Snake!");
-    state.pos=snakes[state.pos];
+function handleWin(winner){
+  state.gameOver = true;
+  rollBtn.disabled = true;
+  log(`👑 ${winner} WINS!`, false);
+}
+
+async function takeTurn(){
+  if(state.locked || state.gameOver) return;
+  state.locked = true;
+  rollBtn.disabled = true;
+
+  const d = rollDice();
+  state.lastDice = d;
+  updateUI();
+
+  const player = (state.turn===1) ? state.p1 : state.p2;
+  const who = (state.turn===1) ? "Player 1" : "Player 2";
+  log(`🎲 ${who} rolled ${d}.`);
+
+  const target = player.pos + d;
+  if(target > END){
+    log(`❗ ${who} needs exact 100. Stayed at ${player.pos}.`, true);
+    state.locked = false;
+    rollBtn.disabled = false;
+    endTurn();
+    return;
   }
 
-  if(state.pos===100){
-    log("👑 YOU WON!");
-    if(!state.best||state.moves<state.best)state.best=state.moves;
+  // simple step animation
+  const stepDelay = 120;
+  const from = player.pos;
+  for(let n=from+1; n<=target; n++){
+    player.pos = n;
+    updateUI();
+    await new Promise(r=>setTimeout(r, stepDelay));
   }
-  update();
-};
 
-document.getElementById("reset").onclick=()=>{
-  state.pos=1;state.moves=0;
+  player.moves++;
+
+  const jump = applyJump(player);
+  if(jump){
+    if(jump.type==="ladder") log(`🪜 Ladder! ${who} climbs up!`);
+    if(jump.type==="snake")  log(`🐍 Snake! ${who} slides down!`);
+    updateUI();
+    await new Promise(r=>setTimeout(r, 240));
+  }
+
+  if(player.pos === END){
+    updateUI();
+    handleWin(who);
+    state.locked = false;
+    return;
+  }
+
+  state.locked = false;
+  rollBtn.disabled = false;
+  endTurn();
+}
+
+function resetGame(){
+  state = {turn:1, p1:{pos:1,moves:0}, p2:{pos:1,moves:0}, locked:false, gameOver:false};
   diceEl.textContent="–";
-  log("🔁 New game");
-  update();
-};
+  rollBtn.disabled=false;
+  log(`🔁 New game started. Player 1 begins.`, true);
+  updateUI();
+}
 
-update();
+rollBtn.addEventListener("click", takeTurn);
+resetBtn.addEventListener("click", resetGame);
+
+// Space/Enter to roll
+window.addEventListener("keydown",(e)=>{
+  const k=e.key.toLowerCase();
+  if((k===" "||k==="enter") && !rollBtn.disabled){
+    e.preventDefault();
+    takeTurn();
+  }
+});
+
+updateUI();
 </script>
 </body>
 </html>
