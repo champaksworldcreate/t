@@ -1,410 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Python Memory & Performance Lesson — id(), del, gc, size, and timing</title>
-  <style>
-    :root{
-      --bg:#fff7e6;          /* light saffron */
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --brand:#d97706;       /* saffron */
-      --brand2:#f59e0b;      /* amber */
-      --border:#eadcc5;
-      --shadow:0 18px 40px rgba(31,41,55,.14);
-      --codebg:#0b1220;
-      --codeink:#e5e7eb;
-      --note:#fff6cc;
-      --ok:#166534;
-      --warn:#92400e;
-      --danger:#b91c1c;
-      --r:18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 15% -10%, rgba(245,158,11,.35), transparent 55%),
-        radial-gradient(900px 500px at 95% 0%, rgba(217,119,6,.22), transparent 60%),
-        var(--bg);
-      line-height:1.65;
-    }
-    .wrap{max-width:1100px;margin:26px auto;padding:16px}
-    .hero{
-      background: linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.10));
-      border:1px solid var(--border);
-      border-radius:calc(var(--r) + 6px);
-      box-shadow:var(--shadow);
-      padding:18px 18px 16px;
-      overflow:hidden;
-      position:relative;
-    }
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      background: rgba(217,119,6,.12);
-      border:1px solid rgba(217,119,6,.25);
-      color:var(--brand);
-      padding:6px 10px;border-radius:999px;
-      font-weight:800;font-size:13px;
-    }
-    .badge .dot{width:8px;height:8px;border-radius:999px;background:var(--brand2)}
-    h1{margin:10px 0 6px;font-size:28px;line-height:1.25}
-    .sub{margin:0;color:var(--muted);font-size:15px}
-    .grid{display:grid;grid-template-columns: 1.15fr .85fr;gap:14px;margin-top:14px}
-    @media (max-width: 1000px){ .grid{grid-template-columns:1fr} }
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--r);
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
-    h2{margin:0 0 8px;font-size:20px}
-    h3{margin:16px 0 6px;font-size:16px}
-    p{margin:10px 0}
-    .callout{
-      background: linear-gradient(180deg, rgba(255,246,204,.7), rgba(255,246,204,.35));
-      border:1px solid rgba(146,64,14,.25);
-      border-radius:14px;
-      padding:12px 12px 10px;
-      margin:12px 0;
-    }
-    .callout strong{color:var(--warn)}
-    .quote{
-      border-left:4px solid var(--brand2);
-      padding:10px 12px;
-      margin:12px 0;
-      background: rgba(255,255,255,.75);
-      border-radius:12px;
-    }
-    .quote b{color:var(--brand)}
-    pre{
-      margin:12px 0;
-      background:var(--codebg);
-      color:var(--codeink);
-      padding:12px 12px;
-      border-radius:14px;
-      overflow:auto;
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow: 0 14px 28px rgba(11,18,32,.22);
-    }
-    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
-    .inlinecode{
-      background: rgba(11,18,32,.08);
-      border:1px solid rgba(11,18,32,.08);
-      padding:2px 6px;border-radius:8px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: .95em;
-    }
-    ul{margin:8px 0 10px 18px}
-    li{margin:6px 0}
-    .table{
-      width:100%;border-collapse:separate;border-spacing:0;
-      overflow:hidden;border-radius:14px;border:1px solid var(--border);
-      margin:10px 0 12px;background:#fff;
-    }
-    .table th,.table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:top}
-    .table th{background:rgba(217,119,6,.09);text-align:left}
-    .table tr:last-child td{border-bottom:none}
-    .kpi{
-      display:grid;grid-template-columns:repeat(3,1fr);
-      gap:10px;margin:12px 0 2px;
-    }
-    @media (max-width: 700px){ .kpi{grid-template-columns:1fr} }
-    .pill{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 10px 9px;
-      background: rgba(255,255,255,.85);
-    }
-    .pill b{display:block;color:var(--brand);margin-bottom:4px}
-    .qa{
-      margin:12px 0;
-      border:1px dashed rgba(217,119,6,.45);
-      background: rgba(217,119,6,.06);
-      border-radius:14px;
-      padding:12px;
-    }
-    .qa .q{font-weight:900;color:var(--brand);margin-bottom:6px}
-    .footer{
-      text-align:center;color:var(--muted);font-size:13px;margin:14px 0 0;
-    }
-    .toc{
-      margin:10px 0 0;
-      padding:12px;
-      border:1px solid var(--border);
-      border-radius:14px;
-      background: rgba(255,255,255,.78);
-    }
-    .toc a{color:var(--brand);text-decoration:none;font-weight:800}
-    .toc a:hover{text-decoration:underline}
-    .toc ul{margin:8px 0 0 18px}
-    .small{font-size:13px;color:var(--muted)}
-    a{color:var(--brand);text-decoration:none}
-    a:hover{text-decoration:underline}
+<meta charset="UTF-8" />
+<title>Snake & Ladders — Play Online</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    /* Embedded editor */
-    .editorWrap{
-      margin-top:14px;
-      border:1px solid var(--border);
-      border-radius:calc(var(--r) + 6px);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      background:#fff;
-    }
-    .editorTop{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:10px 12px;
-      background: linear-gradient(135deg, rgba(217,119,6,.10), rgba(245,158,11,.08));
-      border-bottom:1px solid var(--border);
-    }
-    .editorTop .title{
-      font-weight:900;
-      color:var(--ink);
-    }
-    .editorTop .hint{
-      color:var(--muted);
-      font-size:13px;
-    }
-    iframe.editor{
-      width:100%;
-      height:560px;
-      border:0;
-      display:block;
-      background:#fff;
-    }
-    @media (max-width: 700px){
-      iframe.editor{height:620px;}
-    }
-    .btnrow{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(217,119,6,.25);
-      background:#fff;
-      color:var(--brand);
-      font-weight:800;
-      cursor:pointer;
-      text-decoration:none;
-    }
-    .btn:hover{background:rgba(217,119,6,.06)}
-  </style>
+<style>
+:root{
+  --bg:#fff7e6;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --brand:#d97706;
+  --brand2:#f59e0b;
+  --border:#eadcc5;
+  --shadow:0 18px 40px rgba(31,41,55,.14);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+.wrapper{
+  max-width:1100px;
+  margin:auto;
+  padding:16px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:14px;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:22px;
+}
+
+.board-wrap{
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:14px;
+}
+
+canvas{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+}
+
+.panel b{display:block;color:var(--muted);font-size:12px}
+.panel span{font-size:20px;font-weight:800}
+
+.panel{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,var(--brand2),var(--brand));
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#fff;
+  color:var(--ink);
+}
+
+.log{
+  margin-top:10px;
+  border:1px dashed var(--border);
+  border-radius:14px;
+  padding:10px;
+  font-size:13px;
+  max-height:220px;
+  overflow:auto;
+}
+
+.footer{
+  margin-top:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+@media(max-width:900px){
+  .board-wrap{grid-template-columns:1fr}
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <span class="badge"><span class="dot"></span> Python Memory + Performance (Beginner → Interview)</span>
-      <h1>From <span class="inlinecode">id()</span> to <span class="inlinecode">del</span>, <span class="inlinecode">gc</span>, variable size, and execution time</h1>
-      <p class="sub">A single lesson that clears the confusion around identity, freeing memory, measuring object size, and timing Python code.</p>
+<div class="wrapper">
+  <div class="card">
+    <h1>🐍 Snake & 🪜 Ladders</h1>
 
-      <div class="toc">
-        <b>Contents</b>
-        <ul>
-          <li><a href="#id">1) What is <span class="inlinecode">id()</span>?</a></li>
-          <li><a href="#id-to-value">2) Can we get value from a known <span class="inlinecode">id</span>?</a></li>
-          <li><a href="#del">3) Freeing memory: <span class="inlinecode">del</span> and reassigning</a></li>
-          <li><a href="#gc">4) Garbage collector: <span class="inlinecode">gc</span></a></li>
-          <li><a href="#sizeof">5) Memory used: <span class="inlinecode">sys.getsizeof</span> and deep size</a></li>
-          <li><a href="#time">6) Time needed: <span class="inlinecode">perf_counter</span>, <span class="inlinecode">timeit</span>, profiling</a></li>
-          <li><a href="#try">7) Try it yourself: Embedded Python Editor</a></li>
-        </ul>
-        <div class="small">Tip: Use this as a 7 PM class handout. Each section has a demo + a question.</div>
-      </div>
+    <div class="board-wrap">
+      <canvas id="board" width="900" height="900"></canvas>
 
-      <!-- Embedded Python Editor -->
-      <div class="editorWrap" id="try">
-        <div class="editorTop">
-          <div>
-            <div class="title">🧪 Try the code here (Programmer’s Picnic Python Editor)</div>
-            <div class="hint">Paste the snippets from this post and run them inside the editor.</div>
-          </div>
-          <div class="btnrow">
-            <a class="btn" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html" target="_blank" rel="noopener">Open editor in new tab ↗</a>
-          </div>
+      <div>
+        <div class="panel">
+          <div class="card"><b>Position</b><span id="pos">1</span></div>
+          <div class="card"><b>Dice</b><span id="dice">–</span></div>
+          <div class="card"><b>Moves</b><span id="moves">0</span></div>
+          <div class="card"><b>Best</b><span id="best">–</span></div>
         </div>
-        <iframe
-          class="editor"
-          title="Programmer’s Picnic Python Editor"
-          src="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-          allow="clipboard-read; clipboard-write"
-        ></iframe>
+
+        <button id="roll">🎲 Roll Dice</button>
+        <button class="secondary" id="reset">🔁 New Game</button>
+
+        <div class="log" id="log">Game ready. Roll the dice!</div>
       </div>
-      <p class="small" style="margin-top:10px;">
-        If the iframe does not load on Blogger due to site restrictions, use the “Open editor in new tab” button above.
-      </p>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2 id="id">1) What is <span class="inlinecode">id(variable)</span> in Python?</h2>
-        <div class="quote">
-          <b>Important:</b> <span class="inlinecode">id()</span> gives the identity of an <b>object</b> (during its lifetime). A variable is only a <b>name</b> that points to that object.
-        </div>
-        <pre><code>x = 10
-print(id(x))   # identity of the int object 10</code></pre>
-
-        <h3>Variables are labels (not boxes)</h3>
-        <pre><code>a = 5
-b = a
-print(id(a), id(b))     # often same: both names point to same object</code></pre>
-
-        <div class="qa">
-          <div class="q">Quick question 💬</div>
-          <div class="a">If <span class="inlinecode">a</span> and <span class="inlinecode">b</span> have the same <span class="inlinecode">id</span>, how many variable names can point to one object?</div>
-        </div>
-
-        <h2 id="id-to-value">2) Value of a variable whose <span class="inlinecode">id</span> is known</h2>
-        <div class="callout">
-          <strong>Short answer:</strong> You can’t reliably get “the variable value” from an <span class="inlinecode">id</span> alone, because Python doesn’t provide a safe reverse mapping of <span class="inlinecode">id → variable name/value</span>.
-        </div>
-
-        <p>Why? One object can have multiple names:</p>
-        <pre><code>a = 100
-b = 100
-print(id(a) == id(b))</code></pre>
-
-        <p>If you truly need lookup later, design for it:</p>
-        <pre><code>registry = {}
-obj = {"topic": "Python", "time": "7 PM"}
-registry[id(obj)] = obj
-
-print(registry[id(obj)])</code></pre>
-
-        <h2 id="del">3) Freeing memory: <span class="inlinecode">del</span> and removing references</h2>
-        <div class="quote">
-          <b>Rule:</b> Memory is freed when an object has <b>no references</b> left (and cyclic garbage is handled by GC).
-        </div>
-
-        <h3>✅ Delete a name</h3>
-        <pre><code>x = [1, 2, 3]
-del x   # removes the name 'x' (reference)</code></pre>
-
-        <h3>✅ Reassign to drop the reference</h3>
-        <pre><code>big = [i for i in range(1_000_000)]
-big = None   # old list now eligible for cleanup (if no other refs exist)</code></pre>
-
-        <h3>⚠️ Memory won’t free if another reference exists</h3>
-        <pre><code>a = [1, 2, 3]
-b = a
-del a
-print(b)  # object still alive because 'b' refers to it</code></pre>
-
-        <h2 id="gc">4) Garbage Collector: <span class="inlinecode">gc</span></h2>
-        <p>Python uses:</p>
-        <ul>
-          <li><b>Reference counting</b> for most objects</li>
-          <li><b>Garbage collection</b> for <b>cycles</b></li>
-        </ul>
-
-        <h3>Cyclic reference example</h3>
-        <pre><code>a = []
-a.append(a)   # a references itself: cycle</code></pre>
-
-        <p>Manual trigger (rarely needed):</p>
-        <pre><code>import gc
-gc.collect()</code></pre>
-
-        <h2 id="sizeof">5) Memory used by a variable: shallow vs deep size</h2>
-        <p>Shallow size:</p>
-        <pre><code>import sys
-lst = [1, 2, 3]
-print(sys.getsizeof(lst))</code></pre>
-
-        <p>Deep size:</p>
-        <pre><code>import sys
-
-def deep_getsizeof(obj, seen=None):
-    if seen is None:
-        seen = set()
-    obj_id = id(obj)
-    if obj_id in seen:
-        return 0
-    seen.add(obj_id)
-
-    size = sys.getsizeof(obj)
-
-    if isinstance(obj, dict):
-        size += sum(deep_getsizeof(k, seen) + deep_getsizeof(v, seen)
-                    for k, v in obj.items())
-    elif isinstance(obj, (list, tuple, set)):
-        size += sum(deep_getsizeof(i, seen) for i in obj)
-
-    return size
-
-data = [1, 2, [3, 4], {"a": 10, "b": [11, 12]}]
-print(deep_getsizeof(data), "bytes")</code></pre>
-
-        <h2 id="time">6) Time needed for execution</h2>
-        <h3>Precise timing with <span class="inlinecode">perf_counter</span></h3>
-        <pre><code>import time
-
-start = time.perf_counter()
-x = sum(range(1_000_000))
-end = time.perf_counter()
-
-print("Time:", end - start, "seconds")</code></pre>
-
-        <h3>Accurate benchmarking with <span class="inlinecode">timeit</span></h3>
-        <pre><code>import timeit
-t = timeit.timeit("sum(range(1000))", number=10000)
-print("Total time:", t)</code></pre>
-
-        <h3>Quick profiling</h3>
-        <pre><code>import cProfile
-cProfile.run("sum(range(1_000_000))")</code></pre>
-
-        <div class="footer">
-          Blogger-ready HTML • Light Saffron Theme • Embedded Python Editor Included
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>✅ Quick Cheatsheet</h2>
-
-        <h3>Identity / Equality</h3>
-        <pre><code>a is b   # same object?
-a == b   # same value?
-id(a)    # object identity</code></pre>
-
-        <h3>Freeing references</h3>
-        <pre><code>del x
-x = None</code></pre>
-
-        <h3>Garbage collection</h3>
-        <pre><code>import gc
-gc.collect()</code></pre>
-
-        <h3>Object size</h3>
-        <pre><code>import sys
-sys.getsizeof(obj)</code></pre>
-
-        <h3>Timing</h3>
-        <pre><code>import time
-t0 = time.perf_counter()
-# code...
-t1 = time.perf_counter()
-print(t1 - t0)</code></pre>
-
-        <h3>Benchmarking</h3>
-        <pre><code>import timeit
-timeit.timeit("sum(range(1000))", number=10000)</code></pre>
-
-        <div class="callout">
-          <strong>Blogger note:</strong> Some Blogger themes block third-party iframes. If the editor doesn’t appear, the “Open editor in new tab” button still works.
-        </div>
-
-        <div class="footer">
-          Use this sidebar as your “revision box” in class.
-        </div>
-      </div>
+    <div class="footer">
+      Reach exactly <b>100</b> to win. Ladders help, snakes bite 😄  
+      Progress auto-saves in browser.
     </div>
   </div>
+</div>
+
+<script>
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
+
+const posEl = document.getElementById("pos");
+const diceEl = document.getElementById("dice");
+const movesEl = document.getElementById("moves");
+const bestEl = document.getElementById("best");
+const logEl = document.getElementById("log");
+
+const SIZE = 10;
+const END = 100;
+
+const ladders = {4:14, 9:31, 20:38, 28:84, 40:59, 63:81, 71:91};
+const snakes  = {17:7, 54:34, 62:19, 87:36, 95:75, 99:78};
+
+let state = JSON.parse(localStorage.getItem("sl_game")) || {
+  pos:1, moves:0, best:null
+};
+
+function save(){localStorage.setItem("sl_game", JSON.stringify(state));}
+
+function rc(n){
+  let i=n-1,r=Math.floor(i/10),c=i%10;
+  if(r%2)c=9-c;
+  return {r,c};
+}
+
+function center(n){
+  const {r,c}=rc(n);
+  const w=canvas.width/10;
+  const h=canvas.height/10;
+  return {x:(c+.5)*w,y:canvas.height-(r+.5)*h};
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const w=canvas.width/10,h=canvas.height/10;
+
+  for(let r=0;r<10;r++)for(let c=0;c<10;c++){
+    ctx.fillStyle=(r+c)%2?"#fff3d6":"#fffaf0";
+    ctx.fillRect(c*w,canvas.height-(r+1)*h,w,h);
+    ctx.strokeStyle="#eadcc5";
+    ctx.strokeRect(c*w,canvas.height-(r+1)*h,w,h);
+  }
+
+  ctx.fillStyle="#6b7280";
+  ctx.font="16px Arial";
+  for(let n=1;n<=100;n++){
+    const p=center(n);
+    ctx.fillText(n,p.x-18,p.y-28);
+  }
+
+  for(let k in ladders)link(k,ladders[k],"#f59e0b");
+  for(let k in snakes) link(k,snakes[k],"#b91c1c");
+
+  const p=center(state.pos);
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,18,0,Math.PI*2);
+  ctx.fillStyle="#d97706";
+  ctx.fill();
+  ctx.fillStyle="#fff";
+  ctx.font="18px Arial";
+  ctx.fillText("●",p.x-5,p.y+6);
+}
+
+function link(a,b,color){
+  const p1=center(a),p2=center(b);
+  ctx.strokeStyle=color;
+  ctx.lineWidth=8;
+  ctx.beginPath();
+  ctx.moveTo(p1.x,p1.y);
+  ctx.lineTo(p2.x,p2.y);
+  ctx.stroke();
+}
+
+function log(msg){logEl.innerHTML=msg+"<br>"+logEl.innerHTML;}
+
+function update(){
+  posEl.textContent=state.pos;
+  movesEl.textContent=state.moves;
+  bestEl.textContent=state.best??"–";
+  draw(); save();
+}
+
+document.getElementById("roll").onclick=()=>{
+  let d=Math.floor(Math.random()*6)+1;
+  diceEl.textContent=d;
+  log("🎲 Rolled "+d);
+  let t=state.pos+d;
+  if(t>100){log("Exact 100 needed");return;}
+  state.pos=t; state.moves++;
+
+  if(ladders[state.pos]){
+    log("🪜 Ladder!");
+    state.pos=ladders[state.pos];
+  }else if(snakes[state.pos]){
+    log("🐍 Snake!");
+    state.pos=snakes[state.pos];
+  }
+
+  if(state.pos===100){
+    log("👑 YOU WON!");
+    if(!state.best||state.moves<state.best)state.best=state.moves;
+  }
+  update();
+};
+
+document.getElementById("reset").onclick=()=>{
+  state.pos=1;state.moves=0;
+  diceEl.textContent="–";
+  log("🔁 New game");
+  update();
+};
+
+update();
+</script>
 </body>
 </html>
