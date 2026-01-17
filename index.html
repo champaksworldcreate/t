@@ -1,258 +1,363 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Programmer's Picnic — JavaScript Editor</title>
-
-<style>
-:root{
-  --bg:#fff7e6;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --brand:#d97706;
-  --brand2:#f59e0b;
-  --border:#eadcc5;
-  --shadow:0 18px 40px rgba(31,41,55,.14);
-  --codebg:#0b1220;
-  --codeink:#e5e7eb;
-  --ok:#166534;
-  --bad:#b91c1c;
-  --mono:ui-monospace,Consolas,Menlo,monospace;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui;
-  background:linear-gradient(180deg,var(--bg),#fff);
-  color:var(--ink);
-}
-.wrap{max-width:1280px;margin:18px auto;padding:14px}
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-}
-.top{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin-bottom:12px
-}
-.brand{
-  display:flex;align-items:center;gap:10px;font-weight:900
-}
-.logo{
-  width:36px;height:36px;border-radius:12px;
-  background:linear-gradient(180deg,var(--brand2),var(--brand));
-  display:flex;align-items:center;justify-content:center;
-  color:#111;font-weight:900
-}
-.btn{
-  border:1px solid var(--border);
-  background:#fff;
-  border-radius:999px;
-  padding:8px 14px;
-  font-weight:800;
-  cursor:pointer
-}
-.btn.primary{
-  background:linear-gradient(180deg,var(--brand2),var(--brand));
-  border:0
-}
-.grid{
-  display:grid;
-  grid-template-columns:1.2fr .8fr;
-  gap:12px
-}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-
-.header{
-  padding:12px;
-  border-bottom:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center
-}
-.small{font-size:12px;color:var(--muted)}
-
-.editor-wrap{display:grid;grid-template-columns:auto 1fr}
-.gutter{
-  background:#020617;color:#94a3b8;
-  padding:12px 8px;
-  text-align:right;
-  user-select:none;
-  font-family:var(--mono);
-  font-size:14px;
-  line-height:1.5;
-  min-width:54px;
-  overflow:hidden;
-  white-space:pre;
-}
-.editor{
-  background:var(--codebg);
-  color:var(--codeink);
-  border:0;
-  outline:none;
-  padding:12px;
-  font-family:var(--mono);
-  font-size:14px;
-  line-height:1.5;
-  resize:none;
-  min-height:520px;
-  white-space:pre;
-  overflow:auto
-}
-.out{
-  background:#020617;
-  color:#e5e7eb;
-  border-radius:14px;
-  padding:12px;
-  font-family:var(--mono);
-  font-size:13px;
-  min-height:260px;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-.err{color:#fecaca}
-.ok{color:#bbf7d0}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Can You Get the Value of a Python Variable If Its id Is Known?</title>
+  <style>
+    :root{
+      --bg:#fff7e6;          /* light saffron */
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --brand:#d97706;       /* saffron */
+      --brand2:#f59e0b;      /* amber */
+      --border:#eadcc5;
+      --shadow:0 18px 40px rgba(31,41,55,.14);
+      --codebg:#0b1220;
+      --codeink:#e5e7eb;
+      --note:#fff6cc;
+      --ok:#166534;
+      --warn:#92400e;
+      --danger:#b91c1c;
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 600px at 15% -10%, rgba(245,158,11,.35), transparent 55%),
+                  radial-gradient(900px 500px at 95% 0%, rgba(217,119,6,.22), transparent 60%),
+                  var(--bg);
+      line-height:1.65;
+    }
+    .wrap{max-width:980px;margin:26px auto;padding:16px}
+    .hero{
+      background: linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.10));
+      border:1px solid var(--border);
+      border-radius:calc(var(--r) + 6px);
+      box-shadow:var(--shadow);
+      padding:18px 18px 16px;
+      overflow:hidden;
+      position:relative;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      background: rgba(217,119,6,.12);
+      border:1px solid rgba(217,119,6,.25);
+      color:var(--brand);
+      padding:6px 10px;border-radius:999px;
+      font-weight:700;font-size:13px;
+    }
+    .badge .dot{width:8px;height:8px;border-radius:999px;background:var(--brand2)}
+    h1{margin:10px 0 6px;font-size:28px;line-height:1.25}
+    .sub{margin:0;color:var(--muted);font-size:15px}
+    .grid{display:grid;grid-template-columns: 1.25fr .75fr;gap:14px;margin-top:14px}
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    h2{margin:0 0 8px;font-size:20px}
+    h3{margin:16px 0 6px;font-size:16px}
+    p{margin:10px 0}
+    .callout{
+      background: linear-gradient(180deg, rgba(255,246,204,.7), rgba(255,246,204,.35));
+      border:1px solid rgba(146,64,14,.25);
+      border-radius:14px;
+      padding:12px 12px 10px;
+      margin:12px 0;
+    }
+    .callout strong{color:var(--warn)}
+    .kpi{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:10px;margin:12px 0 2px;
+    }
+    @media (max-width: 700px){ .kpi{grid-template-columns:1fr} }
+    .pill{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 10px 9px;
+      background: rgba(255,255,255,.8);
+    }
+    .pill b{display:block;color:var(--brand);margin-bottom:4px}
+    pre{
+      margin:12px 0;
+      background:var(--codebg);
+      color:var(--codeink);
+      padding:12px 12px;
+      border-radius:14px;
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: 0 14px 28px rgba(11,18,32,.22);
+    }
+    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .inlinecode{
+      background: rgba(11,18,32,.08);
+      border:1px solid rgba(11,18,32,.08);
+      padding:2px 6px;border-radius:8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .95em;
+    }
+    ul{margin:8px 0 10px 18px}
+    li{margin:6px 0}
+    .table{
+      width:100%;border-collapse:separate;border-spacing:0;
+      overflow:hidden;border-radius:14px;border:1px solid var(--border);
+      margin:10px 0 12px;background:#fff;
+    }
+    .table th,.table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+    .table th{background:rgba(217,119,6,.09);text-align:left}
+    .table tr:last-child td{border-bottom:none}
+    .quote{
+      border-left:4px solid var(--brand2);
+      padding:10px 12px;
+      margin:12px 0;
+      background: rgba(255,255,255,.75);
+      border-radius:12px;
+    }
+    .quote b{color:var(--brand)}
+    .qa{
+      margin:12px 0;
+      border:1px dashed rgba(217,119,6,.45);
+      background: rgba(217,119,6,.06);
+      border-radius:14px;
+      padding:12px;
+    }
+    .qa .q{font-weight:800;color:var(--brand);margin-bottom:6px}
+    .footer{
+      text-align:center;color:var(--muted);font-size:13px;margin:14px 0 0;
+    }
+    .tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .tag{
+      font-size:12px;
+      padding:5px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.75);
+      color: var(--muted);
+    }
+    .tag b{color:var(--brand);font-weight:800}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
 </head>
-
 <body>
-<div class="wrap">
-  <div class="top">
-    <div class="brand">
-      <div class="logo">&lt;/&gt;</div>
-      Programmer's Picnic — JavaScript Editor
-    </div>
-    <div>
-      <button class="btn primary" id="run">▶ Run</button>
-      <button class="btn" id="stop">⛔ Stop</button>
-      <button class="btn" id="download">⬇ Download</button>
-    </div>
-  </div>
+  <div class="wrap">
+    <div class="hero">
+      <span class="badge"><span class="dot"></span> Python Memory Lesson</span>
+      <h1>Can You Get the Value of a Python Variable If Its <span class="inlinecode">id</span> Is Known?</h1>
+      <p class="sub">A beginner-friendly, interview-ready explanation of variables vs objects, what <span class="inlinecode">id()</span> really means, and why “reverse lookup” is not supported in Python.</p>
 
-  <div class="grid">
-    <!-- Editor -->
-    <div class="card">
-      <div class="header">
-        <b>Editor</b>
-        <span class="small">console.log → Output</span>
+      <div class="kpi">
+        <div class="pill"><b>Big Idea</b>Variables are labels; objects are real.</div>
+        <div class="pill"><b>What id() is</b>Identity of an object (during its lifetime).</div>
+        <div class="pill"><b>What id() isn’t</b>Not a “memory address you can reverse search”.</div>
       </div>
-      <div class="editor-wrap">
-        <pre class="gutter" id="gutter">1</pre>
-        <textarea id="code" class="editor" spellcheck="false">
-// Reverse digits of a number
-function reverse(n){
-  let r=0;
-  while(n>0){
-    r = r*10 + (n%10);
-    n = Math.floor(n/10);
-  }
-  return r;
-}
 
-console.log(reverse(1213));
-        </textarea>
+      <div class="tagrow">
+        <span class="tag"><b>#</b>Python</span>
+        <span class="tag"><b>#</b>id()</span>
+        <span class="tag"><b>#</b>is vs ==</span>
+        <span class="tag"><b>#</b>Interview</span>
+        <span class="tag"><b>#</b>MemoryModel</span>
       </div>
     </div>
 
-    <!-- Output -->
-    <div class="card">
-      <div class="header">
-        <b>Output</b>
-        <div>
-          <button class="btn" id="copy">📋 Copy</button>
-          <button class="btn" id="clear">🧹 Clear</button>
+    <div class="grid">
+      <div class="card">
+        <h2>🧠 The Short Answer</h2>
+        <div class="callout">
+          <strong>No.</strong> In normal Python, you <b>cannot reliably get the value of a variable</b> just from its <span class="inlinecode">id</span>.
+        </div>
+
+        <p>This confusion happens because students see:</p>
+        <pre><code>x = 10
+print(id(x))</code></pre>
+
+        <p>And then naturally ask: “If I know the <span class="inlinecode">id</span>, can I get <span class="inlinecode">x</span> back?”</p>
+
+        <p>Here’s the key:</p>
+        <div class="quote">
+          <b>id() identifies an object, not a variable name.</b><br/>
+          Python does not keep a reverse map of <span class="inlinecode">id → variable name → value</span>.
+        </div>
+
+        <h2>🧩 Variables vs Objects (The Real Model)</h2>
+        <p>In Python:</p>
+
+        <table class="table">
+          <tr>
+            <th>Term</th>
+            <th>What it really means</th>
+          </tr>
+          <tr>
+            <td><b>Variable</b></td>
+            <td>A name/label pointing to an object</td>
+          </tr>
+          <tr>
+            <td><b>Value</b></td>
+            <td>An object stored somewhere in memory</td>
+          </tr>
+          <tr>
+            <td><b>id(obj)</b></td>
+            <td>Identity of that object during its lifetime</td>
+          </tr>
+        </table>
+
+        <h3>👉 Why reverse lookup is impossible (ambiguity)</h3>
+        <p>Consider:</p>
+        <pre><code>a = 100
+b = 100
+print(id(a) == id(b))  # often True in CPython</code></pre>
+
+        <p>If <span class="inlinecode">a</span> and <span class="inlinecode">b</span> point to the same object, then:</p>
+        <ul>
+          <li>One object has one <span class="inlinecode">id</span></li>
+          <li>Multiple variable names can refer to it</li>
+          <li>So “which variable’s value” should Python return?</li>
+        </ul>
+
+        <h2>🔬 What <span class="inlinecode">id()</span> Actually Means</h2>
+        <p><span class="inlinecode">id()</span> is best thought of as an identity tag for an object:</p>
+        <pre><code>lst = [1, 2, 3]
+print(id(lst))   # identity of the list object</code></pre>
+
+        <p>It does <b>not</b> store:</p>
+        <ul>
+          <li>the variable name that points to it</li>
+          <li>the source-code location where it was created</li>
+          <li>the list of all names pointing to it</li>
+        </ul>
+
+        <h2>⚠️ “Workarounds” You Might See (Debug-Only)</h2>
+
+        <h3>1) Searching known namespaces (unreliable)</h3>
+        <p>If you know the object is in <span class="inlinecode">globals()</span> (or a particular dict), you can try:</p>
+        <pre><code>x = 42
+target_id = id(x)
+
+matches = []
+for name, value in globals().items():
+    if id(value) == target_id:
+        matches.append((name, value))
+
+print(matches)</code></pre>
+
+        <div class="callout">
+          <strong>Why it’s unreliable:</strong>
+          <ul>
+            <li>May miss other scopes (locals, closures, modules, etc.)</li>
+            <li>May return multiple matches</li>
+            <li>Not a “real” id → value feature</li>
+          </ul>
+        </div>
+
+        <h3>2) CPython <span class="inlinecode">ctypes</span> hack (dangerous — avoid)</h3>
+        <p>You may find this online, but don’t use it in real code:</p>
+        <pre><code># DO NOT USE IN PRODUCTION (unsafe, CPython-specific)
+import ctypes
+obj = ctypes.cast(target_id, ctypes.py_object).value
+print(obj)</code></pre>
+
+        <div class="callout">
+          <strong>Warning:</strong> This can crash Python or misbehave across implementations. It’s not a supported guarantee.
+        </div>
+
+        <h2>✅ The Correct Way (If You Need Lookup)</h2>
+        <p>If your program needs to retrieve objects by identity, design for it using a registry:</p>
+        <pre><code>registry = {}
+
+x = {"name": "Champak", "batch": "7 PM"}
+registry[id(x)] = x
+
+# later...
+some_id = id(x)
+print(registry.get(some_id))</code></pre>
+
+        <p>This is safe, clear, and under your control.</p>
+
+        <div class="qa">
+          <div class="q">Class Question 💬</div>
+          <div class="a">
+            If two variables point to the same object, and you only know the <span class="inlinecode">id</span>,
+            how many different “variable names” might match it?
+          </div>
+        </div>
+
+        <h2>🎯 Interview-Perfect Answer</h2>
+        <div class="quote">
+          <b>Answer:</b> No. <span class="inlinecode">id()</span> identifies an object, not a variable. Python does not maintain a reverse mapping from object id to variable names or values. Any “reverse lookup” method is unreliable or implementation-specific.
+        </div>
+
+        <h2>📌 Final Takeaway</h2>
+        <div class="callout">
+          <strong>Remember:</strong> Variables are labels. Objects are real. <span class="inlinecode">id()</span> belongs to the object.
         </div>
       </div>
-      <div id="out" class="out"></div>
+
+      <div class="card">
+        <h2>✅ Quick Cheatsheet</h2>
+
+        <table class="table">
+          <tr>
+            <th>You want…</th>
+            <th>Use…</th>
+          </tr>
+          <tr>
+            <td>Object identity</td>
+            <td><span class="inlinecode">id(obj)</span></td>
+          </tr>
+          <tr>
+            <td>Same object check</td>
+            <td><span class="inlinecode">a is b</span></td>
+          </tr>
+          <tr>
+            <td>Same value check</td>
+            <td><span class="inlinecode">a == b</span></td>
+          </tr>
+          <tr>
+            <td>Find matches in a scope</td>
+            <td><span class="inlinecode">globals()</span>, <span class="inlinecode">locals()</span> (debug-only)</td>
+          </tr>
+          <tr>
+            <td>Reliable id → object retrieval</td>
+            <td>Maintain your own <span class="inlinecode">registry</span></td>
+          </tr>
+        </table>
+
+        <h3>Mini Demo: <span class="inlinecode">is</span> vs <span class="inlinecode">==</span></h3>
+        <pre><code>a = [1, 2, 3]
+b = [1, 2, 3]
+
+print(a == b)  # True (same value)
+print(a is b)  # False (different objects)</code></pre>
+
+        <h3>Practice Question</h3>
+        <pre><code>a = 256
+b = 256
+print(a is b)</code></pre>
+        <p style="margin-top:8px;color:var(--muted)">
+          Why might this print <b>True</b> in many Python versions? (Hint: small integer caching in CPython)
+        </p>
+
+        <h3>Next Lesson Ideas</h3>
+        <ul>
+          <li><b>Reference counting</b> and garbage collection (GC)</li>
+          <li><b>Mutable vs immutable</b>: why IDs change sometimes</li>
+          <li>Memory usage: <span class="inlinecode">sys.getsizeof()</span> vs deep size</li>
+          <li>Time spent on statements: <span class="inlinecode">time.perf_counter()</span> and <span class="inlinecode">timeit</span></li>
+        </ul>
+
+        <div class="footer">
+          Written for beginners + interview prep • Light Saffron Theme • Programmer’s Picnic style
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-<script>
-const code = document.getElementById("code");
-const out = document.getElementById("out");
-const gutter = document.getElementById("gutter");
-let worker = null;
-
-function updateGutter(){
-  const n = code.value.split("\n").length || 1;
-  let s = "";
-  for(let i=1;i<=n;i++) s += i + "\n";
-  gutter.textContent = s;
-  gutter.scrollTop = code.scrollTop;
-}
-code.addEventListener("input", updateGutter);
-code.addEventListener("scroll", () => gutter.scrollTop = code.scrollTop);
-updateGutter();
-
-function runJS(src){
-  return new Promise((res, rej) => {
-    const blob = new Blob([`
-      let log = [];
-      console.log = (...a) => log.push(a.join(" "));
-      onmessage = (e) => {
-        try{
-          eval(e.data);
-          postMessage({ok:true, log});
-        }catch(err){
-          postMessage({ok:false, error: err.message, log});
-        }
-      };
-    `], {type:"application/javascript"});
-
-    const url = URL.createObjectURL(blob);
-    worker = new Worker(url);
-
-    const t = setTimeout(() => {
-      worker.terminate();
-      rej("Timeout (possible infinite loop)");
-    }, 2000);
-
-    worker.onmessage = (e) => {
-      clearTimeout(t);
-      res(e.data);
-      worker.terminate();
-    };
-
-    worker.postMessage(src);
-  });
-}
-
-document.getElementById("run").onclick = async () => {
-  out.textContent = "";
-  try{
-    const r = await runJS(code.value);
-    r.log.forEach(line => out.textContent += line + "\n");
-    out.textContent += "\n✓ Done";
-  }catch(e){
-    out.innerHTML = '<span class="err">' + String(e) + '</span>';
-  }
-};
-
-document.getElementById("stop").onclick = () => {
-  if(worker) worker.terminate();
-  out.textContent += "\n⛔ Stopped";
-};
-
-document.getElementById("clear").onclick = () => out.textContent = "";
-
-document.getElementById("copy").onclick = async () => {
-  try{
-    await navigator.clipboard.writeText(out.innerText || "");
-  }catch{
-    prompt("Copy output:", out.innerText || "");
-  }
-};
-
-document.getElementById("download").onclick = () => {
-  const blob = new Blob([code.value || ""], {type:"text/javascript"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "script.js";
-  a.click();
-};
-</script>
 </body>
 </html>
