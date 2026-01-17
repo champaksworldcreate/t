@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Can You Get the Value of a Python Variable If Its id Is Known?</title>
+  <title>Python Memory & Performance Lesson — id(), del, gc, size, and timing</title>
   <style>
     :root{
       --bg:#fff7e6;          /* light saffron */
@@ -27,12 +27,13 @@
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--ink);
-      background: radial-gradient(1200px 600px at 15% -10%, rgba(245,158,11,.35), transparent 55%),
-                  radial-gradient(900px 500px at 95% 0%, rgba(217,119,6,.22), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(245,158,11,.35), transparent 55%),
+        radial-gradient(900px 500px at 95% 0%, rgba(217,119,6,.22), transparent 60%),
+        var(--bg);
       line-height:1.65;
     }
-    .wrap{max-width:980px;margin:26px auto;padding:16px}
+    .wrap{max-width:1100px;margin:26px auto;padding:16px}
     .hero{
       background: linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.10));
       border:1px solid var(--border);
@@ -48,13 +49,13 @@
       border:1px solid rgba(217,119,6,.25);
       color:var(--brand);
       padding:6px 10px;border-radius:999px;
-      font-weight:700;font-size:13px;
+      font-weight:800;font-size:13px;
     }
     .badge .dot{width:8px;height:8px;border-radius:999px;background:var(--brand2)}
     h1{margin:10px 0 6px;font-size:28px;line-height:1.25}
     .sub{margin:0;color:var(--muted);font-size:15px}
-    .grid{display:grid;grid-template-columns: 1.25fr .75fr;gap:14px;margin-top:14px}
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+    .grid{display:grid;grid-template-columns: 1.15fr .85fr;gap:14px;margin-top:14px}
+    @media (max-width: 1000px){ .grid{grid-template-columns:1fr} }
     .card{
       background:var(--card);
       border:1px solid var(--border);
@@ -73,18 +74,14 @@
       margin:12px 0;
     }
     .callout strong{color:var(--warn)}
-    .kpi{
-      display:grid;grid-template-columns:repeat(3,1fr);
-      gap:10px;margin:12px 0 2px;
+    .quote{
+      border-left:4px solid var(--brand2);
+      padding:10px 12px;
+      margin:12px 0;
+      background: rgba(255,255,255,.75);
+      border-radius:12px;
     }
-    @media (max-width: 700px){ .kpi{grid-template-columns:1fr} }
-    .pill{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 10px 9px;
-      background: rgba(255,255,255,.8);
-    }
-    .pill b{display:block;color:var(--brand);margin-bottom:4px}
+    .quote b{color:var(--brand)}
     pre{
       margin:12px 0;
       background:var(--codebg);
@@ -113,14 +110,18 @@
     .table th,.table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:top}
     .table th{background:rgba(217,119,6,.09);text-align:left}
     .table tr:last-child td{border-bottom:none}
-    .quote{
-      border-left:4px solid var(--brand2);
-      padding:10px 12px;
-      margin:12px 0;
-      background: rgba(255,255,255,.75);
-      border-radius:12px;
+    .kpi{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:10px;margin:12px 0 2px;
     }
-    .quote b{color:var(--brand)}
+    @media (max-width: 700px){ .kpi{grid-template-columns:1fr} }
+    .pill{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 10px 9px;
+      background: rgba(255,255,255,.85);
+    }
+    .pill b{display:block;color:var(--brand);margin-bottom:4px}
     .qa{
       margin:12px 0;
       border:1px dashed rgba(217,119,6,.45);
@@ -128,236 +129,282 @@
       border-radius:14px;
       padding:12px;
     }
-    .qa .q{font-weight:800;color:var(--brand);margin-bottom:6px}
+    .qa .q{font-weight:900;color:var(--brand);margin-bottom:6px}
     .footer{
       text-align:center;color:var(--muted);font-size:13px;margin:14px 0 0;
     }
-    .tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .tag{
-      font-size:12px;
-      padding:5px 10px;
-      border-radius:999px;
+    .toc{
+      margin:10px 0 0;
+      padding:12px;
       border:1px solid var(--border);
-      background: rgba(255,255,255,.75);
-      color: var(--muted);
+      border-radius:14px;
+      background: rgba(255,255,255,.78);
     }
-    .tag b{color:var(--brand);font-weight:800}
+    .toc a{color:var(--brand);text-decoration:none;font-weight:800}
+    .toc a:hover{text-decoration:underline}
+    .toc ul{margin:8px 0 0 18px}
+    .small{font-size:13px;color:var(--muted)}
     a{color:var(--brand);text-decoration:none}
     a:hover{text-decoration:underline}
+
+    /* Embedded editor */
+    .editorWrap{
+      margin-top:14px;
+      border:1px solid var(--border);
+      border-radius:calc(var(--r) + 6px);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      background:#fff;
+    }
+    .editorTop{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;
+      background: linear-gradient(135deg, rgba(217,119,6,.10), rgba(245,158,11,.08));
+      border-bottom:1px solid var(--border);
+    }
+    .editorTop .title{
+      font-weight:900;
+      color:var(--ink);
+    }
+    .editorTop .hint{
+      color:var(--muted);
+      font-size:13px;
+    }
+    iframe.editor{
+      width:100%;
+      height:560px;
+      border:0;
+      display:block;
+      background:#fff;
+    }
+    @media (max-width: 700px){
+      iframe.editor{height:620px;}
+    }
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(217,119,6,.25);
+      background:#fff;
+      color:var(--brand);
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+    }
+    .btn:hover{background:rgba(217,119,6,.06)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="hero">
-      <span class="badge"><span class="dot"></span> Python Memory Lesson</span>
-      <h1>Can You Get the Value of a Python Variable If Its <span class="inlinecode">id</span> Is Known?</h1>
-      <p class="sub">A beginner-friendly, interview-ready explanation of variables vs objects, what <span class="inlinecode">id()</span> really means, and why “reverse lookup” is not supported in Python.</p>
+      <span class="badge"><span class="dot"></span> Python Memory + Performance (Beginner → Interview)</span>
+      <h1>From <span class="inlinecode">id()</span> to <span class="inlinecode">del</span>, <span class="inlinecode">gc</span>, variable size, and execution time</h1>
+      <p class="sub">A single lesson that clears the confusion around identity, freeing memory, measuring object size, and timing Python code.</p>
 
-      <div class="kpi">
-        <div class="pill"><b>Big Idea</b>Variables are labels; objects are real.</div>
-        <div class="pill"><b>What id() is</b>Identity of an object (during its lifetime).</div>
-        <div class="pill"><b>What id() isn’t</b>Not a “memory address you can reverse search”.</div>
+      <div class="toc">
+        <b>Contents</b>
+        <ul>
+          <li><a href="#id">1) What is <span class="inlinecode">id()</span>?</a></li>
+          <li><a href="#id-to-value">2) Can we get value from a known <span class="inlinecode">id</span>?</a></li>
+          <li><a href="#del">3) Freeing memory: <span class="inlinecode">del</span> and reassigning</a></li>
+          <li><a href="#gc">4) Garbage collector: <span class="inlinecode">gc</span></a></li>
+          <li><a href="#sizeof">5) Memory used: <span class="inlinecode">sys.getsizeof</span> and deep size</a></li>
+          <li><a href="#time">6) Time needed: <span class="inlinecode">perf_counter</span>, <span class="inlinecode">timeit</span>, profiling</a></li>
+          <li><a href="#try">7) Try it yourself: Embedded Python Editor</a></li>
+        </ul>
+        <div class="small">Tip: Use this as a 7 PM class handout. Each section has a demo + a question.</div>
       </div>
 
-      <div class="tagrow">
-        <span class="tag"><b>#</b>Python</span>
-        <span class="tag"><b>#</b>id()</span>
-        <span class="tag"><b>#</b>is vs ==</span>
-        <span class="tag"><b>#</b>Interview</span>
-        <span class="tag"><b>#</b>MemoryModel</span>
+      <!-- Embedded Python Editor -->
+      <div class="editorWrap" id="try">
+        <div class="editorTop">
+          <div>
+            <div class="title">🧪 Try the code here (Programmer’s Picnic Python Editor)</div>
+            <div class="hint">Paste the snippets from this post and run them inside the editor.</div>
+          </div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html" target="_blank" rel="noopener">Open editor in new tab ↗</a>
+          </div>
+        </div>
+        <iframe
+          class="editor"
+          title="Programmer’s Picnic Python Editor"
+          src="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          allow="clipboard-read; clipboard-write"
+        ></iframe>
       </div>
+      <p class="small" style="margin-top:10px;">
+        If the iframe does not load on Blogger due to site restrictions, use the “Open editor in new tab” button above.
+      </p>
     </div>
 
     <div class="grid">
       <div class="card">
-        <h2>🧠 The Short Answer</h2>
-        <div class="callout">
-          <strong>No.</strong> In normal Python, you <b>cannot reliably get the value of a variable</b> just from its <span class="inlinecode">id</span>.
-        </div>
-
-        <p>This confusion happens because students see:</p>
-        <pre><code>x = 10
-print(id(x))</code></pre>
-
-        <p>And then naturally ask: “If I know the <span class="inlinecode">id</span>, can I get <span class="inlinecode">x</span> back?”</p>
-
-        <p>Here’s the key:</p>
+        <h2 id="id">1) What is <span class="inlinecode">id(variable)</span> in Python?</h2>
         <div class="quote">
-          <b>id() identifies an object, not a variable name.</b><br/>
-          Python does not keep a reverse map of <span class="inlinecode">id → variable name → value</span>.
+          <b>Important:</b> <span class="inlinecode">id()</span> gives the identity of an <b>object</b> (during its lifetime). A variable is only a <b>name</b> that points to that object.
         </div>
+        <pre><code>x = 10
+print(id(x))   # identity of the int object 10</code></pre>
 
-        <h2>🧩 Variables vs Objects (The Real Model)</h2>
-        <p>In Python:</p>
-
-        <table class="table">
-          <tr>
-            <th>Term</th>
-            <th>What it really means</th>
-          </tr>
-          <tr>
-            <td><b>Variable</b></td>
-            <td>A name/label pointing to an object</td>
-          </tr>
-          <tr>
-            <td><b>Value</b></td>
-            <td>An object stored somewhere in memory</td>
-          </tr>
-          <tr>
-            <td><b>id(obj)</b></td>
-            <td>Identity of that object during its lifetime</td>
-          </tr>
-        </table>
-
-        <h3>👉 Why reverse lookup is impossible (ambiguity)</h3>
-        <p>Consider:</p>
-        <pre><code>a = 100
-b = 100
-print(id(a) == id(b))  # often True in CPython</code></pre>
-
-        <p>If <span class="inlinecode">a</span> and <span class="inlinecode">b</span> point to the same object, then:</p>
-        <ul>
-          <li>One object has one <span class="inlinecode">id</span></li>
-          <li>Multiple variable names can refer to it</li>
-          <li>So “which variable’s value” should Python return?</li>
-        </ul>
-
-        <h2>🔬 What <span class="inlinecode">id()</span> Actually Means</h2>
-        <p><span class="inlinecode">id()</span> is best thought of as an identity tag for an object:</p>
-        <pre><code>lst = [1, 2, 3]
-print(id(lst))   # identity of the list object</code></pre>
-
-        <p>It does <b>not</b> store:</p>
-        <ul>
-          <li>the variable name that points to it</li>
-          <li>the source-code location where it was created</li>
-          <li>the list of all names pointing to it</li>
-        </ul>
-
-        <h2>⚠️ “Workarounds” You Might See (Debug-Only)</h2>
-
-        <h3>1) Searching known namespaces (unreliable)</h3>
-        <p>If you know the object is in <span class="inlinecode">globals()</span> (or a particular dict), you can try:</p>
-        <pre><code>x = 42
-target_id = id(x)
-
-matches = []
-for name, value in globals().items():
-    if id(value) == target_id:
-        matches.append((name, value))
-
-print(matches)</code></pre>
-
-        <div class="callout">
-          <strong>Why it’s unreliable:</strong>
-          <ul>
-            <li>May miss other scopes (locals, closures, modules, etc.)</li>
-            <li>May return multiple matches</li>
-            <li>Not a “real” id → value feature</li>
-          </ul>
-        </div>
-
-        <h3>2) CPython <span class="inlinecode">ctypes</span> hack (dangerous — avoid)</h3>
-        <p>You may find this online, but don’t use it in real code:</p>
-        <pre><code># DO NOT USE IN PRODUCTION (unsafe, CPython-specific)
-import ctypes
-obj = ctypes.cast(target_id, ctypes.py_object).value
-print(obj)</code></pre>
-
-        <div class="callout">
-          <strong>Warning:</strong> This can crash Python or misbehave across implementations. It’s not a supported guarantee.
-        </div>
-
-        <h2>✅ The Correct Way (If You Need Lookup)</h2>
-        <p>If your program needs to retrieve objects by identity, design for it using a registry:</p>
-        <pre><code>registry = {}
-
-x = {"name": "Champak", "batch": "7 PM"}
-registry[id(x)] = x
-
-# later...
-some_id = id(x)
-print(registry.get(some_id))</code></pre>
-
-        <p>This is safe, clear, and under your control.</p>
+        <h3>Variables are labels (not boxes)</h3>
+        <pre><code>a = 5
+b = a
+print(id(a), id(b))     # often same: both names point to same object</code></pre>
 
         <div class="qa">
-          <div class="q">Class Question 💬</div>
-          <div class="a">
-            If two variables point to the same object, and you only know the <span class="inlinecode">id</span>,
-            how many different “variable names” might match it?
-          </div>
+          <div class="q">Quick question 💬</div>
+          <div class="a">If <span class="inlinecode">a</span> and <span class="inlinecode">b</span> have the same <span class="inlinecode">id</span>, how many variable names can point to one object?</div>
         </div>
 
-        <h2>🎯 Interview-Perfect Answer</h2>
-        <div class="quote">
-          <b>Answer:</b> No. <span class="inlinecode">id()</span> identifies an object, not a variable. Python does not maintain a reverse mapping from object id to variable names or values. Any “reverse lookup” method is unreliable or implementation-specific.
-        </div>
-
-        <h2>📌 Final Takeaway</h2>
+        <h2 id="id-to-value">2) Value of a variable whose <span class="inlinecode">id</span> is known</h2>
         <div class="callout">
-          <strong>Remember:</strong> Variables are labels. Objects are real. <span class="inlinecode">id()</span> belongs to the object.
+          <strong>Short answer:</strong> You can’t reliably get “the variable value” from an <span class="inlinecode">id</span> alone, because Python doesn’t provide a safe reverse mapping of <span class="inlinecode">id → variable name/value</span>.
+        </div>
+
+        <p>Why? One object can have multiple names:</p>
+        <pre><code>a = 100
+b = 100
+print(id(a) == id(b))</code></pre>
+
+        <p>If you truly need lookup later, design for it:</p>
+        <pre><code>registry = {}
+obj = {"topic": "Python", "time": "7 PM"}
+registry[id(obj)] = obj
+
+print(registry[id(obj)])</code></pre>
+
+        <h2 id="del">3) Freeing memory: <span class="inlinecode">del</span> and removing references</h2>
+        <div class="quote">
+          <b>Rule:</b> Memory is freed when an object has <b>no references</b> left (and cyclic garbage is handled by GC).
+        </div>
+
+        <h3>✅ Delete a name</h3>
+        <pre><code>x = [1, 2, 3]
+del x   # removes the name 'x' (reference)</code></pre>
+
+        <h3>✅ Reassign to drop the reference</h3>
+        <pre><code>big = [i for i in range(1_000_000)]
+big = None   # old list now eligible for cleanup (if no other refs exist)</code></pre>
+
+        <h3>⚠️ Memory won’t free if another reference exists</h3>
+        <pre><code>a = [1, 2, 3]
+b = a
+del a
+print(b)  # object still alive because 'b' refers to it</code></pre>
+
+        <h2 id="gc">4) Garbage Collector: <span class="inlinecode">gc</span></h2>
+        <p>Python uses:</p>
+        <ul>
+          <li><b>Reference counting</b> for most objects</li>
+          <li><b>Garbage collection</b> for <b>cycles</b></li>
+        </ul>
+
+        <h3>Cyclic reference example</h3>
+        <pre><code>a = []
+a.append(a)   # a references itself: cycle</code></pre>
+
+        <p>Manual trigger (rarely needed):</p>
+        <pre><code>import gc
+gc.collect()</code></pre>
+
+        <h2 id="sizeof">5) Memory used by a variable: shallow vs deep size</h2>
+        <p>Shallow size:</p>
+        <pre><code>import sys
+lst = [1, 2, 3]
+print(sys.getsizeof(lst))</code></pre>
+
+        <p>Deep size:</p>
+        <pre><code>import sys
+
+def deep_getsizeof(obj, seen=None):
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+    seen.add(obj_id)
+
+    size = sys.getsizeof(obj)
+
+    if isinstance(obj, dict):
+        size += sum(deep_getsizeof(k, seen) + deep_getsizeof(v, seen)
+                    for k, v in obj.items())
+    elif isinstance(obj, (list, tuple, set)):
+        size += sum(deep_getsizeof(i, seen) for i in obj)
+
+    return size
+
+data = [1, 2, [3, 4], {"a": 10, "b": [11, 12]}]
+print(deep_getsizeof(data), "bytes")</code></pre>
+
+        <h2 id="time">6) Time needed for execution</h2>
+        <h3>Precise timing with <span class="inlinecode">perf_counter</span></h3>
+        <pre><code>import time
+
+start = time.perf_counter()
+x = sum(range(1_000_000))
+end = time.perf_counter()
+
+print("Time:", end - start, "seconds")</code></pre>
+
+        <h3>Accurate benchmarking with <span class="inlinecode">timeit</span></h3>
+        <pre><code>import timeit
+t = timeit.timeit("sum(range(1000))", number=10000)
+print("Total time:", t)</code></pre>
+
+        <h3>Quick profiling</h3>
+        <pre><code>import cProfile
+cProfile.run("sum(range(1_000_000))")</code></pre>
+
+        <div class="footer">
+          Blogger-ready HTML • Light Saffron Theme • Embedded Python Editor Included
         </div>
       </div>
 
       <div class="card">
         <h2>✅ Quick Cheatsheet</h2>
 
-        <table class="table">
-          <tr>
-            <th>You want…</th>
-            <th>Use…</th>
-          </tr>
-          <tr>
-            <td>Object identity</td>
-            <td><span class="inlinecode">id(obj)</span></td>
-          </tr>
-          <tr>
-            <td>Same object check</td>
-            <td><span class="inlinecode">a is b</span></td>
-          </tr>
-          <tr>
-            <td>Same value check</td>
-            <td><span class="inlinecode">a == b</span></td>
-          </tr>
-          <tr>
-            <td>Find matches in a scope</td>
-            <td><span class="inlinecode">globals()</span>, <span class="inlinecode">locals()</span> (debug-only)</td>
-          </tr>
-          <tr>
-            <td>Reliable id → object retrieval</td>
-            <td>Maintain your own <span class="inlinecode">registry</span></td>
-          </tr>
-        </table>
+        <h3>Identity / Equality</h3>
+        <pre><code>a is b   # same object?
+a == b   # same value?
+id(a)    # object identity</code></pre>
 
-        <h3>Mini Demo: <span class="inlinecode">is</span> vs <span class="inlinecode">==</span></h3>
-        <pre><code>a = [1, 2, 3]
-b = [1, 2, 3]
+        <h3>Freeing references</h3>
+        <pre><code>del x
+x = None</code></pre>
 
-print(a == b)  # True (same value)
-print(a is b)  # False (different objects)</code></pre>
+        <h3>Garbage collection</h3>
+        <pre><code>import gc
+gc.collect()</code></pre>
 
-        <h3>Practice Question</h3>
-        <pre><code>a = 256
-b = 256
-print(a is b)</code></pre>
-        <p style="margin-top:8px;color:var(--muted)">
-          Why might this print <b>True</b> in many Python versions? (Hint: small integer caching in CPython)
-        </p>
+        <h3>Object size</h3>
+        <pre><code>import sys
+sys.getsizeof(obj)</code></pre>
 
-        <h3>Next Lesson Ideas</h3>
-        <ul>
-          <li><b>Reference counting</b> and garbage collection (GC)</li>
-          <li><b>Mutable vs immutable</b>: why IDs change sometimes</li>
-          <li>Memory usage: <span class="inlinecode">sys.getsizeof()</span> vs deep size</li>
-          <li>Time spent on statements: <span class="inlinecode">time.perf_counter()</span> and <span class="inlinecode">timeit</span></li>
-        </ul>
+        <h3>Timing</h3>
+        <pre><code>import time
+t0 = time.perf_counter()
+# code...
+t1 = time.perf_counter()
+print(t1 - t0)</code></pre>
+
+        <h3>Benchmarking</h3>
+        <pre><code>import timeit
+timeit.timeit("sum(range(1000))", number=10000)</code></pre>
+
+        <div class="callout">
+          <strong>Blogger note:</strong> Some Blogger themes block third-party iframes. If the editor doesn’t appear, the “Open editor in new tab” button still works.
+        </div>
 
         <div class="footer">
-          Written for beginners + interview prep • Light Saffron Theme • Programmer’s Picnic style
+          Use this sidebar as your “revision box” in class.
         </div>
       </div>
     </div>
   </div>
 </body>
-</html>. 
+</html>
