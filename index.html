@@ -1,345 +1,916 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Snake & Ladders — 2 Player</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<style>
-:root{
-  --bg:#fff7e6;--card:#ffffff;--ink:#1f2937;--muted:#6b7280;
-  --brand:#d97706;--brand2:#f59e0b;--border:#eadcc5;
-  --shadow:0 18px 40px rgba(31,41,55,.14);
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-.wrapper{max-width:1100px;margin:auto;padding:16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px}
-h1{margin:0 0 10px;font-size:22px}
-.board-wrap{display:grid;grid-template-columns:1fr 340px;gap:14px}
-canvas{width:100%;aspect-ratio:1/1;border-radius:14px;border:1px solid var(--border);background:#fff}
-.panel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.mini{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px}
-.mini b{display:block;color:var(--muted);font-size:12px}
-.mini span{font-size:20px;font-weight:800}
-.turn{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
-.pill{padding:7px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px;background:linear-gradient(180deg,#fff,#fff7e6)}
-.pill.active{border-color:rgba(217,119,6,.55);box-shadow:0 10px 22px rgba(217,119,6,.18)}
-.pill .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap}
-button{flex:1;min-width:140px;padding:12px;border-radius:14px;border:1px solid var(--border);
-  background:linear-gradient(180deg,var(--brand2),var(--brand));color:#fff;font-size:16px;font-weight:800;cursor:pointer}
-button.secondary{background:#fff;color:var(--ink);font-weight:700}
-button:disabled{opacity:.6;cursor:not-allowed}
-.log{margin-top:10px;border:1px dashed var(--border);border-radius:14px;padding:10px;font-size:13px;max-height:240px;overflow:auto;background:linear-gradient(180deg,#fff,#fffaf0)}
-.footer{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.45}
-@media(max-width:900px){.board-wrap{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Learn Chess — Interactive Basics</title>
+  <meta name="description" content="Learn chess basics with an interactive board, lessons, and quizzes. Works offline." />
+  <style>
+    :root{
+      --bg:#fff7e6; --card:#fff; --ink:#1f2937; --muted:#6b7280;
+      --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
+      --shadow:0 18px 40px rgba(31,41,55,.14);
+      --ok:#166534; --danger:#b91c1c;
+      --sqLight:#f3d7ad; --sqDark:#c77d2a;
+      --hl:#60a5fa; --hl2:#34d399; --cap:#f87171;
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1200px 800px at 15% 0%, #fff 0%, var(--bg) 55%, #ffecc7 100%);
+      color:var(--ink);
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:18px auto;padding:14px}
+    .topbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+      background:rgba(255,255,255,.75);backdrop-filter: blur(10px);
+      border:1px solid var(--border); border-radius:999px; padding:10px 12px;
+      box-shadow:0 10px 25px rgba(31,41,55,.10);
+      position:sticky; top:10px; z-index:10;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+    }
+    .logo{
+      width:38px;height:38px;border-radius:12px;
+      background: conic-gradient(from 180deg, var(--brand2), var(--brand), #ffcf7a, var(--brand2));
+      box-shadow: 0 10px 20px rgba(217,119,6,.25);
+      position:relative;
+    }
+    .logo:after{
+      content:"♞"; position:absolute; inset:0; display:grid; place-items:center;
+      font-size:22px; color:#1f2937; filter: drop-shadow(0 2px 0 rgba(255,255,255,.6));
+    }
+    h1{margin:0;font-size:18px}
+    .sub{color:var(--muted);font-size:12px;margin-top:2px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .btn{
+      border:1px solid var(--border); background:#fff; color:var(--ink);
+      padding:9px 11px;border-radius:999px; cursor:pointer;
+      box-shadow: 0 10px 18px rgba(31,41,55,.08);
+      font-weight:650; font-size:13px;
+    }
+    .btn.primary{
+      border-color: rgba(217,119,6,.35);
+      background: linear-gradient(180deg, #fff, #fff6e7);
+    }
+    .btn:active{transform:translateY(1px)}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      border:1px solid var(--border); background:rgba(255,255,255,.7);
+      border-radius:999px; padding:8px 10px;
+      font-size:13px;
+    }
+    select, input[type="checkbox"]{cursor:pointer}
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: 420px 1fr;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:rgba(255,255,255,.85);
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:12px 14px;
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+    .card .bd{padding:14px}
+    .kpi{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border); background:#fff;
+      color:var(--muted);
+    }
+
+    /* Board */
+    .boardWrap{padding:14px}
+    .board{
+      width:100%;
+      aspect-ratio:1/1;
+      display:grid;
+      grid-template-columns: repeat(8, 1fr);
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 18px 34px rgba(31,41,55,.12);
+      user-select:none;
+    }
+    .sq{
+      display:grid; place-items:center;
+      font-size: 34px;
+      position:relative;
+      cursor:pointer;
+      transition: transform .05s ease;
+    }
+    .sq:active{transform:scale(.99)}
+    .sq.light{background: linear-gradient(180deg, #ffe7c3, var(--sqLight))}
+    .sq.dark{background: linear-gradient(180deg, #d78c2f, var(--sqDark))}
+    .sq .coord{
+      position:absolute; left:6px; bottom:4px;
+      font-size:10px; color: rgba(0,0,0,.45);
+      font-weight:700;
+    }
+    .sq.dark .coord{color: rgba(255,255,255,.55)}
+    .sq.selected{outline: 3px solid rgba(96,165,250,.9); outline-offset:-3px}
+    .sq.hl::after{
+      content:"";
+      width: 16px; height:16px; border-radius:999px;
+      background: rgba(52,211,153,.75);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.35);
+      position:absolute;
+    }
+    .sq.cap::after{
+      content:"";
+      width: 16px; height:16px; border-radius:999px;
+      background: rgba(248,113,113,.80);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.35);
+      position:absolute;
+    }
+    .sq.lastFrom{box-shadow: inset 0 0 0 3px rgba(96,165,250,.55)}
+    .sq.lastTo{box-shadow: inset 0 0 0 3px rgba(245,158,11,.65)}
+
+    .panel{
+      display:grid; gap:14px;
+    }
+    .two{
+      display:grid; gap:14px; grid-template-columns: 1.1fr .9fr;
+    }
+    @media (max-width: 980px){
+      .two{grid-template-columns:1fr}
+    }
+
+    .hint{
+      border:1px dashed rgba(217,119,6,.45);
+      background: #fffaf0;
+      padding:10px 12px;
+      border-radius: 14px;
+      color:#7c2d12;
+      font-size:13px;
+    }
+    .muted{color:var(--muted)}
+    .list{margin:8px 0 0 18px;color:var(--ink)}
+    .list li{margin:6px 0}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .hr{height:1px;background:var(--border);margin:12px 0}
+    .small{font-size:12px}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .toast{
+      position: fixed; right: 14px; bottom: 14px;
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding:10px 12px;
+      box-shadow: var(--shadow);
+      max-width: 380px;
+      display:none;
+      z-index: 20;
+    }
+    .toast.show{display:block}
+    .toast strong{display:block;margin-bottom:2px}
+    .kbd{
+      font: 600 11px/1 ui-monospace,monospace;
+      background:#fff; border:1px solid var(--border); border-bottom-width:3px;
+      padding:2px 6px;border-radius:8px; color:#111827;
+    }
+    .quizQ{font-weight:800;margin:0 0 8px}
+    .opt{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+    .opt input{margin-top:3px}
+    .score{
+      font-weight:900;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border); background:#fff;
+    }
+    .good{color:var(--ok)}
+    .bad{color:var(--danger)}
+    .footer{
+      margin:14px 0 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+  </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="card">
-    <h1>🐍 Snake & 🪜 Ladders — 2 Player</h1>
-
-    <div class="board-wrap">
-      <canvas id="board" width="900" height="900"></canvas>
-
-      <div>
-        <div class="panel">
-          <div class="mini"><b>Current Turn</b><span id="turnName">Player 1</span></div>
-          <div class="mini"><b>Last Dice</b><span id="dice">–</span></div>
-          <div class="mini"><b>P1 Position</b><span id="p1pos">1</span></div>
-          <div class="mini"><b>P2 Position</b><span id="p2pos">1</span></div>
-          <div class="mini"><b>P1 Moves</b><span id="p1moves">0</span></div>
-          <div class="mini"><b>P2 Moves</b><span id="p2moves">0</span></div>
-        </div>
-
-        <div class="turn">
-          <div class="pill" id="pill1"><span class="dot" style="background:#d97706"></span><b>Player 1</b></div>
-          <div class="pill" id="pill2"><span class="dot" style="background:#2563eb"></span><b>Player 2</b></div>
-        </div>
-
-        <div class="btnrow">
-          <button id="roll">🎲 Roll Dice</button>
-          <button class="secondary" id="reset">🔁 New Game</button>
-        </div>
-
-        <div class="log" id="log">
-          <div style="color:#6b7280">Ready. Player 1 starts — roll the dice!</div>
-        </div>
-
-        <div class="footer">
-          Rules: Must reach exactly <b>100</b> to win. Ladders go up, snakes go down.  
-          If both players land on the same square, they can “stack” (no knockout).
-          <br><br>
-          Shortcut: Press <b>Space</b> or <b>Enter</b> to roll.
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Learn Chess — Interactive Basics</h1>
+          <div class="sub">Click a piece to see legal moves • Practice • Quiz • Offline</div>
         </div>
       </div>
+
+      <div class="controls">
+        <button class="btn primary" id="btnReset">Reset Position</button>
+        <button class="btn" id="btnFlip">Flip Board</button>
+        <button class="btn" id="btnHint">Show Hint</button>
+
+        <span class="pill">
+          Mode:
+          <select id="mode">
+            <option value="learn" selected>Learn Moves</option>
+            <option value="practice">Practice Tasks</option>
+            <option value="quiz">Quick Quiz</option>
+          </select>
+        </span>
+
+        <span class="pill">
+          <label class="row" style="gap:8px;margin:0">
+            <input type="checkbox" id="showCoords" checked />
+            <span>Coords</span>
+          </label>
+        </span>
+      </div>
     </div>
+
+    <div class="grid">
+      <!-- LEFT: BOARD -->
+      <div class="card">
+        <div class="hd">
+          <div>
+            <strong>Board</strong>
+            <div class="muted small">Tap: select → tap: move</div>
+          </div>
+          <div class="kpi">
+            <span class="tag">Turn: <strong id="turnTag">White</strong></span>
+            <span class="tag">Selected: <strong id="selTag">—</strong></span>
+          </div>
+        </div>
+        <div class="boardWrap">
+          <div class="board" id="board" aria-label="Chess board"></div>
+          <div class="hr"></div>
+          <div class="hint" id="status">
+            Tip: Start with the <b>Knight ♞</b>. It moves in an “L”: 2 squares in one direction + 1 perpendicular.
+          </div>
+          <div class="footer">
+            Shortcuts: <span class="kbd">R</span> reset • <span class="kbd">F</span> flip • <span class="kbd">H</span> hint
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: PANELS -->
+      <div class="panel">
+        <div class="card">
+          <div class="hd">
+            <strong>Lessons</strong>
+            <span class="tag">Basics</span>
+          </div>
+          <div class="bd" id="lessonBox">
+            <div class="two">
+              <div>
+                <p style="margin:0 0 8px">
+                  Chess goal: <b>Checkmate</b> the opponent’s king — attack the king so it has no legal escape.
+                </p>
+                <ul class="list">
+                  <li><b>King ♔</b>: 1 square any direction (cannot move into check).</li>
+                  <li><b>Queen ♕</b>: rook + bishop combined (any distance).</li>
+                  <li><b>Rook ♖</b>: straight lines (any distance).</li>
+                  <li><b>Bishop ♗</b>: diagonals (any distance).</li>
+                  <li><b>Knight ♘</b>: “L” shape, can jump over pieces.</li>
+                  <li><b>Pawn ♙</b>: forward 1 (or 2 from start), captures diagonally.</li>
+                </ul>
+                <div class="hr"></div>
+                <div class="small muted">
+                  This page focuses on movement + practice. It does not enforce full rules like castling/en-passant/check yet.
+                </div>
+              </div>
+              <div>
+                <div class="hint">
+                  <b>How to use</b><br/>
+                  1) Choose <b>Learn Moves</b><br/>
+                  2) Click a piece → see green dots for moves<br/>
+                  3) Red dots mean capture<br/>
+                  4) Try Practice Mode tasks
+                </div>
+                <div class="hr"></div>
+                <div class="row">
+                  <button class="btn" id="btnLoadKnight">Focus: Knight</button>
+                  <button class="btn" id="btnLoadMate">Mini: Mate Net</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="practiceCard" style="display:none">
+          <div class="hd">
+            <strong>Practice Tasks</strong>
+            <span class="tag">Do 5 minutes</span>
+          </div>
+          <div class="bd">
+            <p class="quizQ" id="taskTitle">Task</p>
+            <div class="muted" id="taskText"></div>
+            <div class="hr"></div>
+            <div class="row">
+              <button class="btn primary" id="btnNextTask">Next Task</button>
+              <button class="btn" id="btnShowAnswer">Show Answer</button>
+              <span class="score" id="taskCounter">1 / 8</span>
+            </div>
+            <div class="hr"></div>
+            <div class="small muted" id="answerBox" style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="card" id="quizCard" style="display:none">
+          <div class="hd">
+            <strong>Quick Quiz</strong>
+            <span class="tag">5 Qs</span>
+          </div>
+          <div class="bd">
+            <p class="quizQ" id="quizQ"></p>
+            <div id="quizOpts"></div>
+            <div class="hr"></div>
+            <div class="row">
+              <button class="btn primary" id="btnCheck">Check</button>
+              <button class="btn" id="btnNextQ">Next</button>
+              <span class="score">Score: <span id="quizScore">0</span>/5</span>
+            </div>
+            <div class="hr"></div>
+            <div class="small muted" id="quizExplain"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
-</div>
 
-<script>
-/* ===== 2 Player Snake & Ladders (single-file) ===== */
-const canvas = document.getElementById("board");
-const ctx = canvas.getContext("2d");
+  <script>
+    // ---------- Chess Learn Page (Simple Move Highlighter) ----------
+    // Note: This is NOT a full chess engine. It highlights legal moves by movement rules.
+    // It does not validate check, castling, en-passant, or promotion rules.
 
-const diceEl = document.getElementById("dice");
-const turnNameEl = document.getElementById("turnName");
-const p1posEl = document.getElementById("p1pos");
-const p2posEl = document.getElementById("p2pos");
-const p1movesEl = document.getElementById("p1moves");
-const p2movesEl = document.getElementById("p2moves");
-const logEl = document.getElementById("log");
-const rollBtn = document.getElementById("roll");
-const resetBtn = document.getElementById("reset");
-const pill1 = document.getElementById("pill1");
-const pill2 = document.getElementById("pill2");
+    const PIECES = {
+      "K":"♔","Q":"♕","R":"♖","B":"♗","N":"♘","P":"♙",
+      "k":"♚","q":"♛","r":"♜","b":"♝","n":"♞","p":"♟"
+    };
 
-const SIZE = 10;
-const END = 100;
+    const state = {
+      flip: false,
+      showCoords: true,
+      turn: "w", // w or b
+      board: [], // 8x8
+      selected: null, // {r,c}
+      moves: [], // list of {r,c,type:"move"|"cap"}
+      lastMove: null, // {from:{r,c},to:{r,c}}
+      mode: "learn"
+    };
 
-// Feel free to edit mappings:
-const ladders = {4:14, 9:31, 20:38, 28:84, 40:59, 51:67, 63:81, 71:91};
-const snakes  = {17:7, 54:34, 62:19, 64:60, 87:36, 93:73, 95:75, 99:78};
+    const el = (id)=>document.getElementById(id);
+    const boardEl = el("board");
+    const statusEl = el("status");
+    const turnTag = el("turnTag");
+    const selTag = el("selTag");
+    const toastEl = el("toast");
 
-let state = {
-  turn: 1,          // 1 or 2
-  p1: {pos:1, moves:0},
-  p2: {pos:1, moves:0},
-  locked:false,
-  gameOver:false
-};
+    const modeSel = el("mode");
+    const showCoordsCb = el("showCoords");
 
-function log(msg, muted=false){
-  const div = document.createElement("div");
-  div.textContent = msg;
-  if(muted) div.style.color = "#6b7280";
-  logEl.prepend(div);
-}
+    const practiceCard = el("practiceCard");
+    const quizCard = el("quizCard");
 
-function rc(n){
-  const i=n-1;
-  const r=Math.floor(i/10);
-  let c=i%10;
-  if(r%2===1) c=9-c;          // serpentine
-  return {r,c};               // r=0 is bottom row
-}
-function center(n){
-  const {r,c}=rc(n);
-  const w=canvas.width/10, h=canvas.height/10;
-  return {x:(c+.5)*w, y:canvas.height-(r+.5)*h};
-}
+    // Starting position (simple)
+    const START_FEN = [
+      ["r","n","b","q","k","b","n","r"],
+      ["p","p","p","p","p","p","p","p"],
+      ["","","","","","","",""],
+      ["","","","","","","",""],
+      ["","","","","","","",""],
+      ["","","","","","","",""],
+      ["P","P","P","P","P","P","P","P"],
+      ["R","N","B","Q","K","B","N","R"],
+    ];
 
-function drawLink(a,b,color,isCurvy=false){
-  const p1=center(a), p2=center(b);
-  ctx.save();
-  ctx.strokeStyle=color;
-  ctx.lineWidth=10;
-  ctx.lineCap="round";
-  ctx.beginPath();
-  if(!isCurvy){
-    ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
-  }else{
-    const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
-    const dx=p2.x-p1.x, dy=p2.y-p1.y;
-    const len=Math.max(1, Math.hypot(dx,dy));
-    const bend=90;
-    const cx=mx + (-dy/len)*bend;
-    const cy=my + ( dx/len)*bend;
-    ctx.moveTo(p1.x,p1.y);
-    ctx.quadraticCurveTo(cx,cy,p2.x,p2.y);
-  }
-  ctx.stroke();
-
-  // endpoints
-  ctx.fillStyle=color;
-  ctx.beginPath(); ctx.arc(p1.x,p1.y,9,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(p2.x,p2.y,9,0,Math.PI*2); ctx.fill();
-  ctx.restore();
-}
-
-function drawToken(pos, color, label, offsetIdx){
-  const p=center(pos);
-  // if both tokens same cell, offset a bit
-  const offsets = [
-    {dx:-14, dy:-10},
-    {dx: 14, dy: 10}
-  ];
-  const off = offsets[offsetIdx] || {dx:0, dy:0};
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(p.x+off.dx, p.y+off.dy, 18, 0, Math.PI*2);
-  ctx.fillStyle=color;
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(p.x+off.dx, p.y+off.dy, 10, 0, Math.PI*2);
-  ctx.fillStyle="rgba(255,255,255,.92)";
-  ctx.fill();
-
-  ctx.fillStyle="#111827";
-  ctx.font="bold 14px system-ui, Arial";
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillText(label, p.x+off.dx, p.y+off.dy);
-  ctx.restore();
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const w=canvas.width/10, h=canvas.height/10;
-
-  // grid
-  for(let r=0;r<10;r++){
-    for(let c=0;c<10;c++){
-      const x=c*w;
-      const y=canvas.height-(r+1)*h;
-      ctx.fillStyle=((r+c)%2) ? "#fff3d6" : "#fffaf0";
-      ctx.fillRect(x,y,w,h);
-      ctx.strokeStyle="#eadcc5";
-      ctx.lineWidth=2;
-      ctx.strokeRect(x,y,w,h);
+    function cloneBoard(b){ return b.map(row=>row.slice()); }
+    function reset(){
+      state.board = cloneBoard(START_FEN);
+      state.selected = null;
+      state.moves = [];
+      state.turn = "w";
+      state.lastMove = null;
+      render();
+      setStatus("Tip: Click any piece to see its moves. Try the Knight ♞ first!");
     }
-  }
 
-  // numbers
-  ctx.fillStyle="#6b7280";
-  ctx.font="bold 16px system-ui, Arial";
-  ctx.textAlign="left";
-  ctx.textBaseline="top";
-  for(let n=1;n<=100;n++){
-    const p=center(n);
-    ctx.fillText(String(n), p.x-32, p.y-34);
-  }
+    function setStatus(html){ statusEl.innerHTML = html; }
+    function toast(title, msg){
+      toastEl.innerHTML = `<strong>${title}</strong><div class="small muted">${msg}</div>`;
+      toastEl.classList.add("show");
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 2200);
+    }
 
-  // ladders (gold)
-  for(const k in ladders) drawLink(Number(k), ladders[k], "rgba(245,158,11,.9)", false);
+    function inBounds(r,c){ return r>=0 && r<8 && c>=0 && c<8; }
+    function isWhite(ch){ return ch && ch.toUpperCase()===ch; }
+    function isBlack(ch){ return ch && ch.toLowerCase()===ch; }
 
-  // snakes (red curve)
-  for(const k in snakes) drawLink(Number(k), snakes[k], "rgba(185,28,28,.85)", true);
+    function algebra(r,c){
+      // r=0 top => rank 8, c=0 => file a
+      const file = "abcdefgh"[c];
+      const rank = (8 - r);
+      return file + rank;
+    }
 
-  // tokens
-  const same = state.p1.pos === state.p2.pos;
-  drawToken(state.p1.pos, "#d97706", "P1", same ? 0 : 0);
-  drawToken(state.p2.pos, "#2563eb", "P2", same ? 1 : 0);
+    function displayCoords(r,c){
+      // show bottom-left for each square relative to viewing orientation
+      return algebra(r,c);
+    }
 
-  // crown
-  const crown=center(100);
-  ctx.font="42px system-ui, Arial";
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillText("👑", crown.x, crown.y);
-}
+    function viewToModel(vr,vc){
+      // convert view coords to model coords if flipped
+      if(!state.flip) return {r:vr,c:vc};
+      return {r:7-vr,c:7-vc};
+    }
+    function modelToView(r,c){
+      if(!state.flip) return {vr:r,vc:c};
+      return {vr:7-r,vc:7-c};
+    }
 
-function updateUI(){
-  diceEl.textContent = state.lastDice ?? "–";
-  turnNameEl.textContent = state.turn === 1 ? "Player 1" : "Player 2";
-  p1posEl.textContent = state.p1.pos;
-  p2posEl.textContent = state.p2.pos;
-  p1movesEl.textContent = state.p1.moves;
-  p2movesEl.textContent = state.p2.moves;
+    function pieceAt(r,c){ return state.board[r][c] || ""; }
 
-  pill1.classList.toggle("active", state.turn===1);
-  pill2.classList.toggle("active", state.turn===2);
+    function getMovesFor(r,c){
+      const p = pieceAt(r,c);
+      if(!p) return [];
+      const side = isWhite(p) ? "w" : "b";
+      const enemy = side==="w" ? "b" : "w";
 
-  draw();
-}
+      const moves = [];
+      const push = (rr,cc,type)=>{
+        moves.push({r:rr,c:cc,type});
+      };
 
-function rollDice(){ return Math.floor(Math.random()*6)+1; }
+      const addRay = (dr,dc)=>{
+        let rr=r+dr, cc=c+dc;
+        while(inBounds(rr,cc)){
+          const t = pieceAt(rr,cc);
+          if(!t){ push(rr,cc,"move"); }
+          else{
+            const tSide = isWhite(t) ? "w" : "b";
+            if(tSide===enemy) push(rr,cc,"cap");
+            break;
+          }
+          rr+=dr; cc+=dc;
+        }
+      };
 
-function applyJump(player){
-  const p = player.pos;
-  if(ladders[p]){ player.pos = ladders[p]; return {type:"ladder"}; }
-  if(snakes[p]) { player.pos = snakes[p];  return {type:"snake"}; }
-  return null;
-}
+      const up = side==="w" ? -1 : 1;
 
-function endTurn(){
-  state.turn = (state.turn === 1) ? 2 : 1;
-  updateUI();
-}
+      switch(p.toLowerCase()){
+        case "p":{
+          // forward
+          const fr = r + up;
+          if(inBounds(fr,c) && !pieceAt(fr,c)){
+            push(fr,c,"move");
+            // double from start
+            const startRow = side==="w" ? 6 : 1;
+            const fr2 = r + up*2;
+            if(r===startRow && inBounds(fr2,c) && !pieceAt(fr2,c)) push(fr2,c,"move");
+          }
+          // captures
+          for(const dc of [-1,1]){
+            const cr = r + up, cc = c + dc;
+            if(inBounds(cr,cc)){
+              const t = pieceAt(cr,cc);
+              if(t){
+                const tSide = isWhite(t) ? "w" : "b";
+                if(tSide===enemy) push(cr,cc,"cap");
+              }
+            }
+          }
+          break;
+        }
+        case "n":{
+          const steps = [
+            [-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]
+          ];
+          for(const [dr,dc] of steps){
+            const rr=r+dr, cc=c+dc;
+            if(!inBounds(rr,cc)) continue;
+            const t = pieceAt(rr,cc);
+            if(!t) push(rr,cc,"move");
+            else{
+              const tSide = isWhite(t) ? "w" : "b";
+              if(tSide===enemy) push(rr,cc,"cap");
+            }
+          }
+          break;
+        }
+        case "b":{
+          addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1);
+          break;
+        }
+        case "r":{
+          addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1);
+          break;
+        }
+        case "q":{
+          addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1);
+          addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1);
+          break;
+        }
+        case "k":{
+          for(let dr=-1;dr<=1;dr++){
+            for(let dc=-1;dc<=1;dc++){
+              if(dr===0 && dc===0) continue;
+              const rr=r+dr, cc=c+dc;
+              if(!inBounds(rr,cc)) continue;
+              const t = pieceAt(rr,cc);
+              if(!t) push(rr,cc,"move");
+              else{
+                const tSide = isWhite(t) ? "w" : "b";
+                if(tSide===enemy) push(rr,cc,"cap");
+              }
+            }
+          }
+          break;
+        }
+      }
+      return moves;
+    }
 
-function handleWin(winner){
-  state.gameOver = true;
-  rollBtn.disabled = true;
-  log(`👑 ${winner} WINS!`, false);
-}
+    function clearSelection(){
+      state.selected = null;
+      state.moves = [];
+      selTag.textContent = "—";
+    }
 
-async function takeTurn(){
-  if(state.locked || state.gameOver) return;
-  state.locked = true;
-  rollBtn.disabled = true;
+    function selectSquare(r,c){
+      const p = pieceAt(r,c);
+      if(!p){
+        clearSelection();
+        render();
+        return;
+      }
 
-  const d = rollDice();
-  state.lastDice = d;
-  updateUI();
+      const side = isWhite(p) ? "w" : "b";
+      if(side !== state.turn){
+        toast("Not your turn", `It's ${state.turn==="w"?"White":"Black"} to move.`);
+        return;
+      }
 
-  const player = (state.turn===1) ? state.p1 : state.p2;
-  const who = (state.turn===1) ? "Player 1" : "Player 2";
-  log(`🎲 ${who} rolled ${d}.`);
+      state.selected = {r,c};
+      state.moves = getMovesFor(r,c);
+      selTag.textContent = `${PIECES[p]} ${algebra(r,c)}`;
+      render();
+    }
 
-  const target = player.pos + d;
-  if(target > END){
-    log(`❗ ${who} needs exact 100. Stayed at ${player.pos}.`, true);
-    state.locked = false;
-    rollBtn.disabled = false;
-    endTurn();
-    return;
-  }
+    function tryMove(toR,toC){
+      if(!state.selected) return false;
+      const from = state.selected;
+      const legal = state.moves.find(m=>m.r===toR && m.c===toC);
+      if(!legal) return false;
 
-  // simple step animation
-  const stepDelay = 120;
-  const from = player.pos;
-  for(let n=from+1; n<=target; n++){
-    player.pos = n;
-    updateUI();
-    await new Promise(r=>setTimeout(r, stepDelay));
-  }
+      const p = pieceAt(from.r,from.c);
+      const target = pieceAt(toR,toC);
 
-  player.moves++;
+      // perform move
+      state.board[toR][toC] = p;
+      state.board[from.r][from.c] = "";
+      state.lastMove = {from:{...from}, to:{r:toR,c:toC}};
+      clearSelection();
 
-  const jump = applyJump(player);
-  if(jump){
-    if(jump.type==="ladder") log(`🪜 Ladder! ${who} climbs up!`);
-    if(jump.type==="snake")  log(`🐍 Snake! ${who} slides down!`);
-    updateUI();
-    await new Promise(r=>setTimeout(r, 240));
-  }
+      // toggle turn
+      state.turn = (state.turn==="w") ? "b" : "w";
+      turnTag.textContent = state.turn==="w" ? "White" : "Black";
 
-  if(player.pos === END){
-    updateUI();
-    handleWin(who);
-    state.locked = false;
-    return;
-  }
+      if(target){
+        toast("Capture!", `${PIECES[p]} captured ${PIECES[target]} on ${algebra(toR,toC)}.`);
+      }else{
+        toast("Moved", `${PIECES[p]} to ${algebra(toR,toC)}.`);
+      }
 
-  state.locked = false;
-  rollBtn.disabled = false;
-  endTurn();
-}
+      // practice/quiz helpers can update status
+      if(state.mode==="practice") setStatus(`Practice: Complete the task shown on the right.`);
+      else if(state.mode==="quiz") setStatus(`Quiz: Answer on the right. Use the board to visualize.`);
+      else setStatus(`Tip: Click a piece to see its moves. Try bishops on diagonals!`);
 
-function resetGame(){
-  state = {turn:1, p1:{pos:1,moves:0}, p2:{pos:1,moves:0}, locked:false, gameOver:false};
-  diceEl.textContent="–";
-  rollBtn.disabled=false;
-  log(`🔁 New game started. Player 1 begins.`, true);
-  updateUI();
-}
+      render();
+      return true;
+    }
 
-rollBtn.addEventListener("click", takeTurn);
-resetBtn.addEventListener("click", resetGame);
+    function onSquareClick(vr,vc){
+      const {r,c} = viewToModel(vr,vc);
 
-// Space/Enter to roll
-window.addEventListener("keydown",(e)=>{
-  const k=e.key.toLowerCase();
-  if((k===" "||k==="enter") && !rollBtn.disabled){
-    e.preventDefault();
-    takeTurn();
-  }
-});
+      if(state.selected){
+        // if clicked a legal destination => move
+        if(tryMove(r,c)) return;
 
-updateUI();
-</script>
+        // else if click another own piece => select it
+        const p = pieceAt(r,c);
+        if(p){
+          const side = isWhite(p) ? "w" : "b";
+          if(side===state.turn){
+            selectSquare(r,c);
+            return;
+          }
+        }
+        // otherwise clear
+        clearSelection();
+        render();
+        return;
+      }
+
+      selectSquare(r,c);
+    }
+
+    function render(){
+      boardEl.innerHTML = "";
+      // update tags
+      turnTag.textContent = state.turn==="w" ? "White" : "Black";
+      selTag.textContent = state.selected ? selTag.textContent : (selTag.textContent || "—");
+
+      // build view order
+      for(let vr=0; vr<8; vr++){
+        for(let vc=0; vc<8; vc++){
+          const {r,c} = viewToModel(vr,vc);
+          const sq = document.createElement("div");
+          const isLight = ( (r+c) % 2 === 0 );
+          sq.className = "sq " + (isLight ? "light":"dark");
+          sq.dataset.vr = vr; sq.dataset.vc = vc;
+
+          const p = pieceAt(r,c);
+          sq.textContent = p ? PIECES[p] : "";
+
+          if(state.selected && state.selected.r===r && state.selected.c===c){
+            sq.classList.add("selected");
+          }
+
+          // last move styling
+          if(state.lastMove){
+            if(state.lastMove.from.r===r && state.lastMove.from.c===c) sq.classList.add("lastFrom");
+            if(state.lastMove.to.r===r && state.lastMove.to.c===c) sq.classList.add("lastTo");
+          }
+
+          // highlight moves
+          if(state.moves && state.moves.length){
+            const m = state.moves.find(x=>x.r===r && x.c===c);
+            if(m){
+              sq.classList.add(m.type==="cap" ? "cap" : "hl");
+            }
+          }
+
+          if(state.showCoords){
+            const coord = document.createElement("div");
+            coord.className = "coord";
+            coord.textContent = displayCoords(r,c);
+            sq.appendChild(coord);
+          }
+
+          sq.addEventListener("click", ()=>onSquareClick(vr,vc));
+          boardEl.appendChild(sq);
+        }
+      }
+    }
+
+    // ---------- Modes (Learn / Practice / Quiz) ----------
+    const tasks = [
+      {
+        title: "Knight Tour (Mini)",
+        text: "Select a Knight and make 3 legal knight moves in a row. Notice it can jump over pieces.",
+        answer: "Knights move in an L. Example: White knight g1 → f3 → g5 → h7 (if squares are free / capturable)."
+      },
+      {
+        title: "Bishop Diagonals",
+        text: "Select a Bishop. Try to move it along a diagonal to a new square (diagonal lines only).",
+        answer: "Bishops stay on the same color squares forever and move diagonally any distance."
+      },
+      {
+        title: "Rook Files & Ranks",
+        text: "Select a Rook and move it in a straight line. No diagonal moves.",
+        answer: "Rooks move like a plus sign: up/down/left/right any distance until blocked."
+      },
+      {
+        title: "Queen Power",
+        text: "Select a Queen and observe it has both rook + bishop moves.",
+        answer: "Queen = rook + bishop combined. Often best kept safe early."
+      },
+      {
+        title: "Pawn Rules",
+        text: "Move a pawn forward 1 (or 2 from starting row). Try a diagonal capture if possible.",
+        answer: "Pawns capture diagonally, not straight. From start: can move two squares if both are empty."
+      },
+      {
+        title: "Create an Attack",
+        text: "Try to capture one opponent pawn with any piece (red dots show captures).",
+        answer: "Captures are shown with red dots. Choose a piece whose red dot lands on an enemy."
+      },
+      {
+        title: "Open a Line",
+        text: "Move a pawn to open a bishop or queen line.",
+        answer: "Moving central pawns often opens diagonals for bishops/queen."
+      },
+      {
+        title: "Mini Check (Concept)",
+        text: "Put your piece on a square that would attack the enemy king (we don't enforce check).",
+        answer: "Check means a piece attacks the king. Use queen/rook/bishop lines to point at the king."
+      }
+    ];
+
+    let taskIndex = 0;
+    function showTask(i){
+      taskIndex = i % tasks.length;
+      el("taskTitle").textContent = tasks[taskIndex].title;
+      el("taskText").textContent = tasks[taskIndex].text;
+      el("taskCounter").textContent = `${taskIndex+1} / ${tasks.length}`;
+      el("answerBox").style.display = "none";
+      el("answerBox").textContent = tasks[taskIndex].answer;
+    }
+
+    const quiz = [
+      {
+        q: "Which piece can jump over other pieces?",
+        opts: ["Bishop", "Knight", "Rook", "Queen"],
+        a: 1,
+        e: "The knight moves in an L-shape and can jump over pieces."
+      },
+      {
+        q: "A bishop always stays on the same color squares. True or false?",
+        opts: ["True", "False"],
+        a: 0,
+        e: "Because it moves diagonally, it never changes square color."
+      },
+      {
+        q: "How does a pawn capture?",
+        opts: ["Straight forward", "Diagonally forward", "Like a knight", "Backward diagonally"],
+        a: 1,
+        e: "Pawns move forward but capture one step diagonally forward."
+      },
+      {
+        q: "The queen moves like…",
+        opts: ["Only diagonals", "Only straight lines", "Rook + Bishop combined", "One square only"],
+        a: 2,
+        e: "Queen can move in straight lines and diagonals any distance."
+      },
+      {
+        q: "Goal of chess is to…",
+        opts: ["Capture all pieces", "Checkmate the king", "Promote a pawn", "Win material"],
+        a: 1,
+        e: "You win by checkmating the opponent king."
+      }
+    ];
+
+    let qIndex = 0;
+    let qScore = 0;
+    let qChecked = false;
+
+    function renderQuiz(){
+      qChecked = false;
+      el("quizExplain").textContent = "";
+      const item = quiz[qIndex];
+      el("quizQ").textContent = item.q;
+      const box = el("quizOpts");
+      box.innerHTML = "";
+      item.opts.forEach((t,idx)=>{
+        const row = document.createElement("label");
+        row.className = "opt";
+        row.innerHTML = `<input type="radio" name="q" value="${idx}"/> <span>${t}</span>`;
+        box.appendChild(row);
+      });
+      el("quizScore").textContent = qScore;
+    }
+
+    function getSelectedQuizOpt(){
+      const checked = document.querySelector('input[name="q"]:checked');
+      return checked ? parseInt(checked.value,10) : -1;
+    }
+
+    function checkQuiz(){
+      if(qChecked) return;
+      const pick = getSelectedQuizOpt();
+      if(pick<0){
+        toast("Choose an option", "Select one answer first.");
+        return;
+      }
+      qChecked = true;
+      const item = quiz[qIndex];
+      if(pick === item.a){
+        qScore++;
+        el("quizExplain").innerHTML = `<span class="good"><b>Correct.</b></span> ${item.e}`;
+      }else{
+        el("quizExplain").innerHTML = `<span class="bad"><b>Not quite.</b></span> ${item.e}`;
+      }
+      el("quizScore").textContent = qScore;
+    }
+
+    function nextQuiz(){
+      qIndex = (qIndex + 1) % quiz.length;
+      renderQuiz();
+      setStatus("Quiz: Use the board to visualize positions if needed, then answer on the right.");
+    }
+
+    // ---------- Lesson quick loaders ----------
+    function loadKnightFocus(){
+      // Clear and place only a knight + a few pawns for fun
+      state.board = Array.from({length:8}, ()=>Array(8).fill(""));
+      state.board[7][1] = "N"; // b1
+      state.board[6][3] = "P"; // d2
+      state.board[5][2] = "p"; // c3
+      state.board[4][4] = "p"; // e4
+      state.turn = "w";
+      state.lastMove = null;
+      clearSelection();
+      render();
+      setStatus("Knight Focus: Click the knight ♘ and see its L-shaped moves. Red dots are captures.");
+      toast("Loaded", "Knight focus position loaded.");
+    }
+
+    function loadMateNet(){
+      // Simple mate-net pattern position (conceptual)
+      state.board = Array.from({length:8}, ()=>Array(8).fill(""));
+      state.board[0][4] = "k"; // e8
+      state.board[7][4] = "K"; // e1
+      state.board[6][4] = "Q"; // e2
+      state.board[6][7] = "R"; // h2
+      state.turn = "w";
+      state.lastMove = null;
+      clearSelection();
+      render();
+      setStatus("Mate Net (Concept): Use queen + rook to restrict the king. Try moving rook/queen to attack e8.");
+      toast("Loaded", "Mate-net mini position loaded.");
+    }
+
+    // ---------- Wire UI ----------
+    el("btnReset").addEventListener("click", reset);
+    el("btnFlip").addEventListener("click", ()=>{
+      state.flip = !state.flip;
+      render();
+      toast("Board", state.flip ? "Flipped view." : "Normal view.");
+    });
+    el("btnHint").addEventListener("click", ()=>{
+      const tips = [
+        "Control the center early: e4/d4/e5/d5 squares matter.",
+        "Develop knights and bishops before moving the queen too much.",
+        "Don’t hang pieces: check red dots before you move.",
+        "Knights love outposts (safe squares in enemy territory).",
+        "Bishops are strongest on open diagonals."
+      ];
+      const t = tips[Math.floor(Math.random()*tips.length)];
+      setStatus("Hint: " + t);
+      toast("Hint", t);
+    });
+
+    el("btnLoadKnight").addEventListener("click", loadKnightFocus);
+    el("btnLoadMate").addEventListener("click", loadMateNet);
+
+    showCoordsCb.addEventListener("change", ()=>{
+      state.showCoords = showCoordsCb.checked;
+      render();
+    });
+
+    modeSel.addEventListener("change", ()=>{
+      state.mode = modeSel.value;
+
+      // show/hide cards
+      practiceCard.style.display = (state.mode==="practice") ? "" : "none";
+      quizCard.style.display = (state.mode==="quiz") ? "" : "none";
+
+      if(state.mode==="learn"){
+        setStatus("Learn Moves: Click any piece to see legal moves. Green = move, Red = capture.");
+      }else if(state.mode==="practice"){
+        showTask(taskIndex);
+        setStatus("Practice: Complete the task shown on the right. Use Reset if stuck.");
+      }else{
+        if(qScore===0 && qIndex===0) renderQuiz();
+        setStatus("Quiz: Answer on the right. Use the board to think it through.");
+      }
+    });
+
+    el("btnNextTask").addEventListener("click", ()=>{
+      showTask(taskIndex+1);
+      toast("Practice", "Next task loaded.");
+    });
+    el("btnShowAnswer").addEventListener("click", ()=>{
+      const box = el("answerBox");
+      box.style.display = (box.style.display==="none") ? "" : "none";
+      toast("Answer", box.style.display==="none" ? "Hidden." : "Shown.");
+    });
+
+    el("btnCheck").addEventListener("click", checkQuiz);
+    el("btnNextQ").addEventListener("click", nextQuiz);
+
+    // keyboard shortcuts
+    window.addEventListener("keydown", (e)=>{
+      if(e.key.toLowerCase()==="r"){ reset(); }
+      if(e.key.toLowerCase()==="f"){ el("btnFlip").click(); }
+      if(e.key.toLowerCase()==="h"){ el("btnHint").click(); }
+    });
+
+    // init
+    reset();
+    showTask(0);
+    renderQuiz();
+  </script>
 </body>
 </html>
