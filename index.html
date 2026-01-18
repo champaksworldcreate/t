@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Learn Chess — Interactive Basics</title>
-  <meta name="description" content="Learn chess basics with an interactive board, lessons, and quizzes. Works offline." />
+  <title>Learn Chess — Interactive Basics + Play vs Computer</title>
+  <meta name="description" content="Learn chess basics with an interactive board, lessons, quizzes, and play vs computer. Works offline." />
   <style>
     :root{
       --bg:#fff7e6; --card:#fff; --ink:#1f2937; --muted:#6b7280;
@@ -12,7 +12,7 @@
       --shadow:0 18px 40px rgba(31,41,55,.14);
       --ok:#166534; --danger:#b91c1c;
       --sqLight:#f3d7ad; --sqDark:#c77d2a;
-      --hl:#60a5fa; --hl2:#34d399; --cap:#f87171;
+      --hl2:#34d399; --cap:#f87171;
       --r:18px;
     }
     *{box-sizing:border-box}
@@ -21,7 +21,6 @@
       background: radial-gradient(1200px 800px at 15% 0%, #fff 0%, var(--bg) 55%, #ffecc7 100%);
       color:var(--ink);
     }
-    a{color:inherit}
     .wrap{max-width:1100px;margin:18px auto;padding:14px}
     .topbar{
       display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
@@ -30,9 +29,7 @@
       box-shadow:0 10px 25px rgba(31,41,55,.10);
       position:sticky; top:10px; z-index:10;
     }
-    .brand{
-      display:flex;align-items:center;gap:10px;
-    }
+    .brand{display:flex;align-items:center;gap:10px}
     .logo{
       width:38px;height:38px;border-radius:12px;
       background: conic-gradient(from 180deg, var(--brand2), var(--brand), #ffcf7a, var(--brand2));
@@ -92,7 +89,6 @@
       color:var(--muted);
     }
 
-    /* Board */
     .boardWrap{padding:14px}
     .board{
       width:100%;
@@ -139,16 +135,11 @@
     .sq.lastFrom{box-shadow: inset 0 0 0 3px rgba(96,165,250,.55)}
     .sq.lastTo{box-shadow: inset 0 0 0 3px rgba(245,158,11,.65)}
 
-    .panel{
-      display:grid; gap:14px;
-    }
-    .two{
-      display:grid; gap:14px; grid-template-columns: 1.1fr .9fr;
-    }
+    .panel{display:grid; gap:14px}
+    .two{display:grid; gap:14px; grid-template-columns: 1.1fr .9fr}
     @media (max-width: 980px){
       .two{grid-template-columns:1fr}
     }
-
     .hint{
       border:1px dashed rgba(217,119,6,.45);
       background: #fffaf0;
@@ -163,7 +154,6 @@
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .hr{height:1px;background:var(--border);margin:12px 0}
     .small{font-size:12px}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
     .toast{
       position: fixed; right: 14px; bottom: 14px;
       background: rgba(255,255,255,.92);
@@ -192,12 +182,8 @@
     }
     .good{color:var(--ok)}
     .bad{color:var(--danger)}
-    .footer{
-      margin:14px 0 0;
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-    }
+    .footer{margin:14px 0 0;text-align:center;color:var(--muted);font-size:12px}
+    .lock{opacity:.65; pointer-events:none; filter:grayscale(.2)}
   </style>
 </head>
 <body>
@@ -207,7 +193,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Learn Chess — Interactive Basics</h1>
-          <div class="sub">Click a piece to see legal moves • Practice • Quiz • Offline</div>
+          <div class="sub">Learn Moves • Practice • Quiz • <b>Play vs Computer</b> • Offline</div>
         </div>
       </div>
 
@@ -222,6 +208,15 @@
             <option value="learn" selected>Learn Moves</option>
             <option value="practice">Practice Tasks</option>
             <option value="quiz">Quick Quiz</option>
+            <option value="cpu">Play vs Computer</option>
+          </select>
+        </span>
+
+        <span class="pill">
+          CPU:
+          <select id="cpuLevel">
+            <option value="easy" selected>Easy</option>
+            <option value="medium">Medium</option>
           </select>
         </span>
 
@@ -245,6 +240,7 @@
           <div class="kpi">
             <span class="tag">Turn: <strong id="turnTag">White</strong></span>
             <span class="tag">Selected: <strong id="selTag">—</strong></span>
+            <span class="tag">Game: <strong id="gameTag">Free</strong></span>
           </div>
         </div>
         <div class="boardWrap">
@@ -266,14 +262,14 @@
             <strong>Lessons</strong>
             <span class="tag">Basics</span>
           </div>
-          <div class="bd" id="lessonBox">
+          <div class="bd">
             <div class="two">
               <div>
                 <p style="margin:0 0 8px">
                   Chess goal: <b>Checkmate</b> the opponent’s king — attack the king so it has no legal escape.
                 </p>
                 <ul class="list">
-                  <li><b>King ♔</b>: 1 square any direction (cannot move into check).</li>
+                  <li><b>King ♔</b>: 1 square any direction (we don’t enforce “check” yet).</li>
                   <li><b>Queen ♕</b>: rook + bishop combined (any distance).</li>
                   <li><b>Rook ♖</b>: straight lines (any distance).</li>
                   <li><b>Bishop ♗</b>: diagonals (any distance).</li>
@@ -282,16 +278,14 @@
                 </ul>
                 <div class="hr"></div>
                 <div class="small muted">
-                  This page focuses on movement + practice. It does not enforce full rules like castling/en-passant/check yet.
+                  Note: This trainer does not validate check/castling/en-passant/promotion yet (movement rules only).
                 </div>
               </div>
               <div>
                 <div class="hint">
-                  <b>How to use</b><br/>
-                  1) Choose <b>Learn Moves</b><br/>
-                  2) Click a piece → see green dots for moves<br/>
-                  3) Red dots mean capture<br/>
-                  4) Try Practice Mode tasks
+                  <b>Play vs Computer</b><br/>
+                  You are <b>White</b>. Make a move, then the computer (Black) replies automatically.
+                  Computer chooses captures and good trades using a simple evaluation.
                 </div>
                 <div class="hr"></div>
                 <div class="row">
@@ -348,9 +342,9 @@
   </div>
 
   <script>
-    // ---------- Chess Learn Page (Simple Move Highlighter) ----------
-    // Note: This is NOT a full chess engine. It highlights legal moves by movement rules.
-    // It does not validate check, castling, en-passant, or promotion rules.
+    // ---------- Chess Learn Page + CPU (Simple Move Rules + Simple AI) ----------
+    // Still NOT a full chess engine: no check/castle/en-passant/promotion validation.
+    // CPU picks moves using material + small lookahead.
 
     const PIECES = {
       "K":"♔","Q":"♕","R":"♖","B":"♗","N":"♘","P":"♙",
@@ -360,12 +354,15 @@
     const state = {
       flip: false,
       showCoords: true,
-      turn: "w", // w or b
-      board: [], // 8x8
-      selected: null, // {r,c}
-      moves: [], // list of {r,c,type:"move"|"cap"}
-      lastMove: null, // {from:{r,c},to:{r,c}}
-      mode: "learn"
+      turn: "w",            // w or b
+      board: [],            // 8x8
+      selected: null,       // {r,c}
+      moves: [],            // list of {r,c,type:"move"|"cap"}
+      lastMove: null,       // {from:{r,c},to:{r,c}}
+      mode: "learn",        // learn | practice | quiz | cpu
+      cpuLevel: "easy",     // easy | medium
+      cpuThinking: false,
+      gameOver: false
     };
 
     const el = (id)=>document.getElementById(id);
@@ -373,16 +370,17 @@
     const statusEl = el("status");
     const turnTag = el("turnTag");
     const selTag = el("selTag");
+    const gameTag = el("gameTag");
     const toastEl = el("toast");
 
     const modeSel = el("mode");
     const showCoordsCb = el("showCoords");
+    const cpuLevelSel = el("cpuLevel");
 
     const practiceCard = el("practiceCard");
     const quizCard = el("quizCard");
 
-    // Starting position (simple)
-    const START_FEN = [
+    const START = [
       ["r","n","b","q","k","b","n","r"],
       ["p","p","p","p","p","p","p","p"],
       ["","","","","","","",""],
@@ -395,13 +393,16 @@
 
     function cloneBoard(b){ return b.map(row=>row.slice()); }
     function reset(){
-      state.board = cloneBoard(START_FEN);
+      state.board = cloneBoard(START);
       state.selected = null;
       state.moves = [];
       state.turn = "w";
       state.lastMove = null;
+      state.cpuThinking = false;
+      state.gameOver = false;
       render();
-      setStatus("Tip: Click any piece to see its moves. Try the Knight ♞ first!");
+      setStatus('Tip: Click a piece to see moves. Try the Knight ♞ first!');
+      updateGameTag();
     }
 
     function setStatus(html){ statusEl.innerHTML = html; }
@@ -417,44 +418,29 @@
     function isBlack(ch){ return ch && ch.toLowerCase()===ch; }
 
     function algebra(r,c){
-      // r=0 top => rank 8, c=0 => file a
       const file = "abcdefgh"[c];
       const rank = (8 - r);
       return file + rank;
     }
 
-    function displayCoords(r,c){
-      // show bottom-left for each square relative to viewing orientation
-      return algebra(r,c);
-    }
-
     function viewToModel(vr,vc){
-      // convert view coords to model coords if flipped
       if(!state.flip) return {r:vr,c:vc};
       return {r:7-vr,c:7-vc};
     }
-    function modelToView(r,c){
-      if(!state.flip) return {vr:r,vc:c};
-      return {vr:7-r,vc:7-c};
-    }
+    function pieceAt(board,r,c){ return (board ? board[r][c] : state.board[r][c]) || ""; }
 
-    function pieceAt(r,c){ return state.board[r][c] || ""; }
-
-    function getMovesFor(r,c){
-      const p = pieceAt(r,c);
+    function getMovesFor(board,r,c){
+      const p = pieceAt(board,r,c);
       if(!p) return [];
       const side = isWhite(p) ? "w" : "b";
       const enemy = side==="w" ? "b" : "w";
-
       const moves = [];
-      const push = (rr,cc,type)=>{
-        moves.push({r:rr,c:cc,type});
-      };
+      const push = (rr,cc,type)=>moves.push({r:rr,c:cc,type});
 
       const addRay = (dr,dc)=>{
         let rr=r+dr, cc=c+dc;
         while(inBounds(rr,cc)){
-          const t = pieceAt(rr,cc);
+          const t = pieceAt(board,rr,cc);
           if(!t){ push(rr,cc,"move"); }
           else{
             const tSide = isWhite(t) ? "w" : "b";
@@ -469,20 +455,17 @@
 
       switch(p.toLowerCase()){
         case "p":{
-          // forward
           const fr = r + up;
-          if(inBounds(fr,c) && !pieceAt(fr,c)){
+          if(inBounds(fr,c) && !pieceAt(board,fr,c)){
             push(fr,c,"move");
-            // double from start
             const startRow = side==="w" ? 6 : 1;
             const fr2 = r + up*2;
-            if(r===startRow && inBounds(fr2,c) && !pieceAt(fr2,c)) push(fr2,c,"move");
+            if(r===startRow && inBounds(fr2,c) && !pieceAt(board,fr2,c)) push(fr2,c,"move");
           }
-          // captures
           for(const dc of [-1,1]){
             const cr = r + up, cc = c + dc;
             if(inBounds(cr,cc)){
-              const t = pieceAt(cr,cc);
+              const t = pieceAt(board,cr,cc);
               if(t){
                 const tSide = isWhite(t) ? "w" : "b";
                 if(tSide===enemy) push(cr,cc,"cap");
@@ -492,13 +475,11 @@
           break;
         }
         case "n":{
-          const steps = [
-            [-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]
-          ];
+          const steps = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
           for(const [dr,dc] of steps){
             const rr=r+dr, cc=c+dc;
             if(!inBounds(rr,cc)) continue;
-            const t = pieceAt(rr,cc);
+            const t = pieceAt(board,rr,cc);
             if(!t) push(rr,cc,"move");
             else{
               const tSide = isWhite(t) ? "w" : "b";
@@ -507,26 +488,19 @@
           }
           break;
         }
-        case "b":{
-          addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1);
-          break;
-        }
-        case "r":{
-          addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1);
-          break;
-        }
-        case "q":{
+        case "b": addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1); break;
+        case "r": addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1); break;
+        case "q":
           addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1);
           addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1);
           break;
-        }
         case "k":{
           for(let dr=-1;dr<=1;dr++){
             for(let dc=-1;dc<=1;dc++){
               if(dr===0 && dc===0) continue;
               const rr=r+dr, cc=c+dc;
               if(!inBounds(rr,cc)) continue;
-              const t = pieceAt(rr,cc);
+              const t = pieceAt(board,rr,cc);
               if(!t) push(rr,cc,"move");
               else{
                 const tSide = isWhite(t) ? "w" : "b";
@@ -546,24 +520,50 @@
       selTag.textContent = "—";
     }
 
+    function updateTags(){
+      turnTag.textContent = state.turn==="w" ? "White" : "Black";
+      updateGameTag();
+    }
+    function updateGameTag(){
+      if(state.mode==="cpu") gameTag.textContent = state.cpuThinking ? "CPU thinking…" : "Vs CPU";
+      else gameTag.textContent = "Free";
+    }
+
     function selectSquare(r,c){
-      const p = pieceAt(r,c);
-      if(!p){
-        clearSelection();
-        render();
+      const p = pieceAt(null,r,c);
+      if(!p){ clearSelection(); render(); return; }
+
+      const side = isWhite(p) ? "w" : "b";
+
+      // In CPU mode, player is White only.
+      if(state.mode==="cpu" && side!=="w"){
+        toast("Your pieces", "You play White. Select a White piece.");
         return;
       }
 
-      const side = isWhite(p) ? "w" : "b";
       if(side !== state.turn){
         toast("Not your turn", `It's ${state.turn==="w"?"White":"Black"} to move.`);
         return;
       }
 
       state.selected = {r,c};
-      state.moves = getMovesFor(r,c);
+      state.moves = getMovesFor(state.board,r,c);
       selTag.textContent = `${PIECES[p]} ${algebra(r,c)}`;
       render();
+    }
+
+    function applyMove(board, from, to){
+      const p = pieceAt(board,from.r,from.c);
+      const target = pieceAt(board,to.r,to.c);
+      board[to.r][to.c] = p;
+      board[from.r][from.c] = "";
+      return {p, target};
+    }
+
+    function hasKing(board, side){
+      const k = side==="w" ? "K" : "k";
+      for(let r=0;r<8;r++) for(let c=0;c<8;c++) if(board[r][c]===k) return true;
+      return false;
     }
 
     function tryMove(toR,toC){
@@ -572,18 +572,26 @@
       const legal = state.moves.find(m=>m.r===toR && m.c===toC);
       if(!legal) return false;
 
-      const p = pieceAt(from.r,from.c);
-      const target = pieceAt(toR,toC);
+      const p = pieceAt(null,from.r,from.c);
+      const target = pieceAt(null,toR,toC);
 
-      // perform move
-      state.board[toR][toC] = p;
-      state.board[from.r][from.c] = "";
+      applyMove(state.board, from, {r:toR,c:toC});
+
       state.lastMove = {from:{...from}, to:{r:toR,c:toC}};
       clearSelection();
 
-      // toggle turn
-      state.turn = (state.turn==="w") ? "b" : "w";
-      turnTag.textContent = state.turn==="w" ? "White" : "Black";
+      // End if king captured (since we're not checking checkmates)
+      if(target && (target==="k" || target==="K")){
+        state.gameOver = true;
+        toast("Game Over", `${PIECES[p]} captured the king on ${algebra(toR,toC)} (trainer mode).`);
+        setStatus("Game Over (trainer): A king was captured. Reset to play again.");
+      }
+
+      // toggle turn unless game over
+      if(!state.gameOver){
+        state.turn = (state.turn==="w") ? "b" : "w";
+      }
+      updateTags();
 
       if(target){
         toast("Capture!", `${PIECES[p]} captured ${PIECES[target]} on ${algebra(toR,toC)}.`);
@@ -591,24 +599,34 @@
         toast("Moved", `${PIECES[p]} to ${algebra(toR,toC)}.`);
       }
 
-      // practice/quiz helpers can update status
-      if(state.mode==="practice") setStatus(`Practice: Complete the task shown on the right.`);
-      else if(state.mode==="quiz") setStatus(`Quiz: Answer on the right. Use the board to visualize.`);
-      else setStatus(`Tip: Click a piece to see its moves. Try bishops on diagonals!`);
+      if(!state.gameOver){
+        if(state.mode==="practice") setStatus(`Practice: Complete the task shown on the right.`);
+        else if(state.mode==="quiz") setStatus(`Quiz: Answer on the right. Use the board to visualize.`);
+        else if(state.mode==="cpu") setStatus(`Vs CPU: Your move (White). After you move, Black replies automatically.`);
+        else setStatus(`Tip: Click a piece to see its moves. Green = move, Red = capture.`);
+      }
 
       render();
+
+      // CPU reply if needed
+      if(state.mode==="cpu" && !state.gameOver && state.turn==="b"){
+        cpuReply();
+      }
       return true;
     }
 
     function onSquareClick(vr,vc){
+      if(state.gameOver) return;
+
+      // Block clicks while CPU is thinking
+      if(state.mode==="cpu" && state.cpuThinking) return;
+
       const {r,c} = viewToModel(vr,vc);
 
       if(state.selected){
-        // if clicked a legal destination => move
         if(tryMove(r,c)) return;
 
-        // else if click another own piece => select it
-        const p = pieceAt(r,c);
+        const p = pieceAt(null,r,c);
         if(p){
           const side = isWhite(p) ? "w" : "b";
           if(side===state.turn){
@@ -616,55 +634,44 @@
             return;
           }
         }
-        // otherwise clear
         clearSelection();
         render();
         return;
       }
-
       selectSquare(r,c);
     }
 
     function render(){
       boardEl.innerHTML = "";
-      // update tags
-      turnTag.textContent = state.turn==="w" ? "White" : "Black";
-      selTag.textContent = state.selected ? selTag.textContent : (selTag.textContent || "—");
+      updateTags();
 
-      // build view order
       for(let vr=0; vr<8; vr++){
         for(let vc=0; vc<8; vc++){
           const {r,c} = viewToModel(vr,vc);
           const sq = document.createElement("div");
-          const isLight = ( (r+c) % 2 === 0 );
+          const isLight = ((r+c)%2===0);
           sq.className = "sq " + (isLight ? "light":"dark");
           sq.dataset.vr = vr; sq.dataset.vc = vc;
 
-          const p = pieceAt(r,c);
+          const p = pieceAt(null,r,c);
           sq.textContent = p ? PIECES[p] : "";
 
-          if(state.selected && state.selected.r===r && state.selected.c===c){
-            sq.classList.add("selected");
-          }
+          if(state.selected && state.selected.r===r && state.selected.c===c) sq.classList.add("selected");
 
-          // last move styling
           if(state.lastMove){
             if(state.lastMove.from.r===r && state.lastMove.from.c===c) sq.classList.add("lastFrom");
             if(state.lastMove.to.r===r && state.lastMove.to.c===c) sq.classList.add("lastTo");
           }
 
-          // highlight moves
           if(state.moves && state.moves.length){
             const m = state.moves.find(x=>x.r===r && x.c===c);
-            if(m){
-              sq.classList.add(m.type==="cap" ? "cap" : "hl");
-            }
+            if(m) sq.classList.add(m.type==="cap" ? "cap" : "hl");
           }
 
           if(state.showCoords){
             const coord = document.createElement("div");
             coord.className = "coord";
-            coord.textContent = displayCoords(r,c);
+            coord.textContent = algebra(r,c);
             sq.appendChild(coord);
           }
 
@@ -672,52 +679,165 @@
           boardEl.appendChild(sq);
         }
       }
+
+      // add "lock" feel while CPU thinking
+      if(state.mode==="cpu" && state.cpuThinking){
+        boardEl.parentElement.classList.add("lock");
+      }else{
+        boardEl.parentElement.classList.remove("lock");
+      }
     }
 
-    // ---------- Modes (Learn / Practice / Quiz) ----------
-    const tasks = [
-      {
-        title: "Knight Tour (Mini)",
-        text: "Select a Knight and make 3 legal knight moves in a row. Notice it can jump over pieces.",
-        answer: "Knights move in an L. Example: White knight g1 → f3 → g5 → h7 (if squares are free / capturable)."
-      },
-      {
-        title: "Bishop Diagonals",
-        text: "Select a Bishop. Try to move it along a diagonal to a new square (diagonal lines only).",
-        answer: "Bishops stay on the same color squares forever and move diagonally any distance."
-      },
-      {
-        title: "Rook Files & Ranks",
-        text: "Select a Rook and move it in a straight line. No diagonal moves.",
-        answer: "Rooks move like a plus sign: up/down/left/right any distance until blocked."
-      },
-      {
-        title: "Queen Power",
-        text: "Select a Queen and observe it has both rook + bishop moves.",
-        answer: "Queen = rook + bishop combined. Often best kept safe early."
-      },
-      {
-        title: "Pawn Rules",
-        text: "Move a pawn forward 1 (or 2 from starting row). Try a diagonal capture if possible.",
-        answer: "Pawns capture diagonally, not straight. From start: can move two squares if both are empty."
-      },
-      {
-        title: "Create an Attack",
-        text: "Try to capture one opponent pawn with any piece (red dots show captures).",
-        answer: "Captures are shown with red dots. Choose a piece whose red dot lands on an enemy."
-      },
-      {
-        title: "Open a Line",
-        text: "Move a pawn to open a bishop or queen line.",
-        answer: "Moving central pawns often opens diagonals for bishops/queen."
-      },
-      {
-        title: "Mini Check (Concept)",
-        text: "Put your piece on a square that would attack the enemy king (we don't enforce check).",
-        answer: "Check means a piece attacks the king. Use queen/rook/bishop lines to point at the king."
-      }
-    ];
+    // ---------- CPU (Black) ----------
+    const VAL = { p:100, n:320, b:330, r:500, q:900, k:20000 };
+    function valueOfPiece(ch){
+      if(!ch) return 0;
+      const v = VAL[ch.toLowerCase()] || 0;
+      return isWhite(ch) ? v : -v;
+    }
 
+    function evalBoard(board){
+      // material + small center bonus
+      let s = 0;
+      for(let r=0;r<8;r++){
+        for(let c=0;c<8;c++){
+          const p = board[r][c];
+          if(!p) continue;
+          s += valueOfPiece(p);
+          // center bonus
+          const center = (r>=2 && r<=5 && c>=2 && c<=5) ? 6 : 0;
+          s += isWhite(p) ? center : -center;
+        }
+      }
+      return s; // positive => better for White
+    }
+
+    function listAllMoves(board, side){
+      const out = [];
+      for(let r=0;r<8;r++){
+        for(let c=0;c<8;c++){
+          const p = pieceAt(board,r,c);
+          if(!p) continue;
+          if(side==="w" && !isWhite(p)) continue;
+          if(side==="b" && !isBlack(p)) continue;
+          const ms = getMovesFor(board,r,c);
+          for(const m of ms){
+            out.push({from:{r,c}, to:{r:m.r,c:m.c}, type:m.type, piece:p});
+          }
+        }
+      }
+      return out;
+    }
+
+    function pickCpuMove(board){
+      // CPU is Black: tries to minimize eval (reduce White advantage).
+      const moves = listAllMoves(board, "b");
+      if(moves.length===0) return null;
+
+      const depth = (state.cpuLevel==="medium") ? 2 : 1; // tiny lookahead
+      let best = null;
+      let bestScore = Infinity;
+
+      // cheap randomness among near-equals (makes it feel less robotic)
+      const jitter = (state.cpuLevel==="easy") ? 10 : 4;
+
+      for(const mv of moves){
+        const b1 = cloneBoard(board);
+        applyMove(b1, mv.from, mv.to);
+
+        // if captured king, do it
+        const captured = pieceAt(b1, mv.to.r, mv.to.c);
+        // captured value already in board, but king capture ends quickly in our trainer rules.
+        if(!hasKing(b1,"w")) return mv;
+
+        let score;
+        if(depth===1){
+          score = evalBoard(b1);
+        }else{
+          // White best reply (maximize eval)
+          const replies = listAllMoves(b1, "w");
+          if(replies.length===0){
+            score = evalBoard(b1);
+          }else{
+            let bestWhite = -Infinity;
+            for(const rply of replies){
+              const b2 = cloneBoard(b1);
+              applyMove(b2, rply.from, rply.to);
+              const s2 = evalBoard(b2);
+              if(s2 > bestWhite) bestWhite = s2;
+            }
+            score = bestWhite;
+          }
+        }
+
+        // CPU wants minimal score
+        const noisy = score + (Math.random()*2 - 1) * jitter;
+
+        // prefer captures a bit on easy (fun), but still eval-based
+        const capBonus = (mv.type==="cap") ? -12 : 0;
+        const finalScore = noisy + capBonus;
+
+        if(finalScore < bestScore){
+          bestScore = finalScore;
+          best = mv;
+        }
+      }
+      return best;
+    }
+
+    function cpuReply(){
+      state.cpuThinking = true;
+      updateGameTag();
+      setStatus("Vs CPU: Black is thinking…");
+      render();
+
+      // quick delay so it feels natural
+      setTimeout(()=>{
+        const mv = pickCpuMove(state.board);
+        state.cpuThinking = false;
+        updateGameTag();
+
+        if(!mv){
+          toast("CPU", "No moves available.");
+          state.gameOver = true;
+          setStatus("Game Over: CPU has no moves (trainer). Reset to play again.");
+          render();
+          return;
+        }
+
+        const target = pieceAt(state.board, mv.to.r, mv.to.c);
+        applyMove(state.board, mv.from, mv.to);
+        state.lastMove = {from:{...mv.from}, to:{...mv.to}};
+
+        clearSelection();
+
+        if(target && (target==="K" || target==="k")){
+          state.gameOver = true;
+          toast("Game Over", `CPU captured the king on ${algebra(mv.to.r,mv.to.c)} (trainer mode).`);
+          setStatus("Game Over (trainer): A king was captured. Reset to play again.");
+        }else{
+          // switch back to White
+          state.turn = "w";
+          toast("CPU moved", `${PIECES[mv.piece]} ${algebra(mv.from.r,mv.from.c)} → ${algebra(mv.to.r,mv.to.c)}.`);
+          setStatus("Vs CPU: Your move (White).");
+        }
+
+        updateTags();
+        render();
+      }, 380);
+    }
+
+    // ---------- Modes: Practice / Quiz ----------
+    const tasks = [
+      { title:"Knight Tour (Mini)", text:"Select a Knight and make 3 legal knight moves in a row.", answer:"Knights move in an L and can jump over pieces." },
+      { title:"Bishop Diagonals", text:"Select a Bishop. Move it along a diagonal to a new square.", answer:"Bishops move diagonally and stay on the same color." },
+      { title:"Rook Files & Ranks", text:"Select a Rook. Move it in a straight line.", answer:"Rooks move up/down/left/right any distance until blocked." },
+      { title:"Queen Power", text:"Select a Queen and observe rook + bishop moves.", answer:"Queen combines rook + bishop movement." },
+      { title:"Pawn Rules", text:"Move a pawn forward 1 (or 2 from start). Try a diagonal capture if possible.", answer:"Pawns capture diagonally, not forward." },
+      { title:"Create an Attack", text:"Capture one opponent pawn with any piece (red dots show captures).", answer:"Use red dots (captures) to take an enemy pawn." },
+      { title:"Open a Line", text:"Move a pawn to open a bishop or queen line.", answer:"Central pawn moves often open diagonals." },
+      { title:"Mini Check (Concept)", text:"Put a piece on a square that attacks the enemy king (we don't enforce check).", answer:"Use rook/bishop/queen lines to attack the king." },
+    ];
     let taskIndex = 0;
     function showTask(i){
       taskIndex = i % tasks.length;
@@ -729,41 +849,13 @@
     }
 
     const quiz = [
-      {
-        q: "Which piece can jump over other pieces?",
-        opts: ["Bishop", "Knight", "Rook", "Queen"],
-        a: 1,
-        e: "The knight moves in an L-shape and can jump over pieces."
-      },
-      {
-        q: "A bishop always stays on the same color squares. True or false?",
-        opts: ["True", "False"],
-        a: 0,
-        e: "Because it moves diagonally, it never changes square color."
-      },
-      {
-        q: "How does a pawn capture?",
-        opts: ["Straight forward", "Diagonally forward", "Like a knight", "Backward diagonally"],
-        a: 1,
-        e: "Pawns move forward but capture one step diagonally forward."
-      },
-      {
-        q: "The queen moves like…",
-        opts: ["Only diagonals", "Only straight lines", "Rook + Bishop combined", "One square only"],
-        a: 2,
-        e: "Queen can move in straight lines and diagonals any distance."
-      },
-      {
-        q: "Goal of chess is to…",
-        opts: ["Capture all pieces", "Checkmate the king", "Promote a pawn", "Win material"],
-        a: 1,
-        e: "You win by checkmating the opponent king."
-      }
+      { q:"Which piece can jump over other pieces?", opts:["Bishop","Knight","Rook","Queen"], a:1, e:"Knights jump and move in an L-shape." },
+      { q:"A bishop always stays on the same color squares. True or false?", opts:["True","False"], a:0, e:"Diagonal movement keeps it on the same color." },
+      { q:"How does a pawn capture?", opts:["Straight forward","Diagonally forward","Like a knight","Backward diagonally"], a:1, e:"Pawns capture one step diagonally forward." },
+      { q:"The queen moves like…", opts:["Only diagonals","Only straight lines","Rook + Bishop combined","One square only"], a:2, e:"Queen = rook + bishop movement." },
+      { q:"Goal of chess is to…", opts:["Capture all pieces","Checkmate the king","Promote a pawn","Win material"], a:1, e:"You win by checkmating the king." },
     ];
-
-    let qIndex = 0;
-    let qScore = 0;
-    let qChecked = false;
+    let qIndex = 0, qScore = 0, qChecked = false;
 
     function renderQuiz(){
       qChecked = false;
@@ -780,39 +872,28 @@
       });
       el("quizScore").textContent = qScore;
     }
-
     function getSelectedQuizOpt(){
       const checked = document.querySelector('input[name="q"]:checked');
       return checked ? parseInt(checked.value,10) : -1;
     }
-
     function checkQuiz(){
       if(qChecked) return;
       const pick = getSelectedQuizOpt();
-      if(pick<0){
-        toast("Choose an option", "Select one answer first.");
-        return;
-      }
+      if(pick<0){ toast("Choose an option","Select one answer first."); return; }
       qChecked = true;
       const item = quiz[qIndex];
-      if(pick === item.a){
-        qScore++;
-        el("quizExplain").innerHTML = `<span class="good"><b>Correct.</b></span> ${item.e}`;
-      }else{
-        el("quizExplain").innerHTML = `<span class="bad"><b>Not quite.</b></span> ${item.e}`;
-      }
+      if(pick === item.a){ qScore++; el("quizExplain").innerHTML = `<span class="good"><b>Correct.</b></span> ${item.e}`; }
+      else el("quizExplain").innerHTML = `<span class="bad"><b>Not quite.</b></span> ${item.e}`;
       el("quizScore").textContent = qScore;
     }
-
     function nextQuiz(){
       qIndex = (qIndex + 1) % quiz.length;
       renderQuiz();
-      setStatus("Quiz: Use the board to visualize positions if needed, then answer on the right.");
+      setStatus("Quiz: Answer on the right. Use the board to visualize.");
     }
 
     // ---------- Lesson quick loaders ----------
     function loadKnightFocus(){
-      // Clear and place only a knight + a few pawns for fun
       state.board = Array.from({length:8}, ()=>Array(8).fill(""));
       state.board[7][1] = "N"; // b1
       state.board[6][3] = "P"; // d2
@@ -820,14 +901,13 @@
       state.board[4][4] = "p"; // e4
       state.turn = "w";
       state.lastMove = null;
+      state.gameOver = false;
       clearSelection();
       render();
-      setStatus("Knight Focus: Click the knight ♘ and see its L-shaped moves. Red dots are captures.");
-      toast("Loaded", "Knight focus position loaded.");
+      setStatus("Knight Focus: Click the knight ♘ and see its moves. Red dots are captures.");
+      toast("Loaded","Knight focus position loaded.");
     }
-
     function loadMateNet(){
-      // Simple mate-net pattern position (conceptual)
       state.board = Array.from({length:8}, ()=>Array(8).fill(""));
       state.board[0][4] = "k"; // e8
       state.board[7][4] = "K"; // e1
@@ -835,26 +915,23 @@
       state.board[6][7] = "R"; // h2
       state.turn = "w";
       state.lastMove = null;
+      state.gameOver = false;
       clearSelection();
       render();
-      setStatus("Mate Net (Concept): Use queen + rook to restrict the king. Try moving rook/queen to attack e8.");
-      toast("Loaded", "Mate-net mini position loaded.");
+      setStatus("Mate Net (Concept): Use queen + rook to restrict the king. Try attacking e8.");
+      toast("Loaded","Mate-net mini position loaded.");
     }
 
     // ---------- Wire UI ----------
     el("btnReset").addEventListener("click", reset);
-    el("btnFlip").addEventListener("click", ()=>{
-      state.flip = !state.flip;
-      render();
-      toast("Board", state.flip ? "Flipped view." : "Normal view.");
-    });
+    el("btnFlip").addEventListener("click", ()=>{ state.flip=!state.flip; render(); toast("Board", state.flip ? "Flipped view." : "Normal view."); });
     el("btnHint").addEventListener("click", ()=>{
       const tips = [
-        "Control the center early: e4/d4/e5/d5 squares matter.",
-        "Develop knights and bishops before moving the queen too much.",
-        "Don’t hang pieces: check red dots before you move.",
-        "Knights love outposts (safe squares in enemy territory).",
-        "Bishops are strongest on open diagonals."
+        "Control the center early: e4/d4/e5/d5 matter.",
+        "Develop knights & bishops before moving queen too much.",
+        "Watch red dots: don’t hang pieces.",
+        "Knights love safe outposts.",
+        "Open lines for bishops/rooks."
       ];
       const t = tips[Math.floor(Math.random()*tips.length)];
       setStatus("Hint: " + t);
@@ -864,33 +941,36 @@
     el("btnLoadKnight").addEventListener("click", loadKnightFocus);
     el("btnLoadMate").addEventListener("click", loadMateNet);
 
-    showCoordsCb.addEventListener("change", ()=>{
-      state.showCoords = showCoordsCb.checked;
-      render();
-    });
+    showCoordsCb.addEventListener("change", ()=>{ state.showCoords = showCoordsCb.checked; render(); });
+    cpuLevelSel.addEventListener("change", ()=>{ state.cpuLevel = cpuLevelSel.value; toast("CPU level", state.cpuLevel==="easy"?"Easy":"Medium"); });
 
     modeSel.addEventListener("change", ()=>{
       state.mode = modeSel.value;
-
-      // show/hide cards
       practiceCard.style.display = (state.mode==="practice") ? "" : "none";
       quizCard.style.display = (state.mode==="quiz") ? "" : "none";
 
+      state.gameOver = false;
+      state.cpuThinking = false;
+
       if(state.mode==="learn"){
-        setStatus("Learn Moves: Click any piece to see legal moves. Green = move, Red = capture.");
+        setStatus("Learn Moves: Click a piece to see legal moves. Green=move, Red=capture.");
       }else if(state.mode==="practice"){
         showTask(taskIndex);
         setStatus("Practice: Complete the task shown on the right. Use Reset if stuck.");
-      }else{
-        if(qScore===0 && qIndex===0) renderQuiz();
-        setStatus("Quiz: Answer on the right. Use the board to think it through.");
+      }else if(state.mode==="quiz"){
+        renderQuiz();
+        setStatus("Quiz: Answer on the right. Use the board to visualize.");
+      }else if(state.mode==="cpu"){
+        // reset for fair play and force player as White
+        reset();
+        state.mode = "cpu";
+        setStatus("Vs CPU: You are White. Make a move; Black replies automatically.");
+        toast("Vs CPU", "You are White. Good luck!");
       }
+      render();
     });
 
-    el("btnNextTask").addEventListener("click", ()=>{
-      showTask(taskIndex+1);
-      toast("Practice", "Next task loaded.");
-    });
+    el("btnNextTask").addEventListener("click", ()=>{ showTask(taskIndex+1); toast("Practice","Next task loaded."); });
     el("btnShowAnswer").addEventListener("click", ()=>{
       const box = el("answerBox");
       box.style.display = (box.style.display==="none") ? "" : "none";
@@ -900,11 +980,10 @@
     el("btnCheck").addEventListener("click", checkQuiz);
     el("btnNextQ").addEventListener("click", nextQuiz);
 
-    // keyboard shortcuts
     window.addEventListener("keydown", (e)=>{
-      if(e.key.toLowerCase()==="r"){ reset(); }
-      if(e.key.toLowerCase()==="f"){ el("btnFlip").click(); }
-      if(e.key.toLowerCase()==="h"){ el("btnHint").click(); }
+      if(e.key.toLowerCase()==="r") reset();
+      if(e.key.toLowerCase()==="f") el("btnFlip").click();
+      if(e.key.toLowerCase()==="h") el("btnHint").click();
     });
 
     // init
