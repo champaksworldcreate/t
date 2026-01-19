@@ -3,993 +3,959 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Learn Chess — Interactive Basics + Play vs Computer</title>
-  <meta name="description" content="Learn chess basics with an interactive board, lessons, quizzes, and play vs computer. Works offline." />
+  <title>NLP (Natural Language Processing) — Intro + Hands-On Lab (with Cosine Similarity, Translation Demo, Charts)</title>
+  <meta name="description" content="NLP introduction with interactive demos: tokens, sentences, stop words, synonyms/antonyms, sentence meaning, translation demo, reverse translation, cosine similarity, and charts. Includes Pyodide editor embed." />
+
+  <!-- Chart.js (for charts) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root{
-      --bg:#fff7e6; --card:#fff; --ink:#1f2937; --muted:#6b7280;
+      --bg:#fff7e6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
       --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
       --shadow:0 18px 40px rgba(31,41,55,.14);
-      --ok:#166534; --danger:#b91c1c;
-      --sqLight:#f3d7ad; --sqDark:#c77d2a;
-      --hl2:#34d399; --cap:#f87171;
+      --codebg:#0b1220; --codeink:#e5e7eb;
+      --ok:#166534; --danger:#b91c1c; --warn:#92400e;
       --r:18px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background: radial-gradient(1200px 800px at 15% 0%, #fff 0%, var(--bg) 55%, #ffecc7 100%);
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px 500px at 15% 0%, rgba(245,158,11,.25), transparent 60%),
+        radial-gradient(900px 500px at 85% 10%, rgba(217,119,6,.18), transparent 60%),
+        var(--bg);
       color:var(--ink);
     }
-    .wrap{max-width:1100px;margin:18px auto;padding:14px}
+    a{color:var(--brand); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px; margin:18px auto; padding:14px}
     .topbar{
-      display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
-      background:rgba(255,255,255,.75);backdrop-filter: blur(10px);
-      border:1px solid var(--border); border-radius:999px; padding:10px 12px;
-      box-shadow:0 10px 25px rgba(31,41,55,.10);
-      position:sticky; top:10px; z-index:10;
+      position:sticky; top:0; z-index:50;
+      background:rgba(255,247,230,.82);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(234,220,197,.8);
     }
-    .brand{display:flex;align-items:center;gap:10px}
+    .topbar .inner{max-width:1100px; margin:0 auto; padding:10px 14px; display:flex; gap:10px; align-items:center; justify-content:space-between}
+    .brand{
+      display:flex; align-items:center; gap:10px;
+    }
     .logo{
-      width:38px;height:38px;border-radius:12px;
-      background: conic-gradient(from 180deg, var(--brand2), var(--brand), #ffcf7a, var(--brand2));
-      box-shadow: 0 10px 20px rgba(217,119,6,.25);
-      position:relative;
+      width:38px; height:38px; border-radius:12px;
+      background: conic-gradient(from 210deg, var(--brand2), var(--brand), #fbbf24, var(--brand2));
+      box-shadow: var(--shadow);
+      border:1px solid rgba(234,220,197,.8);
     }
-    .logo:after{
-      content:"♞"; position:absolute; inset:0; display:grid; place-items:center;
-      font-size:22px; color:#1f2937; filter: drop-shadow(0 2px 0 rgba(255,255,255,.6));
+    .brand h1{font-size:16px; margin:0}
+    .brand .sub{font-size:12px; color:var(--muted); margin:0}
+    .nav{
+      display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;
     }
-    h1{margin:0;font-size:18px}
-    .sub{color:var(--muted);font-size:12px;margin-top:2px}
-    .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .btn{
-      border:1px solid var(--border); background:#fff; color:var(--ink);
-      padding:9px 11px;border-radius:999px; cursor:pointer;
-      box-shadow: 0 10px 18px rgba(31,41,55,.08);
-      font-weight:650; font-size:13px;
+    .chip{
+      padding:8px 10px;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:999px;
+      font-size:12px;
+      box-shadow: 0 8px 18px rgba(31,41,55,.08);
     }
-    .btn.primary{
-      border-color: rgba(217,119,6,.35);
-      background: linear-gradient(180deg, #fff, #fff6e7);
-    }
-    .btn:active{transform:translateY(1px)}
-    .pill{
-      display:inline-flex;gap:8px;align-items:center;
-      border:1px solid var(--border); background:rgba(255,255,255,.7);
-      border-radius:999px; padding:8px 10px;
-      font-size:13px;
-    }
-    select, input[type="checkbox"]{cursor:pointer}
     .grid{
-      display:grid; gap:14px;
-      grid-template-columns: 420px 1fr;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
       margin-top:14px;
     }
     @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
+      .grid{grid-template-columns: 1fr}
+      .nav{display:none}
     }
     .card{
-      background:rgba(255,255,255,.85);
+      background:var(--card);
       border:1px solid var(--border);
       border-radius: var(--r);
       box-shadow: var(--shadow);
-      overflow:hidden;
+      padding:14px;
     }
-    .card .hd{
-      padding:12px 14px;
-      border-bottom:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-    }
-    .card .bd{padding:14px}
-    .kpi{display:flex;gap:8px;flex-wrap:wrap}
-    .tag{
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      border:1px solid var(--border); background:#fff;
-      color:var(--muted);
-    }
-
-    .boardWrap{padding:14px}
-    .board{
-      width:100%;
-      aspect-ratio:1/1;
-      display:grid;
-      grid-template-columns: repeat(8, 1fr);
-      border-radius: 14px;
-      overflow:hidden;
-      border: 1px solid rgba(0,0,0,.08);
-      box-shadow: 0 18px 34px rgba(31,41,55,.12);
-      user-select:none;
-    }
-    .sq{
-      display:grid; place-items:center;
-      font-size: 34px;
-      position:relative;
-      cursor:pointer;
-      transition: transform .05s ease;
-    }
-    .sq:active{transform:scale(.99)}
-    .sq.light{background: linear-gradient(180deg, #ffe7c3, var(--sqLight))}
-    .sq.dark{background: linear-gradient(180deg, #d78c2f, var(--sqDark))}
-    .sq .coord{
-      position:absolute; left:6px; bottom:4px;
-      font-size:10px; color: rgba(0,0,0,.45);
-      font-weight:700;
-    }
-    .sq.dark .coord{color: rgba(255,255,255,.55)}
-    .sq.selected{outline: 3px solid rgba(96,165,250,.9); outline-offset:-3px}
-    .sq.hl::after{
-      content:"";
-      width: 16px; height:16px; border-radius:999px;
-      background: rgba(52,211,153,.75);
-      box-shadow: 0 0 0 3px rgba(255,255,255,.35);
-      position:absolute;
-    }
-    .sq.cap::after{
-      content:"";
-      width: 16px; height:16px; border-radius:999px;
-      background: rgba(248,113,113,.80);
-      box-shadow: 0 0 0 3px rgba(255,255,255,.35);
-      position:absolute;
-    }
-    .sq.lastFrom{box-shadow: inset 0 0 0 3px rgba(96,165,250,.55)}
-    .sq.lastTo{box-shadow: inset 0 0 0 3px rgba(245,158,11,.65)}
-
-    .panel{display:grid; gap:14px}
-    .two{display:grid; gap:14px; grid-template-columns: 1.1fr .9fr}
-    @media (max-width: 980px){
-      .two{grid-template-columns:1fr}
-    }
-    .hint{
-      border:1px dashed rgba(217,119,6,.45);
-      background: #fffaf0;
-      padding:10px 12px;
-      border-radius: 14px;
-      color:#7c2d12;
-      font-size:13px;
-    }
-    .muted{color:var(--muted)}
-    .list{margin:8px 0 0 18px;color:var(--ink)}
-    .list li{margin:6px 0}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .hr{height:1px;background:var(--border);margin:12px 0}
-    .small{font-size:12px}
-    .toast{
-      position: fixed; right: 14px; bottom: 14px;
-      background: rgba(255,255,255,.92);
-      border:1px solid var(--border);
-      border-radius: 14px;
-      padding:10px 12px;
+    .hero{
+      padding:16px;
+      border-radius: calc(var(--r) + 4px);
+      background:
+        radial-gradient(600px 220px at 15% 0%, rgba(245,158,11,.25), transparent 70%),
+        radial-gradient(600px 220px at 85% 0%, rgba(217,119,6,.16), transparent 70%),
+        #fff;
+      border:1px solid rgba(234,220,197,.9);
       box-shadow: var(--shadow);
-      max-width: 380px;
-      display:none;
-      z-index: 20;
     }
-    .toast.show{display:block}
-    .toast strong{display:block;margin-bottom:2px}
-    .kbd{
-      font: 600 11px/1 ui-monospace,monospace;
-      background:#fff; border:1px solid var(--border); border-bottom-width:3px;
-      padding:2px 6px;border-radius:8px; color:#111827;
+    .hero h2{margin:0 0 6px 0; font-size:20px}
+    .hero p{margin:0; color:var(--muted); line-height:1.5}
+    .kpi{
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;
+      margin-top:12px;
     }
-    .quizQ{font-weight:800;margin:0 0 8px}
-    .opt{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
-    .opt input{margin-top:3px}
-    .score{
-      font-weight:900;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid var(--border); background:#fff;
+    @media (max-width: 680px){ .kpi{grid-template-columns:1fr} }
+    .kpi .tile{
+      border:1px dashed rgba(234,220,197,1);
+      border-radius:16px;
+      background: rgba(255,247,230,.55);
+      padding:10px;
     }
-    .good{color:var(--ok)}
-    .bad{color:var(--danger)}
-    .footer{margin:14px 0 0;text-align:center;color:var(--muted);font-size:12px}
-    .lock{opacity:.65; pointer-events:none; filter:grayscale(.2)}
+    .tile b{display:block}
+    .tile span{font-size:12px; color:var(--muted)}
+    h3{margin:0 0 10px 0; font-size:16px}
+    .muted{color:var(--muted)}
+    .pill{
+      display:inline-block;
+      font-size:12px;
+      padding:3px 8px;
+      border:1px solid rgba(234,220,197,1);
+      border-radius:999px;
+      background: rgba(255,247,230,.6);
+      margin-left:8px;
+      color:var(--warn);
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .row > *{flex:1}
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
+    textarea, input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      outline:none;
+      font: inherit;
+      background:#fff;
+    }
+    textarea{min-height:84px; resize:vertical}
+    button{
+      cursor:pointer;
+      border:1px solid rgba(234,220,197,1);
+      background: linear-gradient(180deg, rgba(245,158,11,.18), rgba(217,119,6,.10));
+      color: var(--ink);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:700;
+      box-shadow: 0 12px 22px rgba(31,41,55,.10);
+    }
+    button.secondary{
+      background:#fff;
+      font-weight:600;
+    }
+    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .out{
+      background: rgba(11,18,32,.96);
+      color: var(--codeink);
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(234,220,197,.35);
+      overflow:auto;
+      white-space:pre-wrap;
+      line-height:1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+    }
+    .code{
+      position:relative;
+      margin-top:10px;
+    }
+    .copy{
+      position:absolute; right:10px; top:10px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      background: rgba(255,255,255,.92);
+    }
+    .list{
+      margin:10px 0 0 0;
+      padding-left:18px;
+      color: var(--ink);
+    }
+    .list li{margin:6px 0}
+    .ok{color: var(--ok); font-weight:700}
+    .bad{color: var(--danger); font-weight:700}
+    .warn{color: var(--warn); font-weight:700}
+    .two{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 720px){ .two{grid-template-columns:1fr} }
+    .note{
+      background: rgba(255,247,230,.65);
+      border: 1px solid rgba(234,220,197,1);
+      border-radius: 16px;
+      padding:10px;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .iframeWrap{
+      border:1px solid rgba(234,220,197,1);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background:#fff;
+    }
+    iframe{width:100%; height:560px; border:0}
+    .footer{
+      margin:14px 0 0;
+      color: var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand" title="Programmer's Picnic • Champ Schedule">
         <div class="logo" aria-hidden="true"></div>
         <div>
-          <h1>Learn Chess — Interactive Basics</h1>
-          <div class="sub">Learn Moves • Practice • Quiz • <b>Play vs Computer</b> • Offline</div>
+          <h1>NLP Lab (Beginner → Practical)</h1>
+          <p class="sub">Words • Sentences • Meaning • Stopwords • Translation Demo • Cosine Similarity • Charts</p>
         </div>
       </div>
+      <div class="nav">
+        <a class="chip" href="#intro">Intro</a>
+        <a class="chip" href="#install">Install</a>
+        <a class="chip" href="#play">Playground</a>
+        <a class="chip" href="#similarity">Cosine</a>
+        <a class="chip" href="#translate">Translation</a>
+        <a class="chip" href="#charts">Charts</a>
+        <a class="chip" href="#pyodide">Pyodide</a>
+      </div>
+    </div>
+  </div>
 
-      <div class="controls">
-        <button class="btn primary" id="btnReset">Reset Position</button>
-        <button class="btn" id="btnFlip">Flip Board</button>
-        <button class="btn" id="btnHint">Show Hint</button>
-
-        <span class="pill">
-          Mode:
-          <select id="mode">
-            <option value="learn" selected>Learn Moves</option>
-            <option value="practice">Practice Tasks</option>
-            <option value="quiz">Quick Quiz</option>
-            <option value="cpu">Play vs Computer</option>
-          </select>
-        </span>
-
-        <span class="pill">
-          CPU:
-          <select id="cpuLevel">
-            <option value="easy" selected>Easy</option>
-            <option value="medium">Medium</option>
-          </select>
-        </span>
-
-        <span class="pill">
-          <label class="row" style="gap:8px;margin:0">
-            <input type="checkbox" id="showCoords" checked />
-            <span>Coords</span>
-          </label>
-        </span>
+  <div class="wrap">
+    <div class="hero" id="intro">
+      <h2>NLP Introduction & Importance <span class="pill">Real-world use</span></h2>
+      <p>
+        <b>NLP (Natural Language Processing)</b> is how computers work with human language — reading, understanding, and generating text.
+        It powers <b>search</b>, <b>chatbots</b>, <b>translation</b>, <b>spam filters</b>, <b>voice assistants</b>, and even <b>resume analyzers</b>.
+      </p>
+      <div class="kpi">
+        <div class="tile"><b>Words → Numbers</b><span>Text must be converted into vectors/embeddings for ML.</span></div>
+        <div class="tile"><b>Meaning</b><span>From synonyms to sentence intent, we estimate “what it means”.</span></div>
+        <div class="tile"><b>Similarity</b><span>Cosine similarity helps compare two sentences/documents.</span></div>
       </div>
     </div>
 
     <div class="grid">
-      <!-- LEFT: BOARD -->
-      <div class="card">
-        <div class="hd">
-          <div>
-            <strong>Board</strong>
-            <div class="muted small">Tap: select → tap: move</div>
+      <!-- LEFT -->
+      <div>
+        <div class="card" id="install">
+          <h3>Installation (Local Python) + Quick Testing</h3>
+          <p class="muted">
+            Below are common NLP libraries used in projects. (You don’t need all at once.)
+          </p>
+
+          <div class="two">
+            <div>
+              <div class="code">
+                <button class="copy" data-copy="pip install nltk">Copy</button>
+                <pre class="out">pip install nltk</pre>
+              </div>
+              <div class="code">
+                <button class="copy" data-copy="python -c &quot;import nltk; print('nltk ok')&quot;">Copy</button>
+                <pre class="out">python -c "import nltk; print('nltk ok')"</pre>
+              </div>
+            </div>
+            <div>
+              <div class="code">
+                <button class="copy" data-copy="pip install spacy">Copy</button>
+                <pre class="out">pip install spacy</pre>
+              </div>
+              <div class="code">
+                <button class="copy" data-copy="python -c &quot;import spacy; print('spacy ok')&quot;">Copy</button>
+                <pre class="out">python -c "import spacy; print('spacy ok')"</pre>
+              </div>
+            </div>
           </div>
-          <div class="kpi">
-            <span class="tag">Turn: <strong id="turnTag">White</strong></span>
-            <span class="tag">Selected: <strong id="selTag">—</strong></span>
-            <span class="tag">Game: <strong id="gameTag">Free</strong></span>
+
+          <div class="two">
+            <div>
+              <div class="code">
+                <button class="copy" data-copy="pip install scikit-learn">Copy</button>
+                <pre class="out">pip install scikit-learn</pre>
+              </div>
+              <div class="code">
+                <button class="copy" data-copy="python -c &quot;import sklearn; print('sklearn ok')&quot;">Copy</button>
+                <pre class="out">python -c "import sklearn; print('sklearn ok')"</pre>
+              </div>
+            </div>
+            <div>
+              <div class="code">
+                <button class="copy" data-copy="pip install transformers sentencepiece">Copy</button>
+                <pre class="out">pip install transformers sentencepiece</pre>
+              </div>
+              <div class="code">
+                <button class="copy" data-copy="python -c &quot;import transformers; print(transformers.__version__)&quot;">Copy</button>
+                <pre class="out">python -c "import transformers; print(transformers.__version__)"</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top:10px">
+            <b class="warn">Note:</b> For offline browser demos below, we use simple JS logic (tokenization, stopwords, cosine similarity).
+            For high-quality translation and “true meaning”, production systems use large models or dedicated translation engines.
           </div>
         </div>
-        <div class="boardWrap">
-          <div class="board" id="board" aria-label="Chess board"></div>
-          <div class="hr"></div>
-          <div class="hint" id="status">
-            Tip: Start with the <b>Knight ♞</b>. It moves in an “L”: 2 squares in one direction + 1 perpendicular.
+
+        <div class="card" id="play" style="margin-top:14px">
+          <h3>Words, Sentences, Stop Words, Meaning (Practical Playground)</h3>
+
+          <div class="two">
+            <div>
+              <label for="text1">Sentence A</label>
+              <textarea id="text1">NLP helps computers understand human language.</textarea>
+            </div>
+            <div>
+              <label for="text2">Sentence B</label>
+              <textarea id="text2">Natural language processing allows machines to understand people.</textarea>
+            </div>
           </div>
-          <div class="footer">
-            Shortcuts: <span class="kbd">R</span> reset • <span class="kbd">F</span> flip • <span class="kbd">H</span> hint
+
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label for="langMode">Mode</label>
+              <select id="langMode">
+                <option value="en">English (tokenize, stopwords, synonyms/antonyms)</option>
+                <option value="hi_demo">Hindi demo (basic tokenization only)</option>
+              </select>
+            </div>
+            <div>
+              <label for="removeStops">Stop words</label>
+              <select id="removeStops">
+                <option value="yes" selected>Remove stop words (recommended)</option>
+                <option value="no">Keep stop words</option>
+              </select>
+            </div>
           </div>
+
+          <div class="btns">
+            <button id="analyzeBtn">Analyze Text</button>
+            <button class="secondary" id="swapBtn">Swap A ↔ B</button>
+            <button class="secondary" id="resetBtn">Reset Example</button>
+          </div>
+
+          <div class="two" style="margin-top:12px">
+            <div>
+              <div class="muted" style="font-size:12px; margin-bottom:6px">Analysis Output</div>
+              <pre class="out" id="analysisOut">Click “Analyze Text”.</pre>
+            </div>
+            <div>
+              <div class="muted" style="font-size:12px; margin-bottom:6px">Synonyms / Antonyms (demo)</div>
+              <div class="note">
+                Type a word below (English). This uses a small built-in demo dictionary (not the full English language).
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div>
+                  <label for="wordLookup">Word</label>
+                  <input id="wordLookup" placeholder="e.g., understand" />
+                </div>
+              </div>
+              <div class="btns">
+                <button id="lookupBtn">Find Synonyms/Antonyms</button>
+                <button class="secondary" id="lookupClearBtn">Clear</button>
+              </div>
+              <pre class="out" id="lookupOut">Try: understand, help, important, happy, difficult, fast</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="similarity" style="margin-top:14px">
+          <h3>Cosine Similarity Test (2 Sentences)</h3>
+          <p class="muted">
+            We convert sentences into a simple <b>bag-of-words vector</b> (counts),
+            then compute <b>cosine similarity</b>. Range: <b>0</b> (different) → <b>1</b> (very similar).
+          </p>
+
+          <div class="btns">
+            <button id="cosBtn">Compute Cosine Similarity</button>
+            <button class="secondary" id="vecBtn">Show Vectors</button>
+          </div>
+
+          <div class="two" style="margin-top:12px">
+            <div>
+              <div class="muted" style="font-size:12px; margin-bottom:6px">Cosine Result</div>
+              <pre class="out" id="cosOut">Click “Compute Cosine Similarity”.</pre>
+            </div>
+            <div>
+              <div class="muted" style="font-size:12px; margin-bottom:6px">Vectors / Vocabulary</div>
+              <pre class="out" id="vecOut">Click “Show Vectors”.</pre>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top:10px">
+            <b class="warn">Tip:</b> Bag-of-words ignores word order and deep meaning. Modern NLP uses embeddings (Word2Vec, SBERT, transformers) for better semantic similarity.
+          </div>
+        </div>
+
+        <div class="card" id="translate" style="margin-top:14px">
+          <h3>Translation to Hindi + Reverse Translation (Demo)</h3>
+          <p class="muted">
+            This is a <b>small offline demo translator</b> using a tiny dictionary for common words.
+            For real translation quality, use a proper translation model or API.
+          </p>
+
+          <div class="two">
+            <div>
+              <label for="enToHi">English → Hindi (demo)</label>
+              <textarea id="enToHi">NLP helps students learn language faster.</textarea>
+              <div class="btns">
+                <button id="enHiBtn">Translate to Hindi</button>
+                <button class="secondary" id="enHiCopyBtn">Copy Output</button>
+              </div>
+              <pre class="out" id="enHiOut">Output will appear here…</pre>
+            </div>
+            <div>
+              <label for="hiToEn">Hindi → English (demo reverse)</label>
+              <textarea id="hiToEn">एनएलपी छात्रों को भाषा तेजी से सीखने में मदद करता है</textarea>
+              <div class="btns">
+                <button id="hiEnBtn">Reverse Translate</button>
+                <button class="secondary" id="hiEnCopyBtn">Copy Output</button>
+              </div>
+              <pre class="out" id="hiEnOut">Output will appear here…</pre>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top:10px">
+            <b class="warn">Reality check:</b> Hindi is morphologically rich (forms change), and word order differs.
+            That’s why tiny dictionaries won’t match human-level translation.
+          </div>
+        </div>
+
+        <div class="card" id="charts" style="margin-top:14px">
+          <h3>Charts: Word Counts, Stopwords Removed, Similarity Score</h3>
+          <p class="muted">
+            Click “Analyze Text” and “Compute Cosine Similarity”, then this chart panel will update.
+          </p>
+
+          <div class="two">
+            <div class="card" style="box-shadow:none; border-radius:16px; border:1px solid rgba(234,220,197,1); padding:10px">
+              <div class="muted" style="font-size:12px; margin-bottom:6px">Token Counts</div>
+              <canvas id="countChart" height="170"></canvas>
+            </div>
+            <div class="card" style="box-shadow:none; border-radius:16px; border:1px solid rgba(234,220,197,1); padding:10px">
+              <div class="muted" style="font-size:12px; margin-bottom:6px">Cosine Similarity</div>
+              <canvas id="simChart" height="170"></canvas>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top:10px">
+            <b class="ok">Challenge:</b> Replace bag-of-words with TF-IDF (still classical, but better). Then compare scores.
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h3>What is “Meaning” in NLP?</h3>
+          <ul class="list">
+            <li><b>Word meaning:</b> dictionary sense, synonyms/antonyms, context-based meaning.</li>
+            <li><b>Sentence meaning:</b> intent, sentiment, topic, entities (people/places/things), and relationships.</li>
+            <li><b>Context:</b> “bank” (river bank vs money bank). Meaning depends on nearby words.</li>
+            <li><b>Modern approach:</b> embeddings from large models capture semantics better than simple counts.</li>
+          </ul>
         </div>
       </div>
 
-      <!-- RIGHT: PANELS -->
-      <div class="panel">
-        <div class="card">
-          <div class="hd">
-            <strong>Lessons</strong>
-            <span class="tag">Basics</span>
+      <!-- RIGHT -->
+      <div>
+        <div class="card" id="pyodide">
+          <h3>Embedded Pyodide Editor</h3>
+          <p class="muted">
+            Use this to run Python snippets during class. (Opens inside the page.)
+          </p>
+          <div class="iframeWrap" title="Pyodide Editor (embedded)">
+            <iframe
+              loading="lazy"
+              referrerpolicy="no-referrer"
+              src="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html">
+            </iframe>
           </div>
-          <div class="bd">
-            <div class="two">
-              <div>
-                <p style="margin:0 0 8px">
-                  Chess goal: <b>Checkmate</b> the opponent’s king — attack the king so it has no legal escape.
-                </p>
-                <ul class="list">
-                  <li><b>King ♔</b>: 1 square any direction (we don’t enforce “check” yet).</li>
-                  <li><b>Queen ♕</b>: rook + bishop combined (any distance).</li>
-                  <li><b>Rook ♖</b>: straight lines (any distance).</li>
-                  <li><b>Bishop ♗</b>: diagonals (any distance).</li>
-                  <li><b>Knight ♘</b>: “L” shape, can jump over pieces.</li>
-                  <li><b>Pawn ♙</b>: forward 1 (or 2 from start), captures diagonally.</li>
-                </ul>
-                <div class="hr"></div>
-                <div class="small muted">
-                  Note: This trainer does not validate check/castling/en-passant/promotion yet (movement rules only).
-                </div>
-              </div>
-              <div>
-                <div class="hint">
-                  <b>Play vs Computer</b><br/>
-                  You are <b>White</b>. Make a move, then the computer (Black) replies automatically.
-                  Computer chooses captures and good trades using a simple evaluation.
-                </div>
-                <div class="hr"></div>
-                <div class="row">
-                  <button class="btn" id="btnLoadKnight">Focus: Knight</button>
-                  <button class="btn" id="btnLoadMate">Mini: Mate Net</button>
-                </div>
-              </div>
-            </div>
+
+          <div class="note" style="margin-top:10px">
+            <b class="warn">Class tip:</b> Ask students to write Python functions for tokenization, stopword removal,
+            and cosine similarity in the embedded editor.
+          </div>
+
+          <div class="code" style="margin-top:10px">
+            <button class="copy" data-copy="# Try this in the embedded editor\n\nimport math\n\ndef tokenize(s):\n    s = ''.join(ch.lower() if ch.isalnum() or ch.isspace() else ' ' for ch in s)\n    return [w for w in s.split() if w]\n\ndef cosine(a, b):\n    # bag-of-words cosine\n    va = {}\n    vb = {}\n    for w in a: va[w] = va.get(w, 0) + 1\n    for w in b: vb[w] = vb.get(w, 0) + 1\n    vocab = sorted(set(va) | set(vb))\n    A = [va.get(w, 0) for w in vocab]\n    B = [vb.get(w, 0) for w in vocab]\n    dot = sum(x*y for x,y in zip(A,B))\n    na = math.sqrt(sum(x*x for x in A))\n    nb = math.sqrt(sum(y*y for y in B))\n    return 0.0 if na == 0 or nb == 0 else dot/(na*nb)\n\ns1 = \"NLP helps computers understand human language\"\ns2 = \"Natural language processing helps machines understand people\"\nprint(tokenize(s1))\nprint(tokenize(s2))\nprint('cosine:', cosine(tokenize(s1), tokenize(s2)))">Copy Python Starter</button>
+            <pre class="out"># Try this in the embedded editor
+import math
+
+def tokenize(s):
+    s = ''.join(ch.lower() if ch.isalnum() or ch.isspace() else ' ' for ch in s)
+    return [w for w in s.split() if w]
+
+def cosine(a, b):
+    # bag-of-words cosine
+    va = {}
+    vb = {}
+    for w in a: va[w] = va.get(w, 0) + 1
+    for w in b: vb[w] = vb.get(w, 0) + 1
+    vocab = sorted(set(va) | set(vb))
+    A = [va.get(w, 0) for w in vocab]
+    B = [vb.get(w, 0) for w in vocab]
+    dot = sum(x*y for x,y in zip(A,B))
+    na = math.sqrt(sum(x*x for x in A))
+    nb = math.sqrt(sum(y*y for y in B))
+    return 0.0 if na == 0 or nb == 0 else dot/(na*nb)
+
+s1 = "NLP helps computers understand human language"
+s2 = "Natural language processing helps machines understand people"
+print(tokenize(s1))
+print(tokenize(s2))
+print('cosine:', cosine(tokenize(s1), tokenize(s2)))</pre>
           </div>
         </div>
 
-        <div class="card" id="practiceCard" style="display:none">
-          <div class="hd">
-            <strong>Practice Tasks</strong>
-            <span class="tag">Do 5 minutes</span>
-          </div>
-          <div class="bd">
-            <p class="quizQ" id="taskTitle">Task</p>
-            <div class="muted" id="taskText"></div>
-            <div class="hr"></div>
-            <div class="row">
-              <button class="btn primary" id="btnNextTask">Next Task</button>
-              <button class="btn" id="btnShowAnswer">Show Answer</button>
-              <span class="score" id="taskCounter">1 / 8</span>
-            </div>
-            <div class="hr"></div>
-            <div class="small muted" id="answerBox" style="display:none"></div>
-          </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Mini Checklist (NLP Basics)</h3>
+          <ul class="list">
+            <li><b>Tokenization:</b> split text into words/sentences</li>
+            <li><b>Normalization:</b> lowercase, remove punctuation</li>
+            <li><b>Stop words:</b> remove very common words that add little meaning</li>
+            <li><b>Vocabulary:</b> unique words used for vectors</li>
+            <li><b>Similarity:</b> cosine similarity for text matching</li>
+            <li><b>Meaning:</b> synonyms/antonyms + context</li>
+            <li><b>Translation:</b> demo vs real model-based translation</li>
+          </ul>
         </div>
 
-        <div class="card" id="quizCard" style="display:none">
-          <div class="hd">
-            <strong>Quick Quiz</strong>
-            <span class="tag">5 Qs</span>
-          </div>
-          <div class="bd">
-            <p class="quizQ" id="quizQ"></p>
-            <div id="quizOpts"></div>
-            <div class="hr"></div>
-            <div class="row">
-              <button class="btn primary" id="btnCheck">Check</button>
-              <button class="btn" id="btnNextQ">Next</button>
-              <span class="score">Score: <span id="quizScore">0</span>/5</span>
-            </div>
-            <div class="hr"></div>
-            <div class="small muted" id="quizExplain"></div>
-          </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Stop Words (Sample)</h3>
+          <p class="muted">We use a small standard-like set for demos.</p>
+          <pre class="out" id="stopOut"></pre>
         </div>
 
       </div>
     </div>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="footer">
+      Built in a light saffron theme • Works offline (except the embedded editor) • Suitable for Blogger / GitHub Pages
+    </div>
   </div>
 
   <script>
-    // ---------- Chess Learn Page + CPU (Simple Move Rules + Simple AI) ----------
-    // Still NOT a full chess engine: no check/castle/en-passant/promotion validation.
-    // CPU picks moves using material + small lookahead.
+    // ---------- Utilities ----------
+    const $ = (id) => document.getElementById(id);
 
-    const PIECES = {
-      "K":"♔","Q":"♕","R":"♖","B":"♗","N":"♘","P":"♙",
-      "k":"♚","q":"♛","r":"♜","b":"♝","n":"♞","p":"♟"
+    function safeLower(s){ return (s || "").toLowerCase(); }
+
+    function normalizeEnglish(s){
+      // keep letters/numbers/spaces; turn others into spaces
+      return (s || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function tokenizeEnglish(s){
+      const n = normalizeEnglish(s);
+      return n ? n.split(" ").filter(Boolean) : [];
+    }
+
+    function tokenizeHindiBasic(s){
+      // Simple whitespace tokenization; Hindi needs better tokenization in real NLP.
+      return (s || "")
+        .replace(/[^\u0900-\u097F0-9\s]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .split(" ")
+        .filter(Boolean);
+    }
+
+    const STOPWORDS_EN = new Set([
+      "a","an","the","and","or","but","if","then","else","when","while","for","to","of","in","on","at","by","from",
+      "with","without","as","is","are","was","were","be","been","being","it","this","that","these","those","i","you",
+      "he","she","we","they","me","my","your","his","her","our","their","them","us","do","does","did","doing",
+      "can","could","may","might","will","would","shall","should","must","not","no","yes","so","very","just",
+      "into","about","over","under","up","down","out","off","than","too","also"
+    ]);
+
+    // Tiny demo thesaurus (expand any time)
+    const THESAURUS = {
+      "understand": {syn:["comprehend","grasp","recognize"], ant:["misunderstand","ignore"]},
+      "help": {syn:["assist","support","aid"], ant:["harm","hinder"]},
+      "important": {syn:["significant","crucial","vital"], ant:["unimportant","minor"]},
+      "happy": {syn:["joyful","glad","cheerful"], ant:["sad","unhappy"]},
+      "difficult": {syn:["hard","challenging","tough"], ant:["easy","simple"]},
+      "fast": {syn:["quick","rapid","speedy"], ant:["slow","sluggish"]},
+      "meaning": {syn:["sense","definition","intent"], ant:["nonsense","confusion"]},
+      "language": {syn:["speech","tongue"], ant:["silence"]},
+      "student": {syn:["learner","pupil"], ant:["teacher"]},
+      "learn": {syn:["study","master","grasp"], ant:["forget","ignore"]}
     };
 
-    const state = {
-      flip: false,
-      showCoords: true,
-      turn: "w",            // w or b
-      board: [],            // 8x8
-      selected: null,       // {r,c}
-      moves: [],            // list of {r,c,type:"move"|"cap"}
-      lastMove: null,       // {from:{r,c},to:{r,c}}
-      mode: "learn",        // learn | practice | quiz | cpu
-      cpuLevel: "easy",     // easy | medium
-      cpuThinking: false,
-      gameOver: false
+    function removeStopwords(tokens){
+      return tokens.filter(w => !STOPWORDS_EN.has(w));
+    }
+
+    function freq(tokens){
+      const m = new Map();
+      for(const t of tokens) m.set(t, (m.get(t) || 0) + 1);
+      return m;
+    }
+
+    function cosineFromTokens(t1, t2){
+      const f1 = freq(t1);
+      const f2 = freq(t2);
+      const vocab = Array.from(new Set([...f1.keys(), ...f2.keys()])).sort();
+
+      const A = vocab.map(w => f1.get(w) || 0);
+      const B = vocab.map(w => f2.get(w) || 0);
+
+      let dot = 0, na = 0, nb = 0;
+      for(let i=0;i<vocab.length;i++){
+        dot += A[i]*B[i];
+        na += A[i]*A[i];
+        nb += B[i]*B[i];
+      }
+      na = Math.sqrt(na); nb = Math.sqrt(nb);
+      const cos = (na === 0 || nb === 0) ? 0 : dot/(na*nb);
+      return {cos, vocab, A, B};
+    }
+
+    function topK(map, k=12){
+      const arr = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]);
+      return arr.slice(0,k);
+    }
+
+    // ---------- Offline demo translation (very limited) ----------
+    // For classroom: replace with a real model/API later.
+    const EN_HI = {
+      "nlp":"एनएलपी",
+      "helps":"मदद",
+      "help":"मदद",
+      "students":"छात्रों",
+      "student":"छात्र",
+      "learn":"सीखना",
+      "language":"भाषा",
+      "faster":"तेजी",
+      "computer":"कंप्यूटर",
+      "computers":"कंप्यूटर",
+      "understand":"समझना",
+      "human":"मानव",
+      "people":"लोग",
+      "processing":"प्रोसेसिंग",
+      "natural":"प्राकृतिक",
+      "machine":"मशीन",
+      "machines":"मशीनें",
+      "is":"है",
+      "are":"हैं",
+      "very":"बहुत",
+      "important":"महत्वपूर्ण",
+      "today":"आज"
+    };
+    const HI_EN = {
+      "एनएलपी":"nlp",
+      "मदद":"help",
+      "छात्रों":"students",
+      "छात्र":"student",
+      "भाषा":"language",
+      "तेजी":"faster",
+      "सीखना":"learn",
+      "कंप्यूटर":"computers",
+      "समझना":"understand",
+      "मानव":"human",
+      "लोग":"people",
+      "प्रोसेसिंग":"processing",
+      "प्राकृतिक":"natural",
+      "मशीन":"machine",
+      "मशीनें":"machines",
+      "है":"is",
+      "हैं":"are",
+      "बहुत":"very",
+      "महत्वपूर्ण":"important",
+      "आज":"today"
     };
 
-    const el = (id)=>document.getElementById(id);
-    const boardEl = el("board");
-    const statusEl = el("status");
-    const turnTag = el("turnTag");
-    const selTag = el("selTag");
-    const gameTag = el("gameTag");
-    const toastEl = el("toast");
-
-    const modeSel = el("mode");
-    const showCoordsCb = el("showCoords");
-    const cpuLevelSel = el("cpuLevel");
-
-    const practiceCard = el("practiceCard");
-    const quizCard = el("quizCard");
-
-    const START = [
-      ["r","n","b","q","k","b","n","r"],
-      ["p","p","p","p","p","p","p","p"],
-      ["","","","","","","",""],
-      ["","","","","","","",""],
-      ["","","","","","","",""],
-      ["","","","","","","",""],
-      ["P","P","P","P","P","P","P","P"],
-      ["R","N","B","Q","K","B","N","R"],
-    ];
-
-    function cloneBoard(b){ return b.map(row=>row.slice()); }
-    function reset(){
-      state.board = cloneBoard(START);
-      state.selected = null;
-      state.moves = [];
-      state.turn = "w";
-      state.lastMove = null;
-      state.cpuThinking = false;
-      state.gameOver = false;
-      render();
-      setStatus('Tip: Click a piece to see moves. Try the Knight ♞ first!');
-      updateGameTag();
+    function enToHiDemo(s){
+      const tokens = tokenizeEnglish(s);
+      if(tokens.length === 0) return "";
+      const out = tokens.map(w => EN_HI[w] || w);
+      // A tiny “grammar-ish” post tweak for readability
+      return out.join(" ").replace(/\s+/g," ").trim();
     }
 
-    function setStatus(html){ statusEl.innerHTML = html; }
-    function toast(title, msg){
-      toastEl.innerHTML = `<strong>${title}</strong><div class="small muted">${msg}</div>`;
-      toastEl.classList.add("show");
-      clearTimeout(toastEl._t);
-      toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 2200);
+    function hiToEnDemo(s){
+      const toks = tokenizeHindiBasic(s);
+      if(toks.length === 0) return "";
+      const out = toks.map(w => HI_EN[w] || w);
+      return out.join(" ").replace(/\s+/g," ").trim();
     }
 
-    function inBounds(r,c){ return r>=0 && r<8 && c>=0 && c<8; }
-    function isWhite(ch){ return ch && ch.toUpperCase()===ch; }
-    function isBlack(ch){ return ch && ch.toLowerCase()===ch; }
+    // ---------- Charts ----------
+    let countChart = null;
+    let simChart = null;
 
-    function algebra(r,c){
-      const file = "abcdefgh"[c];
-      const rank = (8 - r);
-      return file + rank;
-    }
+    function ensureCharts(){
+      const ctx1 = $("countChart").getContext("2d");
+      const ctx2 = $("simChart").getContext("2d");
 
-    function viewToModel(vr,vc){
-      if(!state.flip) return {r:vr,c:vc};
-      return {r:7-vr,c:7-vc};
-    }
-    function pieceAt(board,r,c){ return (board ? board[r][c] : state.board[r][c]) || ""; }
-
-    function getMovesFor(board,r,c){
-      const p = pieceAt(board,r,c);
-      if(!p) return [];
-      const side = isWhite(p) ? "w" : "b";
-      const enemy = side==="w" ? "b" : "w";
-      const moves = [];
-      const push = (rr,cc,type)=>moves.push({r:rr,c:cc,type});
-
-      const addRay = (dr,dc)=>{
-        let rr=r+dr, cc=c+dc;
-        while(inBounds(rr,cc)){
-          const t = pieceAt(board,rr,cc);
-          if(!t){ push(rr,cc,"move"); }
-          else{
-            const tSide = isWhite(t) ? "w" : "b";
-            if(tSide===enemy) push(rr,cc,"cap");
-            break;
+      if(!countChart){
+        countChart = new Chart(ctx1, {
+          type: "bar",
+          data: {
+            labels: ["Sentence A", "Sentence B"],
+            datasets: [
+              { label: "Tokens (raw)", data: [0,0] },
+              { label: "Tokens (after stopwords)", data: [0,0] }
+            ]
+          },
+          options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
           }
-          rr+=dr; cc+=dc;
-        }
-      };
-
-      const up = side==="w" ? -1 : 1;
-
-      switch(p.toLowerCase()){
-        case "p":{
-          const fr = r + up;
-          if(inBounds(fr,c) && !pieceAt(board,fr,c)){
-            push(fr,c,"move");
-            const startRow = side==="w" ? 6 : 1;
-            const fr2 = r + up*2;
-            if(r===startRow && inBounds(fr2,c) && !pieceAt(board,fr2,c)) push(fr2,c,"move");
-          }
-          for(const dc of [-1,1]){
-            const cr = r + up, cc = c + dc;
-            if(inBounds(cr,cc)){
-              const t = pieceAt(board,cr,cc);
-              if(t){
-                const tSide = isWhite(t) ? "w" : "b";
-                if(tSide===enemy) push(cr,cc,"cap");
-              }
-            }
-          }
-          break;
-        }
-        case "n":{
-          const steps = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
-          for(const [dr,dc] of steps){
-            const rr=r+dr, cc=c+dc;
-            if(!inBounds(rr,cc)) continue;
-            const t = pieceAt(board,rr,cc);
-            if(!t) push(rr,cc,"move");
-            else{
-              const tSide = isWhite(t) ? "w" : "b";
-              if(tSide===enemy) push(rr,cc,"cap");
-            }
-          }
-          break;
-        }
-        case "b": addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1); break;
-        case "r": addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1); break;
-        case "q":
-          addRay(-1,0); addRay(1,0); addRay(0,-1); addRay(0,1);
-          addRay(-1,-1); addRay(-1,1); addRay(1,-1); addRay(1,1);
-          break;
-        case "k":{
-          for(let dr=-1;dr<=1;dr++){
-            for(let dc=-1;dc<=1;dc++){
-              if(dr===0 && dc===0) continue;
-              const rr=r+dr, cc=c+dc;
-              if(!inBounds(rr,cc)) continue;
-              const t = pieceAt(board,rr,cc);
-              if(!t) push(rr,cc,"move");
-              else{
-                const tSide = isWhite(t) ? "w" : "b";
-                if(tSide===enemy) push(rr,cc,"cap");
-              }
-            }
-          }
-          break;
-        }
+        });
       }
-      return moves;
+
+      if(!simChart){
+        simChart = new Chart(ctx2, {
+          type: "bar",
+          data: {
+            labels: ["Cosine Similarity"],
+            datasets: [{ label: "Score (0 → 1)", data: [0] }]
+          },
+          options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true, max: 1 } }
+          }
+        });
+      }
     }
 
-    function clearSelection(){
-      state.selected = null;
-      state.moves = [];
-      selTag.textContent = "—";
+    function updateCountChart(aRaw, bRaw, aClean, bClean){
+      ensureCharts();
+      countChart.data.datasets[0].data = [aRaw, bRaw];
+      countChart.data.datasets[1].data = [aClean, bClean];
+      countChart.update();
     }
 
-    function updateTags(){
-      turnTag.textContent = state.turn==="w" ? "White" : "Black";
-      updateGameTag();
-    }
-    function updateGameTag(){
-      if(state.mode==="cpu") gameTag.textContent = state.cpuThinking ? "CPU thinking…" : "Vs CPU";
-      else gameTag.textContent = "Free";
+    function updateSimChart(score){
+      ensureCharts();
+      simChart.data.datasets[0].data = [Number(score.toFixed(4))];
+      simChart.update();
     }
 
-    function selectSquare(r,c){
-      const p = pieceAt(null,r,c);
-      if(!p){ clearSelection(); render(); return; }
+    // ---------- UI actions ----------
+    function analyze(){
+      const mode = $("langMode").value;
+      const removeStops = $("removeStops").value === "yes";
+      const a = $("text1").value;
+      const b = $("text2").value;
 
-      const side = isWhite(p) ? "w" : "b";
+      let ta = [], tb = [];
+      if(mode === "en"){
+        ta = tokenizeEnglish(a);
+        tb = tokenizeEnglish(b);
+      } else {
+        ta = tokenizeHindiBasic(a);
+        tb = tokenizeHindiBasic(b);
+      }
 
-      // In CPU mode, player is White only.
-      if(state.mode==="cpu" && side!=="w"){
-        toast("Your pieces", "You play White. Select a White piece.");
+      const ta2 = (mode === "en" && removeStops) ? removeStopwords(ta) : ta.slice();
+      const tb2 = (mode === "en" && removeStops) ? removeStopwords(tb) : tb.slice();
+
+      const fa = freq(ta2), fb = freq(tb2);
+      const topA = topK(fa, 10), topB = topK(fb, 10);
+
+      const report = [];
+      report.push("=== NLP ANALYSIS ===");
+      report.push("Mode: " + (mode === "en" ? "English" : "Hindi demo"));
+      report.push("Stopwords removed: " + ((mode === "en" && removeStops) ? "YES" : "NO / N.A."));
+      report.push("");
+      report.push("Sentence A (raw tokens): " + ta.length);
+      report.push("Sentence A (final tokens): " + ta2.length);
+      report.push("Tokens A: " + JSON.stringify(ta2));
+      report.push("");
+      report.push("Sentence B (raw tokens): " + tb.length);
+      report.push("Sentence B (final tokens): " + tb2.length);
+      report.push("Tokens B: " + JSON.stringify(tb2));
+      report.push("");
+      report.push("Top words (A): " + JSON.stringify(topA));
+      report.push("Top words (B): " + JSON.stringify(topB));
+      report.push("");
+      report.push("Next steps (meaning): try TF-IDF, embeddings, entity extraction, sentiment.");
+
+      $("analysisOut").textContent = report.join("\n");
+
+      // Update charts
+      updateCountChart(ta.length, tb.length, ta2.length, tb2.length);
+    }
+
+    function computeCosine(){
+      const mode = $("langMode").value;
+      if(mode !== "en"){
+        $("cosOut").textContent = "Cosine demo is enabled for English mode (bag-of-words). Switch Mode to English.";
         return;
       }
 
-      if(side !== state.turn){
-        toast("Not your turn", `It's ${state.turn==="w"?"White":"Black"} to move.`);
+      const removeStops = $("removeStops").value === "yes";
+      let ta = tokenizeEnglish($("text1").value);
+      let tb = tokenizeEnglish($("text2").value);
+
+      if(removeStops){
+        ta = removeStopwords(ta);
+        tb = removeStopwords(tb);
+      }
+
+      const r = cosineFromTokens(ta, tb);
+      const pct = (r.cos * 100);
+
+      const msg = [];
+      msg.push("=== COSINE SIMILARITY ===");
+      msg.push("Score: " + r.cos.toFixed(4) + "  (" + pct.toFixed(1) + "% similar)");
+      msg.push("");
+      msg.push("Interpretation:");
+      msg.push(r.cos >= 0.80 ? "• Very similar (likely same idea)" :
+               r.cos >= 0.55 ? "• Moderately similar" :
+               r.cos >= 0.30 ? "• Some overlap" :
+                               "• Mostly different");
+      msg.push("");
+      msg.push("Tip: Use embeddings for better semantic similarity.");
+
+      $("cosOut").textContent = msg.join("\n");
+
+      // Update similarity chart
+      updateSimChart(r.cos);
+    }
+
+    function showVectors(){
+      const mode = $("langMode").value;
+      if(mode !== "en"){
+        $("vecOut").textContent = "Vectors demo is enabled for English mode. Switch Mode to English.";
         return;
       }
 
-      state.selected = {r,c};
-      state.moves = getMovesFor(state.board,r,c);
-      selTag.textContent = `${PIECES[p]} ${algebra(r,c)}`;
-      render();
+      const removeStops = $("removeStops").value === "yes";
+      let ta = tokenizeEnglish($("text1").value);
+      let tb = tokenizeEnglish($("text2").value);
+      if(removeStops){
+        ta = removeStopwords(ta);
+        tb = removeStopwords(tb);
+      }
+
+      const r = cosineFromTokens(ta, tb);
+      const lines = [];
+      lines.push("Vocabulary (" + r.vocab.length + "):");
+      lines.push(r.vocab.join(", "));
+      lines.push("");
+      lines.push("Vector A:");
+      lines.push(JSON.stringify(r.A));
+      lines.push("");
+      lines.push("Vector B:");
+      lines.push(JSON.stringify(r.B));
+      $("vecOut").textContent = lines.join("\n");
     }
 
-    function applyMove(board, from, to){
-      const p = pieceAt(board,from.r,from.c);
-      const target = pieceAt(board,to.r,to.c);
-      board[to.r][to.c] = p;
-      board[from.r][from.c] = "";
-      return {p, target};
-    }
-
-    function hasKing(board, side){
-      const k = side==="w" ? "K" : "k";
-      for(let r=0;r<8;r++) for(let c=0;c<8;c++) if(board[r][c]===k) return true;
-      return false;
-    }
-
-    function tryMove(toR,toC){
-      if(!state.selected) return false;
-      const from = state.selected;
-      const legal = state.moves.find(m=>m.r===toR && m.c===toC);
-      if(!legal) return false;
-
-      const p = pieceAt(null,from.r,from.c);
-      const target = pieceAt(null,toR,toC);
-
-      applyMove(state.board, from, {r:toR,c:toC});
-
-      state.lastMove = {from:{...from}, to:{r:toR,c:toC}};
-      clearSelection();
-
-      // End if king captured (since we're not checking checkmates)
-      if(target && (target==="k" || target==="K")){
-        state.gameOver = true;
-        toast("Game Over", `${PIECES[p]} captured the king on ${algebra(toR,toC)} (trainer mode).`);
-        setStatus("Game Over (trainer): A king was captured. Reset to play again.");
-      }
-
-      // toggle turn unless game over
-      if(!state.gameOver){
-        state.turn = (state.turn==="w") ? "b" : "w";
-      }
-      updateTags();
-
-      if(target){
-        toast("Capture!", `${PIECES[p]} captured ${PIECES[target]} on ${algebra(toR,toC)}.`);
-      }else{
-        toast("Moved", `${PIECES[p]} to ${algebra(toR,toC)}.`);
-      }
-
-      if(!state.gameOver){
-        if(state.mode==="practice") setStatus(`Practice: Complete the task shown on the right.`);
-        else if(state.mode==="quiz") setStatus(`Quiz: Answer on the right. Use the board to visualize.`);
-        else if(state.mode==="cpu") setStatus(`Vs CPU: Your move (White). After you move, Black replies automatically.`);
-        else setStatus(`Tip: Click a piece to see its moves. Green = move, Red = capture.`);
-      }
-
-      render();
-
-      // CPU reply if needed
-      if(state.mode==="cpu" && !state.gameOver && state.turn==="b"){
-        cpuReply();
-      }
-      return true;
-    }
-
-    function onSquareClick(vr,vc){
-      if(state.gameOver) return;
-
-      // Block clicks while CPU is thinking
-      if(state.mode==="cpu" && state.cpuThinking) return;
-
-      const {r,c} = viewToModel(vr,vc);
-
-      if(state.selected){
-        if(tryMove(r,c)) return;
-
-        const p = pieceAt(null,r,c);
-        if(p){
-          const side = isWhite(p) ? "w" : "b";
-          if(side===state.turn){
-            selectSquare(r,c);
-            return;
-          }
-        }
-        clearSelection();
-        render();
+    function lookup(){
+      const w = safeLower($("wordLookup").value).trim();
+      if(!w){
+        $("lookupOut").textContent = "Type a word first.";
         return;
       }
-      selectSquare(r,c);
-    }
-
-    function render(){
-      boardEl.innerHTML = "";
-      updateTags();
-
-      for(let vr=0; vr<8; vr++){
-        for(let vc=0; vc<8; vc++){
-          const {r,c} = viewToModel(vr,vc);
-          const sq = document.createElement("div");
-          const isLight = ((r+c)%2===0);
-          sq.className = "sq " + (isLight ? "light":"dark");
-          sq.dataset.vr = vr; sq.dataset.vc = vc;
-
-          const p = pieceAt(null,r,c);
-          sq.textContent = p ? PIECES[p] : "";
-
-          if(state.selected && state.selected.r===r && state.selected.c===c) sq.classList.add("selected");
-
-          if(state.lastMove){
-            if(state.lastMove.from.r===r && state.lastMove.from.c===c) sq.classList.add("lastFrom");
-            if(state.lastMove.to.r===r && state.lastMove.to.c===c) sq.classList.add("lastTo");
-          }
-
-          if(state.moves && state.moves.length){
-            const m = state.moves.find(x=>x.r===r && x.c===c);
-            if(m) sq.classList.add(m.type==="cap" ? "cap" : "hl");
-          }
-
-          if(state.showCoords){
-            const coord = document.createElement("div");
-            coord.className = "coord";
-            coord.textContent = algebra(r,c);
-            sq.appendChild(coord);
-          }
-
-          sq.addEventListener("click", ()=>onSquareClick(vr,vc));
-          boardEl.appendChild(sq);
-        }
+      const entry = THESAURUS[w];
+      if(!entry){
+        $("lookupOut").textContent =
+          "No demo entry for: " + w + "\n\nAdd it in THESAURUS (JS) to expand.\nTry: understand, help, important, happy, difficult, fast";
+        return;
       }
-
-      // add "lock" feel while CPU thinking
-      if(state.mode==="cpu" && state.cpuThinking){
-        boardEl.parentElement.classList.add("lock");
-      }else{
-        boardEl.parentElement.classList.remove("lock");
-      }
-    }
-
-    // ---------- CPU (Black) ----------
-    const VAL = { p:100, n:320, b:330, r:500, q:900, k:20000 };
-    function valueOfPiece(ch){
-      if(!ch) return 0;
-      const v = VAL[ch.toLowerCase()] || 0;
-      return isWhite(ch) ? v : -v;
-    }
-
-    function evalBoard(board){
-      // material + small center bonus
-      let s = 0;
-      for(let r=0;r<8;r++){
-        for(let c=0;c<8;c++){
-          const p = board[r][c];
-          if(!p) continue;
-          s += valueOfPiece(p);
-          // center bonus
-          const center = (r>=2 && r<=5 && c>=2 && c<=5) ? 6 : 0;
-          s += isWhite(p) ? center : -center;
-        }
-      }
-      return s; // positive => better for White
-    }
-
-    function listAllMoves(board, side){
       const out = [];
-      for(let r=0;r<8;r++){
-        for(let c=0;c<8;c++){
-          const p = pieceAt(board,r,c);
-          if(!p) continue;
-          if(side==="w" && !isWhite(p)) continue;
-          if(side==="b" && !isBlack(p)) continue;
-          const ms = getMovesFor(board,r,c);
-          for(const m of ms){
-            out.push({from:{r,c}, to:{r:m.r,c:m.c}, type:m.type, piece:p});
-          }
-        }
+      out.push("Word: " + w);
+      out.push("Synonyms: " + entry.syn.join(", "));
+      out.push("Antonyms: " + entry.ant.join(", "));
+      $("lookupOut").textContent = out.join("\n");
+    }
+
+    function translateEnHi(){
+      const s = $("enToHi").value;
+      const out = enToHiDemo(s);
+      $("enHiOut").textContent = out || "(empty)";
+    }
+
+    function translateHiEn(){
+      const s = $("hiToEn").value;
+      const out = hiToEnDemo(s);
+      $("hiEnOut").textContent = out || "(empty)";
+    }
+
+    function copyText(text){
+      if(!navigator.clipboard){
+        alert("Clipboard not available in this browser context.");
+        return;
       }
-      return out;
+      navigator.clipboard.writeText(text).then(()=>{}, ()=>alert("Copy failed."));
     }
 
-    function pickCpuMove(board){
-      // CPU is Black: tries to minimize eval (reduce White advantage).
-      const moves = listAllMoves(board, "b");
-      if(moves.length===0) return null;
-
-      const depth = (state.cpuLevel==="medium") ? 2 : 1; // tiny lookahead
-      let best = null;
-      let bestScore = Infinity;
-
-      // cheap randomness among near-equals (makes it feel less robotic)
-      const jitter = (state.cpuLevel==="easy") ? 10 : 4;
-
-      for(const mv of moves){
-        const b1 = cloneBoard(board);
-        applyMove(b1, mv.from, mv.to);
-
-        // if captured king, do it
-        const captured = pieceAt(b1, mv.to.r, mv.to.c);
-        // captured value already in board, but king capture ends quickly in our trainer rules.
-        if(!hasKing(b1,"w")) return mv;
-
-        let score;
-        if(depth===1){
-          score = evalBoard(b1);
-        }else{
-          // White best reply (maximize eval)
-          const replies = listAllMoves(b1, "w");
-          if(replies.length===0){
-            score = evalBoard(b1);
-          }else{
-            let bestWhite = -Infinity;
-            for(const rply of replies){
-              const b2 = cloneBoard(b1);
-              applyMove(b2, rply.from, rply.to);
-              const s2 = evalBoard(b2);
-              if(s2 > bestWhite) bestWhite = s2;
-            }
-            score = bestWhite;
-          }
-        }
-
-        // CPU wants minimal score
-        const noisy = score + (Math.random()*2 - 1) * jitter;
-
-        // prefer captures a bit on easy (fun), but still eval-based
-        const capBonus = (mv.type==="cap") ? -12 : 0;
-        const finalScore = noisy + capBonus;
-
-        if(finalScore < bestScore){
-          bestScore = finalScore;
-          best = mv;
-        }
-      }
-      return best;
-    }
-
-    function cpuReply(){
-      state.cpuThinking = true;
-      updateGameTag();
-      setStatus("Vs CPU: Black is thinking…");
-      render();
-
-      // quick delay so it feels natural
-      setTimeout(()=>{
-        const mv = pickCpuMove(state.board);
-        state.cpuThinking = false;
-        updateGameTag();
-
-        if(!mv){
-          toast("CPU", "No moves available.");
-          state.gameOver = true;
-          setStatus("Game Over: CPU has no moves (trainer). Reset to play again.");
-          render();
-          return;
-        }
-
-        const target = pieceAt(state.board, mv.to.r, mv.to.c);
-        applyMove(state.board, mv.from, mv.to);
-        state.lastMove = {from:{...mv.from}, to:{...mv.to}};
-
-        clearSelection();
-
-        if(target && (target==="K" || target==="k")){
-          state.gameOver = true;
-          toast("Game Over", `CPU captured the king on ${algebra(mv.to.r,mv.to.c)} (trainer mode).`);
-          setStatus("Game Over (trainer): A king was captured. Reset to play again.");
-        }else{
-          // switch back to White
-          state.turn = "w";
-          toast("CPU moved", `${PIECES[mv.piece]} ${algebra(mv.from.r,mv.from.c)} → ${algebra(mv.to.r,mv.to.c)}.`);
-          setStatus("Vs CPU: Your move (White).");
-        }
-
-        updateTags();
-        render();
-      }, 380);
-    }
-
-    // ---------- Modes: Practice / Quiz ----------
-    const tasks = [
-      { title:"Knight Tour (Mini)", text:"Select a Knight and make 3 legal knight moves in a row.", answer:"Knights move in an L and can jump over pieces." },
-      { title:"Bishop Diagonals", text:"Select a Bishop. Move it along a diagonal to a new square.", answer:"Bishops move diagonally and stay on the same color." },
-      { title:"Rook Files & Ranks", text:"Select a Rook. Move it in a straight line.", answer:"Rooks move up/down/left/right any distance until blocked." },
-      { title:"Queen Power", text:"Select a Queen and observe rook + bishop moves.", answer:"Queen combines rook + bishop movement." },
-      { title:"Pawn Rules", text:"Move a pawn forward 1 (or 2 from start). Try a diagonal capture if possible.", answer:"Pawns capture diagonally, not forward." },
-      { title:"Create an Attack", text:"Capture one opponent pawn with any piece (red dots show captures).", answer:"Use red dots (captures) to take an enemy pawn." },
-      { title:"Open a Line", text:"Move a pawn to open a bishop or queen line.", answer:"Central pawn moves often open diagonals." },
-      { title:"Mini Check (Concept)", text:"Put a piece on a square that attacks the enemy king (we don't enforce check).", answer:"Use rook/bishop/queen lines to attack the king." },
-    ];
-    let taskIndex = 0;
-    function showTask(i){
-      taskIndex = i % tasks.length;
-      el("taskTitle").textContent = tasks[taskIndex].title;
-      el("taskText").textContent = tasks[taskIndex].text;
-      el("taskCounter").textContent = `${taskIndex+1} / ${tasks.length}`;
-      el("answerBox").style.display = "none";
-      el("answerBox").textContent = tasks[taskIndex].answer;
-    }
-
-    const quiz = [
-      { q:"Which piece can jump over other pieces?", opts:["Bishop","Knight","Rook","Queen"], a:1, e:"Knights jump and move in an L-shape." },
-      { q:"A bishop always stays on the same color squares. True or false?", opts:["True","False"], a:0, e:"Diagonal movement keeps it on the same color." },
-      { q:"How does a pawn capture?", opts:["Straight forward","Diagonally forward","Like a knight","Backward diagonally"], a:1, e:"Pawns capture one step diagonally forward." },
-      { q:"The queen moves like…", opts:["Only diagonals","Only straight lines","Rook + Bishop combined","One square only"], a:2, e:"Queen = rook + bishop movement." },
-      { q:"Goal of chess is to…", opts:["Capture all pieces","Checkmate the king","Promote a pawn","Win material"], a:1, e:"You win by checkmating the king." },
-    ];
-    let qIndex = 0, qScore = 0, qChecked = false;
-
-    function renderQuiz(){
-      qChecked = false;
-      el("quizExplain").textContent = "";
-      const item = quiz[qIndex];
-      el("quizQ").textContent = item.q;
-      const box = el("quizOpts");
-      box.innerHTML = "";
-      item.opts.forEach((t,idx)=>{
-        const row = document.createElement("label");
-        row.className = "opt";
-        row.innerHTML = `<input type="radio" name="q" value="${idx}"/> <span>${t}</span>`;
-        box.appendChild(row);
+    function wireCopyButtons(){
+      document.querySelectorAll("button.copy").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const t = btn.getAttribute("data-copy") || "";
+          copyText(t);
+          const old = btn.textContent;
+          btn.textContent = "Copied!";
+          setTimeout(()=>btn.textContent = old, 900);
+        });
       });
-      el("quizScore").textContent = qScore;
-    }
-    function getSelectedQuizOpt(){
-      const checked = document.querySelector('input[name="q"]:checked');
-      return checked ? parseInt(checked.value,10) : -1;
-    }
-    function checkQuiz(){
-      if(qChecked) return;
-      const pick = getSelectedQuizOpt();
-      if(pick<0){ toast("Choose an option","Select one answer first."); return; }
-      qChecked = true;
-      const item = quiz[qIndex];
-      if(pick === item.a){ qScore++; el("quizExplain").innerHTML = `<span class="good"><b>Correct.</b></span> ${item.e}`; }
-      else el("quizExplain").innerHTML = `<span class="bad"><b>Not quite.</b></span> ${item.e}`;
-      el("quizScore").textContent = qScore;
-    }
-    function nextQuiz(){
-      qIndex = (qIndex + 1) % quiz.length;
-      renderQuiz();
-      setStatus("Quiz: Answer on the right. Use the board to visualize.");
     }
 
-    // ---------- Lesson quick loaders ----------
-    function loadKnightFocus(){
-      state.board = Array.from({length:8}, ()=>Array(8).fill(""));
-      state.board[7][1] = "N"; // b1
-      state.board[6][3] = "P"; // d2
-      state.board[5][2] = "p"; // c3
-      state.board[4][4] = "p"; // e4
-      state.turn = "w";
-      state.lastMove = null;
-      state.gameOver = false;
-      clearSelection();
-      render();
-      setStatus("Knight Focus: Click the knight ♘ and see its moves. Red dots are captures.");
-      toast("Loaded","Knight focus position loaded.");
+    // ---------- Init ----------
+    function init(){
+      $("stopOut").textContent = Array.from(STOPWORDS_EN).sort().join(", ");
+
+      $("analyzeBtn").addEventListener("click", analyze);
+      $("cosBtn").addEventListener("click", computeCosine);
+      $("vecBtn").addEventListener("click", showVectors);
+
+      $("lookupBtn").addEventListener("click", lookup);
+      $("lookupClearBtn").addEventListener("click", ()=>{ $("wordLookup").value=""; $("lookupOut").textContent="Try: understand, help, important, happy, difficult, fast"; });
+
+      $("enHiBtn").addEventListener("click", translateEnHi);
+      $("hiEnBtn").addEventListener("click", translateHiEn);
+
+      $("enHiCopyBtn").addEventListener("click", ()=>copyText($("enHiOut").textContent));
+      $("hiEnCopyBtn").addEventListener("click", ()=>copyText($("hiEnOut").textContent));
+
+      $("swapBtn").addEventListener("click", ()=>{
+        const a = $("text1").value;
+        $("text1").value = $("text2").value;
+        $("text2").value = a;
+      });
+
+      $("resetBtn").addEventListener("click", ()=>{
+        $("text1").value = "NLP helps computers understand human language.";
+        $("text2").value = "Natural language processing allows machines to understand people.";
+        $("langMode").value = "en";
+        $("removeStops").value = "yes";
+        $("analysisOut").textContent = "Click “Analyze Text”.";
+        $("cosOut").textContent = "Click “Compute Cosine Similarity”.";
+        $("vecOut").textContent = "Click “Show Vectors”.";
+        updateCountChart(0,0,0,0);
+        updateSimChart(0);
+      });
+
+      $("langMode").addEventListener("change", ()=> {
+        // keep it smooth: re-analyze when mode changes
+        analyze();
+      });
+      $("removeStops").addEventListener("change", ()=> {
+        analyze();
+      });
+
+      wireCopyButtons();
+      // First run for visuals
+      analyze();
+      computeCosine();
+      showVectors();
+      translateEnHi();
+      translateHiEn();
     }
-    function loadMateNet(){
-      state.board = Array.from({length:8}, ()=>Array(8).fill(""));
-      state.board[0][4] = "k"; // e8
-      state.board[7][4] = "K"; // e1
-      state.board[6][4] = "Q"; // e2
-      state.board[6][7] = "R"; // h2
-      state.turn = "w";
-      state.lastMove = null;
-      state.gameOver = false;
-      clearSelection();
-      render();
-      setStatus("Mate Net (Concept): Use queen + rook to restrict the king. Try attacking e8.");
-      toast("Loaded","Mate-net mini position loaded.");
-    }
 
-    // ---------- Wire UI ----------
-    el("btnReset").addEventListener("click", reset);
-    el("btnFlip").addEventListener("click", ()=>{ state.flip=!state.flip; render(); toast("Board", state.flip ? "Flipped view." : "Normal view."); });
-    el("btnHint").addEventListener("click", ()=>{
-      const tips = [
-        "Control the center early: e4/d4/e5/d5 matter.",
-        "Develop knights & bishops before moving queen too much.",
-        "Watch red dots: don’t hang pieces.",
-        "Knights love safe outposts.",
-        "Open lines for bishops/rooks."
-      ];
-      const t = tips[Math.floor(Math.random()*tips.length)];
-      setStatus("Hint: " + t);
-      toast("Hint", t);
-    });
-
-    el("btnLoadKnight").addEventListener("click", loadKnightFocus);
-    el("btnLoadMate").addEventListener("click", loadMateNet);
-
-    showCoordsCb.addEventListener("change", ()=>{ state.showCoords = showCoordsCb.checked; render(); });
-    cpuLevelSel.addEventListener("change", ()=>{ state.cpuLevel = cpuLevelSel.value; toast("CPU level", state.cpuLevel==="easy"?"Easy":"Medium"); });
-
-    modeSel.addEventListener("change", ()=>{
-      state.mode = modeSel.value;
-      practiceCard.style.display = (state.mode==="practice") ? "" : "none";
-      quizCard.style.display = (state.mode==="quiz") ? "" : "none";
-
-      state.gameOver = false;
-      state.cpuThinking = false;
-
-      if(state.mode==="learn"){
-        setStatus("Learn Moves: Click a piece to see legal moves. Green=move, Red=capture.");
-      }else if(state.mode==="practice"){
-        showTask(taskIndex);
-        setStatus("Practice: Complete the task shown on the right. Use Reset if stuck.");
-      }else if(state.mode==="quiz"){
-        renderQuiz();
-        setStatus("Quiz: Answer on the right. Use the board to visualize.");
-      }else if(state.mode==="cpu"){
-        // reset for fair play and force player as White
-        reset();
-        state.mode = "cpu";
-        setStatus("Vs CPU: You are White. Make a move; Black replies automatically.");
-        toast("Vs CPU", "You are White. Good luck!");
-      }
-      render();
-    });
-
-    el("btnNextTask").addEventListener("click", ()=>{ showTask(taskIndex+1); toast("Practice","Next task loaded."); });
-    el("btnShowAnswer").addEventListener("click", ()=>{
-      const box = el("answerBox");
-      box.style.display = (box.style.display==="none") ? "" : "none";
-      toast("Answer", box.style.display==="none" ? "Hidden." : "Shown.");
-    });
-
-    el("btnCheck").addEventListener("click", checkQuiz);
-    el("btnNextQ").addEventListener("click", nextQuiz);
-
-    window.addEventListener("keydown", (e)=>{
-      if(e.key.toLowerCase()==="r") reset();
-      if(e.key.toLowerCase()==="f") el("btnFlip").click();
-      if(e.key.toLowerCase()==="h") el("btnHint").click();
-    });
-
-    // init
-    reset();
-    showTask(0);
-    renderQuiz();
+    init();
   </script>
 </body>
 </html>
