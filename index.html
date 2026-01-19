@@ -1,961 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NLP (Natural Language Processing) — Intro + Hands-On Lab (with Cosine Similarity, Translation Demo, Charts)</title>
-  <meta name="description" content="NLP introduction with interactive demos: tokens, sentences, stop words, synonyms/antonyms, sentence meaning, translation demo, reverse translation, cosine similarity, and charts. Includes Pyodide editor embed." />
+<meta charset="UTF-8">
+<title>Image Foreground–Background Editor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- Chart.js (for charts) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <style>
-    :root{
-      --bg:#fff7e6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
-      --shadow:0 18px 40px rgba(31,41,55,.14);
-      --codebg:#0b1220; --codeink:#e5e7eb;
-      --ok:#166534; --danger:#b91c1c; --warn:#92400e;
-      --r:18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(900px 500px at 15% 0%, rgba(245,158,11,.25), transparent 60%),
-        radial-gradient(900px 500px at 85% 10%, rgba(217,119,6,.18), transparent 60%),
-        var(--bg);
-      color:var(--ink);
-    }
-    a{color:var(--brand); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .wrap{max-width:1100px; margin:18px auto; padding:14px}
-    .topbar{
-      position:sticky; top:0; z-index:50;
-      background:rgba(255,247,230,.82);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid rgba(234,220,197,.8);
-    }
-    .topbar .inner{max-width:1100px; margin:0 auto; padding:10px 14px; display:flex; gap:10px; align-items:center; justify-content:space-between}
-    .brand{
-      display:flex; align-items:center; gap:10px;
-    }
-    .logo{
-      width:38px; height:38px; border-radius:12px;
-      background: conic-gradient(from 210deg, var(--brand2), var(--brand), #fbbf24, var(--brand2));
-      box-shadow: var(--shadow);
-      border:1px solid rgba(234,220,197,.8);
-    }
-    .brand h1{font-size:16px; margin:0}
-    .brand .sub{font-size:12px; color:var(--muted); margin:0}
-    .nav{
-      display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;
-    }
-    .chip{
-      padding:8px 10px;
-      border:1px solid var(--border);
-      background:#fff;
-      border-radius:999px;
-      font-size:12px;
-      box-shadow: 0 8px 18px rgba(31,41,55,.08);
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      margin-top:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns: 1fr}
-      .nav{display:none}
-    }
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      padding:14px;
-    }
-    .hero{
-      padding:16px;
-      border-radius: calc(var(--r) + 4px);
-      background:
-        radial-gradient(600px 220px at 15% 0%, rgba(245,158,11,.25), transparent 70%),
-        radial-gradient(600px 220px at 85% 0%, rgba(217,119,6,.16), transparent 70%),
-        #fff;
-      border:1px solid rgba(234,220,197,.9);
-      box-shadow: var(--shadow);
-    }
-    .hero h2{margin:0 0 6px 0; font-size:20px}
-    .hero p{margin:0; color:var(--muted); line-height:1.5}
-    .kpi{
-      display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;
-      margin-top:12px;
-    }
-    @media (max-width: 680px){ .kpi{grid-template-columns:1fr} }
-    .kpi .tile{
-      border:1px dashed rgba(234,220,197,1);
-      border-radius:16px;
-      background: rgba(255,247,230,.55);
-      padding:10px;
-    }
-    .tile b{display:block}
-    .tile span{font-size:12px; color:var(--muted)}
-    h3{margin:0 0 10px 0; font-size:16px}
-    .muted{color:var(--muted)}
-    .pill{
-      display:inline-block;
-      font-size:12px;
-      padding:3px 8px;
-      border:1px solid rgba(234,220,197,1);
-      border-radius:999px;
-      background: rgba(255,247,230,.6);
-      margin-left:8px;
-      color:var(--warn);
-    }
-    .row{display:flex; gap:10px; flex-wrap:wrap}
-    .row > *{flex:1}
-    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
-    textarea, input, select{
-      width:100%;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      outline:none;
-      font: inherit;
-      background:#fff;
-    }
-    textarea{min-height:84px; resize:vertical}
-    button{
-      cursor:pointer;
-      border:1px solid rgba(234,220,197,1);
-      background: linear-gradient(180deg, rgba(245,158,11,.18), rgba(217,119,6,.10));
-      color: var(--ink);
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:700;
-      box-shadow: 0 12px 22px rgba(31,41,55,.10);
-    }
-    button.secondary{
-      background:#fff;
-      font-weight:600;
-    }
-    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .out{
-      background: rgba(11,18,32,.96);
-      color: var(--codeink);
-      padding:12px;
-      border-radius:16px;
-      border:1px solid rgba(234,220,197,.35);
-      overflow:auto;
-      white-space:pre-wrap;
-      line-height:1.45;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-    }
-    .code{
-      position:relative;
-      margin-top:10px;
-    }
-    .copy{
-      position:absolute; right:10px; top:10px;
-      padding:7px 10px;
-      border-radius:999px;
-      font-size:12px;
-      background: rgba(255,255,255,.92);
-    }
-    .list{
-      margin:10px 0 0 0;
-      padding-left:18px;
-      color: var(--ink);
-    }
-    .list li{margin:6px 0}
-    .ok{color: var(--ok); font-weight:700}
-    .bad{color: var(--danger); font-weight:700}
-    .warn{color: var(--warn); font-weight:700}
-    .two{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    @media (max-width: 720px){ .two{grid-template-columns:1fr} }
-    .note{
-      background: rgba(255,247,230,.65);
-      border: 1px solid rgba(234,220,197,1);
-      border-radius: 16px;
-      padding:10px;
-      color: var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
-    .iframeWrap{
-      border:1px solid rgba(234,220,197,1);
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow: var(--shadow);
-      background:#fff;
-    }
-    iframe{width:100%; height:560px; border:0}
-    .footer{
-      margin:14px 0 0;
-      color: var(--muted);
-      font-size:12px;
-      text-align:center;
-    }
-  </style>
+<style>
+:root{
+  --bg:#fff7e6;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --brand:#d97706;
+  --border:#eadcc5;
+  --shadow:0 18px 40px rgba(31,41,55,.15);
+}
+body{
+  margin:0;
+  font-family:system-ui,Segoe UI,Roboto;
+  background:var(--bg);
+  color:var(--ink);
+}
+header{
+  padding:14px 20px;
+  background:linear-gradient(90deg,#f59e0b,#d97706);
+  color:#fff;
+  font-size:20px;
+  font-weight:600;
+}
+.container{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:16px;
+  padding:16px;
+}
+.panel{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:14px;
+}
+.panel h3{
+  margin:6px 0 10px;
+}
+label{
+  font-size:14px;
+  display:block;
+  margin-top:10px;
+}
+input,button{
+  width:100%;
+  margin-top:6px;
+}
+button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:var(--brand);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+button:hover{opacity:.9}
+canvas{
+  width:100%;
+  background:#fff;
+  border-radius:14px;
+  border:1px dashed var(--border);
+}
+small{color:#6b7280}
+</style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="inner">
-      <div class="brand" title="Programmer's Picnic • Champ Schedule">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>NLP Lab (Beginner → Practical)</h1>
-          <p class="sub">Words • Sentences • Meaning • Stopwords • Translation Demo • Cosine Similarity • Charts</p>
-        </div>
-      </div>
-      <div class="nav">
-        <a class="chip" href="#intro">Intro</a>
-        <a class="chip" href="#install">Install</a>
-        <a class="chip" href="#play">Playground</a>
-        <a class="chip" href="#similarity">Cosine</a>
-        <a class="chip" href="#translate">Translation</a>
-        <a class="chip" href="#charts">Charts</a>
-        <a class="chip" href="#pyodide">Pyodide</a>
-      </div>
-    </div>
+<header>🖼 Image Foreground & Background Editor</header>
+
+<div class="container">
+  <!-- Controls -->
+  <div class="panel">
+    <h3>Images</h3>
+
+    <label>Background Image</label>
+    <input type="file" accept="image/*" id="bgInput">
+
+    <label>Background Color</label>
+    <input type="color" id="bgColor" value="#ffffff">
+
+    <label>Foreground Image</label>
+    <input type="file" accept="image/*" id="fgInput">
+
+    <label>Foreground Scale</label>
+    <input type="range" min="0.1" max="2" step="0.05" value="1" id="scale">
+
+    <label>
+      <input type="checkbox" id="chroma"> Remove Green Background
+    </label>
+    <small>(Works best with green screen)</small>
+
+    <br><br>
+    <button onclick="download()">⬇ Save Image</button>
   </div>
 
-  <div class="wrap">
-    <div class="hero" id="intro">
-      <h2>NLP Introduction & Importance <span class="pill">Real-world use</span></h2>
-      <p>
-        <b>NLP (Natural Language Processing)</b> is how computers work with human language — reading, understanding, and generating text.
-        It powers <b>search</b>, <b>chatbots</b>, <b>translation</b>, <b>spam filters</b>, <b>voice assistants</b>, and even <b>resume analyzers</b>.
-      </p>
-      <div class="kpi">
-        <div class="tile"><b>Words → Numbers</b><span>Text must be converted into vectors/embeddings for ML.</span></div>
-        <div class="tile"><b>Meaning</b><span>From synonyms to sentence intent, we estimate “what it means”.</span></div>
-        <div class="tile"><b>Similarity</b><span>Cosine similarity helps compare two sentences/documents.</span></div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <!-- LEFT -->
-      <div>
-        <div class="card" id="install">
-          <h3>Installation (Local Python) + Quick Testing</h3>
-          <p class="muted">
-            Below are common NLP libraries used in projects. (You don’t need all at once.)
-          </p>
-
-          <div class="two">
-            <div>
-              <div class="code">
-                <button class="copy" data-copy="pip install nltk">Copy</button>
-                <pre class="out">pip install nltk</pre>
-              </div>
-              <div class="code">
-                <button class="copy" data-copy="python -c &quot;import nltk; print('nltk ok')&quot;">Copy</button>
-                <pre class="out">python -c "import nltk; print('nltk ok')"</pre>
-              </div>
-            </div>
-            <div>
-              <div class="code">
-                <button class="copy" data-copy="pip install spacy">Copy</button>
-                <pre class="out">pip install spacy</pre>
-              </div>
-              <div class="code">
-                <button class="copy" data-copy="python -c &quot;import spacy; print('spacy ok')&quot;">Copy</button>
-                <pre class="out">python -c "import spacy; print('spacy ok')"</pre>
-              </div>
-            </div>
-          </div>
-
-          <div class="two">
-            <div>
-              <div class="code">
-                <button class="copy" data-copy="pip install scikit-learn">Copy</button>
-                <pre class="out">pip install scikit-learn</pre>
-              </div>
-              <div class="code">
-                <button class="copy" data-copy="python -c &quot;import sklearn; print('sklearn ok')&quot;">Copy</button>
-                <pre class="out">python -c "import sklearn; print('sklearn ok')"</pre>
-              </div>
-            </div>
-            <div>
-              <div class="code">
-                <button class="copy" data-copy="pip install transformers sentencepiece">Copy</button>
-                <pre class="out">pip install transformers sentencepiece</pre>
-              </div>
-              <div class="code">
-                <button class="copy" data-copy="python -c &quot;import transformers; print(transformers.__version__)&quot;">Copy</button>
-                <pre class="out">python -c "import transformers; print(transformers.__version__)"</pre>
-              </div>
-            </div>
-          </div>
-
-          <div class="note" style="margin-top:10px">
-            <b class="warn">Note:</b> For offline browser demos below, we use simple JS logic (tokenization, stopwords, cosine similarity).
-            For high-quality translation and “true meaning”, production systems use large models or dedicated translation engines.
-          </div>
-        </div>
-
-        <div class="card" id="play" style="margin-top:14px">
-          <h3>Words, Sentences, Stop Words, Meaning (Practical Playground)</h3>
-
-          <div class="two">
-            <div>
-              <label for="text1">Sentence A</label>
-              <textarea id="text1">NLP helps computers understand human language.</textarea>
-            </div>
-            <div>
-              <label for="text2">Sentence B</label>
-              <textarea id="text2">Natural language processing allows machines to understand people.</textarea>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top:10px">
-            <div>
-              <label for="langMode">Mode</label>
-              <select id="langMode">
-                <option value="en">English (tokenize, stopwords, synonyms/antonyms)</option>
-                <option value="hi_demo">Hindi demo (basic tokenization only)</option>
-              </select>
-            </div>
-            <div>
-              <label for="removeStops">Stop words</label>
-              <select id="removeStops">
-                <option value="yes" selected>Remove stop words (recommended)</option>
-                <option value="no">Keep stop words</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="btns">
-            <button id="analyzeBtn">Analyze Text</button>
-            <button class="secondary" id="swapBtn">Swap A ↔ B</button>
-            <button class="secondary" id="resetBtn">Reset Example</button>
-          </div>
-
-          <div class="two" style="margin-top:12px">
-            <div>
-              <div class="muted" style="font-size:12px; margin-bottom:6px">Analysis Output</div>
-              <pre class="out" id="analysisOut">Click “Analyze Text”.</pre>
-            </div>
-            <div>
-              <div class="muted" style="font-size:12px; margin-bottom:6px">Synonyms / Antonyms (demo)</div>
-              <div class="note">
-                Type a word below (English). This uses a small built-in demo dictionary (not the full English language).
-              </div>
-              <div class="row" style="margin-top:10px">
-                <div>
-                  <label for="wordLookup">Word</label>
-                  <input id="wordLookup" placeholder="e.g., understand" />
-                </div>
-              </div>
-              <div class="btns">
-                <button id="lookupBtn">Find Synonyms/Antonyms</button>
-                <button class="secondary" id="lookupClearBtn">Clear</button>
-              </div>
-              <pre class="out" id="lookupOut">Try: understand, help, important, happy, difficult, fast</pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" id="similarity" style="margin-top:14px">
-          <h3>Cosine Similarity Test (2 Sentences)</h3>
-          <p class="muted">
-            We convert sentences into a simple <b>bag-of-words vector</b> (counts),
-            then compute <b>cosine similarity</b>. Range: <b>0</b> (different) → <b>1</b> (very similar).
-          </p>
-
-          <div class="btns">
-            <button id="cosBtn">Compute Cosine Similarity</button>
-            <button class="secondary" id="vecBtn">Show Vectors</button>
-          </div>
-
-          <div class="two" style="margin-top:12px">
-            <div>
-              <div class="muted" style="font-size:12px; margin-bottom:6px">Cosine Result</div>
-              <pre class="out" id="cosOut">Click “Compute Cosine Similarity”.</pre>
-            </div>
-            <div>
-              <div class="muted" style="font-size:12px; margin-bottom:6px">Vectors / Vocabulary</div>
-              <pre class="out" id="vecOut">Click “Show Vectors”.</pre>
-            </div>
-          </div>
-
-          <div class="note" style="margin-top:10px">
-            <b class="warn">Tip:</b> Bag-of-words ignores word order and deep meaning. Modern NLP uses embeddings (Word2Vec, SBERT, transformers) for better semantic similarity.
-          </div>
-        </div>
-
-        <div class="card" id="translate" style="margin-top:14px">
-          <h3>Translation to Hindi + Reverse Translation (Demo)</h3>
-          <p class="muted">
-            This is a <b>small offline demo translator</b> using a tiny dictionary for common words.
-            For real translation quality, use a proper translation model or API.
-          </p>
-
-          <div class="two">
-            <div>
-              <label for="enToHi">English → Hindi (demo)</label>
-              <textarea id="enToHi">NLP helps students learn language faster.</textarea>
-              <div class="btns">
-                <button id="enHiBtn">Translate to Hindi</button>
-                <button class="secondary" id="enHiCopyBtn">Copy Output</button>
-              </div>
-              <pre class="out" id="enHiOut">Output will appear here…</pre>
-            </div>
-            <div>
-              <label for="hiToEn">Hindi → English (demo reverse)</label>
-              <textarea id="hiToEn">एनएलपी छात्रों को भाषा तेजी से सीखने में मदद करता है</textarea>
-              <div class="btns">
-                <button id="hiEnBtn">Reverse Translate</button>
-                <button class="secondary" id="hiEnCopyBtn">Copy Output</button>
-              </div>
-              <pre class="out" id="hiEnOut">Output will appear here…</pre>
-            </div>
-          </div>
-
-          <div class="note" style="margin-top:10px">
-            <b class="warn">Reality check:</b> Hindi is morphologically rich (forms change), and word order differs.
-            That’s why tiny dictionaries won’t match human-level translation.
-          </div>
-        </div>
-
-        <div class="card" id="charts" style="margin-top:14px">
-          <h3>Charts: Word Counts, Stopwords Removed, Similarity Score</h3>
-          <p class="muted">
-            Click “Analyze Text” and “Compute Cosine Similarity”, then this chart panel will update.
-          </p>
-
-          <div class="two">
-            <div class="card" style="box-shadow:none; border-radius:16px; border:1px solid rgba(234,220,197,1); padding:10px">
-              <div class="muted" style="font-size:12px; margin-bottom:6px">Token Counts</div>
-              <canvas id="countChart" height="170"></canvas>
-            </div>
-            <div class="card" style="box-shadow:none; border-radius:16px; border:1px solid rgba(234,220,197,1); padding:10px">
-              <div class="muted" style="font-size:12px; margin-bottom:6px">Cosine Similarity</div>
-              <canvas id="simChart" height="170"></canvas>
-            </div>
-          </div>
-
-          <div class="note" style="margin-top:10px">
-            <b class="ok">Challenge:</b> Replace bag-of-words with TF-IDF (still classical, but better). Then compare scores.
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:14px">
-          <h3>What is “Meaning” in NLP?</h3>
-          <ul class="list">
-            <li><b>Word meaning:</b> dictionary sense, synonyms/antonyms, context-based meaning.</li>
-            <li><b>Sentence meaning:</b> intent, sentiment, topic, entities (people/places/things), and relationships.</li>
-            <li><b>Context:</b> “bank” (river bank vs money bank). Meaning depends on nearby words.</li>
-            <li><b>Modern approach:</b> embeddings from large models capture semantics better than simple counts.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- RIGHT -->
-      <div>
-        <div class="card" id="pyodide">
-          <h3>Embedded Pyodide Editor</h3>
-          <p class="muted">
-            Use this to run Python snippets during class. (Opens inside the page.)
-          </p>
-          <div class="iframeWrap" title="Pyodide Editor (embedded)">
-            <iframe
-              loading="lazy"
-              referrerpolicy="no-referrer"
-              src="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html">
-            </iframe>
-          </div>
-
-          <div class="note" style="margin-top:10px">
-            <b class="warn">Class tip:</b> Ask students to write Python functions for tokenization, stopword removal,
-            and cosine similarity in the embedded editor.
-          </div>
-
-          <div class="code" style="margin-top:10px">
-            <button class="copy" data-copy="# Try this in the embedded editor\n\nimport math\n\ndef tokenize(s):\n    s = ''.join(ch.lower() if ch.isalnum() or ch.isspace() else ' ' for ch in s)\n    return [w for w in s.split() if w]\n\ndef cosine(a, b):\n    # bag-of-words cosine\n    va = {}\n    vb = {}\n    for w in a: va[w] = va.get(w, 0) + 1\n    for w in b: vb[w] = vb.get(w, 0) + 1\n    vocab = sorted(set(va) | set(vb))\n    A = [va.get(w, 0) for w in vocab]\n    B = [vb.get(w, 0) for w in vocab]\n    dot = sum(x*y for x,y in zip(A,B))\n    na = math.sqrt(sum(x*x for x in A))\n    nb = math.sqrt(sum(y*y for y in B))\n    return 0.0 if na == 0 or nb == 0 else dot/(na*nb)\n\ns1 = \"NLP helps computers understand human language\"\ns2 = \"Natural language processing helps machines understand people\"\nprint(tokenize(s1))\nprint(tokenize(s2))\nprint('cosine:', cosine(tokenize(s1), tokenize(s2)))">Copy Python Starter</button>
-            <pre class="out"># Try this in the embedded editor
-import math
-
-def tokenize(s):
-    s = ''.join(ch.lower() if ch.isalnum() or ch.isspace() else ' ' for ch in s)
-    return [w for w in s.split() if w]
-
-def cosine(a, b):
-    # bag-of-words cosine
-    va = {}
-    vb = {}
-    for w in a: va[w] = va.get(w, 0) + 1
-    for w in b: vb[w] = vb.get(w, 0) + 1
-    vocab = sorted(set(va) | set(vb))
-    A = [va.get(w, 0) for w in vocab]
-    B = [vb.get(w, 0) for w in vocab]
-    dot = sum(x*y for x,y in zip(A,B))
-    na = math.sqrt(sum(x*x for x in A))
-    nb = math.sqrt(sum(y*y for y in B))
-    return 0.0 if na == 0 or nb == 0 else dot/(na*nb)
-
-s1 = "NLP helps computers understand human language"
-s2 = "Natural language processing helps machines understand people"
-print(tokenize(s1))
-print(tokenize(s2))
-print('cosine:', cosine(tokenize(s1), tokenize(s2)))</pre>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:14px">
-          <h3>Mini Checklist (NLP Basics)</h3>
-          <ul class="list">
-            <li><b>Tokenization:</b> split text into words/sentences</li>
-            <li><b>Normalization:</b> lowercase, remove punctuation</li>
-            <li><b>Stop words:</b> remove very common words that add little meaning</li>
-            <li><b>Vocabulary:</b> unique words used for vectors</li>
-            <li><b>Similarity:</b> cosine similarity for text matching</li>
-            <li><b>Meaning:</b> synonyms/antonyms + context</li>
-            <li><b>Translation:</b> demo vs real model-based translation</li>
-          </ul>
-        </div>
-
-        <div class="card" style="margin-top:14px">
-          <h3>Stop Words (Sample)</h3>
-          <p class="muted">We use a small standard-like set for demos.</p>
-          <pre class="out" id="stopOut"></pre>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="footer">
-      Built in a light saffron theme • Works offline (except the embedded editor) • Suitable for Blogger / GitHub Pages
-    </div>
+  <!-- Canvas -->
+  <div class="panel">
+    <canvas id="canvas" width="900" height="500"></canvas>
+    <small>Drag foreground image with mouse</small>
   </div>
+</div>
 
-  <script>
-    // ---------- Utilities ----------
-    const $ = (id) => document.getElementById(id);
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-    function safeLower(s){ return (s || "").toLowerCase(); }
+let bgImg=null, fgImg=null;
+let fgX=200, fgY=120, fgScale=1;
+let dragging=false, dx=0, dy=0;
 
-    function normalizeEnglish(s){
-      // keep letters/numbers/spaces; turn others into spaces
-      return (s || "")
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    function tokenizeEnglish(s){
-      const n = normalizeEnglish(s);
-      return n ? n.split(" ").filter(Boolean) : [];
-    }
+  // background
+  ctx.fillStyle = bgColor.value;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(bgImg) ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
 
-    function tokenizeHindiBasic(s){
-      // Simple whitespace tokenization; Hindi needs better tokenization in real NLP.
-      return (s || "")
-        .replace(/[^\u0900-\u097F0-9\s]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim()
-        .split(" ")
-        .filter(Boolean);
-    }
+  // foreground
+  if(fgImg){
+    const w = fgImg.width * fgScale;
+    const h = fgImg.height * fgScale;
+    ctx.drawImage(fgImg, fgX, fgY, w, h);
 
-    const STOPWORDS_EN = new Set([
-      "a","an","the","and","or","but","if","then","else","when","while","for","to","of","in","on","at","by","from",
-      "with","without","as","is","are","was","were","be","been","being","it","this","that","these","those","i","you",
-      "he","she","we","they","me","my","your","his","her","our","their","them","us","do","does","did","doing",
-      "can","could","may","might","will","would","shall","should","must","not","no","yes","so","very","just",
-      "into","about","over","under","up","down","out","off","than","too","also"
-    ]);
-
-    // Tiny demo thesaurus (expand any time)
-    const THESAURUS = {
-      "understand": {syn:["comprehend","grasp","recognize"], ant:["misunderstand","ignore"]},
-      "help": {syn:["assist","support","aid"], ant:["harm","hinder"]},
-      "important": {syn:["significant","crucial","vital"], ant:["unimportant","minor"]},
-      "happy": {syn:["joyful","glad","cheerful"], ant:["sad","unhappy"]},
-      "difficult": {syn:["hard","challenging","tough"], ant:["easy","simple"]},
-      "fast": {syn:["quick","rapid","speedy"], ant:["slow","sluggish"]},
-      "meaning": {syn:["sense","definition","intent"], ant:["nonsense","confusion"]},
-      "language": {syn:["speech","tongue"], ant:["silence"]},
-      "student": {syn:["learner","pupil"], ant:["teacher"]},
-      "learn": {syn:["study","master","grasp"], ant:["forget","ignore"]}
-    };
-
-    function removeStopwords(tokens){
-      return tokens.filter(w => !STOPWORDS_EN.has(w));
-    }
-
-    function freq(tokens){
-      const m = new Map();
-      for(const t of tokens) m.set(t, (m.get(t) || 0) + 1);
-      return m;
-    }
-
-    function cosineFromTokens(t1, t2){
-      const f1 = freq(t1);
-      const f2 = freq(t2);
-      const vocab = Array.from(new Set([...f1.keys(), ...f2.keys()])).sort();
-
-      const A = vocab.map(w => f1.get(w) || 0);
-      const B = vocab.map(w => f2.get(w) || 0);
-
-      let dot = 0, na = 0, nb = 0;
-      for(let i=0;i<vocab.length;i++){
-        dot += A[i]*B[i];
-        na += A[i]*A[i];
-        nb += B[i]*B[i];
+    if(chroma.checked){
+      const img = ctx.getImageData(0,0,canvas.width,canvas.height);
+      for(let i=0;i<img.data.length;i+=4){
+        const r=img.data[i], g=img.data[i+1], b=img.data[i+2];
+        if(g>150 && r<120 && b<120) img.data[i+3]=0;
       }
-      na = Math.sqrt(na); nb = Math.sqrt(nb);
-      const cos = (na === 0 || nb === 0) ? 0 : dot/(na*nb);
-      return {cos, vocab, A, B};
+      ctx.putImageData(img,0,0);
     }
+  }
+}
 
-    function topK(map, k=12){
-      const arr = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]);
-      return arr.slice(0,k);
-    }
+bgInput.onchange=e=>{
+  bgImg=new Image();
+  bgImg.onload=draw;
+  bgImg.src=URL.createObjectURL(e.target.files[0]);
+}
+fgInput.onchange=e=>{
+  fgImg=new Image();
+  fgImg.onload=draw;
+  fgImg.src=URL.createObjectURL(e.target.files[0]);
+}
+bgColor.oninput=draw;
+scale.oninput=e=>{fgScale=parseFloat(e.target.value);draw();}
+chroma.onchange=draw;
 
-    // ---------- Offline demo translation (very limited) ----------
-    // For classroom: replace with a real model/API later.
-    const EN_HI = {
-      "nlp":"एनएलपी",
-      "helps":"मदद",
-      "help":"मदद",
-      "students":"छात्रों",
-      "student":"छात्र",
-      "learn":"सीखना",
-      "language":"भाषा",
-      "faster":"तेजी",
-      "computer":"कंप्यूटर",
-      "computers":"कंप्यूटर",
-      "understand":"समझना",
-      "human":"मानव",
-      "people":"लोग",
-      "processing":"प्रोसेसिंग",
-      "natural":"प्राकृतिक",
-      "machine":"मशीन",
-      "machines":"मशीनें",
-      "is":"है",
-      "are":"हैं",
-      "very":"बहुत",
-      "important":"महत्वपूर्ण",
-      "today":"आज"
-    };
-    const HI_EN = {
-      "एनएलपी":"nlp",
-      "मदद":"help",
-      "छात्रों":"students",
-      "छात्र":"student",
-      "भाषा":"language",
-      "तेजी":"faster",
-      "सीखना":"learn",
-      "कंप्यूटर":"computers",
-      "समझना":"understand",
-      "मानव":"human",
-      "लोग":"people",
-      "प्रोसेसिंग":"processing",
-      "प्राकृतिक":"natural",
-      "मशीन":"machine",
-      "मशीनें":"machines",
-      "है":"is",
-      "हैं":"are",
-      "बहुत":"very",
-      "महत्वपूर्ण":"important",
-      "आज":"today"
-    };
+canvas.onmousedown=e=>{
+  dragging=true;
+  dx=e.offsetX-fgX;
+  dy=e.offsetY-fgY;
+};
+canvas.onmouseup=()=>dragging=false;
+canvas.onmouseleave=()=>dragging=false;
+canvas.onmousemove=e=>{
+  if(dragging){
+    fgX=e.offsetX-dx;
+    fgY=e.offsetY-dy;
+    draw();
+  }
+};
 
-    function enToHiDemo(s){
-      const tokens = tokenizeEnglish(s);
-      if(tokens.length === 0) return "";
-      const out = tokens.map(w => EN_HI[w] || w);
-      // A tiny “grammar-ish” post tweak for readability
-      return out.join(" ").replace(/\s+/g," ").trim();
-    }
+function download(){
+  const a=document.createElement("a");
+  a.download="edited-image.png";
+  a.href=canvas.toDataURL("image/png");
+  a.click();
+}
 
-    function hiToEnDemo(s){
-      const toks = tokenizeHindiBasic(s);
-      if(toks.length === 0) return "";
-      const out = toks.map(w => HI_EN[w] || w);
-      return out.join(" ").replace(/\s+/g," ").trim();
-    }
-
-    // ---------- Charts ----------
-    let countChart = null;
-    let simChart = null;
-
-    function ensureCharts(){
-      const ctx1 = $("countChart").getContext("2d");
-      const ctx2 = $("simChart").getContext("2d");
-
-      if(!countChart){
-        countChart = new Chart(ctx1, {
-          type: "bar",
-          data: {
-            labels: ["Sentence A", "Sentence B"],
-            datasets: [
-              { label: "Tokens (raw)", data: [0,0] },
-              { label: "Tokens (after stopwords)", data: [0,0] }
-            ]
-          },
-          options: {
-            responsive: true,
-            scales: { y: { beginAtZero: true } }
-          }
-        });
-      }
-
-      if(!simChart){
-        simChart = new Chart(ctx2, {
-          type: "bar",
-          data: {
-            labels: ["Cosine Similarity"],
-            datasets: [{ label: "Score (0 → 1)", data: [0] }]
-          },
-          options: {
-            responsive: true,
-            scales: { y: { beginAtZero: true, max: 1 } }
-          }
-        });
-      }
-    }
-
-    function updateCountChart(aRaw, bRaw, aClean, bClean){
-      ensureCharts();
-      countChart.data.datasets[0].data = [aRaw, bRaw];
-      countChart.data.datasets[1].data = [aClean, bClean];
-      countChart.update();
-    }
-
-    function updateSimChart(score){
-      ensureCharts();
-      simChart.data.datasets[0].data = [Number(score.toFixed(4))];
-      simChart.update();
-    }
-
-    // ---------- UI actions ----------
-    function analyze(){
-      const mode = $("langMode").value;
-      const removeStops = $("removeStops").value === "yes";
-      const a = $("text1").value;
-      const b = $("text2").value;
-
-      let ta = [], tb = [];
-      if(mode === "en"){
-        ta = tokenizeEnglish(a);
-        tb = tokenizeEnglish(b);
-      } else {
-        ta = tokenizeHindiBasic(a);
-        tb = tokenizeHindiBasic(b);
-      }
-
-      const ta2 = (mode === "en" && removeStops) ? removeStopwords(ta) : ta.slice();
-      const tb2 = (mode === "en" && removeStops) ? removeStopwords(tb) : tb.slice();
-
-      const fa = freq(ta2), fb = freq(tb2);
-      const topA = topK(fa, 10), topB = topK(fb, 10);
-
-      const report = [];
-      report.push("=== NLP ANALYSIS ===");
-      report.push("Mode: " + (mode === "en" ? "English" : "Hindi demo"));
-      report.push("Stopwords removed: " + ((mode === "en" && removeStops) ? "YES" : "NO / N.A."));
-      report.push("");
-      report.push("Sentence A (raw tokens): " + ta.length);
-      report.push("Sentence A (final tokens): " + ta2.length);
-      report.push("Tokens A: " + JSON.stringify(ta2));
-      report.push("");
-      report.push("Sentence B (raw tokens): " + tb.length);
-      report.push("Sentence B (final tokens): " + tb2.length);
-      report.push("Tokens B: " + JSON.stringify(tb2));
-      report.push("");
-      report.push("Top words (A): " + JSON.stringify(topA));
-      report.push("Top words (B): " + JSON.stringify(topB));
-      report.push("");
-      report.push("Next steps (meaning): try TF-IDF, embeddings, entity extraction, sentiment.");
-
-      $("analysisOut").textContent = report.join("\n");
-
-      // Update charts
-      updateCountChart(ta.length, tb.length, ta2.length, tb2.length);
-    }
-
-    function computeCosine(){
-      const mode = $("langMode").value;
-      if(mode !== "en"){
-        $("cosOut").textContent = "Cosine demo is enabled for English mode (bag-of-words). Switch Mode to English.";
-        return;
-      }
-
-      const removeStops = $("removeStops").value === "yes";
-      let ta = tokenizeEnglish($("text1").value);
-      let tb = tokenizeEnglish($("text2").value);
-
-      if(removeStops){
-        ta = removeStopwords(ta);
-        tb = removeStopwords(tb);
-      }
-
-      const r = cosineFromTokens(ta, tb);
-      const pct = (r.cos * 100);
-
-      const msg = [];
-      msg.push("=== COSINE SIMILARITY ===");
-      msg.push("Score: " + r.cos.toFixed(4) + "  (" + pct.toFixed(1) + "% similar)");
-      msg.push("");
-      msg.push("Interpretation:");
-      msg.push(r.cos >= 0.80 ? "• Very similar (likely same idea)" :
-               r.cos >= 0.55 ? "• Moderately similar" :
-               r.cos >= 0.30 ? "• Some overlap" :
-                               "• Mostly different");
-      msg.push("");
-      msg.push("Tip: Use embeddings for better semantic similarity.");
-
-      $("cosOut").textContent = msg.join("\n");
-
-      // Update similarity chart
-      updateSimChart(r.cos);
-    }
-
-    function showVectors(){
-      const mode = $("langMode").value;
-      if(mode !== "en"){
-        $("vecOut").textContent = "Vectors demo is enabled for English mode. Switch Mode to English.";
-        return;
-      }
-
-      const removeStops = $("removeStops").value === "yes";
-      let ta = tokenizeEnglish($("text1").value);
-      let tb = tokenizeEnglish($("text2").value);
-      if(removeStops){
-        ta = removeStopwords(ta);
-        tb = removeStopwords(tb);
-      }
-
-      const r = cosineFromTokens(ta, tb);
-      const lines = [];
-      lines.push("Vocabulary (" + r.vocab.length + "):");
-      lines.push(r.vocab.join(", "));
-      lines.push("");
-      lines.push("Vector A:");
-      lines.push(JSON.stringify(r.A));
-      lines.push("");
-      lines.push("Vector B:");
-      lines.push(JSON.stringify(r.B));
-      $("vecOut").textContent = lines.join("\n");
-    }
-
-    function lookup(){
-      const w = safeLower($("wordLookup").value).trim();
-      if(!w){
-        $("lookupOut").textContent = "Type a word first.";
-        return;
-      }
-      const entry = THESAURUS[w];
-      if(!entry){
-        $("lookupOut").textContent =
-          "No demo entry for: " + w + "\n\nAdd it in THESAURUS (JS) to expand.\nTry: understand, help, important, happy, difficult, fast";
-        return;
-      }
-      const out = [];
-      out.push("Word: " + w);
-      out.push("Synonyms: " + entry.syn.join(", "));
-      out.push("Antonyms: " + entry.ant.join(", "));
-      $("lookupOut").textContent = out.join("\n");
-    }
-
-    function translateEnHi(){
-      const s = $("enToHi").value;
-      const out = enToHiDemo(s);
-      $("enHiOut").textContent = out || "(empty)";
-    }
-
-    function translateHiEn(){
-      const s = $("hiToEn").value;
-      const out = hiToEnDemo(s);
-      $("hiEnOut").textContent = out || "(empty)";
-    }
-
-    function copyText(text){
-      if(!navigator.clipboard){
-        alert("Clipboard not available in this browser context.");
-        return;
-      }
-      navigator.clipboard.writeText(text).then(()=>{}, ()=>alert("Copy failed."));
-    }
-
-    function wireCopyButtons(){
-      document.querySelectorAll("button.copy").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const t = btn.getAttribute("data-copy") || "";
-          copyText(t);
-          const old = btn.textContent;
-          btn.textContent = "Copied!";
-          setTimeout(()=>btn.textContent = old, 900);
-        });
-      });
-    }
-
-    // ---------- Init ----------
-    function init(){
-      $("stopOut").textContent = Array.from(STOPWORDS_EN).sort().join(", ");
-
-      $("analyzeBtn").addEventListener("click", analyze);
-      $("cosBtn").addEventListener("click", computeCosine);
-      $("vecBtn").addEventListener("click", showVectors);
-
-      $("lookupBtn").addEventListener("click", lookup);
-      $("lookupClearBtn").addEventListener("click", ()=>{ $("wordLookup").value=""; $("lookupOut").textContent="Try: understand, help, important, happy, difficult, fast"; });
-
-      $("enHiBtn").addEventListener("click", translateEnHi);
-      $("hiEnBtn").addEventListener("click", translateHiEn);
-
-      $("enHiCopyBtn").addEventListener("click", ()=>copyText($("enHiOut").textContent));
-      $("hiEnCopyBtn").addEventListener("click", ()=>copyText($("hiEnOut").textContent));
-
-      $("swapBtn").addEventListener("click", ()=>{
-        const a = $("text1").value;
-        $("text1").value = $("text2").value;
-        $("text2").value = a;
-      });
-
-      $("resetBtn").addEventListener("click", ()=>{
-        $("text1").value = "NLP helps computers understand human language.";
-        $("text2").value = "Natural language processing allows machines to understand people.";
-        $("langMode").value = "en";
-        $("removeStops").value = "yes";
-        $("analysisOut").textContent = "Click “Analyze Text”.";
-        $("cosOut").textContent = "Click “Compute Cosine Similarity”.";
-        $("vecOut").textContent = "Click “Show Vectors”.";
-        updateCountChart(0,0,0,0);
-        updateSimChart(0);
-      });
-
-      $("langMode").addEventListener("change", ()=> {
-        // keep it smooth: re-analyze when mode changes
-        analyze();
-      });
-      $("removeStops").addEventListener("change", ()=> {
-        analyze();
-      });
-
-      wireCopyButtons();
-      // First run for visuals
-      analyze();
-      computeCosine();
-      showVectors();
-      translateEnHi();
-      translateHiEn();
-    }
-
-    init();
-  </script>
+draw();
+</script>
 </body>
 </html>
