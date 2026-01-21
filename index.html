@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Home — Learn With Champak</title>
   <meta name="theme-color" content="#d97706" />
-  <meta name="description" content="Today-first PWA home for Learn With Champak — daily lesson, 7 PM class, quick practice, offline cards, streak." />
+  <meta name="description" content="Today-first PWA home for Learn With Champak — daily lesson, 7 PM class, latest posts menu, blog search, offline cards, streak." />
 
-  <!-- Optional: keep manifest link here too -->
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icons/icon-192.png" />
 
@@ -124,7 +123,6 @@
     .kpi .label{font-size:12px;color:var(--muted)}
     .kpi .val{font-size:16px;font-weight:1000;margin-top:2px}
 
-    .title2{margin:0;font-size:14px}
     .muted{color:var(--muted);font-size:12px;line-height:1.45}
     .big{
       font-size:22px;
@@ -169,6 +167,7 @@
       border:1px solid rgba(0,0,0,.06);
       background:linear-gradient(180deg, rgba(245,158,11,.25), rgba(217,119,6,.10));
       font-weight:1100;
+      flex: 0 0 auto;
     }
     .item b{display:block}
     .item .desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
@@ -223,6 +222,26 @@
       text-align:center;
     }
     .link{color:var(--brand);font-weight:1000;text-decoration:none}
+
+    /* Small input style used in sidebar */
+    .in{
+      flex:1;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:10px 12px;
+      outline:none;
+      background:rgba(255,255,255,.85);
+      font-weight:800;
+    }
+    select.sel{
+      flex:1;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.85);
+      font-weight:900;
+      outline:none;
+    }
   </style>
 </head>
 
@@ -393,7 +412,7 @@
         </div>
       </section>
 
-      <!-- Side: Offline cards + quick links -->
+      <!-- Side: Latest Posts + Search + Offline cards + quick links -->
       <aside class="card" aria-label="Quick tools">
         <div class="head">
           <b>Quick Tools</b>
@@ -401,7 +420,39 @@
             <button class="btn" id="offlineCardBtn">New Offline Card</button>
           </div>
         </div>
+
         <div class="body">
+          <!-- Latest Posts + Search -->
+          <div class="card" style="box-shadow:none;background:rgba(255,255,255,.65);margin-bottom:12px">
+            <div class="head">
+              <b>Latest Posts</b>
+              <div class="row">
+                <button class="btn" id="refreshPosts" title="Reload latest posts">Refresh</button>
+              </div>
+            </div>
+
+            <div class="body">
+              <div class="muted" style="margin:0 0 6px"><b>Search the blog</b></div>
+              <div class="row" style="gap:8px">
+                <input id="blogSearch" class="in" type="search" placeholder="Search: python, loops, pickle..." />
+                <button class="btn primary" id="blogSearchBtn">Search</button>
+              </div>
+              <div class="muted" style="margin-top:6px">Tip: press <b>Enter</b> to search.</div>
+
+              <div style="margin-top:10px">
+                <div class="muted" style="margin:0 0 6px"><b>Recent posts menu</b></div>
+                <div class="row" style="gap:8px">
+                  <select id="latestMenu" class="sel" aria-label="Latest posts menu">
+                    <option>Loading latest posts…</option>
+                  </select>
+                  <button class="btn" id="openSelectedPost">Open</button>
+                </div>
+                <div id="latestList" class="list" style="margin-top:10px"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Offline Knowledge Card -->
           <div class="item">
             <div class="ico">📌</div>
             <div>
@@ -451,7 +502,7 @@
     const LIVE_SITE = "https://learnwithchampak.live";
     // If you have a dedicated today page on your main site, set it here or provide in today.json
     const DEFAULT_TODAY_URL = LIVE_SITE; // e.g. "https://learnwithchampak.live/today.html"
-    const DEFAULT_JOIN_URL  = LIVE_SITE; // e.g. Zoom/Meet link if you have it
+    const DEFAULT_JOIN_URL  = LIVE_SITE; // e.g. Meet link if you have it
     const DEFAULT_PRACTICE_URL = LIVE_SITE; // e.g. "https://learnwithchampak.live/practice.html"
     const TODAY_JSON = "./today.json"; // optional file. If missing, defaults are used.
 
@@ -544,12 +595,10 @@
 
       if (!days.includes(t)) {
         days.push(t);
-        // keep last 90 entries
         while(days.length > 90) days.shift();
         localStorage.setItem(key, JSON.stringify(days));
       }
 
-      // compute consecutive streak ending today
       const set = new Set(days);
       let streak = 0;
       for (let i=0; i<365; i++){
@@ -575,7 +624,6 @@
       { t:"Curiosity", d:"What happens if you move an update line inside the loop? Try and observe." }
     ];
     function pickCard(){
-      // daily deterministic pick + random on button click
       const dayKey = new Date().toDateString();
       let seed = 0;
       for (const ch of dayKey) seed = (seed*31 + ch.charCodeAt(0)) >>> 0;
@@ -611,7 +659,7 @@
     setMode(localStorage.getItem("lwc_mode") || "student");
 
     /***********************
-     * TIME-AWARE 7 PM BANNER
+     * TIME-AWARE 7 PM BANNER (local time)
      ***********************/
     function updateTimeBanner(){
       const now = new Date();
@@ -620,8 +668,6 @@
       const h = now.getHours(), m = now.getMinutes();
       const minutes = h*60 + m;
 
-      // 6:45 PM (18:45) to 7:00 PM (19:00): warm reminder
-      // after 7:00 PM to 8:30 PM: class started
       const remindStart = 18*60 + 45;
       const classStart  = 19*60;
       const classEnd    = 20*60 + 30;
@@ -646,7 +692,6 @@
     let practiceURL = DEFAULT_PRACTICE_URL;
 
     function applyTodayData(d){
-      // safe fallbacks
       topic.textContent = d.topic || "Today’s Lesson";
       teaser.textContent = d.teaser || "Open the lesson and start with the 60-sec challenge.";
       whyBox.innerHTML = `<b>Why this matters:</b> ${d.why || "Build strong fundamentals that directly impact interviews and real-world coding."}`;
@@ -654,17 +699,14 @@
       goal.textContent = d.goal || "Understand + write 1 working program";
       nextTopic.textContent = d.next || "Next: Practice + patterns";
 
-      // URLs
       todayURL = d.todayUrl || todayURL;
       joinURL = d.joinUrl || joinURL;
       practiceURL = d.practiceUrl || practiceURL;
 
-      // Student blocks
       el("sNow").textContent = d.studentNow || "Open Today → read 2 minutes → try the 60-sec challenge.";
       el("sMistake").textContent = d.commonMistake || "Most students forget indentation / update logic inside the loop.";
       el("sTarget").textContent = d.studentTarget || "Write 1 working program without copy-paste.";
 
-      // Teacher blocks
       tHook.textContent = d.teacherHook || "Ask: “Where do we use this in real code?” then show tiny example.";
       tFlow.textContent = d.teacherFlow || "Concept → Visual → Code → Mistake → Question";
       tQ.textContent = d.teacherQuestion || "“What breaks if we move this line inside the loop?”";
@@ -674,7 +716,6 @@
     }
 
     async function loadTodayJSON(){
-      // Defaults if no file
       applyTodayData({
         topic: "Today: Python Basics (Example)",
         teaser: "One small concept → one small code → one small win.",
@@ -694,7 +735,7 @@
         const d = await res.json();
         applyTodayData(d);
       }catch{
-        // silently keep defaults
+        // keep defaults silently
       }
     }
     loadTodayJSON();
@@ -703,7 +744,6 @@
      * ACTIONS
      ***********************/
     function openURL(url){
-      // in PWA standalone, window.open may open inside browser; location.href keeps it in-app
       location.href = url;
     }
 
@@ -731,6 +771,118 @@
     copyFlow.addEventListener("click", () => copyText(tFlow.textContent));
     copyDemo.addEventListener("click", () => copyText(demoCode.textContent));
     copyDemo2.addEventListener("click", () => copyText(demoCode.textContent));
+
+    /***********************
+     * LATEST POSTS + BLOG SEARCH (Blogger JSONP)
+     ***********************/
+    const BLOG_BASE = "https://www.learnwithchampak.live";
+
+    function openBlogSearch(q) {
+      const term = (q || "").trim();
+      if (!term) return;
+      const url = `${BLOG_BASE}/search?q=${encodeURIComponent(term)}`;
+      location.href = url;
+    }
+
+    const blogSearch = document.getElementById("blogSearch");
+    const blogSearchBtn = document.getElementById("blogSearchBtn");
+    blogSearchBtn?.addEventListener("click", () => openBlogSearch(blogSearch.value));
+    blogSearch?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") openBlogSearch(blogSearch.value);
+    });
+
+    const latestMenu = document.getElementById("latestMenu");
+    const openSelectedPost = document.getElementById("openSelectedPost");
+    const latestList = document.getElementById("latestList");
+    const refreshPosts = document.getElementById("refreshPosts");
+
+    function safeText(s) {
+      return String(s ?? "").replace(/\s+/g, " ").trim();
+    }
+    function toISODate(s) {
+      try { return new Date(s).toISOString(); } catch { return ""; }
+    }
+    function prettyDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
+      } catch { return ""; }
+    }
+    function getEntryLink(entry) {
+      const links = entry?.link || [];
+      const alt = links.find(l => l.rel === "alternate");
+      return alt?.href || "";
+    }
+
+    window.lwcRecentPosts = function(json) {
+      try {
+        const entries = json?.feed?.entry || [];
+        if (!entries.length) {
+          latestMenu.innerHTML = `<option>No posts found</option>`;
+          latestList.innerHTML = `<div class="muted">No recent posts loaded.</div>`;
+          return;
+        }
+
+        latestMenu.innerHTML = entries.map((e, i) => {
+          const title = safeText(e?.title?.$t || `Post ${i+1}`);
+          const url = getEntryLink(e);
+          return `<option value="${url}">${title}</option>`;
+        }).join("");
+
+        latestList.innerHTML = entries.slice(0, 6).map((e) => {
+          const title = safeText(e?.title?.$t || "Untitled");
+          const url = getEntryLink(e);
+          const published = e?.published?.$t ? toISODate(e.published.$t) : "";
+          const when = published ? prettyDate(published) : "";
+          return `
+            <div class="item">
+              <div class="ico">📝</div>
+              <div style="min-width:0">
+                <b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${title}</b>
+                <div class="desc">${when ? `📅 ${when} · ` : ""}<a class="link" href="${url}" target="_blank" rel="noreferrer">Open ↗</a></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      } catch (err) {
+        latestMenu.innerHTML = `<option>Failed to parse posts</option>`;
+        latestList.innerHTML = `<div class="muted">Could not load latest posts.</div>`;
+      }
+    };
+
+    function loadLatestPosts() {
+      const old = document.getElementById("lwcLatestPostsJsonp");
+      if (old) old.remove();
+
+      latestMenu.innerHTML = `<option>Loading latest posts…</option>`;
+      latestList.innerHTML = `<div class="muted">Loading…</div>`;
+
+      // Blogger feed JSONP (avoids CORS issues)
+      const src = `${BLOG_BASE}/feeds/posts/default?alt=json-in-script&max-results=10&callback=lwcRecentPosts`;
+
+      const s = document.createElement("script");
+      s.id = "lwcLatestPostsJsonp";
+      s.src = src;
+      s.async = true;
+      s.onerror = () => {
+        latestMenu.innerHTML = `<option>Failed to load posts</option>`;
+        latestList.innerHTML = `
+          <div class="muted">
+            Couldn’t load the feed. You can still use search above.
+          </div>`;
+      };
+      document.body.appendChild(s);
+    }
+
+    openSelectedPost?.addEventListener("click", () => {
+      const url = latestMenu?.value;
+      if (url) location.href = url;
+    });
+
+    refreshPosts?.addEventListener("click", loadLatestPosts);
+
+    if (latestMenu && latestList) loadLatestPosts();
   </script>
 </body>
 </html>
+```0
