@@ -1,888 +1,262 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Home — Learn With Champak</title>
-  <meta name="theme-color" content="#d97706" />
-  <meta name="description" content="Today-first PWA home for Learn With Champak — daily lesson, 7 PM class, latest posts menu, blog search, offline cards, streak." />
+<meta charset="utf-8">
+<title>7 PM Python Class — Pickle: Save Data Permanently</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./icons/icon-192.png" />
-
-  <style>
-    :root{
-      --bg:#fff7e6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
-      --shadow:0 18px 40px rgba(31,41,55,.14);
-      --r:18px; --ok:#166534; --danger:#b91c1c;
-      --codebg:#0b1220; --codeink:#e5e7eb;
-      --chip: rgba(255,255,255,.7);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(900px 520px at 10% -10%, rgba(245,158,11,.22), transparent 60%),
-        radial-gradient(700px 420px at 110% 10%, rgba(217,119,6,.16), transparent 55%),
-        linear-gradient(180deg, var(--bg), #fff 60%, var(--bg));
-    }
-    a{color:inherit}
-    .wrap{max-width:1100px;margin:16px auto;padding:14px}
-    .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      margin-bottom:12px;
-    }
-    .brand{display:flex;gap:10px;align-items:center}
-    .logo{
-      width:46px;height:46px;border-radius:16px;
-      background:conic-gradient(from 220deg, var(--brand2), var(--brand), #ffb020, var(--brand2));
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:var(--shadow);
-      display:flex;align-items:center;justify-content:center;
-      overflow:hidden;
-    }
-    .logo img{width:100%;height:100%;object-fit:cover}
-    h1{margin:0;font-size:18px;line-height:1.1}
-    .sub{margin:2px 0 0;color:var(--muted);font-size:12px}
-
-    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .btn{
-      border:1px solid var(--border);
-      background:var(--card);
-      color:var(--ink);
-      border-radius:999px;
-      padding:10px 12px;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 10px 24px rgba(31,41,55,.08);
-      display:inline-flex;align-items:center;gap:8px;
-      user-select:none;
-    }
-    .btn.primary{
-      border:0;
-      background:linear-gradient(180deg,var(--brand2),var(--brand));
-      color:#111827;
-    }
-    .btn.ghost{background:transparent}
-    .btn:active{transform:translateY(1px)}
-    .pill{
-      display:inline-flex;gap:8px;align-items:center;
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:8px 10px;
-      background:var(--chip);
-      font-size:12px;
-      color:var(--muted);
-      box-shadow:0 10px 24px rgba(31,41,55,.06);
-    }
-    .dot{width:9px;height:9px;border-radius:99px;background:#9ca3af;display:inline-block}
-    .dot.ok{background:var(--ok)}
-    .dot.bad{background:var(--danger)}
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap:12px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
-    .card{
-      background:rgba(255,255,255,.88);
-      border:1px solid var(--border);
-      border-radius:var(--r);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(6px);
-    }
-    .head{
-      padding:12px;
-      border-bottom:1px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
-    }
-    .body{padding:12px}
-    .kpi{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-      margin-top:10px;
-    }
-    @media (max-width: 520px){
-      .kpi{grid-template-columns:1fr}
-    }
-    .kpi .box{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px;
-      background:rgba(255,255,255,.7);
-    }
-    .kpi .label{font-size:12px;color:var(--muted)}
-    .kpi .val{font-size:16px;font-weight:1000;margin-top:2px}
-
-    .muted{color:var(--muted);font-size:12px;line-height:1.45}
-    .big{
-      font-size:22px;
-      line-height:1.12;
-      font-weight:1100;
-      margin:6px 0 0;
-      letter-spacing:-0.2px;
-    }
-    .teaser{
-      margin:8px 0 0;
-      padding:10px 12px;
-      border-radius:14px;
-      background:linear-gradient(180deg, rgba(245,158,11,.18), rgba(217,119,6,.08));
-      border:1px dashed rgba(217,119,6,.35);
-      font-weight:900;
-    }
-
-    .banner{
-      display:none;
-      margin:10px 0 0;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.7);
-    }
-    .banner strong{font-weight:1100}
-    .banner.show{display:block}
-    .banner.ok{border-color: rgba(22,101,52,.25); background:rgba(22,101,52,.06)}
-    .banner.warn{border-color: rgba(146,64,14,.25); background:rgba(245,158,11,.09)}
-
-    .list{display:grid;gap:10px;margin-top:10px}
-    .item{
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 10px;
-      background:rgba(255,255,255,.7);
-      display:flex;gap:10px;align-items:flex-start;
-    }
-    .ico{
-      width:34px;height:34px;border-radius:12px;
-      display:flex;align-items:center;justify-content:center;
-      border:1px solid rgba(0,0,0,.06);
-      background:linear-gradient(180deg, rgba(245,158,11,.25), rgba(217,119,6,.10));
-      font-weight:1100;
-      flex: 0 0 auto;
-    }
-    .item b{display:block}
-    .item .desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
-
-    .switch{
-      display:flex;gap:8px;align-items:center;
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:6px;
-      background:rgba(255,255,255,.75);
-    }
-    .seg{
-      border:0;background:transparent;
-      border-radius:999px;
-      padding:8px 10px;
-      font-weight:1000;
-      cursor:pointer;
-      color:var(--muted);
-    }
-    .seg.on{
-      color:var(--ink);
-      background:rgba(245,158,11,.22);
-      box-shadow:0 10px 22px rgba(31,41,55,.08);
-    }
-
-    .code{
-      margin-top:10px;
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid rgba(15,23,42,.18);
-      background:var(--codebg);
-      color:var(--codeink);
-    }
-    .code .bar{
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-      padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .code pre{
-      margin:0;
-      padding:12px;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:12px;
-      line-height:1.45;
-    }
-
-    .footerNote{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:12px;
-      text-align:center;
-    }
-    .link{color:var(--brand);font-weight:1000;text-decoration:none}
-
-    /* Small input style used in sidebar */
-    .in{
-      flex:1;
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:10px 12px;
-      outline:none;
-      background:rgba(255,255,255,.85);
-      font-weight:800;
-    }
-    select.sel{
-      flex:1;
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 12px;
-      background:rgba(255,255,255,.85);
-      font-weight:900;
-      outline:none;
-    }
-  </style>
+<style>
+:root{
+  --bg:#fff7e6;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --brand:#d97706;
+  --border:#eadcc5;
+  --codebg:#0b1220;
+  --codeink:#e5e7eb;
+  --radius:18px;
+  --max:900px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.65;
+}
+.container{
+  max-width:var(--max);
+  margin:auto;
+  padding:18px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:18px;
+}
+h1,h2,h3{color:var(--brand)}
+pre{
+  background:var(--codebg);
+  color:var(--codeink);
+  padding:14px;
+  border-radius:14px;
+  overflow:auto;
+}
+code{font-family: Consolas, monospace}
+iframe{
+  width:100%;
+  min-height:420px;
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+hr{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:20px 0;
+}
+.checklist li{margin:6px 0}
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin:24px 0 6px;
+}
+.badge{
+  display:inline-block;
+  background:#fde7c7;
+  border:1px solid var(--border);
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <!-- Top bar -->
-    <div class="top">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <img src="./icons/icon-192.png" alt="Champak Roy" />
-        </div>
-        <div>
-          <h1>Learn With Champak — Home</h1>
-          <div class="sub" id="subline">Today-first dashboard • 7 PM batch • quick practice</div>
-        </div>
-      </div>
-
-      <div class="row">
-        <span class="pill" title="Network status">
-          <span class="dot" id="netDot"></span>
-          <span id="netText">Checking…</span>
-        </span>
-
-        <span class="pill" title="Service Worker status">
-          <span class="dot" id="swDot"></span>
-          <span id="swText">SW: checking…</span>
-        </span>
-
-        <button class="btn primary" id="openLive">Open Live Site</button>
-        <button class="btn" id="openToday">Open Today</button>
-
-        <button class="btn" id="installBtn" style="display:none">Install App</button>
-      </div>
-    </div>
-
-    <div class="grid">
-      <!-- Main: Today card -->
-      <section class="card" aria-label="Today">
-        <div class="head">
-          <div>
-            <div class="row" style="gap:10px">
-              <span class="pill" title="Mode switch">
-                <span style="font-weight:1000;color:var(--ink)">Mode</span>
-                <span class="switch" role="tablist" aria-label="Mode">
-                  <button class="seg on" id="modeStudent" role="tab" aria-selected="true">Student</button>
-                  <button class="seg" id="modeTeacher" role="tab" aria-selected="false">Teacher</button>
-                </span>
-              </span>
-
-              <span class="pill" title="Streak">
-                🔥 Streak: <b id="streak">0</b> days
-              </span>
-
-              <span class="pill" title="Date">
-                📅 <b id="todayDate">—</b>
-              </span>
-            </div>
-
-            <div class="big" id="topic">Loading today’s topic…</div>
-            <div class="teaser" id="teaser">One-line teaser will appear here.</div>
-
-            <div class="banner" id="timeBanner"></div>
-          </div>
-
-          <div class="row">
-            <button class="btn primary" id="joinBtn">Join 7 PM Class</button>
-            <button class="btn" id="practiceBtn">60-sec Challenge</button>
-            <button class="btn ghost" id="shareBtn" title="Share today on WhatsApp">Share</button>
-          </div>
-        </div>
-
-        <div class="body">
-          <div class="muted" id="whyBox">
-            <b>Why this matters:</b>
-            Today’s concept helps you in interviews and real coding. Open the live class and practice for 60 seconds.
-          </div>
-
-          <div class="kpi" aria-label="Quick stats">
-            <div class="box">
-              <div class="label">Class Time</div>
-              <div class="val" id="classTime">7:00 PM IST</div>
-            </div>
-            <div class="box">
-              <div class="label">Today’s Goal</div>
-              <div class="val" id="goal">Understand + write 1 working program</div>
-            </div>
-            <div class="box">
-              <div class="label">Next</div>
-              <div class="val" id="nextTopic">Nested Loops → Patterns</div>
-            </div>
-          </div>
-
-          <!-- Teacher-only block -->
-          <div id="teacherBlock" style="display:none;margin-top:12px">
-            <div class="card" style="box-shadow:none;background:rgba(255,255,255,.65)">
-              <div class="head">
-                <b>Teacher Kit</b>
-                <div class="row">
-                  <button class="btn" id="copyFlow">Copy Flow</button>
-                  <button class="btn" id="copyDemo">Copy Demo</button>
-                </div>
-              </div>
-              <div class="body">
-                <div class="list">
-                  <div class="item">
-                    <div class="ico">1</div>
-                    <div>
-                      <b>Opening hook (30 sec)</b>
-                      <div class="desc" id="tHook">Ask: “Where do we use this in real code?” then show tiny example.</div>
-                    </div>
-                  </div>
-                  <div class="item">
-                    <div class="ico">2</div>
-                    <div>
-                      <b>Flow (5 steps)</b>
-                      <div class="desc" id="tFlow">Concept → Visual → Code → Mistake → Question</div>
-                    </div>
-                  </div>
-                  <div class="item">
-                    <div class="ico">3</div>
-                    <div>
-                      <b>Curiosity question</b>
-                      <div class="desc" id="tQ">“What breaks if we move this line inside the loop?”</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="code" aria-label="Demo snippet">
-                  <div class="bar">
-                    <b>Demo code</b>
-                    <button class="btn" id="copyDemo2">Copy</button>
-                  </div>
-                  <pre id="demoCode">for i in range(1, 4):
-  for j in range(1, 4):
-    print(i, j)</pre>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Student block -->
-          <div id="studentBlock" style="margin-top:12px">
-            <div class="list">
-              <div class="item">
-                <div class="ico">✅</div>
-                <div>
-                  <b>What to do now</b>
-                  <div class="desc" id="sNow">Open Today → read 2 minutes → try the 60-sec challenge.</div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="ico">🧠</div>
-                <div>
-                  <b>Common mistake</b>
-                  <div class="desc" id="sMistake">Most students forget indentation / update logic inside the loop.</div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="ico">🎯</div>
-                <div>
-                  <b>Mini target</b>
-                  <div class="desc" id="sTarget">Write 1 working program without copy-paste.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Side: Latest Posts + Search + Offline cards + quick links -->
-      <aside class="card" aria-label="Quick tools">
-        <div class="head">
-          <b>Quick Tools</b>
-          <div class="row">
-            <button class="btn" id="offlineCardBtn">New Offline Card</button>
-          </div>
-        </div>
-
-        <div class="body">
-          <!-- Latest Posts + Search -->
-          <div class="card" style="box-shadow:none;background:rgba(255,255,255,.65);margin-bottom:12px">
-            <div class="head">
-              <b>Latest Posts</b>
-              <div class="row">
-                <button class="btn" id="refreshPosts" title="Reload latest posts">Refresh</button>
-              </div>
-            </div>
-
-            <div class="body">
-              <div class="muted" style="margin:0 0 6px"><b>Search the blog</b></div>
-              <div class="row" style="gap:8px">
-                <input id="blogSearch" class="in" type="search" placeholder="Search: python, loops, pickle..." />
-                <button class="btn primary" id="blogSearchBtn">Search</button>
-              </div>
-              <div class="muted" style="margin-top:6px">Tip: press <b>Enter</b> to search.</div>
-
-              <div style="margin-top:10px">
-                <div class="muted" style="margin:0 0 6px"><b>Recent posts menu</b></div>
-                <div class="row" style="gap:8px">
-                  <select id="latestMenu" class="sel" aria-label="Latest posts menu">
-                    <option>Loading latest posts…</option>
-                  </select>
-                  <button class="btn" id="openSelectedPost">Open</button>
-                </div>
-                <div id="latestList" class="list" style="margin-top:10px"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Offline Knowledge Card -->
-          <div class="item">
-            <div class="ico">📌</div>
-            <div>
-              <b>Offline Knowledge Card</b>
-              <div class="desc" id="offlineCard">Loading…</div>
-            </div>
-          </div>
-
-          <div class="list" style="margin-top:10px">
-            <div class="item">
-              <div class="ico">🌐</div>
-              <div>
-                <b>Live website</b>
-                <div class="desc">
-                  Open <a class="link" href="https://learnwithchampak.live" target="_blank" rel="noreferrer">learnwithchampak.live</a>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="ico">📶</div>
-              <div>
-                <b>Offline mode</b>
-                <div class="desc">If you’re offline, use cards + teacher kit. Tap “Try again” when online.</div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="ico">🧩</div>
-              <div>
-                <b>Practice</b>
-                <div class="desc" id="practiceLinkText">Opens a fast challenge page (configure URL in today.json).</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="footerNote">
-            The Programmer’s Picnic • <span style="font-weight:1000;color:var(--brand)">Champak</span>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <script>
-    /***********************
-     * CONFIG
-     ***********************/
-    const LIVE_SITE = "https://learnwithchampak.live";
-    // If you have a dedicated today page on your main site, set it here or provide in today.json
-    const DEFAULT_TODAY_URL = LIVE_SITE; // e.g. "https://learnwithchampak.live/today.html"
-    const DEFAULT_JOIN_URL  = LIVE_SITE; // e.g. Meet link if you have it
-    const DEFAULT_PRACTICE_URL = LIVE_SITE; // e.g. "https://learnwithchampak.live/practice.html"
-    const TODAY_JSON = "./today.json"; // optional file. If missing, defaults are used.
-
-    /***********************
-     * ELEMENTS
-     ***********************/
-    const el = (id) => document.getElementById(id);
-
-    const netDot = el("netDot"), netText = el("netText");
-    const swDot = el("swDot"), swText = el("swText");
-
-    const topic = el("topic"), teaser = el("teaser"), whyBox = el("whyBox");
-    const classTime = el("classTime"), goal = el("goal"), nextTopic = el("nextTopic");
-    const todayDate = el("todayDate"), timeBanner = el("timeBanner");
-
-    const openLive = el("openLive"), openToday = el("openToday");
-    const joinBtn = el("joinBtn"), practiceBtn = el("practiceBtn"), shareBtn = el("shareBtn");
-
-    const modeStudent = el("modeStudent"), modeTeacher = el("modeTeacher");
-    const teacherBlock = el("teacherBlock"), studentBlock = el("studentBlock");
-
-    const offlineCard = el("offlineCard"), offlineCardBtn = el("offlineCardBtn");
-    const streakEl = el("streak");
-
-    const tHook = el("tHook"), tFlow = el("tFlow"), tQ = el("tQ"), demoCode = el("demoCode");
-    const copyFlow = el("copyFlow"), copyDemo = el("copyDemo"), copyDemo2 = el("copyDemo2");
-
-    /***********************
-     * NETWORK STATUS
-     ***********************/
-    function updateNetwork(){
-      const online = navigator.onLine;
-      netDot.className = "dot " + (online ? "ok" : "bad");
-      netText.textContent = online ? "Online" : "Offline";
-    }
-    window.addEventListener("online", updateNetwork);
-    window.addEventListener("offline", updateNetwork);
-    updateNetwork();
-
-    /***********************
-     * SERVICE WORKER STATUS (best-effort)
-     ***********************/
-    async function updateSW(){
-      if (!("serviceWorker" in navigator)){
-        swDot.className = "dot bad";
-        swText.textContent = "SW: not supported";
-        return;
-      }
-      try{
-        const reg = await navigator.serviceWorker.getRegistration();
-        swDot.className = "dot " + (reg ? "ok" : "");
-        swText.textContent = "SW: " + (reg ? "active" : "not registered");
-      }catch{
-        swDot.className = "dot bad";
-        swText.textContent = "SW: error";
-      }
-    }
-    updateSW();
-
-    /***********************
-     * INSTALL PROMPT
-     ***********************/
-    let deferredPrompt = null;
-    const installBtn = el("installBtn");
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = "inline-flex";
-    });
-
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = "none";
-    });
-
-    /***********************
-     * STREAK (no login)
-     ***********************/
-    function computeStreak(){
-      const key = "lwc_open_days";
-      const raw = localStorage.getItem(key);
-      const days = raw ? JSON.parse(raw) : [];
-      const today = new Date();
-      const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-      const t = ymd(today);
-
-      if (!days.includes(t)) {
-        days.push(t);
-        while(days.length > 90) days.shift();
-        localStorage.setItem(key, JSON.stringify(days));
-      }
-
-      const set = new Set(days);
-      let streak = 0;
-      for (let i=0; i<365; i++){
-        const d = new Date(today);
-        d.setDate(today.getDate() - i);
-        if (set.has(ymd(d))) streak++;
-        else break;
-      }
-      streakEl.textContent = String(streak);
-    }
-    computeStreak();
-
-    /***********************
-     * OFFLINE KNOWLEDGE CARDS
-     ***********************/
-    const CARDS = [
-      { t:"Python Tip", d:"If you only need an index + value, use enumerate() — cleaner loops." },
-      { t:"Interview", d:"Explain time complexity: O(n) means work grows linearly with input size." },
-      { t:"Common Mistake", d:"Indentation controls scope. One extra space can change the whole program." },
-      { t:"DSA Quick", d:"Arrays/lists: accessing by index is fast, searching unsorted is linear." },
-      { t:"Debug", d:"Print small checkpoints: 'here1', 'here2' to locate where logic breaks." },
-      { t:"Habit", d:"2 minutes reading + 2 minutes typing beats 30 minutes scrolling." },
-      { t:"Curiosity", d:"What happens if you move an update line inside the loop? Try and observe." }
-    ];
-    function pickCard(){
-      const dayKey = new Date().toDateString();
-      let seed = 0;
-      for (const ch of dayKey) seed = (seed*31 + ch.charCodeAt(0)) >>> 0;
-      const idx = seed % CARDS.length;
-      const c = CARDS[idx];
-      offlineCard.innerHTML = `<b>${c.t}:</b> ${c.d}`;
-    }
-    function randomCard(){
-      const c = CARDS[Math.floor(Math.random()*CARDS.length)];
-      offlineCard.innerHTML = `<b>${c.t}:</b> ${c.d}`;
-    }
-    pickCard();
-    offlineCardBtn.addEventListener("click", randomCard);
-
-    /***********************
-     * MODE TOGGLE
-     ***********************/
-    function setMode(mode){
-      const isTeacher = (mode === "teacher");
-      modeTeacher.classList.toggle("on", isTeacher);
-      modeTeacher.setAttribute("aria-selected", isTeacher ? "true" : "false");
-
-      modeStudent.classList.toggle("on", !isTeacher);
-      modeStudent.setAttribute("aria-selected", !isTeacher ? "true" : "false");
-
-      teacherBlock.style.display = isTeacher ? "block" : "none";
-      studentBlock.style.display = isTeacher ? "none" : "block";
-
-      localStorage.setItem("lwc_mode", mode);
-    }
-    modeStudent.addEventListener("click", () => setMode("student"));
-    modeTeacher.addEventListener("click", () => setMode("teacher"));
-    setMode(localStorage.getItem("lwc_mode") || "student");
-
-    /***********************
-     * TIME-AWARE 7 PM BANNER (local time)
-     ***********************/
-    function updateTimeBanner(){
-      const now = new Date();
-      todayDate.textContent = now.toLocaleDateString(undefined, { weekday:"long", year:"numeric", month:"short", day:"numeric" });
-
-      const h = now.getHours(), m = now.getMinutes();
-      const minutes = h*60 + m;
-
-      const remindStart = 18*60 + 45;
-      const classStart  = 19*60;
-      const classEnd    = 20*60 + 30;
-
-      timeBanner.className = "banner";
-      if (minutes >= remindStart && minutes < classStart){
-        timeBanner.classList.add("show","warn");
-        timeBanner.innerHTML = `⏰ <strong>Class is in ${(classStart-minutes)} minutes</strong> — open the live page and be ready.`;
-      } else if (minutes >= classStart && minutes <= classEnd){
-        timeBanner.classList.add("show","ok");
-        timeBanner.innerHTML = `✅ <strong>Class is live now</strong> — join and follow the steps.`;
-      }
-    }
-    updateTimeBanner();
-    setInterval(updateTimeBanner, 30 * 1000);
-
-    /***********************
-     * LOAD today.json (optional)
-     ***********************/
-    let todayURL = DEFAULT_TODAY_URL;
-    let joinURL = DEFAULT_JOIN_URL;
-    let practiceURL = DEFAULT_PRACTICE_URL;
-
-    function applyTodayData(d){
-      topic.textContent = d.topic || "Today’s Lesson";
-      teaser.textContent = d.teaser || "Open the lesson and start with the 60-sec challenge.";
-      whyBox.innerHTML = `<b>Why this matters:</b> ${d.why || "Build strong fundamentals that directly impact interviews and real-world coding."}`;
-      classTime.textContent = d.classTime || "7:00 PM IST";
-      goal.textContent = d.goal || "Understand + write 1 working program";
-      nextTopic.textContent = d.next || "Next: Practice + patterns";
-
-      todayURL = d.todayUrl || todayURL;
-      joinURL = d.joinUrl || joinURL;
-      practiceURL = d.practiceUrl || practiceURL;
-
-      el("sNow").textContent = d.studentNow || "Open Today → read 2 minutes → try the 60-sec challenge.";
-      el("sMistake").textContent = d.commonMistake || "Most students forget indentation / update logic inside the loop.";
-      el("sTarget").textContent = d.studentTarget || "Write 1 working program without copy-paste.";
-
-      tHook.textContent = d.teacherHook || "Ask: “Where do we use this in real code?” then show tiny example.";
-      tFlow.textContent = d.teacherFlow || "Concept → Visual → Code → Mistake → Question";
-      tQ.textContent = d.teacherQuestion || "“What breaks if we move this line inside the loop?”";
-      demoCode.textContent = d.demoCode || demoCode.textContent;
-
-      if (d.practiceLabel) el("practiceLinkText").textContent = d.practiceLabel;
-    }
-
-    async function loadTodayJSON(){
-      applyTodayData({
-        topic: "Today: Python Basics (Example)",
-        teaser: "One small concept → one small code → one small win.",
-        why: "Small daily practice creates big confidence in interviews.",
-        classTime: "7:00 PM IST",
-        goal: "Understand + type 1 working program",
-        next: "Next: Nested loops → patterns",
-        todayUrl: DEFAULT_TODAY_URL,
-        joinUrl: DEFAULT_JOIN_URL,
-        practiceUrl: DEFAULT_PRACTICE_URL,
-        demoCode: "for i in range(1, 4):\n  for j in range(1, 4):\n    print(i, j)"
-      });
-
-      try{
-        const res = await fetch(TODAY_JSON, { cache: "no-store" });
-        if (!res.ok) return;
-        const d = await res.json();
-        applyTodayData(d);
-      }catch{
-        // keep defaults silently
-      }
-    }
-    loadTodayJSON();
-
-    /***********************
-     * ACTIONS
-     ***********************/
-    function openURL(url){
-      location.href = url;
-    }
-
-    openLive.addEventListener("click", () => openURL(LIVE_SITE));
-    openToday.addEventListener("click", () => openURL(todayURL));
-    joinBtn.addEventListener("click", () => openURL(joinURL));
-    practiceBtn.addEventListener("click", () => openURL(practiceURL));
-
-    shareBtn.addEventListener("click", () => {
-      const text = `Learn With Champak — Today: ${topic.textContent}\n${teaser.textContent}\nJoin: ${joinURL}\nPractice: ${practiceURL}`;
-      const wa = "https://wa.me/?text=" + encodeURIComponent(text);
-      window.open(wa, "_blank", "noreferrer");
-    });
-
-    async function copyText(txt){
-      try{ await navigator.clipboard.writeText(txt); }
-      catch{
-        const ta = document.createElement("textarea");
-        ta.value = txt; document.body.appendChild(ta);
-        ta.select(); document.execCommand("copy");
-        ta.remove();
-      }
-    }
-
-    copyFlow.addEventListener("click", () => copyText(tFlow.textContent));
-    copyDemo.addEventListener("click", () => copyText(demoCode.textContent));
-    copyDemo2.addEventListener("click", () => copyText(demoCode.textContent));
-
-    /***********************
-     * LATEST POSTS + BLOG SEARCH (Blogger JSONP)
-     ***********************/
-    const BLOG_BASE = "https://www.learnwithchampak.live";
-
-    function openBlogSearch(q) {
-      const term = (q || "").trim();
-      if (!term) return;
-      const url = `${BLOG_BASE}/search?q=${encodeURIComponent(term)}`;
-      location.href = url;
-    }
-
-    const blogSearch = document.getElementById("blogSearch");
-    const blogSearchBtn = document.getElementById("blogSearchBtn");
-    blogSearchBtn?.addEventListener("click", () => openBlogSearch(blogSearch.value));
-    blogSearch?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") openBlogSearch(blogSearch.value);
-    });
-
-    const latestMenu = document.getElementById("latestMenu");
-    const openSelectedPost = document.getElementById("openSelectedPost");
-    const latestList = document.getElementById("latestList");
-    const refreshPosts = document.getElementById("refreshPosts");
-
-    function safeText(s) {
-      return String(s ?? "").replace(/\s+/g, " ").trim();
-    }
-    function toISODate(s) {
-      try { return new Date(s).toISOString(); } catch { return ""; }
-    }
-    function prettyDate(iso) {
-      try {
-        return new Date(iso).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
-      } catch { return ""; }
-    }
-    function getEntryLink(entry) {
-      const links = entry?.link || [];
-      const alt = links.find(l => l.rel === "alternate");
-      return alt?.href || "";
-    }
-
-    window.lwcRecentPosts = function(json) {
-      try {
-        const entries = json?.feed?.entry || [];
-        if (!entries.length) {
-          latestMenu.innerHTML = `<option>No posts found</option>`;
-          latestList.innerHTML = `<div class="muted">No recent posts loaded.</div>`;
-          return;
-        }
-
-        latestMenu.innerHTML = entries.map((e, i) => {
-          const title = safeText(e?.title?.$t || `Post ${i+1}`);
-          const url = getEntryLink(e);
-          return `<option value="${url}">${title}</option>`;
-        }).join("");
-
-        latestList.innerHTML = entries.slice(0, 6).map((e) => {
-          const title = safeText(e?.title?.$t || "Untitled");
-          const url = getEntryLink(e);
-          const published = e?.published?.$t ? toISODate(e.published.$t) : "";
-          const when = published ? prettyDate(published) : "";
-          return `
-            <div class="item">
-              <div class="ico">📝</div>
-              <div style="min-width:0">
-                <b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${title}</b>
-                <div class="desc">${when ? `📅 ${when} · ` : ""}<a class="link" href="${url}" target="_blank" rel="noreferrer">Open ↗</a></div>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-      } catch (err) {
-        latestMenu.innerHTML = `<option>Failed to parse posts</option>`;
-        latestList.innerHTML = `<div class="muted">Could not load latest posts.</div>`;
-      }
-    };
-
-    function loadLatestPosts() {
-      const old = document.getElementById("lwcLatestPostsJsonp");
-      if (old) old.remove();
-
-      latestMenu.innerHTML = `<option>Loading latest posts…</option>`;
-      latestList.innerHTML = `<div class="muted">Loading…</div>`;
-
-      // Blogger feed JSONP (avoids CORS issues)
-      const src = `${BLOG_BASE}/feeds/posts/default?alt=json-in-script&max-results=10&callback=lwcRecentPosts`;
-
-      const s = document.createElement("script");
-      s.id = "lwcLatestPostsJsonp";
-      s.src = src;
-      s.async = true;
-      s.onerror = () => {
-        latestMenu.innerHTML = `<option>Failed to load posts</option>`;
-        latestList.innerHTML = `
-          <div class="muted">
-            Couldn’t load the feed. You can still use search above.
-          </div>`;
-      };
-      document.body.appendChild(s);
-    }
-
-    openSelectedPost?.addEventListener("click", () => {
-      const url = latestMenu?.value;
-      if (url) location.href = url;
-    });
-
-    refreshPosts?.addEventListener("click", loadLatestPosts);
-
-    if (latestMenu && latestList) loadLatestPosts();
-  </script>
+<div class="container">
+
+<!-- HEADER -->
+<div class="card">
+  <span class="badge">🏫 7 PM Class Notes</span>
+  <h1>Python Pickle — Save Data Permanently</h1>
+  <p><b>Teacher:</b> Champak Roy</p>
+  <p>
+    In this lesson, students learned how to make Python
+    <b>remember data even after the program closes</b>
+    using the <b>pickle</b> module.
+  </p>
+</div>
+
+<!-- WHY -->
+<div class="card">
+<h2>1️⃣ Why This Lesson Is Important</h2>
+<ul>
+  <li>Python variables live in <b>RAM</b></li>
+  <li>RAM data is erased when the program stops</li>
+  <li>Real applications need <b>permanent storage</b></li>
+</ul>
+
+<p>
+<b>Conclusion:</b><br>
+Variables = temporary ❌<br>
+Files = permanent ✅
+</p>
+</div>
+
+<!-- PICKLE -->
+<div class="card">
+<h2>2️⃣ What is Pickle?</h2>
+<ul>
+  <li>Pickle is a built-in Python module</li>
+  <li>It converts Python objects into binary data</li>
+  <li>Binary data is stored in files</li>
+  <li>The same object can be restored later</li>
+</ul>
+
+<p><b>One-line formula:</b></p>
+<pre><code>Python Object → Bytes → File</code></pre>
+</div>
+
+<!-- FLOW -->
+<div class="card">
+<h2>3️⃣ Program Flow (Understand This Clearly)</h2>
+<ol>
+  <li>Try loading old data from file</li>
+  <li>If file not found → start fresh</li>
+  <li>User inserts or views students</li>
+  <li>At exit → data is saved</li>
+  <li>Next run → data is restored</li>
+</ol>
+</div>
+
+<!-- FILE 1 -->
+<div class="card">
+<h2>4️⃣ Code File: <code>pickleutilities.py</code></h2>
+<p>This file handles saving and reading data.</p>
+
+<pre><code>
+import pickle
+
+def saveFile(filename, data):
+    with open(filename, 'wb') as file:
+        pickle.dump(data, file)
+
+def readFile(filename):
+    with open(filename, "rb") as f:
+        return pickle.load(f)
+</code></pre>
+
+<p><b>Important:</b>  
+<code>dump()</code> saves data,  
+<code>load()</code> restores data.</p>
+</div>
+
+<!-- FILE 2 -->
+<div class="card">
+<h2>5️⃣ Code File: <code>test.py</code></h2>
+<p>Menu-driven student database program.</p>
+
+<pre><code>
+import pickleutilities as pt
+
+data = {}
+filename = "students.db"
+
+try:
+    data = pt.readFile(filename)
+except:
+    print("No file found. Will create now")
+
+while True:
+    option = int(input("0-Exit, 1-Insert, 2-Show\n"))
+
+    if option == 0:
+        break
+
+    if option == 1:
+        rollno = int(input("Enter Roll No\n"))
+        name = input("Enter Name\n")
+        data[rollno] = name
+
+    if option == 2:
+        for k, v in data.items():
+            print(k, v, sep=", ")
+
+pt.saveFile(filename, data)
+</code></pre>
+
+<p>
+<b>Most important line:</b><br>
+<code>pt.saveFile(filename, data)</code><br>
+This makes the data permanent.
+</p>
+</div>
+
+<!-- EMBED -->
+<div class="card">
+<h2>6️⃣ Run the Code Online (Practice Here)</h2>
+<p>
+You can run and test this program directly using the embedded Python editor below.
+</p>
+
+<iframe 
+  src="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor_18.html"
+  loading="lazy">
+</iframe>
+
+<p>
+👉 Create two files inside the editor:<br>
+<code>pickleutilities.py</code> and <code>test.py</code>
+</p>
+</div>
+
+<!-- HOMEWORK -->
+<div class="card">
+<h2>7️⃣ Homework</h2>
+<ol>
+  <li>Add a <b>Delete Student</b> option</li>
+  <li>Store <b>name + marks</b> together</li>
+  <li>Think: Why should we NOT store passwords using pickle?</li>
+</ol>
+</div>
+
+<!-- CHECKLIST -->
+<div class="card">
+<h2>8️⃣ Student Self-Checklist</h2>
+<ul class="checklist">
+  <li>✅ I understand RAM vs file storage</li>
+  <li>✅ I know what pickle does</li>
+  <li>✅ I can explain dump vs load</li>
+  <li>✅ I ran the program twice</li>
+  <li>✅ My data did not disappear</li>
+</ul>
+</div>
+
+<!-- NEXT -->
+<div class="card">
+<h2>9️⃣ What’s Next?</h2>
+<ul>
+  <li>Pickle vs JSON</li>
+  <li>Mini file-based projects</li>
+  <li>Introduction to databases (SQLite)</li>
+</ul>
+
+<p>
+<b>Teacher’s Line:</b><br>
+<i>“Aaj tumne Python ko yaad rakhna sikha diya.”</i>
+</p>
+</div>
+
+<div class="footer">
+Prepared for 7 PM Batch • Champak Roy<br>
+Learn step-by-step • Build real programs
+</div>
+
+</div>
 </body>
 </html>
-```0
