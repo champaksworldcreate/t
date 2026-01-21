@@ -1,183 +1,736 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Image Foreground–Background Editor</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Home — Learn With Champak</title>
+  <meta name="theme-color" content="#d97706" />
+  <meta name="description" content="Today-first PWA home for Learn With Champak — daily lesson, 7 PM class, quick practice, offline cards, streak." />
 
-<style>
-:root{
-  --bg:#fff7e6;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --brand:#d97706;
-  --border:#eadcc5;
-  --shadow:0 18px 40px rgba(31,41,55,.15);
-}
-body{
-  margin:0;
-  font-family:system-ui,Segoe UI,Roboto;
-  background:var(--bg);
-  color:var(--ink);
-}
-header{
-  padding:14px 20px;
-  background:linear-gradient(90deg,#f59e0b,#d97706);
-  color:#fff;
-  font-size:20px;
-  font-weight:600;
-}
-.container{
-  display:grid;
-  grid-template-columns:320px 1fr;
-  gap:16px;
-  padding:16px;
-}
-.panel{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  padding:14px;
-}
-.panel h3{
-  margin:6px 0 10px;
-}
-label{
-  font-size:14px;
-  display:block;
-  margin-top:10px;
-}
-input,button{
-  width:100%;
-  margin-top:6px;
-}
-button{
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:var(--brand);
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-}
-button:hover{opacity:.9}
-canvas{
-  width:100%;
-  background:#fff;
-  border-radius:14px;
-  border:1px dashed var(--border);
-}
-small{color:#6b7280}
-</style>
+  <!-- Optional: keep manifest link here too -->
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.png" />
+
+  <style>
+    :root{
+      --bg:#fff7e6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+      --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
+      --shadow:0 18px 40px rgba(31,41,55,.14);
+      --r:18px; --ok:#166534; --danger:#b91c1c;
+      --codebg:#0b1220; --codeink:#e5e7eb;
+      --chip: rgba(255,255,255,.7);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 10% -10%, rgba(245,158,11,.22), transparent 60%),
+        radial-gradient(700px 420px at 110% 10%, rgba(217,119,6,.16), transparent 55%),
+        linear-gradient(180deg, var(--bg), #fff 60%, var(--bg));
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:16px auto;padding:14px}
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{
+      width:46px;height:46px;border-radius:16px;
+      background:conic-gradient(from 220deg, var(--brand2), var(--brand), #ffb020, var(--brand2));
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow:var(--shadow);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
+    }
+    .logo img{width:100%;height:100%;object-fit:cover}
+    h1{margin:0;font-size:18px;line-height:1.1}
+    .sub{margin:2px 0 0;color:var(--muted);font-size:12px}
+
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .btn{
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(31,41,55,.08);
+      display:inline-flex;align-items:center;gap:8px;
+      user-select:none;
+    }
+    .btn.primary{
+      border:0;
+      background:linear-gradient(180deg,var(--brand2),var(--brand));
+      color:#111827;
+    }
+    .btn.ghost{background:transparent}
+    .btn:active{transform:translateY(1px)}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px 10px;
+      background:var(--chip);
+      font-size:12px;
+      color:var(--muted);
+      box-shadow:0 10px 24px rgba(31,41,55,.06);
+    }
+    .dot{width:9px;height:9px;border-radius:99px;background:#9ca3af;display:inline-block}
+    .dot.ok{background:var(--ok)}
+    .dot.bad{background:var(--danger)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(6px);
+    }
+    .head{
+      padding:12px;
+      border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+    }
+    .body{padding:12px}
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 520px){
+      .kpi{grid-template-columns:1fr}
+    }
+    .kpi .box{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(255,255,255,.7);
+    }
+    .kpi .label{font-size:12px;color:var(--muted)}
+    .kpi .val{font-size:16px;font-weight:1000;margin-top:2px}
+
+    .title2{margin:0;font-size:14px}
+    .muted{color:var(--muted);font-size:12px;line-height:1.45}
+    .big{
+      font-size:22px;
+      line-height:1.12;
+      font-weight:1100;
+      margin:6px 0 0;
+      letter-spacing:-0.2px;
+    }
+    .teaser{
+      margin:8px 0 0;
+      padding:10px 12px;
+      border-radius:14px;
+      background:linear-gradient(180deg, rgba(245,158,11,.18), rgba(217,119,6,.08));
+      border:1px dashed rgba(217,119,6,.35);
+      font-weight:900;
+    }
+
+    .banner{
+      display:none;
+      margin:10px 0 0;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.7);
+    }
+    .banner strong{font-weight:1100}
+    .banner.show{display:block}
+    .banner.ok{border-color: rgba(22,101,52,.25); background:rgba(22,101,52,.06)}
+    .banner.warn{border-color: rgba(146,64,14,.25); background:rgba(245,158,11,.09)}
+
+    .list{display:grid;gap:10px;margin-top:10px}
+    .item{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 10px;
+      background:rgba(255,255,255,.7);
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .ico{
+      width:34px;height:34px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      border:1px solid rgba(0,0,0,.06);
+      background:linear-gradient(180deg, rgba(245,158,11,.25), rgba(217,119,6,.10));
+      font-weight:1100;
+    }
+    .item b{display:block}
+    .item .desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+
+    .switch{
+      display:flex;gap:8px;align-items:center;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:6px;
+      background:rgba(255,255,255,.75);
+    }
+    .seg{
+      border:0;background:transparent;
+      border-radius:999px;
+      padding:8px 10px;
+      font-weight:1000;
+      cursor:pointer;
+      color:var(--muted);
+    }
+    .seg.on{
+      color:var(--ink);
+      background:rgba(245,158,11,.22);
+      box-shadow:0 10px 22px rgba(31,41,55,.08);
+    }
+
+    .code{
+      margin-top:10px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(15,23,42,.18);
+      background:var(--codebg);
+      color:var(--codeink);
+    }
+    .code .bar{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .code pre{
+      margin:0;
+      padding:12px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .footerNote{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+    .link{color:var(--brand);font-weight:1000;text-decoration:none}
+  </style>
 </head>
 
 <body>
-<header>🖼 Image Foreground & Background Editor</header>
+  <div class="wrap">
+    <!-- Top bar -->
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <img src="./icons/icon-192.png" alt="Champak Roy" />
+        </div>
+        <div>
+          <h1>Learn With Champak — Home</h1>
+          <div class="sub" id="subline">Today-first dashboard • 7 PM batch • quick practice</div>
+        </div>
+      </div>
 
-<div class="container">
-  <!-- Controls -->
-  <div class="panel">
-    <h3>Images</h3>
+      <div class="row">
+        <span class="pill" title="Network status">
+          <span class="dot" id="netDot"></span>
+          <span id="netText">Checking…</span>
+        </span>
 
-    <label>Background Image</label>
-    <input type="file" accept="image/*" id="bgInput">
+        <span class="pill" title="Service Worker status">
+          <span class="dot" id="swDot"></span>
+          <span id="swText">SW: checking…</span>
+        </span>
 
-    <label>Background Color</label>
-    <input type="color" id="bgColor" value="#ffffff">
+        <button class="btn primary" id="openLive">Open Live Site</button>
+        <button class="btn" id="openToday">Open Today</button>
 
-    <label>Foreground Image</label>
-    <input type="file" accept="image/*" id="fgInput">
+        <button class="btn" id="installBtn" style="display:none">Install App</button>
+      </div>
+    </div>
 
-    <label>Foreground Scale</label>
-    <input type="range" min="0.1" max="2" step="0.05" value="1" id="scale">
+    <div class="grid">
+      <!-- Main: Today card -->
+      <section class="card" aria-label="Today">
+        <div class="head">
+          <div>
+            <div class="row" style="gap:10px">
+              <span class="pill" title="Mode switch">
+                <span style="font-weight:1000;color:var(--ink)">Mode</span>
+                <span class="switch" role="tablist" aria-label="Mode">
+                  <button class="seg on" id="modeStudent" role="tab" aria-selected="true">Student</button>
+                  <button class="seg" id="modeTeacher" role="tab" aria-selected="false">Teacher</button>
+                </span>
+              </span>
 
-    <label>
-      <input type="checkbox" id="chroma"> Remove Green Background
-    </label>
-    <small>(Works best with green screen)</small>
+              <span class="pill" title="Streak">
+                🔥 Streak: <b id="streak">0</b> days
+              </span>
 
-    <br><br>
-    <button onclick="download()">⬇ Save Image</button>
+              <span class="pill" title="Date">
+                📅 <b id="todayDate">—</b>
+              </span>
+            </div>
+
+            <div class="big" id="topic">Loading today’s topic…</div>
+            <div class="teaser" id="teaser">One-line teaser will appear here.</div>
+
+            <div class="banner" id="timeBanner"></div>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" id="joinBtn">Join 7 PM Class</button>
+            <button class="btn" id="practiceBtn">60-sec Challenge</button>
+            <button class="btn ghost" id="shareBtn" title="Share today on WhatsApp">Share</button>
+          </div>
+        </div>
+
+        <div class="body">
+          <div class="muted" id="whyBox">
+            <b>Why this matters:</b>
+            Today’s concept helps you in interviews and real coding. Open the live class and practice for 60 seconds.
+          </div>
+
+          <div class="kpi" aria-label="Quick stats">
+            <div class="box">
+              <div class="label">Class Time</div>
+              <div class="val" id="classTime">7:00 PM IST</div>
+            </div>
+            <div class="box">
+              <div class="label">Today’s Goal</div>
+              <div class="val" id="goal">Understand + write 1 working program</div>
+            </div>
+            <div class="box">
+              <div class="label">Next</div>
+              <div class="val" id="nextTopic">Nested Loops → Patterns</div>
+            </div>
+          </div>
+
+          <!-- Teacher-only block -->
+          <div id="teacherBlock" style="display:none;margin-top:12px">
+            <div class="card" style="box-shadow:none;background:rgba(255,255,255,.65)">
+              <div class="head">
+                <b>Teacher Kit</b>
+                <div class="row">
+                  <button class="btn" id="copyFlow">Copy Flow</button>
+                  <button class="btn" id="copyDemo">Copy Demo</button>
+                </div>
+              </div>
+              <div class="body">
+                <div class="list">
+                  <div class="item">
+                    <div class="ico">1</div>
+                    <div>
+                      <b>Opening hook (30 sec)</b>
+                      <div class="desc" id="tHook">Ask: “Where do we use this in real code?” then show tiny example.</div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="ico">2</div>
+                    <div>
+                      <b>Flow (5 steps)</b>
+                      <div class="desc" id="tFlow">Concept → Visual → Code → Mistake → Question</div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="ico">3</div>
+                    <div>
+                      <b>Curiosity question</b>
+                      <div class="desc" id="tQ">“What breaks if we move this line inside the loop?”</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="code" aria-label="Demo snippet">
+                  <div class="bar">
+                    <b>Demo code</b>
+                    <button class="btn" id="copyDemo2">Copy</button>
+                  </div>
+                  <pre id="demoCode">for i in range(1, 4):
+  for j in range(1, 4):
+    print(i, j)</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Student block -->
+          <div id="studentBlock" style="margin-top:12px">
+            <div class="list">
+              <div class="item">
+                <div class="ico">✅</div>
+                <div>
+                  <b>What to do now</b>
+                  <div class="desc" id="sNow">Open Today → read 2 minutes → try the 60-sec challenge.</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="ico">🧠</div>
+                <div>
+                  <b>Common mistake</b>
+                  <div class="desc" id="sMistake">Most students forget indentation / update logic inside the loop.</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="ico">🎯</div>
+                <div>
+                  <b>Mini target</b>
+                  <div class="desc" id="sTarget">Write 1 working program without copy-paste.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Side: Offline cards + quick links -->
+      <aside class="card" aria-label="Quick tools">
+        <div class="head">
+          <b>Quick Tools</b>
+          <div class="row">
+            <button class="btn" id="offlineCardBtn">New Offline Card</button>
+          </div>
+        </div>
+        <div class="body">
+          <div class="item">
+            <div class="ico">📌</div>
+            <div>
+              <b>Offline Knowledge Card</b>
+              <div class="desc" id="offlineCard">Loading…</div>
+            </div>
+          </div>
+
+          <div class="list" style="margin-top:10px">
+            <div class="item">
+              <div class="ico">🌐</div>
+              <div>
+                <b>Live website</b>
+                <div class="desc">
+                  Open <a class="link" href="https://learnwithchampak.live" target="_blank" rel="noreferrer">learnwithchampak.live</a>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="ico">📶</div>
+              <div>
+                <b>Offline mode</b>
+                <div class="desc">If you’re offline, use cards + teacher kit. Tap “Try again” when online.</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="ico">🧩</div>
+              <div>
+                <b>Practice</b>
+                <div class="desc" id="practiceLinkText">Opens a fast challenge page (configure URL in today.json).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footerNote">
+            The Programmer’s Picnic • <span style="font-weight:1000;color:var(--brand)">Champak</span>
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 
-  <!-- Canvas -->
-  <div class="panel">
-    <canvas id="canvas" width="900" height="500"></canvas>
-    <small>Drag foreground image with mouse</small>
-  </div>
-</div>
+  <script>
+    /***********************
+     * CONFIG
+     ***********************/
+    const LIVE_SITE = "https://learnwithchampak.live";
+    // If you have a dedicated today page on your main site, set it here or provide in today.json
+    const DEFAULT_TODAY_URL = LIVE_SITE; // e.g. "https://learnwithchampak.live/today.html"
+    const DEFAULT_JOIN_URL  = LIVE_SITE; // e.g. Zoom/Meet link if you have it
+    const DEFAULT_PRACTICE_URL = LIVE_SITE; // e.g. "https://learnwithchampak.live/practice.html"
+    const TODAY_JSON = "./today.json"; // optional file. If missing, defaults are used.
 
-<script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+    /***********************
+     * ELEMENTS
+     ***********************/
+    const el = (id) => document.getElementById(id);
 
-let bgImg=null, fgImg=null;
-let fgX=200, fgY=120, fgScale=1;
-let dragging=false, dx=0, dy=0;
+    const netDot = el("netDot"), netText = el("netText");
+    const swDot = el("swDot"), swText = el("swText");
 
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+    const topic = el("topic"), teaser = el("teaser"), whyBox = el("whyBox");
+    const classTime = el("classTime"), goal = el("goal"), nextTopic = el("nextTopic");
+    const todayDate = el("todayDate"), timeBanner = el("timeBanner");
 
-  // background
-  ctx.fillStyle = bgColor.value;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  if(bgImg) ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
+    const openLive = el("openLive"), openToday = el("openToday");
+    const joinBtn = el("joinBtn"), practiceBtn = el("practiceBtn"), shareBtn = el("shareBtn");
 
-  // foreground
-  if(fgImg){
-    const w = fgImg.width * fgScale;
-    const h = fgImg.height * fgScale;
-    ctx.drawImage(fgImg, fgX, fgY, w, h);
+    const modeStudent = el("modeStudent"), modeTeacher = el("modeTeacher");
+    const teacherBlock = el("teacherBlock"), studentBlock = el("studentBlock");
 
-    if(chroma.checked){
-      const img = ctx.getImageData(0,0,canvas.width,canvas.height);
-      for(let i=0;i<img.data.length;i+=4){
-        const r=img.data[i], g=img.data[i+1], b=img.data[i+2];
-        if(g>150 && r<120 && b<120) img.data[i+3]=0;
-      }
-      ctx.putImageData(img,0,0);
+    const offlineCard = el("offlineCard"), offlineCardBtn = el("offlineCardBtn");
+    const streakEl = el("streak");
+
+    const tHook = el("tHook"), tFlow = el("tFlow"), tQ = el("tQ"), demoCode = el("demoCode");
+    const copyFlow = el("copyFlow"), copyDemo = el("copyDemo"), copyDemo2 = el("copyDemo2");
+
+    /***********************
+     * NETWORK STATUS
+     ***********************/
+    function updateNetwork(){
+      const online = navigator.onLine;
+      netDot.className = "dot " + (online ? "ok" : "bad");
+      netText.textContent = online ? "Online" : "Offline";
     }
-  }
-}
+    window.addEventListener("online", updateNetwork);
+    window.addEventListener("offline", updateNetwork);
+    updateNetwork();
 
-bgInput.onchange=e=>{
-  bgImg=new Image();
-  bgImg.onload=draw;
-  bgImg.src=URL.createObjectURL(e.target.files[0]);
-}
-fgInput.onchange=e=>{
-  fgImg=new Image();
-  fgImg.onload=draw;
-  fgImg.src=URL.createObjectURL(e.target.files[0]);
-}
-bgColor.oninput=draw;
-scale.oninput=e=>{fgScale=parseFloat(e.target.value);draw();}
-chroma.onchange=draw;
+    /***********************
+     * SERVICE WORKER STATUS (best-effort)
+     ***********************/
+    async function updateSW(){
+      if (!("serviceWorker" in navigator)){
+        swDot.className = "dot bad";
+        swText.textContent = "SW: not supported";
+        return;
+      }
+      try{
+        const reg = await navigator.serviceWorker.getRegistration();
+        swDot.className = "dot " + (reg ? "ok" : "");
+        swText.textContent = "SW: " + (reg ? "active" : "not registered");
+      }catch{
+        swDot.className = "dot bad";
+        swText.textContent = "SW: error";
+      }
+    }
+    updateSW();
 
-canvas.onmousedown=e=>{
-  dragging=true;
-  dx=e.offsetX-fgX;
-  dy=e.offsetY-fgY;
-};
-canvas.onmouseup=()=>dragging=false;
-canvas.onmouseleave=()=>dragging=false;
-canvas.onmousemove=e=>{
-  if(dragging){
-    fgX=e.offsetX-dx;
-    fgY=e.offsetY-dy;
-    draw();
-  }
-};
+    /***********************
+     * INSTALL PROMPT
+     ***********************/
+    let deferredPrompt = null;
+    const installBtn = el("installBtn");
 
-function download(){
-  const a=document.createElement("a");
-  a.download="edited-image.png";
-  a.href=canvas.toDataURL("image/png");
-  a.click();
-}
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-flex";
+    });
 
-draw();
-</script>
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
+
+    /***********************
+     * STREAK (no login)
+     ***********************/
+    function computeStreak(){
+      const key = "lwc_open_days";
+      const raw = localStorage.getItem(key);
+      const days = raw ? JSON.parse(raw) : [];
+      const today = new Date();
+      const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+      const t = ymd(today);
+
+      if (!days.includes(t)) {
+        days.push(t);
+        // keep last 90 entries
+        while(days.length > 90) days.shift();
+        localStorage.setItem(key, JSON.stringify(days));
+      }
+
+      // compute consecutive streak ending today
+      const set = new Set(days);
+      let streak = 0;
+      for (let i=0; i<365; i++){
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        if (set.has(ymd(d))) streak++;
+        else break;
+      }
+      streakEl.textContent = String(streak);
+    }
+    computeStreak();
+
+    /***********************
+     * OFFLINE KNOWLEDGE CARDS
+     ***********************/
+    const CARDS = [
+      { t:"Python Tip", d:"If you only need an index + value, use enumerate() — cleaner loops." },
+      { t:"Interview", d:"Explain time complexity: O(n) means work grows linearly with input size." },
+      { t:"Common Mistake", d:"Indentation controls scope. One extra space can change the whole program." },
+      { t:"DSA Quick", d:"Arrays/lists: accessing by index is fast, searching unsorted is linear." },
+      { t:"Debug", d:"Print small checkpoints: 'here1', 'here2' to locate where logic breaks." },
+      { t:"Habit", d:"2 minutes reading + 2 minutes typing beats 30 minutes scrolling." },
+      { t:"Curiosity", d:"What happens if you move an update line inside the loop? Try and observe." }
+    ];
+    function pickCard(){
+      // daily deterministic pick + random on button click
+      const dayKey = new Date().toDateString();
+      let seed = 0;
+      for (const ch of dayKey) seed = (seed*31 + ch.charCodeAt(0)) >>> 0;
+      const idx = seed % CARDS.length;
+      const c = CARDS[idx];
+      offlineCard.innerHTML = `<b>${c.t}:</b> ${c.d}`;
+    }
+    function randomCard(){
+      const c = CARDS[Math.floor(Math.random()*CARDS.length)];
+      offlineCard.innerHTML = `<b>${c.t}:</b> ${c.d}`;
+    }
+    pickCard();
+    offlineCardBtn.addEventListener("click", randomCard);
+
+    /***********************
+     * MODE TOGGLE
+     ***********************/
+    function setMode(mode){
+      const isTeacher = (mode === "teacher");
+      modeTeacher.classList.toggle("on", isTeacher);
+      modeTeacher.setAttribute("aria-selected", isTeacher ? "true" : "false");
+
+      modeStudent.classList.toggle("on", !isTeacher);
+      modeStudent.setAttribute("aria-selected", !isTeacher ? "true" : "false");
+
+      teacherBlock.style.display = isTeacher ? "block" : "none";
+      studentBlock.style.display = isTeacher ? "none" : "block";
+
+      localStorage.setItem("lwc_mode", mode);
+    }
+    modeStudent.addEventListener("click", () => setMode("student"));
+    modeTeacher.addEventListener("click", () => setMode("teacher"));
+    setMode(localStorage.getItem("lwc_mode") || "student");
+
+    /***********************
+     * TIME-AWARE 7 PM BANNER
+     ***********************/
+    function updateTimeBanner(){
+      const now = new Date();
+      todayDate.textContent = now.toLocaleDateString(undefined, { weekday:"long", year:"numeric", month:"short", day:"numeric" });
+
+      const h = now.getHours(), m = now.getMinutes();
+      const minutes = h*60 + m;
+
+      // 6:45 PM (18:45) to 7:00 PM (19:00): warm reminder
+      // after 7:00 PM to 8:30 PM: class started
+      const remindStart = 18*60 + 45;
+      const classStart  = 19*60;
+      const classEnd    = 20*60 + 30;
+
+      timeBanner.className = "banner";
+      if (minutes >= remindStart && minutes < classStart){
+        timeBanner.classList.add("show","warn");
+        timeBanner.innerHTML = `⏰ <strong>Class is in ${(classStart-minutes)} minutes</strong> — open the live page and be ready.`;
+      } else if (minutes >= classStart && minutes <= classEnd){
+        timeBanner.classList.add("show","ok");
+        timeBanner.innerHTML = `✅ <strong>Class is live now</strong> — join and follow the steps.`;
+      }
+    }
+    updateTimeBanner();
+    setInterval(updateTimeBanner, 30 * 1000);
+
+    /***********************
+     * LOAD today.json (optional)
+     ***********************/
+    let todayURL = DEFAULT_TODAY_URL;
+    let joinURL = DEFAULT_JOIN_URL;
+    let practiceURL = DEFAULT_PRACTICE_URL;
+
+    function applyTodayData(d){
+      // safe fallbacks
+      topic.textContent = d.topic || "Today’s Lesson";
+      teaser.textContent = d.teaser || "Open the lesson and start with the 60-sec challenge.";
+      whyBox.innerHTML = `<b>Why this matters:</b> ${d.why || "Build strong fundamentals that directly impact interviews and real-world coding."}`;
+      classTime.textContent = d.classTime || "7:00 PM IST";
+      goal.textContent = d.goal || "Understand + write 1 working program";
+      nextTopic.textContent = d.next || "Next: Practice + patterns";
+
+      // URLs
+      todayURL = d.todayUrl || todayURL;
+      joinURL = d.joinUrl || joinURL;
+      practiceURL = d.practiceUrl || practiceURL;
+
+      // Student blocks
+      el("sNow").textContent = d.studentNow || "Open Today → read 2 minutes → try the 60-sec challenge.";
+      el("sMistake").textContent = d.commonMistake || "Most students forget indentation / update logic inside the loop.";
+      el("sTarget").textContent = d.studentTarget || "Write 1 working program without copy-paste.";
+
+      // Teacher blocks
+      tHook.textContent = d.teacherHook || "Ask: “Where do we use this in real code?” then show tiny example.";
+      tFlow.textContent = d.teacherFlow || "Concept → Visual → Code → Mistake → Question";
+      tQ.textContent = d.teacherQuestion || "“What breaks if we move this line inside the loop?”";
+      demoCode.textContent = d.demoCode || demoCode.textContent;
+
+      if (d.practiceLabel) el("practiceLinkText").textContent = d.practiceLabel;
+    }
+
+    async function loadTodayJSON(){
+      // Defaults if no file
+      applyTodayData({
+        topic: "Today: Python Basics (Example)",
+        teaser: "One small concept → one small code → one small win.",
+        why: "Small daily practice creates big confidence in interviews.",
+        classTime: "7:00 PM IST",
+        goal: "Understand + type 1 working program",
+        next: "Next: Nested loops → patterns",
+        todayUrl: DEFAULT_TODAY_URL,
+        joinUrl: DEFAULT_JOIN_URL,
+        practiceUrl: DEFAULT_PRACTICE_URL,
+        demoCode: "for i in range(1, 4):\n  for j in range(1, 4):\n    print(i, j)"
+      });
+
+      try{
+        const res = await fetch(TODAY_JSON, { cache: "no-store" });
+        if (!res.ok) return;
+        const d = await res.json();
+        applyTodayData(d);
+      }catch{
+        // silently keep defaults
+      }
+    }
+    loadTodayJSON();
+
+    /***********************
+     * ACTIONS
+     ***********************/
+    function openURL(url){
+      // in PWA standalone, window.open may open inside browser; location.href keeps it in-app
+      location.href = url;
+    }
+
+    openLive.addEventListener("click", () => openURL(LIVE_SITE));
+    openToday.addEventListener("click", () => openURL(todayURL));
+    joinBtn.addEventListener("click", () => openURL(joinURL));
+    practiceBtn.addEventListener("click", () => openURL(practiceURL));
+
+    shareBtn.addEventListener("click", () => {
+      const text = `Learn With Champak — Today: ${topic.textContent}\n${teaser.textContent}\nJoin: ${joinURL}\nPractice: ${practiceURL}`;
+      const wa = "https://wa.me/?text=" + encodeURIComponent(text);
+      window.open(wa, "_blank", "noreferrer");
+    });
+
+    async function copyText(txt){
+      try{ await navigator.clipboard.writeText(txt); }
+      catch{
+        const ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta);
+        ta.select(); document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    copyFlow.addEventListener("click", () => copyText(tFlow.textContent));
+    copyDemo.addEventListener("click", () => copyText(demoCode.textContent));
+    copyDemo2.addEventListener("click", () => copyText(demoCode.textContent));
+  </script>
 </body>
 </html>
