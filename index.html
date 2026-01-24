@@ -3,251 +3,338 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Champ Image Lab v2 — Outline & Object Detection</title>
+<title>DSA Practice Sheet — Questions + Editors + Board Images</title>
 
 <style>
 :root{
-  --bg:#fff7e6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
-  --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5;
+  --bg:#fff7e6;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --brand:#d97706;
+  --brand2:#f59e0b;
+  --border:#eadcc5;
   --shadow:0 18px 40px rgba(31,41,55,.14);
-  --ok:#059669; --bad:#dc2626;
+  --codebg:#0b1220;
+  --codeink:#e5e7eb;
   --r:18px;
 }
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:var(--bg);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(900px 500px at 10% -10%, rgba(245,158,11,.22), transparent 60%),
+    radial-gradient(900px 500px at 90% 0%, rgba(217,119,6,.18), transparent 55%),
+    var(--bg);
   color:var(--ink);
 }
-header{
-  position:sticky; top:0;
-  background:#fff3db;
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,247,230,.85);
+  backdrop-filter:blur(8px);
   border-bottom:1px solid var(--border);
 }
-.wrap{max-width:1200px;margin:auto;padding:12px}
-h1{font-size:16px;margin:0}
+.wrap{max-width:1200px;margin:auto;padding:14px 16px}
+h1{margin:0;font-size:18px}
 .sub{font-size:12px;color:var(--muted)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-button,label,input[type=color]{
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:8px 12px;
-  background:white;
-  cursor:pointer;
-  font-weight:600;
+
+.grid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:16px;
+  padding:16px;
+  max-width:1200px;
+  margin:auto;
 }
-button.primary{background:#fde6b7}
-button.danger{background:#fee2e2}
-.grid{display:grid;grid-template-columns:420px 1fr;gap:12px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media(max-width:980px){
+  .grid{grid-template-columns:1fr}
+}
+
 .card{
-  background:#fff;
+  background:var(--card);
   border:1px solid var(--border);
   border-radius:var(--r);
   box-shadow:var(--shadow);
+  overflow:hidden;
 }
-.card .hd{padding:10px;font-weight:700}
-.card .bd{padding:10px}
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-canvas{
-  width:100%;
+.cardhead{
+  padding:14px;
+  border-bottom:1px solid var(--border);
+}
+.cardhead h2{margin:0;font-size:14px}
+.cardhead p{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.cardbody{padding:14px}
+
+details{
+  border:1px solid var(--border);
   border-radius:14px;
-  border:1px solid var(--border);
-  background:
-    linear-gradient(45deg,#eee 25%,transparent 25%),
-    linear-gradient(-45deg,#eee 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,#eee 75%),
-    linear-gradient(-45deg,transparent 75%,#eee 75%);
-  background-size:20px 20px;
+  padding:10px 12px;
+  margin-bottom:10px;
+  background:#fff;
 }
-.pill{
-  font-size:12px;padding:4px 10px;border-radius:999px;
-  border:1px solid var(--border);
+summary{
+  cursor:pointer;
+  font-weight:700;
+  display:flex;
+  justify-content:space-between;
 }
-.pill.ok{color:var(--ok)}
-.pill.bad{color:var(--bad)}
-.hidden{display:none}
-.footer{text-align:center;font-size:12px;color:var(--muted);padding:10px}
+summary::-webkit-details-marker{display:none}
+
+.tag{
+  font-size:11px;
+  padding:3px 8px;
+  border-radius:999px;
+  background:rgba(245,158,11,.18);
+  border:1px solid rgba(245,158,11,.35);
+}
+.io{
+  background:var(--codebg);
+  color:var(--codeink);
+  border-radius:12px;
+  padding:10px;
+  font-family:monospace;
+  font-size:12px;
+  margin-top:8px;
+  white-space:pre;
+}
+.hint{
+  margin-top:8px;
+  font-size:12px;
+  color:#5c3b00;
+  background:#fff3cd;
+  border:1px dashed #f59e0b;
+  border-radius:12px;
+  padding:8px;
+}
+
+/* RIGHT STACK */
+.rightStack{display:grid;gap:16px}
+
+/* CAROUSEL */
+.carouselWrap{
+  display:grid;
+  grid-template-columns:110px 1fr;
+  gap:12px;
+}
+@media(max-width:980px){
+  .carouselWrap{grid-template-columns:1fr}
+}
+.thumbs{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:60vh;
+  overflow:auto;
+}
+.thumb{
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+}
+.thumb img{
+  width:100%;
+  display:block;
+  object-fit:cover;
+}
+.viewer{
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+}
+.viewerTop{
+  padding:8px 12px;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.viewer img{
+  width:100%;
+  height:55vh;
+  object-fit:contain;
+  background:#000;
+}
+
+/* EDITORS */
+.tabs{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-bottom:1px solid var(--border);
+}
+.tabbtn{
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:#fff;
+  cursor:pointer;
+  font-weight:700;
+}
+.tabbtn.active{
+  background:rgba(245,158,11,.2);
+}
+.pane{display:none}
+.pane.active{display:block}
+iframe{
+  width:100%;
+  height:55vh;
+  border:0;
+}
+
+.footer{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+  font-size:12px;
+  color:var(--muted);
+}
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="wrap row">
-    <div>
-      <h1>Champ Image Lab v2</h1>
-      <div class="sub">Outline • Object Detect • BG Remove • Offline</div>
-    </div>
-    <label for="file" class="primary">📷 Open Image</label>
-    <input id="file" type="file" accept="image/*" class="hidden">
-    <button id="undo">Undo</button>
-    <button id="redo">Redo</button>
-    <button id="download" class="primary">Download PNG</button>
+<div class="topbar">
+  <div class="wrap">
+    <h1>DSA Practice Sheet</h1>
+    <div class="sub">Questions • Python Editor • JavaScript Editor • Board Images</div>
   </div>
-</header>
+</div>
 
-<main class="wrap">
-  <div class="grid">
+<div class="grid">
 
-    <!-- Preview -->
-    <div class="card">
-      <div class="hd">Preview <span id="status" class="pill bad">No image</span></div>
-      <div class="bd">
-        <canvas id="c0"></canvas><br><br>
-        <canvas id="c1"></canvas>
-      </div>
-    </div>
+<!-- LEFT : QUESTIONS -->
+<section class="card">
+  <div class="cardhead">
+    <h2>Practice Questions</h2>
+    <p>Open a question → understand → code on right</p>
+  </div>
+  <div class="cardbody">
 
-    <!-- Tools -->
-    <div class="card">
-      <div class="hd">Tools</div>
-      <div class="bd tools">
+    <details open>
+      <summary>1) Check Palindrome <span class="tag">String</span></summary>
+      <div class="io">Input: "madam"
+Output: Palindrome</div>
+      <div class="hint">Compare string with its reverse.</div>
+    </details>
 
-        <div>
-          <b>Basic</b><br>
-          <button data-act="grayscale">B/W</button>
-          <button data-act="invert">Invert</button>
-          <button data-act="sepia">Sepia</button>
-        </div>
+    <details>
+      <summary>2) Check if Array is Sorted <span class="tag">Array</span></summary>
+      <div class="io">Input: [10,5,4,8,7]
+Output: Not Sorted</div>
+    </details>
 
-        <div>
-          <b>Outline</b><br>
-          <button data-act="outline">Outline</button>
-          <button data-act="outline_bw">Outline B/W</button>
-        </div>
+    <details>
+      <summary>3) Union of Two Arrays <span class="tag">Array</span></summary>
+      <div class="io">A=[2,3,4,5], B=[4,5,6,7]
+Output: [2,3,4,5,6,7]</div>
+    </details>
 
-        <div>
-          <b>Colorize</b><br>
-          <input type="color" id="tint" value="#f59e0b">
-          <button data-act="colorize">Apply</button>
-        </div>
+    <details>
+      <summary>4) Reverse in Groups (k=3) <span class="tag">Array</span></summary>
+      <div class="io">Input: [1,2,3,4,5,6,7,8]
+Output: [3,2,1,6,5,4,8,7]</div>
+    </details>
 
-        <div>
-          <b>Background</b><br>
-          <button data-act="bg_white">Remove White</button>
-          <button data-act="bg_black">Remove Black</button>
-        </div>
+    <details>
+      <summary>5) Reduce Array to Single Sum <span class="tag">Array</span></summary>
+      <div class="io">Input: [1,4,5]
+Output: [10]</div>
+    </details>
 
-        <div>
-          <b>Magic / Detect</b><br>
-          <button data-act="magic">Magic Remove</button>
-          <button data-act="detect" class="primary">Detect Object Box</button>
-        </div>
+    <details>
+      <summary>6) Rearrange +ve / -ve <span class="tag">Array</span></summary>
+      <div class="io">Input: [1,2,3,-4,-5,4]
+Output: [1,-4,2,-5,3,4]</div>
+    </details>
 
-      </div>
-    </div>
+    <details>
+      <summary>7) Merge Sorted Arrays <span class="tag">Array</span></summary>
+      <div class="io">A=[1,3,5], B=[2,4,6]
+Output: [1,2,3,4,5,6]</div>
+    </details>
+
+    <details>
+      <summary>8) Move Zeros to End <span class="tag">Array</span></summary>
+      <div class="io">Input: [0,1,0,3,5]
+Output: [1,3,5,0,0]</div>
+    </details>
+
+    <details>
+      <summary>9) Second Maximum <span class="tag">Array</span></summary>
+      <div class="io">Input: [17,5,13,2]
+Output: 13</div>
+    </details>
+
+    <details>
+      <summary>10) Two Sum <span class="tag">Hashing</span></summary>
+      <div class="io">Input: [5,8,9,10,11,6], target=19
+Output: (2,3)</div>
+    </details>
 
   </div>
-</main>
+</section>
+
+<!-- RIGHT -->
+<div class="rightStack">
+
+<!-- IMAGE CAROUSEL -->
+<section class="card">
+  <div class="cardhead">
+    <h2>Board Images</h2>
+    <p>Vertical carousel</p>
+  </div>
+  <div class="cardbody carouselWrap">
+    <div class="thumbs">
+      <img class="thumb" src="images/amit.png" onclick="showImg(this.src)">
+      <img class="thumb" src="images/aryan.png" onclick="showImg(this.src)">
+      <img class="thumb" src="images/ashutosh.png" onclick="showImg(this.src)">
+      <img class="thumb" src="images/kishan.png" onclick="showImg(this.src)">
+      <img class="thumb" src="images/piyush.png" onclick="showImg(this.src)">
+    </div>
+    <div class="viewer">
+      <div class="viewerTop">Selected Board</div>
+      <img id="bigImg" src="images/amit.png">
+    </div>
+  </div>
+</section>
+
+<!-- EDITORS -->
+<section class="card">
+  <div class="cardhead">
+    <h2>Editors</h2>
+  </div>
+
+  <div class="tabs">
+    <button class="tabbtn active" onclick="openTab('py')">Python</button>
+    <button class="tabbtn" onclick="openTab('js')">JavaScript</button>
+  </div>
+
+  <div id="py" class="pane active">
+    <iframe src="https://www.learnwithchampak.live/2026/01/programmers-picnic-python-editor.html"></iframe>
+  </div>
+
+  <div id="js" class="pane">
+    <iframe src="https://www.learnwithchampak.live/2026/01/programmers-picnic-javascript-editor.html"></iframe>
+  </div>
+</section>
+
+</div>
+</div>
 
 <div class="footer">
-  Programmer’s Picnic • Champak Roy • Offline HTML Tool
+  Programmer’s Picnic • Champak Roy • 7 PM Batch
 </div>
 
 <script>
-const c0=document.getElementById("c0"), c1=document.getElementById("c1");
-const g0=c0.getContext("2d",{willReadFrequently:true});
-const g1=c1.getContext("2d",{willReadFrequently:true});
-let W=0,H=0,mode="magic",history=[],future=[];
-
-function setStatus(ok,msg){
-  const s=document.getElementById("status");
-  s.textContent=msg;
-  s.className="pill "+(ok?"ok":"bad");
+function showImg(src){
+  document.getElementById("bigImg").src = src;
 }
-function save(){history.push(g1.getImageData(0,0,W,H));future=[]}
-function undo(){if(history.length>1){future.push(history.pop());g1.putImageData(history.at(-1),0,0)}}
-function redo(){if(future.length){const i=future.pop();history.push(i);g1.putImageData(i,0,0)}}
-
-file.onchange=e=>{
-  const img=new Image();
-  img.onload=()=>{
-    W=img.width;H=img.height;
-    c0.width=c1.width=W;c0.height=c1.height=H;
-    g0.drawImage(img,0,0);
-    g1.drawImage(img,0,0);
-    save(); setStatus(true,W+"×"+H);
-  };
-  img.src=URL.createObjectURL(e.target.files[0]);
-};
-
-download.onclick=()=>{
-  const a=document.createElement("a");
-  a.href=c1.toDataURL("image/png");
-  a.download="edited.png";
-  a.click();
-};
-undo.onclick=undo; redo.onclick=redo;
-
-function eachPixel(fn){
-  const img=g1.getImageData(0,0,W,H),d=img.data;
-  for(let i=0;i<d.length;i+=4)fn(d,i);
-  g1.putImageData(img,0,0);
+function openTab(id){
+  document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tabbtn").forEach(b=>b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  event.target.classList.add("active");
 }
-function grayscale(){eachPixel((d,i)=>{const y=.2126*d[i]+.7152*d[i+1]+.0722*d[i+2];d[i]=d[i+1]=d[i+2]=y})}
-function invert(){eachPixel((d,i)=>{d[i]=255-d[i];d[i+1]=255-d[i+1];d[i+2]=255-d[i+2]})}
-function sepia(){eachPixel((d,i)=>{const r=d[i],g=d[i+1],b=d[i+2];
-d[i]=.393*r+.769*g+.189*b;d[i+1]=.349*r+.686*g+.168*b;d[i+2]=.272*r+.534*g+.131*b})}
-
-function outline(bw=false){
-  const src=g1.getImageData(0,0,W,H),s=src.data;
-  const out=g1.createImageData(W,H),d=out.data;
-  for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
-    const i=(y*W+x)*4;
-    const gx=s[i-4]-s[i+4], gy=s[i-4*W]-s[i+4*W];
-    const e=Math.abs(gx)+Math.abs(gy)>80?255:0;
-    if(bw){d[i]=d[i+1]=d[i+2]=255-e;d[i+3]=255}
-    else{d[i]=d[i+1]=d[i+2]=255;d[i+3]=e}
-  }
-  g1.putImageData(out,0,0);
-}
-
-function colorize(){
-  const c=document.getElementById("tint").value;
-  const r=parseInt(c.substr(1,2),16),
-        g=parseInt(c.substr(3,2),16),
-        b=parseInt(c.substr(5,2),16);
-  eachPixel((d,i)=>{
-    const y=(d[i]+d[i+1]+d[i+2])/3/255;
-    d[i]=d[i]*(1-y)+r*y;
-    d[i+1]=d[i+1]*(1-y)+g*y;
-    d[i+2]=d[i+2]*(1-y)+b*y;
-  });
-}
-
-function removeColor(r,g,b){
-  eachPixel((d,i)=>{
-    if(Math.abs(d[i]-r)<20&&Math.abs(d[i+1]-g)<20&&Math.abs(d[i+2]-b)<20)
-      d[i+3]=0;
-  });
-}
-
-document.addEventListener("click",e=>{
-  const b=e.target.closest("button[data-act]");
-  if(!b)return;
-  const a=b.dataset.act;
-  if(a==="grayscale"){grayscale();save()}
-  if(a==="invert"){invert();save()}
-  if(a==="sepia"){sepia();save()}
-  if(a==="outline"){outline(false);save()}
-  if(a==="outline_bw"){outline(true);save()}
-  if(a==="colorize"){colorize();save()}
-  if(a==="bg_white"){removeColor(255,255,255);save()}
-  if(a==="bg_black"){removeColor(0,0,0);save()}
-  if(a==="magic")mode="magic";
-  if(a==="detect")mode="detect";
-});
-
-c1.onclick=e=>{
-  if(mode!=="detect")return;
-  const x=Math.floor(e.offsetX*c1.width/c1.clientWidth);
-  const y=Math.floor(e.offsetY*c1.height/c1.clientHeight);
-  g1.strokeStyle="#f59e0b";g1.lineWidth=3;
-  g1.strokeRect(x-80,y-80,160,160);
-  save(); mode="magic";
-};
 </script>
 
 </body>
