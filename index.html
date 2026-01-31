@@ -1,21 +1,244 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Face Detection – Debug Safe</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Stage-1+ Face Capture + Lens Picker</title>
+<meta name="theme-color" content="#f59e0b" />
 
 <style>
-  body{margin:0;background:#111;font-family:system-ui}
-  .wrap{max-width:900px;margin:auto;padding:10px}
-  video,canvas{width:100%;display:block}
-  .stage{position:relative}
-  canvas{position:absolute;left:0;top:0}
-  button{
-    padding:10px 14px;
-    font-size:16px;
-    margin:10px 0;
+  :root{
+    --bg:#fff7e6; --card:rgba(255,255,255,.82); --ink:#1f2937; --muted:#6b7280;
+    --brand:#d97706; --brand2:#f59e0b; --border:#eadcc5; --shadow:0 18px 40px rgba(31,41,55,.14);
+    --r:18px; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
   }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:var(--sans); color:var(--ink);
+    background:
+      radial-gradient(900px 520px at 15% 10%, rgba(245,158,11,.22), transparent 60%),
+      radial-gradient(900px 520px at 85% 0%, rgba(217,119,6,.18), transparent 60%),
+      var(--bg);
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:14px}
+  .top{
+    position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    padding:10px 12px; border-radius:999px;
+    background:rgba(255,247,230,.74); border:1px solid rgba(234,220,197,.95);
+    box-shadow:0 10px 24px rgba(31,41,55,.10); backdrop-filter: blur(10px);
+  }
+  .title{display:flex;align-items:center;gap:10px}
+  .logo{
+    width:34px;height:34px;border-radius:12px;
+    background: linear-gradient(135deg, var(--brand), var(--brand2));
+    box-shadow: 0 12px 26px rgba(217,119,6,.28);
+  }
+  h1{margin:0;font-size:14px;line-height:1.1}
+  .sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .pill{
+    font-size:12px;padding:6px 10px;border-radius:999px;
+    background: rgba(245,158,11,.16); border:1px solid rgba(217,119,6,.22); color:#92400e;
+    white-space:nowrap;
+  }
+
+  .grid{display:grid;grid-template-columns: 1.2fr .8fr; gap:14px; margin-top:12px}
+  @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+
+  .card{
+    background:var(--card);
+    border:1px solid rgba(234,220,197,.95);
+    border-radius:var(--r);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .card-h{
+    padding:12px 12px 10px 12px;
+    border-bottom:1px solid rgba(234,220,197,.8);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  }
+  .card-b{padding:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+  .btn{
+    border-radius:12px; border:1px solid rgba(234,220,197,.95);
+    background:#fff; padding:10px 12px; font-size:13px; cursor:pointer;
+    box-shadow:0 10px 22px rgba(31,41,55,.08);
+    user-select:none;
+  }
+  .btn.primary{
+    background: linear-gradient(135deg, var(--brand), var(--brand2));
+    color:#fff; border-color: rgba(217,119,6,.35);
+    box-shadow:0 14px 30px rgba(217,119,6,.22);
+  }
+  .btn.danger{
+    background: rgba(239,68,68,.1);
+    border-color: rgba(239,68,68,.25);
+    color:#991b1b;
+  }
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+
+  .toggle{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 10px;border-radius:14px;
+    border:1px solid rgba(234,220,197,.95);
+    background: rgba(255,255,255,.75);
+    font-size:12px;color:var(--ink);
+  }
+  .toggle input{transform:scale(1.15)}
+
+  .stage{
+    position:relative;
+    background:#0b1220;
+    border-radius: 16px;
+    overflow:hidden;
+    border:1px solid rgba(234,220,197,.65);
+  }
+  video{
+    width:100%; height:auto; display:block;
+    transform: scaleX(-1);
+  }
+  canvas{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    pointer-events:none;
+  }
+  .hud{
+    position:absolute; left:10px; top:10px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(245,158,11,.22);
+    backdrop-filter: blur(10px);
+    padding:8px 10px;
+    border-radius: 14px;
+    color:#fff;
+    font-size:12px;
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  }
+  .hud b{font-family:var(--mono);font-weight:700}
+
+  .note{
+    margin-top:10px;
+    padding:10px 12px;border-radius:14px;
+    border:1px solid rgba(245,158,11,.35);
+    background: rgba(245,158,11,.14);
+    color:#7c2d12;
+    font-size:12px;
+  }
+
+  /* Lens picker strip */
+  .strip{
+    display:flex; gap:10px; overflow:auto; padding:8px;
+    border-radius: 14px;
+    border:1px dashed rgba(217,119,6,.35);
+    background: rgba(255,255,255,.55);
+    scroll-snap-type:x mandatory;
+  }
+  .thumb{
+    flex:0 0 auto;
+    width:92px; height:92px;
+    border-radius: 16px;
+    border:1px solid rgba(234,220,197,.95);
+    background:#fff;
+    overflow:hidden;
+    box-shadow: 0 12px 26px rgba(31,41,55,.10);
+    position:relative;
+    scroll-snap-align:start;
+  }
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .x{
+    position:absolute; top:6px; right:6px;
+    width:26px;height:26px;border-radius:999px;
+    border:1px solid rgba(239,68,68,.35);
+    background: rgba(239,68,68,.12);
+    display:grid;place-items:center;
+    color:#991b1b;font-weight:800; font-size:14px;
+    cursor:pointer;
+  }
+  .empty{
+    color:var(--muted);
+    font-size:12px;
+    padding:12px;
+  }
+
+  /* Modal lens viewer */
+  .modal{
+    position:fixed; inset:0; z-index:9999;
+    display:none; place-items:center;
+    background: rgba(0,0,0,.72);
+    padding:16px;
+  }
+  .modal.on{display:grid}
+  .viewer{
+    width:min(920px, 100%);
+    background: rgba(255,255,255,.9);
+    border:1px solid rgba(234,220,197,.95);
+    border-radius: 20px;
+    box-shadow: 0 26px 70px rgba(0,0,0,.35);
+    overflow:hidden;
+  }
+  .viewer-h{
+    padding:12px 12px 10px 12px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    border-bottom:1px solid rgba(234,220,197,.8);
+    background: linear-gradient(145deg, rgba(255,247,230,.9), rgba(255,241,214,.85));
+  }
+  .viewer-h .meta{font-size:12px;color:var(--muted)}
+  .viewer-b{padding:12px}
+
+  .lens-stage{
+    position:relative;
+    width:100%;
+    aspect-ratio: 1 / 1;
+    background:#0b1220;
+    border-radius: 18px;
+    overflow:hidden;
+    border:1px solid rgba(234,220,197,.7);
+    touch-action:none; /* allow pinch/move on mobile */
+  }
+  .lens-base{
+    position:absolute; inset:0;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:contain; /* full image visible */
+    filter: contrast(1.03) saturate(1.03);
+  }
+  .lens{
+    position:absolute;
+    width:160px; height:160px; border-radius: 999px;
+    border: 3px solid rgba(245,158,11,.95);
+    box-shadow:
+      0 18px 40px rgba(0,0,0,.35),
+      0 0 0 6px rgba(245,158,11,.20);
+    overflow:hidden;
+    transform: translate(-80px, -80px); /* centered on pointer */
+    pointer-events:none;
+  }
+  .lens-inner{
+    position:absolute; inset:0;
+    background-repeat:no-repeat;
+    /* background-size will be set dynamically for zoom */
+  }
+  .lens-cross{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(to right, transparent calc(50% - 1px), rgba(255,255,255,.65) 50%, transparent calc(50% + 1px)),
+      linear-gradient(to bottom, transparent calc(50% - 1px), rgba(255,255,255,.65) 50%, transparent calc(50% + 1px));
+    mix-blend-mode: overlay;
+    opacity:.75;
+    pointer-events:none;
+  }
+
+  .slider{
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    padding:8px 10px;
+    border-radius: 14px;
+    border:1px solid rgba(234,220,197,.95);
+    background: rgba(255,255,255,.75);
+    font-size:12px;
+    margin-top:10px;
+  }
+  input[type="range"]{width:200px}
 </style>
 
 <!-- Face API -->
@@ -23,75 +246,690 @@
 </head>
 
 <body>
-<div class="wrap">
-  <button id="start">START CAMERA</button>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Face Capture + Lens Picker</h1>
+          <div class="sub">Detect → Save face crops → Pick & zoom with lens</div>
+        </div>
+      </div>
+      <span class="pill" id="status">Loading models…</span>
+    </div>
 
-  <div class="stage">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
+    <div class="grid">
+      <!-- LEFT: Camera -->
+      <div class="card">
+        <div class="card-h">
+          <div class="sub" style="margin:0">
+            Tip: good light + face centered = best crop.
+          </div>
+          <div class="row">
+            <button class="btn primary" id="btnStart" disabled>Start</button>
+            <button class="btn" id="btnStop" disabled>Stop</button>
+            <button class="btn" id="btnSwitch" disabled>Switch Cam</button>
+          </div>
+        </div>
+
+        <div class="card-b">
+          <div class="row" style="margin-bottom:10px">
+            <label class="toggle" title="Mirror for selfie camera">
+              <input type="checkbox" id="mirror" checked /> Mirror
+            </label>
+
+            <label class="toggle" title="Auto-capture every N ms when a face is stable">
+              <input type="checkbox" id="autoCap" /> Auto-capture
+            </label>
+
+            <label class="toggle" title="How strict face detection is">
+              <span style="color:var(--muted)">Score ≥</span>
+              <select id="score" class="btn" style="padding:8px 10px">
+                <option value="0.2">0.20 (debug)</option>
+                <option value="0.35">0.35 (loose)</option>
+                <option value="0.5" selected>0.50 (default)</option>
+                <option value="0.65">0.65 (strict)</option>
+              </select>
+            </label>
+
+            <label class="toggle" title="Capture padding around face">
+              <span style="color:var(--muted)">Pad</span>
+              <select id="pad" class="btn" style="padding:8px 10px">
+                <option value="0.10">10%</option>
+                <option value="0.20" selected>20%</option>
+                <option value="0.30">30%</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="stage" id="stage">
+            <video id="video" playsinline muted></video>
+            <canvas id="overlay"></canvas>
+            <div class="hud">
+              <span>FPS: <b id="fps">0</b></span>
+              <span>Faces: <b id="faces">0</b></span>
+              <span>Cam: <b id="cam">user</b></span>
+              <span>Last: <b id="last">—</b></span>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <button class="btn primary" id="btnCapture" disabled>Capture Face</button>
+            <button class="btn danger" id="btnClear">Clear Saved Faces</button>
+          </div>
+
+          <div class="note">
+            If you see a rectangle but capture is black/blank: try turning <b>Mirror off</b> then capture again.
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Saved faces + picker -->
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <div style="font-weight:800;font-size:13px">Saved Face Crops</div>
+            <div class="sub">Tap a thumbnail to open the lens picker</div>
+          </div>
+          <span class="pill" id="countPill">0 saved</span>
+        </div>
+
+        <div class="card-b">
+          <div id="stripWrap">
+            <div class="empty">No faces saved yet. Start camera → wait for box → tap <b>Capture Face</b>.</div>
+          </div>
+
+          <div class="note">
+            Lens picker: drag finger to move the lens. Use the slider to change zoom.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+
+  <!-- Lens Modal -->
+  <div class="modal" id="modal">
+    <div class="viewer">
+      <div class="viewer-h">
+        <div>
+          <div style="font-weight:900">Lens Picker</div>
+          <div class="meta" id="meta">—</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnClose">Close</button>
+          <button class="btn danger" id="btnDeleteOne">Delete</button>
+        </div>
+      </div>
+      <div class="viewer-b">
+        <div class="lens-stage" id="lensStage">
+          <div class="lens-base" id="lensBase"></div>
+          <div class="lens" id="lens">
+            <div class="lens-inner" id="lensInner"></div>
+            <div class="lens-cross"></div>
+          </div>
+        </div>
+
+        <div class="slider">
+          <span style="color:var(--muted)">Zoom</span>
+          <input type="range" id="zoom" min="1.5" max="6" step="0.1" value="3" />
+          <span style="font-family:var(--mono)" id="zoomVal">3.0×</span>
+          <span style="color:var(--muted)">Lens</span>
+          <input type="range" id="lensSize" min="110" max="260" step="2" value="160" />
+          <span style="font-family:var(--mono)" id="lensSizeVal">160px</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
-const MODEL_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/";
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const startBtn = document.getElementById("start");
+(() => {
+  // ====== CONFIG ======
+  const MODEL_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/";
+  const DB_KEY = "pp_saved_faces_v1"; // [{id, ts, dataUrl, w, h, cam, mirrored}]
+  const MAX_SAVED = 40;              // keep localStorage sane
+  const AUTO_INTERVAL_MS = 1200;     // auto-capture rate
+  const STABLE_IOU_MIN = 0.65;       // auto-capture only if box stable
 
-let stream;
+  // ====== DOM ======
+  const statusEl = document.getElementById("status");
+  const countPill = document.getElementById("countPill");
 
-async function loadModels(){
-  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-  console.log("Models loaded");
-}
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("overlay");
+  const ctx = canvas.getContext("2d");
 
-function resizeCanvas(){
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-}
+  const btnStart = document.getElementById("btnStart");
+  const btnStop = document.getElementById("btnStop");
+  const btnSwitch = document.getElementById("btnSwitch");
+  const btnCapture = document.getElementById("btnCapture");
+  const btnClear = document.getElementById("btnClear");
 
-async function startCamera(){
-  stream = await navigator.mediaDevices.getUserMedia({
-    video:{facingMode:"user"},
-    audio:false
-  });
-  video.srcObject = stream;
+  const mirrorCb = document.getElementById("mirror");
+  const autoCapCb = document.getElementById("autoCap");
+  const scoreSel = document.getElementById("score");
+  const padSel = document.getElementById("pad");
 
-  await new Promise(r => video.onloadedmetadata = r);
-  resizeCanvas();
+  const fpsEl = document.getElementById("fps");
+  const facesEl = document.getElementById("faces");
+  const camEl = document.getElementById("cam");
+  const lastEl = document.getElementById("last");
 
-  detectLoop();
-}
+  const stripWrap = document.getElementById("stripWrap");
 
-async function detectLoop(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Modal lens
+  const modal = document.getElementById("modal");
+  const btnClose = document.getElementById("btnClose");
+  const btnDeleteOne = document.getElementById("btnDeleteOne");
+  const metaEl = document.getElementById("meta");
+  const lensStage = document.getElementById("lensStage");
+  const lensBase = document.getElementById("lensBase");
+  const lens = document.getElementById("lens");
+  const lensInner = document.getElementById("lensInner");
+  const zoomRange = document.getElementById("zoom");
+  const zoomVal = document.getElementById("zoomVal");
+  const lensSizeRange = document.getElementById("lensSize");
+  const lensSizeVal = document.getElementById("lensSizeVal");
 
-  const detection = await faceapi.detectSingleFace(
-    video,
-    new faceapi.TinyFaceDetectorOptions({
-      inputSize: 320,
-      scoreThreshold: 0.2   // VERY LOOSE
-    })
-  );
+  // ====== STATE ======
+  let stream = null;
+  let running = false;
+  let rafId = null;
 
-  if(detection){
-    const b = detection.box;
+  let facing = "user"; // "user" or "environment"
+  let lastDetectAt = 0;
+  let lastDetections = [];
+  let lastBestBox = null;
 
-    // 🔴 BIG RED DEBUG RECTANGLE
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(b.x, b.y, b.width, b.height);
+  // FPS
+  let frames = 0;
+  let lastFpsAt = performance.now();
+
+  // auto capture
+  let lastAutoAt = 0;
+  let prevAutoBox = null;
+
+  // modal selection
+  let activeId = null;
+
+  // ====== HELPERS ======
+  function setStatus(t){ statusEl.textContent = t; }
+  function setMirror(on){ video.style.transform = on ? "scaleX(-1)" : "none"; }
+  mirrorCb.addEventListener("change", () => setMirror(mirrorCb.checked));
+  setMirror(true);
+
+  function getDB(){
+    try { return JSON.parse(localStorage.getItem(DB_KEY) || "[]"); }
+    catch { return []; }
+  }
+  function setDB(arr){ localStorage.setItem(DB_KEY, JSON.stringify(arr)); }
+
+  function uid(){
+    return "f_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(36);
   }
 
-  requestAnimationFrame(detectLoop);
-}
+  function resizeCanvas(){
+    const w = video.videoWidth || 0;
+    const h = video.videoHeight || 0;
+    if (!w || !h) return;
+    if (canvas.width !== w) canvas.width = w;
+    if (canvas.height !== h) canvas.height = h;
+  }
 
-startBtn.onclick = async ()=>{
-  startBtn.disabled = true;
-  await loadModels();
-  await startCamera();
-};
+  function tinyOptions(){
+    return new faceapi.TinyFaceDetectorOptions({
+      inputSize: 320,
+      scoreThreshold: Number(scoreSel.value || 0.5)
+    });
+  }
+
+  function padBox(box, padFrac){
+    const padX = box.width * padFrac;
+    const padY = box.height * padFrac;
+    return {
+      x: box.x - padX,
+      y: box.y - padY,
+      width: box.width + padX*2,
+      height: box.height + padY*2
+    };
+  }
+
+  function clampBox(b, w, h){
+    const x = Math.max(0, Math.min(w-1, b.x));
+    const y = Math.max(0, Math.min(h-1, b.y));
+    const r = Math.max(0, Math.min(w, b.x + b.width));
+    const bt = Math.max(0, Math.min(h, b.y + b.height));
+    return { x, y, width: Math.max(1, r - x), height: Math.max(1, bt - y) };
+  }
+
+  // Intersection-over-Union (box stability)
+  function iou(a,b){
+    if (!a || !b) return 0;
+    const x1 = Math.max(a.x, b.x);
+    const y1 = Math.max(a.y, b.y);
+    const x2 = Math.min(a.x+a.width, b.x+b.width);
+    const y2 = Math.min(a.y+a.height, b.y+b.height);
+    const inter = Math.max(0, x2-x1) * Math.max(0, y2-y1);
+    const union = a.width*a.height + b.width*b.height - inter;
+    return union ? inter/union : 0;
+  }
+
+  function drawRect(box, color="rgba(245,158,11,.95)"){
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.fillStyle = "rgba(245,158,11,.12)";
+    ctx.beginPath();
+    ctx.roundRect(box.x, box.y, box.width, box.height, 10);
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // Polyfill for older browsers (roundRect)
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r){
+      const rr = Math.min(r, w/2, h/2);
+      this.beginPath();
+      this.moveTo(x+rr, y);
+      this.arcTo(x+w, y, x+w, y+h, rr);
+      this.arcTo(x+w, y+h, x, y+h, rr);
+      this.arcTo(x, y+h, x, y, rr);
+      this.arcTo(x, y, x+w, y, rr);
+      this.closePath();
+      return this;
+    };
+  }
+
+  // ====== RENDER STRIP ======
+  function renderStrip(){
+    const db = getDB();
+    countPill.textContent = `${db.length} saved`;
+
+    if (!db.length){
+      stripWrap.innerHTML = `<div class="empty">No faces saved yet. Start camera → wait for box → tap <b>Capture Face</b>.</div>`;
+      return;
+    }
+
+    const strip = document.createElement("div");
+    strip.className = "strip";
+
+    db.slice().reverse().forEach(item => {
+      const t = document.createElement("div");
+      t.className = "thumb";
+      t.innerHTML = `
+        <img alt="face" src="${item.dataUrl}">
+        <div class="x" title="Remove">×</div>
+      `;
+
+      // open lens on tap (excluding X)
+      t.addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("x")) return;
+        openLens(item.id);
+      });
+
+      // delete
+      t.querySelector(".x").addEventListener("click", () => {
+        removeOne(item.id);
+      });
+
+      strip.appendChild(t);
+    });
+
+    stripWrap.innerHTML = "";
+    stripWrap.appendChild(strip);
+  }
+
+  function removeOne(id){
+    const db = getDB().filter(x => x.id !== id);
+    setDB(db);
+    renderStrip();
+    if (activeId === id) closeLens();
+  }
+
+  // ====== LENS VIEWER ======
+  function openLens(id){
+    const db = getDB();
+    const item = db.find(x => x.id === id);
+    if (!item) return;
+
+    activeId = id;
+    metaEl.textContent = `${new Date(item.ts).toLocaleString()} • ${item.w}×${item.h} • cam:${item.cam} • mirrored:${item.mirrored ? "yes" : "no"}`;
+
+    lensBase.style.backgroundImage = `url("${item.dataUrl}")`;
+    lensInner.style.backgroundImage = `url("${item.dataUrl}")`;
+
+    // reset lens position to center
+    const rect = lensStage.getBoundingClientRect();
+    setLensAt(rect.width/2, rect.height/2);
+
+    // apply slider values
+    updateLensZoom();
+    updateLensSize();
+
+    modal.classList.add("on");
+  }
+
+  function closeLens(){
+    modal.classList.remove("on");
+    activeId = null;
+  }
+
+  btnClose.addEventListener("click", closeLens);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeLens(); });
+
+  btnDeleteOne.addEventListener("click", () => {
+    if (!activeId) return;
+    removeOne(activeId);
+  });
+
+  function updateLensZoom(){
+    const z = Number(zoomRange.value || 3);
+    zoomVal.textContent = z.toFixed(1) + "×";
+
+    // We magnify inside the lens by setting background-size bigger than container
+    const rect = lensStage.getBoundingClientRect();
+    const baseW = rect.width;
+    const baseH = rect.height;
+    lensInner.style.backgroundSize = `${baseW * z}px ${baseH * z}px`;
+  }
+
+  function updateLensSize(){
+    const s = Number(lensSizeRange.value || 160);
+    lensSizeVal.textContent = s + "px";
+    lens.style.width = s + "px";
+    lens.style.height = s + "px";
+    // keep transform centered on pointer
+    lens.style.transform = `translate(${-s/2}px, ${-s/2}px)`;
+  }
+
+  zoomRange.addEventListener("input", updateLensZoom);
+  lensSizeRange.addEventListener("input", updateLensSize);
+
+  // Lens movement: drag finger/mouse
+  let lensX = 0, lensY = 0;
+  function setLensAt(x,y){
+    lensX = x; lensY = y;
+    lens.style.left = x + "px";
+    lens.style.top  = y + "px";
+    updateLensBgPos();
+  }
+
+  function updateLensBgPos(){
+    // For lensInner: move background so that the point under lens center is magnified
+    const z = Number(zoomRange.value || 3);
+    const rect = lensStage.getBoundingClientRect();
+    const baseW = rect.width;
+    const baseH = rect.height;
+
+    // base image in lensBase uses contain; for simplicity we magnify the stage space itself.
+    // So: background-position inside magnified layer should center at (lensX, lensY).
+    const px = (lensX / baseW) * 100;
+    const py = (lensY / baseH) * 100;
+    lensInner.style.backgroundPosition = `${px}% ${py}%`;
+  }
+
+  function pointerToLocal(e){
+    const r = lensStage.getBoundingClientRect();
+    const x = (e.clientX - r.left);
+    const y = (e.clientY - r.top);
+    return { x: Math.max(0, Math.min(r.width, x)), y: Math.max(0, Math.min(r.height, y)) };
+  }
+
+  let dragging = false;
+  lensStage.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    lensStage.setPointerCapture(e.pointerId);
+    const p = pointerToLocal(e);
+    setLensAt(p.x, p.y);
+  });
+  lensStage.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const p = pointerToLocal(e);
+    setLensAt(p.x, p.y);
+  });
+  lensStage.addEventListener("pointerup", () => dragging = false);
+  lensStage.addEventListener("pointercancel", () => dragging = false);
+
+  // ====== MODEL LOAD ======
+  async function loadModels(){
+    setStatus("Loading models…");
+    for (let i=0;i<80;i++){
+      if (window.faceapi) break;
+      await new Promise(r => setTimeout(r, 50));
+    }
+    if (!window.faceapi) throw new Error("face-api failed to load (CDN blocked/offline).");
+    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+    setStatus("Models loaded ✓ Tap Start");
+    btnStart.disabled = false;
+  }
+
+  // ====== CAMERA ======
+  async function startCamera(){
+    if (running) return;
+    setStatus("Requesting camera…");
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: facing },
+      audio: false
+    });
+
+    video.srcObject = stream;
+    await video.play();
+
+    // critical: wait for metadata so videoWidth/videoHeight are real
+    await new Promise(r => video.onloadedmetadata = r);
+    resizeCanvas();
+
+    running = true;
+    btnStart.disabled = true;
+    btnStop.disabled = false;
+    btnSwitch.disabled = false;
+    btnCapture.disabled = false;
+
+    camEl.textContent = facing;
+    setStatus("Running ✓");
+    loop();
+  }
+
+  function stopCamera(){
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+
+    if (stream){
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+    video.srcObject = null;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    btnStart.disabled = false;
+    btnStop.disabled = true;
+    btnSwitch.disabled = true;
+    btnCapture.disabled = true;
+
+    facesEl.textContent = "0";
+    fpsEl.textContent = "0";
+    lastEl.textContent = "—";
+    lastDetections = [];
+    lastBestBox = null;
+
+    setStatus("Stopped");
+  }
+
+  async function restartFacing(nextFacing){
+    facing = nextFacing;
+    camEl.textContent = facing;
+    if (!running) return;
+    stopCamera();
+    await new Promise(r => setTimeout(r, 120));
+    await startCamera();
+  }
+
+  btnStart.addEventListener("click", async () => {
+    try { await startCamera(); }
+    catch (e){
+      setStatus("Camera blocked ✗");
+      alert("Camera did not start.\n\nUse HTTPS (GitHub Pages) and allow permissions.\n\nDetails: " + (e?.message || e));
+    }
+  });
+  btnStop.addEventListener("click", stopCamera);
+
+  btnSwitch.addEventListener("click", async () => {
+    const next = facing === "user" ? "environment" : "user";
+    await restartFacing(next);
+    // sensible mirror default
+    mirrorCb.checked = (next === "user");
+    setMirror(mirrorCb.checked);
+  });
+
+  // ====== DETECTION LOOP ======
+  async function loop(){
+    if (!running) return;
+
+    resizeCanvas();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // FPS
+    frames++;
+    const now = performance.now();
+    if (now - lastFpsAt >= 500){
+      const fps = Math.round((frames * 1000) / (now - lastFpsAt));
+      fpsEl.textContent = String(fps);
+      frames = 0;
+      lastFpsAt = now;
+    }
+
+    // Detection throttle for stability
+    const detectEvery = 140; // good mobile default
+    if (now - lastDetectAt >= detectEvery){
+      lastDetectAt = now;
+      try{
+        lastDetections = await faceapi.detectAllFaces(video, tinyOptions());
+        facesEl.textContent = String(lastDetections.length);
+
+        // choose the largest face as "best"
+        if (lastDetections.length){
+          let best = lastDetections[0].box;
+          for (const d of lastDetections){
+            const b = d.box;
+            if (b.width*b.height > best.width*best.height) best = b;
+          }
+          lastBestBox = best;
+        } else {
+          lastBestBox = null;
+        }
+      }catch(_e){}
+    }
+
+    // Draw mirrored overlay if mirrored video
+    ctx.save();
+    if (mirrorCb.checked){
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+
+    if (lastBestBox){
+      drawRect(lastBestBox, "rgba(255,0,0,.95)"); // debug red
+    }
+
+    ctx.restore();
+
+    // Auto-capture if enabled and stable
+    if (autoCapCb.checked && lastBestBox){
+      const now2 = Date.now();
+      if (now2 - lastAutoAt >= AUTO_INTERVAL_MS){
+        const stability = iou(prevAutoBox, lastBestBox);
+        if (stability >= STABLE_IOU_MIN){
+          captureFace();
+          lastAutoAt = now2;
+        }
+        prevAutoBox = lastBestBox;
+      }
+    }
+
+    rafId = requestAnimationFrame(loop);
+  }
+
+  // ====== CAPTURE FACE CROP ======
+  function captureFace(){
+    if (!video.videoWidth || !video.videoHeight) return;
+    if (!lastBestBox) {
+      alert("No face detected yet. Wait for the red box first.");
+      return;
+    }
+
+    const padFrac = Number(padSel.value || 0.2);
+    const padded = padBox(lastBestBox, padFrac);
+    const b = clampBox(padded, video.videoWidth, video.videoHeight);
+
+    // Create a source canvas with the current video frame
+    const src = document.createElement("canvas");
+    src.width = video.videoWidth;
+    src.height = video.videoHeight;
+    const sctx = src.getContext("2d");
+
+    // If video is mirrored, we must draw mirrored to match detection coordinates
+    // Because detection was performed on the (unmirrored) video stream, but our overlay was mirrored for display.
+    // We also mirrored the overlay drawing. For cropping, we should crop from the "real frame".
+    // If mirror is ON, the displayed box is mirrored. However lastBestBox comes from detection coordinates (real frame).
+    // So: draw the real frame (NOT mirrored) then crop using lastBestBox directly.
+    // That means we simply drawImage(video) without any mirroring transforms.
+    sctx.drawImage(video, 0, 0, src.width, src.height);
+
+    // Crop into destination canvas
+    const out = document.createElement("canvas");
+    out.width = Math.round(b.width);
+    out.height = Math.round(b.height);
+    const octx = out.getContext("2d");
+    octx.drawImage(src, b.x, b.y, b.width, b.height, 0, 0, out.width, out.height);
+
+    // Convert to dataURL
+    const dataUrl = out.toDataURL("image/jpeg", 0.92);
+
+    // Save to DB
+    const db = getDB();
+    db.push({
+      id: uid(),
+      ts: Date.now(),
+      dataUrl,
+      w: out.width,
+      h: out.height,
+      cam: facing,
+      mirrored: !!mirrorCb.checked
+    });
+
+    // keep last MAX_SAVED
+    while (db.length > MAX_SAVED) db.shift();
+    setDB(db);
+
+    lastEl.textContent = "saved";
+    renderStrip();
+  }
+
+  btnCapture.addEventListener("click", captureFace);
+
+  btnClear.addEventListener("click", () => {
+    if (!confirm("Clear all saved face crops from this browser?")) return;
+    localStorage.removeItem(DB_KEY);
+    renderStrip();
+    lastEl.textContent = "cleared";
+  });
+
+  // ====== INIT ======
+  if (!navigator.mediaDevices?.getUserMedia){
+    setStatus("Browser unsupported ✗");
+    alert("This browser does not support camera access. Try Chrome on Android.");
+    return;
+  }
+
+  renderStrip();
+
+  loadModels().catch(err => {
+    setStatus("Model load failed ✗");
+    alert(
+      "Models could not be loaded.\n\nPossible reasons:\n- No internet / CDN blocked\n- Adblock blocks jsdelivr\n\nDetails: " + (err?.message || err)
+    );
+  });
+})();
 </script>
 </body>
 </html>
