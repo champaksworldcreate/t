@@ -1,452 +1,127 @@
-    <!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Face Detection – Debug Safe</title>
-
-<style>
-  body{margin:0;background:#111;font-family:system-ui}
-  .wrap{max-width:900px;margin:auto;padding:10px}
-  video,canvas{width:100%;display:block}
-  .stage{position:relative}
-  canvas{position:absolute;left:0;top:0}
-  button{
-    padding:10px 14px;
-    font-size:16px;
-    margin:10px 0;
-  }
-
-  /* ===== Lens modal (does not change your base UI) ===== */
-  .modal{
-    position:fixed; inset:0; z-index:9999;
-    display:none; place-items:center;
-    background: rgba(0,0,0,.75);
-    padding:14px;
-  }
-  .modal.on{display:grid}
-  .viewer{
-    width:min(920px, 100%);
-    background: rgba(20,20,20,.92);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow: 0 30px 80px rgba(0,0,0,.55);
-    color:#fff;
-  }
-  .viewer-h{
-    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
-    padding:10px 12px;
-    border-bottom:1px solid rgba(255,255,255,.12);
-  }
-  .viewer-h .meta{opacity:.75;font-size:12px}
-  .vbtn{
-    padding:8px 10px;
-    font-size:14px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.08);
-    color:#fff;
-    cursor:pointer;
-    user-select:none;
-  }
-  .vbtn:active{transform:scale(.99)}
-  .viewer-b{padding:12px}
-
-  .lens-stage{
-    position:relative;
-    width:100%;
-    aspect-ratio: 1/1;
-    background:#000;
-    border-radius:16px;
-    overflow:hidden;
-    border:1px solid rgba(255,255,255,.12);
-    touch-action:none;
-  }
-  .lens-base{
-    position:absolute; inset:0;
-    background-repeat:no-repeat;
-    background-position:center;
-    background-size:contain;
-    filter: contrast(1.03) saturate(1.05);
-  }
-  .lens{
-    position:absolute;
-    width:170px;height:170px;border-radius:999px;
-    border:3px solid rgba(255,0,0,.95);
-    box-shadow:
-      0 18px 40px rgba(0,0,0,.45),
-      0 0 0 6px rgba(255,0,0,.22);
-    overflow:hidden;
-    transform: translate(-85px, -85px);
-    pointer-events:none;
-  }
-  .lens-inner{
-    position:absolute; inset:0;
-    background-repeat:no-repeat;
-  }
-  .lens-cross{
-    position:absolute; inset:0;
-    background:
-      linear-gradient(to right, transparent calc(50% - 1px), rgba(255,255,255,.65) 50%, transparent calc(50% + 1px)),
-      linear-gradient(to bottom, transparent calc(50% - 1px), rgba(255,255,255,.65) 50%, transparent calc(50% + 1px));
-    opacity:.75;
-    pointer-events:none;
-  }
-  .slider{
-    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-    margin-top:10px;
-    padding:10px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    font-size:12px;
-  }
-  input[type="range"]{width:200px}
-  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
-</style>
-
-<!-- Face API -->
-<script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1/dist/face-api.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Logic Sage - Biography of Champak Roy</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #fdfdfd;
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        h1 { font-size: 2.5em; margin-bottom: 10px; color: #1a1a1a; }
+        h2 { font-size: 1.8em; color: #2c3e50; border-left: 5px solid #e67e22; padding-left: 15px; margin-top: 40px; }
+        h3 { color: #d35400; margin-top: 25px; }
+        .preface { font-style: italic; background: #f9f9f9; padding: 25px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0; }
+        .sutra-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-family: sans-serif; }
+        .sutra-table th, .sutra-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .sutra-table th { background-color: #2c3e50; color: white; }
+        .sutra-table tr:nth-child(even) { background-color: #f2f2f2; }
+        .quote { font-size: 1.2em; border-left: 4px solid #7f8c8d; padding-left: 20px; margin: 20px 0; color: #555; font-style: italic; }
+        .blurb { background: #2c3e50; color: white; padding: 30px; border-radius: 10px; margin-top: 50px; }
+        footer { text-align: center; font-size: 0.9em; color: #7f8c8d; margin-top: 60px; border-top: 1px solid #ddd; padding-top: 20px; }
+    </style>
 </head>
-
 <body>
-<div class="wrap">
-  <button id="start">START CAMERA</button>
 
-  <div class="stage" id="stage">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-  </div>
+<header>
+    <h1>THE LOGIC SAGE</h1>
+    <p><strong>Champak Roy and the Soul of the Machine</strong></p>
+    <p><em>A Biography of Logic, Recursion, and the Varanasi Software Junction</em></p>
+</header>
+
+<div class="blurb">
+    <h3>Back Cover Blurb</h3>
+    <p>While the tech world chases the next shiny AI, Champak Roy stands at a green chalkboard in Varanasi, teaching the "Sutras" of pure logic. To Roy, a computer is a Jinn—a powerful spirit requiring absolute honesty. Discover why top global engineers still look to a small room in Pandeypur to remember the "Bit-Level Truth" of their craft.</p>
 </div>
 
-<!-- Lens Modal (only appears when opened) -->
-<div class="modal" id="modal">
-  <div class="viewer">
-    <div class="viewer-h">
-      <div>
-        <div style="font-weight:800">Lens Picker</div>
-        <div class="meta" id="meta">Double-tap stage to open • Swipe ◀ ▶ to switch saved faces</div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="vbtn" id="prev">◀</button>
-        <button class="vbtn" id="next">▶</button>
-        <button class="vbtn" id="del">Delete</button>
-        <button class="vbtn" id="close">Close</button>
-      </div>
-    </div>
-    <div class="viewer-b">
-      <div class="lens-stage" id="lensStage">
-        <div class="lens-base" id="lensBase"></div>
-        <div class="lens" id="lens">
-          <div class="lens-inner" id="lensInner"></div>
-          <div class="lens-cross"></div>
-        </div>
-      </div>
+<section class="preface">
+    <h2>Preface: The Compass I Found in Pandeypur</h2>
+    <p>Ten years ago, I sat in a rain-slicked room in Varanasi with tears of frustration. I knew how to "copy-paste," but I couldn't think. Champak Roy told me: "Aditi, stop trying to outrun the machine. Listen to the Jinn."</p>
+    <p>Today, as a Lead Architect in London, I don't just write code; I dry-run life. This book is the map for anyone lost in the noise of modern technology.</p>
+    <p><strong>— Aditi Sharma, London 2026</strong></p>
+</section>
 
-      <div class="slider">
-        <span style="opacity:.75">Zoom</span>
-        <input type="range" id="zoom" min="1.5" max="7" step="0.1" value="3">
-        <span class="mono" id="zoomVal">3.0×</span>
+<hr>
 
-        <span style="opacity:.75">Lens</span>
-        <input type="range" id="lensSize" min="120" max="280" step="2" value="170">
-        <span class="mono" id="lensSizeVal">170px</span>
+<h2>Prologue: The Ghats and the Grid</h2>
+<p>The air in Varanasi smells of incense and sandalwood, but at the Varanasi Software Junction, it’s thick with the electricity of logic. Champak Roy doesn't look at monitors; he looks at the "echo" of a recursive call on a chalkboard.</p>
 
-        <span style="opacity:.75">Saved:</span>
-        <span class="mono" id="count">0</span>
-      </div>
-    </div>
-  </div>
-</div>
+<h2>Chapter 1: The Jinn in the Machine</h2>
+<p class="quote">"The computer is a Jinn. It has infinite power but zero common sense."</p>
+<p>Growing up in the gullies of Varanasi, Roy saw patterns everywhere—in the flow of the Ganga and the rows of Diwali lamps. He realized the world was already programmed; the computer was just the tool to write the rules.</p>
 
-<script>
-const MODEL_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model/";
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const startBtn = document.getElementById("start");
-const stage = document.getElementById("stage");
+<h2>Chapter 2: The Pen and the Chalkboard</h2>
+<p>Roy bans IDEs in the early weeks. No auto-complete. No red underlines. "If you cannot run the code in your head, you have no business running it on my CPU." Students must build a "Mental Compiler" using only chalk and paper.</p>
 
-/* ---------- Save DB (localStorage) ---------- */
-const DB_KEY = "pp_face_crops_v1";
-const MAX_SAVED = 30;
-const AUTO_SAVE_MS = 1200;      // save max once per 1.2s
-const STABLE_IOU_MIN = 0.65;    // save only if stable
+<h2>Chapter 3: The No-Loop Manifesto</h2>
+<p>Iteration is for the lazy; Recursion is for the divine. Roy’s "Pinch and Shave" method forces students to see data as self-similar structures. By the time the code is written, the Jinn handles the memory stack, and the logic is pure symmetry.</p>
 
-function getDB(){
-  try { return JSON.parse(localStorage.getItem(DB_KEY) || "[]"); }
-  catch { return []; }
-}
-function setDB(arr){
-  localStorage.setItem(DB_KEY, JSON.stringify(arr));
-}
-function uid(){
-  return "f_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(36);
-}
+<h2>Chapter 4: The DNA of Objects</h2>
+<p>Object-Oriented Programming is a social science. Inheritance is DNA; Composition is Marriage. Roy teaches that a master programmer doesn't write a thousand if-else statements; they give one command and let the object's DNA decide how to act.</p>
 
-/* ---------- Lens modal elements ---------- */
-const modal = document.getElementById("modal");
-const lensStage = document.getElementById("lensStage");
-const lensBase = document.getElementById("lensBase");
-const lensInner = document.getElementById("lensInner");
-const lens = document.getElementById("lens");
-const metaEl = document.getElementById("meta");
-const zoomRange = document.getElementById("zoom");
-const zoomVal = document.getElementById("zoomVal");
-const lensSizeRange = document.getElementById("lensSize");
-const lensSizeVal = document.getElementById("lensSizeVal");
-const countEl = document.getElementById("count");
-const btnClose = document.getElementById("close");
-const btnPrev = document.getElementById("prev");
-const btnNext = document.getElementById("next");
-const btnDel = document.getElementById("del");
+<h2>Chapter 5: The Programmers' Picnic</h2>
+<p>Logic puzzles over hot chai. Roy's alumni—now at Google and Microsoft—gather to solve "Saddle Point" problems under Banyan trees, proving that high-level architecture begins with a grounded soul.</p>
 
-let stream;
-let activeIndex = -1; // index in DB array
-let dragging = false;
-let lensX = 0, lensY = 0;
+<h2>Chapter 6: The Gregorian Ghost</h2>
+<p>Taming the calendar without libraries. Roy's students calculate Leap Years and Day Zero (Jan 1, 0001) manually. To break the calendar logic is to break time itself in the eyes of the Jinn.</p>
 
-/* ---------- Detection stability ---------- */
-let lastSavedAt = 0;
-let prevBoxForStability = null;
+<h2>Chapter 7: Scaling the Sutras</h2>
+<p>In the age of AI, Roy is the auditor. He teaches that AI is a hallucinating Jinn—useful only to those who already know the "Bit-Level Truth." From Flutter widget trees to Cloud scaling, the Sutras remain the same.</p>
 
-/* ---------- Helpers ---------- */
-async function loadModels(){
-  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-  console.log("Models loaded");
-}
-function resizeCanvas(){
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-}
-function clampBox(b, w, h){
-  const x = Math.max(0, Math.min(w-1, b.x));
-  const y = Math.max(0, Math.min(h-1, b.y));
-  const r = Math.max(0, Math.min(w, b.x + b.width));
-  const bt = Math.max(0, Math.min(h, b.y + b.height));
-  return { x, y, width: Math.max(1, r - x), height: Math.max(1, bt - y) };
-}
-function padBox(box, frac){
-  const px = box.width * frac;
-  const py = box.height * frac;
-  return { x: box.x - px, y: box.y - py, width: box.width + px*2, height: box.height + py*2 };
-}
-function iou(a,b){
-  if (!a || !b) return 0;
-  const x1 = Math.max(a.x, b.x);
-  const y1 = Math.max(a.y, b.y);
-  const x2 = Math.min(a.x+a.width, b.x+b.width);
-  const y2 = Math.min(a.y+a.height, b.y+b.height);
-  const inter = Math.max(0, x2-x1) * Math.max(0, y2-y1);
-  const union = a.width*a.height + b.width*b.height - inter;
-  return union ? inter/union : 0;
-}
+<h2>Chapter 8: The Silent Code</h2>
+<p class="quote">"The best code is the code you never had to write."</p>
+<p>Roy’s legacy isn't in a GitHub repo; it's in the refactored brains of his students. He remains the Sage of Pandeypur, a silent architect of the digital age.</p>
 
-/* ---------- Capture a face crop (from detected box) ---------- */
-function saveFaceCropFromBox(box){
-  const vw = video.videoWidth, vh = video.videoHeight;
-  if (!vw || !vh) return;
+<hr>
 
-  // pad + clamp
-  const padded = padBox(box, 0.20);
-  const b = clampBox(padded, vw, vh);
+<h2>Technical Appendix: The Master Drills</h2>
+<table class="sutra-table">
+    <thead>
+        <tr>
+            <th>Sutra Name</th>
+            <th>Core Concept</th>
+            <th>The Roy "Vibe"</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>The Binary Leap</td>
+            <td>Logarithmic Search</td>
+            <td>Strategic sprinting through memory.</td>
+        </tr>
+        <tr>
+            <td>The Armstrong Identity</td>
+            <td>Recursive Power Sums</td>
+            <td>Self-consumption of numbers.</td>
+        </tr>
+        <tr>
+            <td>The Binary Echo</td>
+            <td>Stack-based Bit Conversion</td>
+            <td>Letting the stack "echo" the truth.</td>
+        </tr>
+        <tr>
+            <td>The Gregorian Ghost</td>
+            <td>Manual Date Logic</td>
+            <td>Taming the chaos of man-made time.</td>
+        </tr>
+    </tbody>
+</table>
 
-  // grab frame
-  const src = document.createElement("canvas");
-  src.width = vw; src.height = vh;
-  const sctx = src.getContext("2d");
-  sctx.drawImage(video, 0, 0, vw, vh);
+<footer>
+    <p>&copy; 2026 The Logic Sage Biography Project. All Rights Reserved.</p>
+</footer>
 
-  // crop
-  const out = document.createElement("canvas");
-  out.width = Math.round(b.width);
-  out.height = Math.round(b.height);
-  out.getContext("2d").drawImage(src, b.x, b.y, b.width, b.height, 0, 0, out.width, out.height);
-
-  const dataUrl = out.toDataURL("image/jpeg", 0.92);
-
-  const db = getDB();
-  db.push({ id: uid(), ts: Date.now(), dataUrl, w: out.width, h: out.height });
-  while (db.length > MAX_SAVED) db.shift();
-  setDB(db);
-}
-
-/* ---------- Lens modal ---------- */
-function openLensAt(index){
-  const db = getDB();
-  if (!db.length) {
-    alert("No saved faces yet. Keep your face visible for a moment, it will auto-save.");
-    return;
-  }
-  activeIndex = Math.max(0, Math.min(db.length-1, index));
-  const item = db[activeIndex];
-
-  countEl.textContent = String(db.length);
-  metaEl.textContent = new Date(item.ts).toLocaleString() + ` • ${item.w}×${item.h} • (${activeIndex+1}/${db.length})`;
-
-  lensBase.style.backgroundImage = `url("${item.dataUrl}")`;
-  lensInner.style.backgroundImage = `url("${item.dataUrl}")`;
-
-  // center lens
-  const r = lensStage.getBoundingClientRect();
-  setLensAt(r.width/2, r.height/2);
-
-  // apply slider values
-  updateLensSize();
-  updateLensZoom();
-
-  modal.classList.add("on");
-}
-
-function closeLens(){
-  modal.classList.remove("on");
-}
-
-btnClose.onclick = closeLens;
-modal.addEventListener("click", (e) => { if (e.target === modal) closeLens(); });
-
-btnPrev.onclick = () => openLensAt(activeIndex - 1);
-btnNext.onclick = () => openLensAt(activeIndex + 1);
-
-btnDel.onclick = () => {
-  const db = getDB();
-  if (!db.length || activeIndex < 0) return;
-  db.splice(activeIndex, 1);
-  setDB(db);
-  if (!db.length) { closeLens(); return; }
-  openLensAt(Math.min(activeIndex, db.length-1));
-};
-
-function updateLensZoom(){
-  const z = Number(zoomRange.value || 3);
-  zoomVal.textContent = z.toFixed(1) + "×";
-
-  const rect = lensStage.getBoundingClientRect();
-  lensInner.style.backgroundSize = `${rect.width * z}px ${rect.height * z}px`;
-  updateLensBgPos();
-}
-function updateLensSize(){
-  const s = Number(lensSizeRange.value || 170);
-  lensSizeVal.textContent = s + "px";
-  lens.style.width = s + "px";
-  lens.style.height = s + "px";
-  lens.style.transform = `translate(${-s/2}px, ${-s/2}px)`;
-}
-zoomRange.addEventListener("input", updateLensZoom);
-lensSizeRange.addEventListener("input", updateLensSize);
-
-function setLensAt(x,y){
-  lensX = x; lensY = y;
-  lens.style.left = x + "px";
-  lens.style.top = y + "px";
-  updateLensBgPos();
-}
-function updateLensBgPos(){
-  const rect = lensStage.getBoundingClientRect();
-  const px = (lensX / rect.width) * 100;
-  const py = (lensY / rect.height) * 100;
-  lensInner.style.backgroundPosition = `${px}% ${py}%`;
-}
-function pointerToLocal(e){
-  const r = lensStage.getBoundingClientRect();
-  const x = Math.max(0, Math.min(r.width, e.clientX - r.left));
-  const y = Math.max(0, Math.min(r.height, e.clientY - r.top));
-  return {x,y};
-}
-lensStage.addEventListener("pointerdown", (e) => {
-  dragging = true;
-  lensStage.setPointerCapture(e.pointerId);
-  const p = pointerToLocal(e);
-  setLensAt(p.x, p.y);
-});
-lensStage.addEventListener("pointermove", (e) => {
-  if (!dragging) return;
-  const p = pointerToLocal(e);
-  setLensAt(p.x, p.y);
-});
-lensStage.addEventListener("pointerup", () => dragging = false);
-lensStage.addEventListener("pointercancel", () => dragging = false);
-
-/* ---------- Swipe left/right in modal to change face ---------- */
-let swipeX = null;
-lensStage.addEventListener("touchstart", (e) => {
-  if (e.touches.length === 1) swipeX = e.touches[0].clientX;
-}, {passive:true});
-lensStage.addEventListener("touchend", (e) => {
-  if (swipeX == null) return;
-  const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : swipeX;
-  const dx = endX - swipeX;
-  swipeX = null;
-  if (Math.abs(dx) > 60){
-    if (dx < 0) openLensAt(activeIndex + 1);
-    else openLensAt(activeIndex - 1);
-  }
-}, {passive:true});
-
-/* ---------- Open lens picker without changing UI ---------- */
-/* Double-tap the stage to open picker (latest saved face) */
-let lastTap = 0;
-stage.addEventListener("click", () => {
-  const now = Date.now();
-  if (now - lastTap < 320) {
-    const db = getDB();
-    openLensAt(db.length - 1);
-  }
-  lastTap = now;
-});
-
-/* ---------- Main detection loop ---------- */
-async function detectLoop(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  const detection = await faceapi.detectSingleFace(
-    video,
-    new faceapi.TinyFaceDetectorOptions({
-      inputSize: 320,
-      scoreThreshold: 0.2   // loose (debug-friendly)
-    })
-  );
-
-  if(detection){
-    const b = detection.box;
-
-    // draw rectangle (your same behavior)
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(b.x, b.y, b.width, b.height);
-
-    // auto-save when stable (prevents saving 100 images)
-    const now = Date.now();
-    const stable = iou(prevBoxForStability, b) >= STABLE_IOU_MIN;
-    if (stable && (now - lastSavedAt >= AUTO_SAVE_MS)){
-      saveFaceCropFromBox(b);
-      lastSavedAt = now;
-    }
-    prevBoxForStability = b;
-  } else {
-    prevBoxForStability = null;
-  }
-
-  requestAnimationFrame(detectLoop);
-}
-
-/* ---------- Start ---------- */
-startBtn.onclick = async ()=>{
-  startBtn.disabled = true;
-  await loadModels();
-
-  stream = await navigator.mediaDevices.getUserMedia({
-    video:{facingMode:"user"},
-    audio:false
-  });
-
-  video.srcObject = stream;
-  await new Promise(r => video.onloadedmetadata = r);
-  resizeCanvas();
-
-  detectLoop();
-};
-</script>
 </body>
 </html>
