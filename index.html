@@ -1,123 +1,645 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Python Basics – 7 PM Batch | Programmer’s Picnic</title>
-  <meta name="description" content="Beginner-friendly Python Basics batch starting 11 February 2026 at 7 PM."/>
-  <meta name="theme-color" content="#d97706"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WhatsApp-like Chat from JSON — Lesson (JS + Flutter + React + RN + Python)</title>
+  <meta name="description" content="Download chat.json from GitHub and render a WhatsApp-like UI. Reuse the same JSON in Flutter, React, React Native and Python." />
+
   <style>
     :root{
-      --bg:#fff7e6;
-      --bg2:#fff1d6;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --brand:#d97706;
-      --brand2:#f59e0b;
+      --bg1:#fff7e6; --bg2:#fff1d6; --card:rgba(255,255,255,.9);
+      --ink:#1f2937; --muted:#6b7280;
+      --brand:#d97706; --brand2:#f59e0b;
+      --ok:#16a34a; --line:rgba(31,41,55,.12);
+      --shadow: 0 10px 30px rgba(31,41,55,.12);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,var(--bg),var(--bg2));
-      color:var(--ink);
+      margin:0; font-family:var(--sans); color:var(--ink);
+      background: radial-gradient(1200px 800px at 10% 0%, var(--bg1), transparent 60%),
+                  radial-gradient(1000px 800px at 90% 10%, var(--bg2), transparent 55%),
+                  linear-gradient(180deg,#fff, #fff7e6);
     }
-    .wrap{max-width:980px;margin:auto;padding:20px}
-    .card{
-      background:var(--card);
-      border-radius:18px;
-      padding:22px;
-      margin-bottom:18px;
-      box-shadow:0 18px 40px rgba(31,41,55,.12);
+    a{color:inherit}
+    .wrap{max-width:1180px; margin:0 auto; padding:18px 14px 40px;}
+    .top{
+      display:flex; gap:12px; align-items:stretch; flex-wrap:wrap;
+      margin-bottom:14px;
     }
-    h1{margin:0 0 10px;font-size:28px}
-    h2{margin:18px 0 10px}
-    p{color:var(--muted);font-size:15px}
-    .badge{
-      display:inline-block;
-      background:linear-gradient(90deg,var(--brand),var(--brand2));
-      color:#fff;
-      padding:6px 12px;
-      border-radius:999px;
-      font-weight:700;
+    .hero{
+      flex:1 1 520px;
+      background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,247,230,.92));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .hero h1{margin:0 0 6px; font-size:18px}
+    .hero p{margin:0; color:var(--muted); line-height:1.45}
+    .panel{
+      flex:1 1 420px;
+      background: rgba(255,255,255,.9);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:12px;
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .row > *{flex:1 1 auto}
+    .label{font-size:12px; color:var(--muted); margin:0 0 6px}
+    input[type="text"]{
+      width:100%; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--line); outline:none;
+      background: rgba(255,255,255,.95);
+    }
+    input[type="text"]:focus{border-color:rgba(217,119,6,.45); box-shadow:0 0 0 4px rgba(217,119,6,.12)}
+    .btn{
+      appearance:none; border:0; cursor:pointer;
+      padding:10px 12px; border-radius:12px; font-weight:700;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff; box-shadow: 0 10px 20px rgba(217,119,6,.22);
+      transition: transform .08s ease, filter .15s ease;
+      white-space:nowrap;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.secondary{
+      background: rgba(31,41,55,.06); color:var(--ink);
+      box-shadow:none; border:1px solid var(--line);
+    }
+    .btn.ghost{
+      background: transparent; color:var(--ink);
+      box-shadow:none; border:1px dashed rgba(217,119,6,.45);
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      color:var(--muted);
       font-size:12px;
     }
-    ul{margin:8px 0 0 18px}
-    li{margin:6px 0}
-    .cta{
-      display:block;
-      text-align:center;
-      margin:20px 0 10px;
-      padding:16px;
-      border-radius:16px;
-      background:linear-gradient(90deg,var(--brand),var(--brand2));
-      color:#fff;
-      font-weight:800;
-      text-decoration:none;
-      font-size:18px;
+    .grid{
+      display:grid; grid-template-columns: 1.15fr .85fr; gap:14px;
+      align-items:start;
     }
-    .muted{color:var(--muted);font-size:13px;text-align:center}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media(max-width:800px){.grid{grid-template-columns:1fr}}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+
+    /* ---- Chat UI ---- */
+    .chatCard{
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .chatHeader{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      background: linear-gradient(135deg, rgba(217,119,6,.18), rgba(245,158,11,.12));
+      border-bottom:1px solid var(--line);
+    }
+    .avatar{width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid rgba(31,41,55,.12); background:#fff}
+    .chatTitle{display:flex; flex-direction:column; min-width:0}
+    .chatTitle b{font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .chatTitle span{font-size:12px; color:var(--muted)}
+    .chatBody{
+      height: 560px;
+      overflow:auto;
+      padding:14px 12px 10px;
+      background:
+        radial-gradient(900px 560px at 20% 0%, rgba(255,241,214,.65), transparent 60%),
+        radial-gradient(700px 520px at 90% 30%, rgba(255,247,230,.9), transparent 55%),
+        #fff;
+    }
+    .daySep{
+      margin:10px auto;
+      width:max-content;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .msgRow{display:flex; margin:8px 0}
+    .msgRow.me{justify-content:flex-end}
+    .bubble{
+      max-width: 78%;
+      padding:10px 10px 8px;
+      border-radius: 16px;
+      border:1px solid rgba(31,41,55,.10);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 18px rgba(31,41,55,.08);
+      position:relative;
+    }
+    .me .bubble{
+      background: linear-gradient(180deg, rgba(217,119,6,.14), rgba(245,158,11,.10));
+      border-color: rgba(217,119,6,.20);
+    }
+    .bubble .text{white-space:pre-wrap; line-height:1.35}
+    .meta{
+      margin-top:6px;
+      display:flex; justify-content:flex-end; gap:6px;
+      font-size:11px; color:rgba(31,41,55,.60);
+      align-items:center;
+    }
+    .ticks{font-weight:900; letter-spacing:-2px}
+    .ticks.read{color: var(--ok)}
+    .img{
+      width:100%; border-radius:12px; margin-bottom:8px;
+      border:1px solid rgba(31,41,55,.10);
+    }
+    .composer{
+      display:flex; gap:10px; padding:10px 12px;
+      border-top:1px solid var(--line);
+      background: rgba(255,255,255,.92);
+    }
+    .composer input{
+      flex:1 1 auto;
+    }
+    .sideCard{
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:12px;
+    }
+    .sideCard h2{margin:0 0 8px; font-size:14px}
+    .sideCard p{margin:8px 0; color:var(--muted); line-height:1.45; font-size:13px}
+    pre{
+      margin:10px 0;
+      background: rgba(31,41,55,.04);
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:10px;
+      overflow:auto;
+      font-family: var(--mono);
+      font-size:12px;
+      line-height:1.4;
+    }
+    code{font-family: var(--mono)}
+    .tag{
+      display:inline-block;
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(217,119,6,.35);
+      background: rgba(217,119,6,.08);
+      margin-right:6px;
+      margin-bottom:6px;
+    }
+    .embed{
+      margin-top:14px;
+      border-radius: var(--radius);
+      overflow:hidden;
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      background:#fff;
+    }
+    .embedHeader{
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      background: rgba(255,247,230,.7);
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    }
+    .embedHeader b{font-size:13px}
+    iframe{width:100%; height:520px; border:0; display:block}
+    .note{
+      margin-top:10px;
+      font-size:12px; color:var(--muted);
+    }
+    .warn{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(217,119,6,.25);
+      background: rgba(217,119,6,.08);
+      color: rgba(31,41,55,.82);
+      font-size:13px;
+      margin-top:10px;
+      line-height:1.4;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
+    <div class="top">
+      <div class="hero">
+        <h1>WhatsApp-like Chat UI from JSON (GitHub Hosted)</h1>
+        <p>
+          Upload <code>chat.json</code> to GitHub Pages, then this page will
+          <b>fetch</b> it and render a WhatsApp-style chat between 2 people.
+          Same JSON can be used in <b>Flutter</b>, <b>React</b>, <b>React Native</b>, and <b>Python</b>.
+        </p>
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="pill">✅ Light Saffron UI</span>
+          <span class="pill">✅ Search + Filter</span>
+          <span class="pill">✅ Local “Send” demo</span>
+          <span class="pill">✅ Download JSON button</span>
+        </div>
+      </div>
 
-    <div class="card">
-      <span class="badge">NEW BATCH</span>
-      <h1>Python Basics – 7 PM</h1>
-      <p>A calm, beginner-friendly Python batch designed for clear fundamentals.</p>
+      <div class="panel">
+        <div class="label">JSON URL (default works if chat.json is next to lesson.html)</div>
+        <div class="row">
+          <input id="jsonUrl" type="text" value="./chat.json" />
+          <button class="btn" id="btnLoad">Load Chat</button>
+        </div>
 
-      <p>
-        🗓 <b>Starts:</b> Wednesday, <b>11 February 2026</b><br/>
-        ⏰ <b>Time:</b> 7:00 PM<br/>
-        ⏳ <b>Duration:</b> 28 Days<br/>
-        📍 <b>Mode:</b> Online (WhatsApp-guided)
-      </p>
+        <div style="height:10px"></div>
 
-      <a class="cta"
-         href="https://wa.me/919335874326?text=YES%20I%20want%20to%20join%20the%207PM%20Python%20Basics%20batch">
-        👉 Join on WhatsApp
-      </a>
-      <div class="muted">Reply YES • Limited seats</div>
-    </div>
+        <div class="row">
+          <div style="flex:2 1 320px;">
+            <div class="label">Search messages</div>
+            <input id="q" type="text" placeholder="Type to filter… (e.g. python, task, namaste)" />
+          </div>
+          <div style="flex:1 1 200px;">
+            <div class="label">View as “Me”</div>
+            <select id="meSel" style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:#fff;">
+              <option value="u1">u1</option>
+              <option value="u2">u2</option>
+            </select>
+          </div>
+          <button class="btn secondary" id="btnDownload">Download JSON</button>
+        </div>
 
-    <div class="card">
-      <h2>Who is this for?</h2>
-      <ul>
-        <li>Absolute beginners</li>
-        <li>Students who tried Python before</li>
-        <li>School / college students</li>
-        <li>Non-CS learners</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>What you will learn</h2>
-      <div class="grid">
-        <ul>
-          <li>Install Python & VS Code</li>
-          <li>Variables & input</li>
-          <li>Conditions & loops</li>
-        </ul>
-        <ul>
-          <li>List, Tuple, Dictionary</li>
-          <li>File handling</li>
-          <li>Pickle & JSON</li>
-        </ul>
+        <div id="status" class="warn" style="display:none"></div>
+        <div class="note">
+          Tip: After you host on GitHub Pages, paste the raw JSON URL here, e.g.
+          <code>https://&lt;user&gt;.github.io/&lt;repo&gt;/chat.json</code>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <a class="cta"
-         href="https://wa.me/919335874326?text=YES%20I%20want%20to%20join%20the%207PM%20Python%20Basics%20batch">
-        ✅ YES, I want to join
-      </a>
-      <div class="muted">WhatsApp: 9335874326 • Programmer’s Picnic</div>
+    <div class="grid">
+      <!-- Chat UI -->
+      <div class="chatCard">
+        <div class="chatHeader">
+          <img class="avatar" id="av1" alt="avatar" />
+          <div class="chatTitle">
+            <b id="chatTitle">Chat</b>
+            <span id="chatSub">Loading…</span>
+          </div>
+        </div>
+
+        <div class="chatBody" id="chatBody" aria-live="polite"></div>
+
+        <div class="composer">
+          <input id="sendBox" type="text" placeholder="Type a message (local demo)…" />
+          <button class="btn" id="btnSend">Send</button>
+        </div>
+      </div>
+
+      <!-- Lesson / Docs -->
+      <div class="sideCard">
+        <h2>1) JSON Structure (quick)</h2>
+        <p>
+          This schema keeps it simple:
+          <span class="tag">participants[]</span>
+          <span class="tag">messages[]</span>
+          Each message has:
+          <span class="tag">from</span>
+          <span class="tag">type</span>
+          <span class="tag">text</span>
+          <span class="tag">ts</span>
+          <span class="tag">status</span>
+        </p>
+
+        <h2>2) JavaScript fetch + parse</h2>
+        <pre><code>const url = "./chat.json";
+const data = await fetch(url).then(r =&gt; r.json());
+console.log(data.participants, data.messages);</code></pre>
+
+        <h2>3) Flutter (Dart)</h2>
+        <pre><code>// pubspec.yaml: add http: ^1.2.0
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future&lt;Map&lt;String, dynamic&gt;&gt; loadChat(String url) async {
+  final res = await http.get(Uri.parse(url));
+  if (res.statusCode != 200) throw Exception("HTTP ${res.statusCode}");
+  return jsonDecode(res.body) as Map&lt;String, dynamic&gt;;
+}
+
+// then:
+final data = await loadChat("https://.../chat.json");
+final messages = (data["messages"] as List).cast&lt;Map&lt;String, dynamic&gt;&gt;();</code></pre>
+
+        <h2>4) React (Web)</h2>
+        <pre><code>import { useEffect, useState } from "react";
+
+export default function Chat() {
+  const [data, setData] = useState(null);
+
+  useEffect(() =&gt; {
+    fetch("/chat.json").then(r =&gt; r.json()).then(setData);
+  }, []);
+
+  if (!data) return &lt;div&gt;Loading...&lt;/div&gt;;
+  return (
+    &lt;div&gt;
+      {data.messages.map(m =&gt; (
+        &lt;div key={m.id}&gt;{m.text}&lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+        <h2>5) React Native</h2>
+        <pre><code>// RN can fetch same JSON. Use FlatList for performance.
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList } from "react-native";
+
+export default function Chat() {
+  const [data, setData] = useState(null);
+
+  useEffect(() =&gt; {
+    fetch("https://&lt;user&gt;.github.io/&lt;repo&gt;/chat.json")
+      .then(r =&gt; r.json())
+      .then(setData);
+  }, []);
+
+  if (!data) return &lt;Text&gt;Loading...&lt;/Text&gt;;
+
+  return (
+    &lt;FlatList
+      data={data.messages}
+      keyExtractor={(item) =&gt; item.id}
+      renderItem={({ item }) =&gt; (
+        &lt;View style={{ padding: 8 }}&gt;
+          &lt;Text&gt;{item.text}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+    /&gt;
+  );
+}</code></pre>
+
+        <h2>6) Python</h2>
+        <pre><code>import json, urllib.request
+
+url = "https://&lt;user&gt;.github.io/&lt;repo&gt;/chat.json"
+with urllib.request.urlopen(url) as r:
+    data = json.loads(r.read().decode("utf-8"))
+
+print("Participants:", [p["name"] for p in data["participants"]])
+print("Total messages:", len(data["messages"]))</code></pre>
+
+        <div class="warn">
+          Want this to feel even more WhatsApp-like?
+          Next upgrades: voice notes, stickers, reply-to, reactions, and day grouping with “Today / Yesterday”.
+        </div>
+      </div>
+    </div>
+
+    <!-- Embeds -->
+    <div class="embed">
+      <div class="embedHeader">
+        <b>Embedded JavaScript Editor (Programmer’s Picnic)</b>
+        <span class="pill">Try fetch + render</span>
+      </div>
+      <iframe
+        src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+        loading="lazy"
+        allow="clipboard-read; clipboard-write; fullscreen"
+        allowfullscreen></iframe>
+    </div>
+
+    <div class="embed">
+      <div class="embedHeader">
+        <b>Embedded Python Editor (Programmer’s Picnic — Pyodide)</b>
+        <span class="pill">Try Python JSON loader</span>
+      </div>
+      <iframe
+        src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
+        loading="lazy"
+        allow="clipboard-read; clipboard-write; fullscreen"
+        allowfullscreen></iframe>
     </div>
 
   </div>
+
+  <script>
+    "use strict";
+
+    const $ = (id) => document.getElementById(id);
+
+    let CHAT = null;
+
+    function showStatus(msg, kind="warn"){
+      const el = $("status");
+      el.style.display = msg ? "block" : "none";
+      el.textContent = msg || "";
+    }
+
+    function safeText(s){
+      return (s ?? "").toString();
+    }
+
+    function fmtTime(ts){
+      // ts like 2026-02-08T19:03:45+05:30
+      try{
+        const d = new Date(ts);
+        if (isNaN(d.getTime())) return ts;
+        return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+      }catch{
+        return ts;
+      }
+    }
+
+    function fmtDay(ts){
+      try{
+        const d = new Date(ts);
+        if (isNaN(d.getTime())) return "Unknown day";
+        return d.toLocaleDateString([], { weekday:"short", year:"numeric", month:"short", day:"2-digit" });
+      }catch{
+        return "Unknown day";
+      }
+    }
+
+    function ticks(status){
+      // WhatsApp-ish: sent ✓, delivered ✓✓, read ✓✓ (colored)
+      if (status === "delivered") return `<span class="ticks">✓✓</span>`;
+      if (status === "read") return `<span class="ticks read">✓✓</span>`;
+      return `<span class="ticks">✓</span>`;
+    }
+
+    function getParticipant(id){
+      return CHAT?.participants?.find(p => p.id === id) || null;
+    }
+
+    function applyHeader(meId){
+      const me = getParticipant(meId);
+      const other = CHAT.participants.find(p => p.id !== meId) || CHAT.participants[0];
+
+      $("av1").src = other?.avatar || "https://i.pravatar.cc/150?img=13";
+      $("chatTitle").textContent = `${other?.name || "Chat"}`;
+      $("chatSub").textContent = `${CHAT.meta?.title || "JSON Chat Demo"} • ${CHAT.messages?.length || 0} messages`;
+    }
+
+    function render(){
+      if(!CHAT) return;
+
+      const meId = $("meSel").value;
+      const q = $("q").value.trim().toLowerCase();
+      applyHeader(meId);
+
+      const body = $("chatBody");
+      body.innerHTML = "";
+
+      const msgs = (CHAT.messages || [])
+        .filter(m => {
+          if(!q) return true;
+          const t = (safeText(m.text) + " " + safeText(m.media?.caption)).toLowerCase();
+          return t.includes(q);
+        })
+        .slice()
+        .sort((a,b) => new Date(a.ts) - new Date(b.ts));
+
+      let lastDay = null;
+
+      for(const m of msgs){
+        const day = fmtDay(m.ts);
+        if(day !== lastDay){
+          const sep = document.createElement("div");
+          sep.className = "daySep";
+          sep.textContent = day;
+          body.appendChild(sep);
+          lastDay = day;
+        }
+
+        const row = document.createElement("div");
+        const isMe = m.from === meId;
+        row.className = "msgRow " + (isMe ? "me" : "them");
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+
+        if(m.type === "image" && m.media?.url){
+          const img = document.createElement("img");
+          img.className = "img";
+          img.alt = safeText(m.text || m.media?.caption || "image");
+          img.src = m.media.url;
+          bubble.appendChild(img);
+
+          if(m.media?.caption){
+            const cap = document.createElement("div");
+            cap.className = "text";
+            cap.textContent = safeText(m.media.caption);
+            bubble.appendChild(cap);
+          } else if(m.text) {
+            const cap = document.createElement("div");
+            cap.className = "text";
+            cap.textContent = safeText(m.text);
+            bubble.appendChild(cap);
+          }
+        } else {
+          const text = document.createElement("div");
+          text.className = "text";
+          text.textContent = safeText(m.text);
+          bubble.appendChild(text);
+        }
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.innerHTML = `<span>${fmtTime(m.ts)}</span>${isMe ? ticks(m.status) : ""}`;
+        bubble.appendChild(meta);
+
+        row.appendChild(bubble);
+        body.appendChild(row);
+      }
+
+      // autoscroll to bottom
+      body.scrollTop = body.scrollHeight;
+    }
+
+    async function loadChat(){
+      const url = $("jsonUrl").value.trim();
+      showStatus("");
+
+      try{
+        const res = await fetch(url, { cache: "no-store" });
+        if(!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
+        const data = await res.json();
+
+        // light validation
+        if(!Array.isArray(data.participants) || !Array.isArray(data.messages)){
+          throw new Error("Invalid JSON: expected {participants:[], messages:[]}");
+        }
+
+        CHAT = data;
+
+        // populate me selector
+        const sel = $("meSel");
+        sel.innerHTML = "";
+        for(const p of CHAT.participants){
+          const opt = document.createElement("option");
+          opt.value = p.id;
+          opt.textContent = `${p.id} — ${p.name}`;
+          sel.appendChild(opt);
+        }
+        // default "me" = first participant
+        sel.value = CHAT.participants[0]?.id || "u1";
+
+        render();
+        showStatus("Loaded successfully. Try search or send a new message (local demo).");
+      }catch(err){
+        console.error(err);
+        showStatus("Load failed: " + (err?.message || err));
+      }
+    }
+
+    function downloadJson(){
+      if(!CHAT){ showStatus("Nothing to download. Load chat first."); return; }
+      const blob = new Blob([JSON.stringify(CHAT, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "chat.json";
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      a.remove();
+      showStatus("Downloaded chat.json (your current in-memory version).");
+    }
+
+    function sendLocal(){
+      if(!CHAT) return showStatus("Load chat first.");
+      const text = $("sendBox").value.trim();
+      if(!text) return;
+
+      const meId = $("meSel").value;
+      const id = "m" + String(Date.now());
+      const now = new Date();
+      const ts = now.toISOString(); // timezone differs, ok for demo
+
+      CHAT.messages.push({
+        id,
+        from: meId,
+        type: "text",
+        text,
+        ts,
+        status: "sent"
+      });
+
+      $("sendBox").value = "";
+      render();
+    }
+
+    // events
+    $("btnLoad").addEventListener("click", loadChat);
+    $("btnDownload").addEventListener("click", downloadJson);
+    $("q").addEventListener("input", render);
+    $("meSel").addEventListener("change", render);
+    $("btnSend").addEventListener("click", sendLocal);
+    $("sendBox").addEventListener("keydown", (e) => {
+      if(e.key === "Enter") sendLocal();
+    });
+
+    // auto-load on open
+    loadChat();
+  </script>
 </body>
 </html>
