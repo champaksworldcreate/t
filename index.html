@@ -3,643 +3,693 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WhatsApp-like Chat from JSON — Lesson (JS + Flutter + React + RN + Python)</title>
-  <meta name="description" content="Download chat.json from GitHub and render a WhatsApp-like UI. Reuse the same JSON in Flutter, React, React Native and Python." />
-
+  <title>Query Selector in JavaScript — Teachable Lesson + Embedded Editor</title>
+  <meta name="description" content="A comprehensive, teachable lesson on querySelector and querySelectorAll with real patterns, exercises, and an embedded JavaScript editor." />
   <style>
     :root{
-      --bg1:#fff7e6; --bg2:#fff1d6; --card:rgba(255,255,255,.9);
-      --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706; --brand2:#f59e0b;
-      --ok:#16a34a; --line:rgba(31,41,55,.12);
-      --shadow: 0 10px 30px rgba(31,41,55,.12);
-      --radius: 18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --bg1:#fff7e6;
+      --bg2:#fff1d6;
+      --card:rgba(255,255,255,.92);
+      --line:rgba(31,41,55,.12);
+      --text:#111827;
+      --muted:#6b7280;
+      --brand:#d97706;
+      --brand2:#f59e0b;
+      --shadow:0 10px 30px rgba(17,24,39,.10);
+      --radius:18px;
+      --radius2:24px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; font-family:var(--sans); color:var(--ink);
-      background: radial-gradient(1200px 800px at 10% 0%, var(--bg1), transparent 60%),
-                  radial-gradient(1000px 800px at 90% 10%, var(--bg2), transparent 55%),
-                  linear-gradient(180deg,#fff, #fff7e6);
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1100px 700px at 10% 0%, #fffaf2 0%, var(--bg1) 45%, var(--bg2) 100%);
     }
     a{color:inherit}
-    .wrap{max-width:1180px; margin:0 auto; padding:18px 14px 40px;}
-    .top{
-      display:flex; gap:12px; align-items:stretch; flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-    .hero{
-      flex:1 1 520px;
-      background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,247,230,.92));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:14px;
-    }
-    .hero h1{margin:0 0 6px; font-size:18px}
-    .hero p{margin:0; color:var(--muted); line-height:1.45}
-    .panel{
-      flex:1 1 420px;
-      background: rgba(255,255,255,.9);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:12px;
-    }
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .row > *{flex:1 1 auto}
-    .label{font-size:12px; color:var(--muted); margin:0 0 6px}
-    input[type="text"]{
-      width:100%; padding:10px 12px; border-radius:12px;
-      border:1px solid var(--line); outline:none;
-      background: rgba(255,255,255,.95);
-    }
-    input[type="text"]:focus{border-color:rgba(217,119,6,.45); box-shadow:0 0 0 4px rgba(217,119,6,.12)}
-    .btn{
-      appearance:none; border:0; cursor:pointer;
-      padding:10px 12px; border-radius:12px; font-weight:700;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      color:#fff; box-shadow: 0 10px 20px rgba(217,119,6,.22);
-      transition: transform .08s ease, filter .15s ease;
-      white-space:nowrap;
-    }
-    .btn:active{transform: translateY(1px)}
-    .btn.secondary{
-      background: rgba(31,41,55,.06); color:var(--ink);
-      box-shadow:none; border:1px solid var(--line);
-    }
-    .btn.ghost{
-      background: transparent; color:var(--ink);
-      box-shadow:none; border:1px dashed rgba(217,119,6,.45);
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.7);
-      color:var(--muted);
-      font-size:12px;
-    }
-    .grid{
-      display:grid; grid-template-columns: 1.15fr .85fr; gap:14px;
-      align-items:start;
-    }
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
-
-    /* ---- Chat UI ---- */
-    .chatCard{
-      background: rgba(255,255,255,.92);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .chatHeader{
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px;
-      background: linear-gradient(135deg, rgba(217,119,6,.18), rgba(245,158,11,.12));
-      border-bottom:1px solid var(--line);
-    }
-    .avatar{width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid rgba(31,41,55,.12); background:#fff}
-    .chatTitle{display:flex; flex-direction:column; min-width:0}
-    .chatTitle b{font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-    .chatTitle span{font-size:12px; color:var(--muted)}
-    .chatBody{
-      height: 560px;
-      overflow:auto;
-      padding:14px 12px 10px;
-      background:
-        radial-gradient(900px 560px at 20% 0%, rgba(255,241,214,.65), transparent 60%),
-        radial-gradient(700px 520px at 90% 30%, rgba(255,247,230,.9), transparent 55%),
-        #fff;
-    }
-    .daySep{
-      margin:10px auto;
-      width:max-content;
-      padding:6px 10px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.75);
-      border-radius:999px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    .msgRow{display:flex; margin:8px 0}
-    .msgRow.me{justify-content:flex-end}
-    .bubble{
-      max-width: 78%;
-      padding:10px 10px 8px;
-      border-radius: 16px;
-      border:1px solid rgba(31,41,55,.10);
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 8px 18px rgba(31,41,55,.08);
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header.hero{
       position:relative;
-    }
-    .me .bubble{
-      background: linear-gradient(180deg, rgba(217,119,6,.14), rgba(245,158,11,.10));
-      border-color: rgba(217,119,6,.20);
-    }
-    .bubble .text{white-space:pre-wrap; line-height:1.35}
-    .meta{
-      margin-top:6px;
-      display:flex; justify-content:flex-end; gap:6px;
-      font-size:11px; color:rgba(31,41,55,.60);
-      align-items:center;
-    }
-    .ticks{font-weight:900; letter-spacing:-2px}
-    .ticks.read{color: var(--ok)}
-    .img{
-      width:100%; border-radius:12px; margin-bottom:8px;
-      border:1px solid rgba(31,41,55,.10);
-    }
-    .composer{
-      display:flex; gap:10px; padding:10px 12px;
-      border-top:1px solid var(--line);
-      background: rgba(255,255,255,.92);
-    }
-    .composer input{
-      flex:1 1 auto;
-    }
-    .sideCard{
-      background: rgba(255,255,255,.92);
       border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:12px;
+      border-radius:var(--radius2);
+      background:linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
+      box-shadow:var(--shadow);
+      padding:22px 18px;
+      overflow:hidden;
     }
-    .sideCard h2{margin:0 0 8px; font-size:14px}
-    .sideCard p{margin:8px 0; color:var(--muted); line-height:1.45; font-size:13px}
+    .hero::before{
+      content:"";
+      position:absolute; inset:-40px -80px auto auto;
+      width:320px;height:320px;border-radius:999px;
+      background:radial-gradient(circle at 30% 30%, rgba(245,158,11,.35), rgba(217,119,6,.08) 60%, transparent 70%);
+      filter:blur(.2px);
+      transform:rotate(10deg);
+      pointer-events:none;
+    }
+    .hero-top{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:800;letter-spacing:.2px
+    }
+    .logo{
+      width:38px;height:38px;border-radius:12px;
+      background:linear-gradient(145deg,var(--brand2),var(--brand));
+      box-shadow:0 8px 18px rgba(217,119,6,.25);
+      display:grid;place-items:center;
+      color:white;font-weight:900;
+      user-select:none;
+    }
+    h1{margin:6px 0 6px;font-size:clamp(20px,3.2vw,34px);line-height:1.1}
+    .sub{margin:0;color:var(--muted);max-width:70ch}
+    .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.65);
+      font-size:13px;color:#1f2937
+    }
+    .pill b{color:var(--brand)}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--card);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card-h{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap
+    }
+    .card-h h2{margin:0;font-size:16px}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      background:rgba(245,158,11,.12);
+      border:1px solid rgba(245,158,11,.25);
+      color:#7c2d12;font-size:12px;font-weight:700
+    }
+    .content{padding:14px}
+    .toc{
+      display:grid;gap:8px;margin:0;padding:0;list-style:none
+    }
+    .toc a{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.6);
+      text-decoration:none;
+      transition:transform .08s ease, background .2s ease;
+      font-size:14px;
+    }
+    .toc a:hover{transform:translateY(-1px);background:rgba(255,255,255,.82)}
+    .toc small{color:var(--muted)}
+    .k{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:26px;height:26px;border-radius:10px;
+      background:linear-gradient(145deg, rgba(245,158,11,.25), rgba(217,119,6,.12));
+      border:1px solid rgba(245,158,11,.25);
+      font-weight:800;color:#92400e;
+      font-size:12px;
+      flex:0 0 auto;
+    }
+    .note{
+      border-left:4px solid var(--brand);
+      background:rgba(217,119,6,.06);
+      padding:10px 12px;border-radius:12px;
+      color:#1f2937;margin:10px 0 0
+    }
+    .note strong{color:#7c2d12}
     pre{
-      margin:10px 0;
-      background: rgba(31,41,55,.04);
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding:10px;
+      margin:0;
+      background:#0b1020;
+      color:#e5e7eb;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);
       overflow:auto;
-      font-family: var(--mono);
-      font-size:12px;
-      line-height:1.4;
+      font-family:var(--mono);
+      font-size:13px;
+      line-height:1.45;
     }
-    code{font-family: var(--mono)}
-    .tag{
-      display:inline-block;
-      font-size:12px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid rgba(217,119,6,.35);
-      background: rgba(217,119,6,.08);
-      margin-right:6px;
-      margin-bottom:6px;
+    code{font-family:var(--mono)}
+    .two{
+      display:grid;gap:12px;
+      grid-template-columns:1fr 1fr;
     }
-    .embed{
-      margin-top:14px;
-      border-radius: var(--radius);
+    @media (max-width: 900px){
+      .two{grid-template-columns:1fr}
+    }
+    .mini{
+      font-size:13px;color:var(--muted);margin-top:6px
+    }
+    .steps{margin:10px 0 0;padding-left:18px}
+    .steps li{margin:8px 0;color:#1f2937}
+    .q{
+      border:1px dashed rgba(217,119,6,.35);
+      background:rgba(255,247,230,.7);
+      border-radius:14px;
+      padding:12px;
+      margin-top:12px;
+    }
+    .q h3{margin:0 0 6px;font-size:14px}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      appearance:none;border:0;cursor:pointer;
+      padding:10px 12px;border-radius:14px;
+      background:linear-gradient(145deg,var(--brand2),var(--brand));
+      color:white;font-weight:800;
+      box-shadow:0 12px 18px rgba(217,119,6,.18);
+      text-decoration:none;
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    .btn.secondary{
+      background:rgba(255,255,255,.78);
+      color:#111827;border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:800;
+    }
+    .btn:active{transform:translateY(1px)}
+    .editorWrap{
+      position:relative;
+      height:720px;
+      border-radius:16px;
       overflow:hidden;
       border:1px solid var(--line);
-      box-shadow: var(--shadow);
-      background:#fff;
+      background:rgba(255,255,255,.55);
     }
-    .embedHeader{
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      background: rgba(255,247,230,.7);
-      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    @media (max-width: 980px){
+      .editorWrap{height:660px}
     }
-    .embedHeader b{font-size:13px}
-    iframe{width:100%; height:520px; border:0; display:block}
-    .note{
-      margin-top:10px;
-      font-size:12px; color:var(--muted);
+    .editorTop{
+      position:absolute;left:10px;right:10px;top:10px;
+      display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+      z-index:3;
+      pointer-events:none;
     }
-    .warn{
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(217,119,6,.25);
-      background: rgba(217,119,6,.08);
-      color: rgba(31,41,55,.82);
+    .chip{
+      pointer-events:auto;
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      background:rgba(255,255,255,.85);
+      border:1px solid var(--line);
+      box-shadow:0 10px 18px rgba(17,24,39,.06);
+      font-size:12px;color:#111827;
+    }
+    .chip b{color:var(--brand)}
+    .chip button{
+      pointer-events:auto;
+      cursor:pointer;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.9);
+      border-radius:10px;
+      padding:6px 9px;
+      font-weight:800;
+    }
+    iframe.editor{
+      width:100%;height:100%;
+      border:0;
+      display:block;
+      background:white;
+    }
+    section{scroll-margin-top:14px}
+    .foot{
+      margin-top:16px;
+      color:var(--muted);
       font-size:13px;
-      margin-top:10px;
-      line-height:1.4;
+      text-align:center;
+    }
+    .hr{
+      height:1px;background:var(--line);margin:14px 0;border:0
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="top">
-      <div class="hero">
-        <h1>WhatsApp-like Chat UI from JSON (GitHub Hosted)</h1>
-        <p>
-          Upload <code>chat.json</code> to GitHub Pages, then this page will
-          <b>fetch</b> it and render a WhatsApp-style chat between 2 people.
-          Same JSON can be used in <b>Flutter</b>, <b>React</b>, <b>React Native</b>, and <b>Python</b>.
-        </p>
-        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-          <span class="pill">✅ Light Saffron UI</span>
-          <span class="pill">✅ Search + Filter</span>
-          <span class="pill">✅ Local “Send” demo</span>
-          <span class="pill">✅ Download JSON button</span>
+
+    <header class="hero" id="top">
+      <div class="hero-top">
+        <div>
+          <div class="brand">
+            <div class="logo">PP</div>
+            <div>
+              <div style="font-size:13px;color:var(--muted);font-weight:700">Programmer’s Picnic</div>
+              <div style="font-size:14px;font-weight:900">JavaScript Lesson</div>
+            </div>
+          </div>
+          <h1>Query Selector in JavaScript</h1>
+          <p class="sub">
+            Master <code>querySelector()</code> and <code>querySelectorAll()</code> using real-world DOM patterns,
+            common mistakes to avoid, and hands-on tasks you can run in the embedded editor.
+          </p>
+          <div class="pillrow">
+            <div class="pill"><b>Goal:</b> Select elements like CSS</div>
+            <div class="pill"><b>Skill:</b> DOM selection + UI wiring</div>
+            <div class="pill"><b>Outcome:</b> Build interactive pages faster</div>
+          </div>
+        </div>
+
+        <div class="pillrow" style="align-items:flex-start;justify-content:flex-end">
+          <a class="btn secondary" href="#editor">Open Editor ↓</a>
+          <a class="btn" href="#practice">Practice Tasks →</a>
         </div>
       </div>
 
-      <div class="panel">
-        <div class="label">JSON URL (default works if chat.json is next to lesson.html)</div>
-        <div class="row">
-          <input id="jsonUrl" type="text" value="./chat.json" />
-          <button class="btn" id="btnLoad">Load Chat</button>
-        </div>
-
-        <div style="height:10px"></div>
-
-        <div class="row">
-          <div style="flex:2 1 320px;">
-            <div class="label">Search messages</div>
-            <input id="q" type="text" placeholder="Type to filter… (e.g. python, task, namaste)" />
-          </div>
-          <div style="flex:1 1 200px;">
-            <div class="label">View as “Me”</div>
-            <select id="meSel" style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:#fff;">
-              <option value="u1">u1</option>
-              <option value="u2">u2</option>
-            </select>
-          </div>
-          <button class="btn secondary" id="btnDownload">Download JSON</button>
-        </div>
-
-        <div id="status" class="warn" style="display:none"></div>
-        <div class="note">
-          Tip: After you host on GitHub Pages, paste the raw JSON URL here, e.g.
-          <code>https://&lt;user&gt;.github.io/&lt;repo&gt;/chat.json</code>
-        </div>
-      </div>
-    </div>
+      <p class="note">
+        <strong>One sentence takeaway:</strong> <code>querySelector</code> lets JavaScript find elements using <b>CSS selectors</b>.
+        If you can write it in CSS, you can use it in JS.
+      </p>
+    </header>
 
     <div class="grid">
-      <!-- Chat UI -->
-      <div class="chatCard">
-        <div class="chatHeader">
-          <img class="avatar" id="av1" alt="avatar" />
-          <div class="chatTitle">
-            <b id="chatTitle">Chat</b>
-            <span id="chatSub">Loading…</span>
+      <!-- LEFT: LESSON -->
+      <div class="card">
+        <div class="card-h">
+          <h2>Lesson Map</h2>
+          <span class="badge">CSS → JS DOM Superpower</span>
+        </div>
+        <div class="content">
+          <ul class="toc">
+            <li><a href="#concept"><span><span class="k">1</span> What is <code>querySelector</code>?</span><small>first match / null</small></a></li>
+            <li><a href="#all"><span><span class="k">2</span> <code>querySelectorAll</code> & NodeList</span><small>many matches</small></a></li>
+            <li><a href="#selectors"><span><span class="k">3</span> Selectors you must know</span><small>id/class/attr</small></a></li>
+            <li><a href="#scoping"><span><span class="k">4</span> Scoping (search inside an element)</span><small>clean + fast</small></a></li>
+            <li><a href="#patterns"><span><span class="k">5</span> Real-world patterns</span><small>toggle, forms</small></a></li>
+            <li><a href="#mistakes"><span><span class="k">6</span> Common mistakes</span><small>debug mindset</small></a></li>
+            <li><a href="#practice"><span><span class="k">7</span> Practice set</span><small>tasks + answers</small></a></li>
+          </ul>
+
+          <hr class="hr" />
+
+          <section id="concept">
+            <h2 style="margin:0 0 10px;font-size:18px">1) What is <code>querySelector()</code>?</h2>
+            <p class="mini">
+              <code>document.querySelector(selector)</code> finds the <b>first</b> element that matches a CSS selector.
+              If nothing matches, it returns <b><code>null</code></b>.
+            </p>
+            <div class="two">
+              <div>
+                <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:800">Example</div>
+                <pre><code>// First element with id="title"
+const title = document.querySelector("#title");
+
+// First element with class="card"
+const card = document.querySelector(".card");
+
+// First &lt;p&gt; tag
+const p = document.querySelector("p");
+
+console.log(title, card, p);</code></pre>
+              </div>
+              <div>
+                <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:800">Remember</div>
+                <div class="note" style="margin:0">
+                  <strong>Returns only one element.</strong><br/>
+                  If you want all matching elements, use <code>querySelectorAll()</code>.
+                </div>
+                <div class="note">
+                  <strong>Null-safe:</strong> Always check before using properties.
+                  <pre style="margin-top:10px"><code>const el = document.querySelector(".missing");
+if (el) el.classList.add("ok");</code></pre>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="hr" />
+
+          <section id="all">
+            <h2 style="margin:0 0 10px;font-size:18px">2) <code>querySelectorAll()</code> & NodeList</h2>
+            <p class="mini">
+              <code>document.querySelectorAll(selector)</code> returns <b>all matches</b> as a <b>NodeList</b>.
+              NodeList supports <code>forEach</code>, but it’s not a full Array.
+            </p>
+            <pre><code>const buttons = document.querySelectorAll(".btn");
+
+// NodeList supports forEach:
+buttons.forEach(btn =&gt; btn.classList.add("ready"));
+
+// If you want Array methods like map/filter:
+const arr = Array.from(buttons);</code></pre>
+          </section>
+
+          <hr class="hr" />
+
+          <section id="selectors">
+            <h2 style="margin:0 0 10px;font-size:18px">3) Selectors you must know</h2>
+            <pre><code>// ID
+document.querySelector("#nav");
+
+// Class
+document.querySelector(".card");
+
+// Tag
+document.querySelectorAll("li");
+
+// Descendant (space)
+document.querySelector(".card h2");
+
+// Direct child (>)
+document.querySelector("ul &gt; li");
+
+// Multiple selectors (,)
+document.querySelector("h1, h2, h3");
+
+// Attribute
+document.querySelector("input[type='password']");
+
+// Attribute starts-with / ends-with / contains
+document.querySelector("a[href^='https']");
+document.querySelector("img[src$='.png']");
+document.querySelector("div[class*='active']");</code></pre>
+
+            <div class="note">
+              <strong>Pro tip:</strong> If you can style it in CSS, you can select it in JS.
+            </div>
+          </section>
+
+          <hr class="hr" />
+
+          <section id="scoping">
+            <h2 style="margin:0 0 10px;font-size:18px">4) Scoping: search inside an element</h2>
+            <p class="mini">
+              Instead of searching the whole document, first pick a container and then query inside it.
+              This keeps code clean and avoids accidental matches.
+            </p>
+            <pre><code>const card = document.querySelector(".card");
+
+// Only searches inside .card
+const btn = card.querySelector("button");</code></pre>
+          </section>
+
+          <hr class="hr" />
+
+          <section id="patterns">
+            <h2 style="margin:0 0 10px;font-size:18px">5) Real-world patterns</h2>
+
+            <div class="q">
+              <h3>Pattern A: Toggle menu</h3>
+              <pre><code>const menuBtn = document.querySelector("#menuBtn");
+const menu = document.querySelector("#menu");
+
+menuBtn.addEventListener("click", () =&gt; {
+  menu.classList.toggle("open");
+});</code></pre>
+            </div>
+
+            <div class="q">
+              <h3>Pattern B: Read form values</h3>
+              <pre><code>const email = document.querySelector("input[name='email']").value;
+const pass  = document.querySelector("input[name='password']").value;
+
+console.log({ email, pass });</code></pre>
+            </div>
+
+            <div class="q">
+              <h3>Pattern C: Highlight current nav link</h3>
+              <pre><code>document.querySelectorAll("nav a").forEach(a =&gt; {
+  if (a.href === location.href) a.classList.add("active");
+});</code></pre>
+            </div>
+          </section>
+
+          <hr class="hr" />
+
+          <section id="mistakes">
+            <h2 style="margin:0 0 10px;font-size:18px">6) Common mistakes</h2>
+            <ol class="steps">
+              <li><b>Forgetting</b> <code>#</code> for id and <code>.</code> for class:
+                <pre><code>querySelector("title")   // selects &lt;title&gt; tag (not #title)
+querySelector("#title")  // correct for id</code></pre>
+              </li>
+              <li><b>Expecting multiple elements</b> from <code>querySelector</code>:
+                <pre><code>document.querySelector(".item") // only the first one</code></pre>
+              </li>
+              <li><b>Crashing on null</b>:
+                <pre><code>document.querySelector(".missing").textContent = "Hi"; // crash</code></pre>
+              </li>
+              <li><b>NodeList isn’t Array</b>:
+                <pre><code>document.querySelectorAll("li").map(...) // ❌ no map
+Array.from(document.querySelectorAll("li")).map(...) // ✅</code></pre>
+              </li>
+            </ol>
+          </section>
+
+          <hr class="hr" />
+
+          <section id="practice">
+            <h2 style="margin:0 0 10px;font-size:18px">7) Practice set (run in the editor)</h2>
+            <p class="mini">
+              In the embedded editor, create a small HTML structure and then solve these tasks using <code>querySelector</code>
+              and <code>querySelectorAll</code>.
+            </p>
+
+            <div class="q">
+              <h3>Task 1 — Pick elements</h3>
+              <ul class="steps">
+                <li>Select an element by id and change its text.</li>
+                <li>Select all elements with a class and add a class <code>"done"</code> to each.</li>
+              </ul>
+            </div>
+
+            <div class="q">
+              <h3>Task 2 — Attribute selector</h3>
+              <ul class="steps">
+                <li>Select <code>input[type="password"]</code> and set placeholder to “Enter password”.</li>
+              </ul>
+            </div>
+
+            <div class="q">
+              <h3>Task 3 — Scoped selection</h3>
+              <ul class="steps">
+                <li>Select a container <code>.card</code>, then select a <code>button</code> inside it and wire a click.</li>
+              </ul>
+            </div>
+
+            <div class="q">
+              <h3>Bonus — Mini UI</h3>
+              <ul class="steps">
+                <li>Create 5 list items. On button click, highlight only the even ones.</li>
+              </ul>
+            </div>
+
+            <div class="note">
+              <strong>Tip:</strong> In the editor, use <code>console.log()</code> a lot. Always verify what you selected.
+            </div>
+          </section>
+
+          <div class="btnrow">
+            <a class="btn" href="#editor">Go to Editor ↓</a>
+            <a class="btn secondary" href="#top">Back to top ↑</a>
           </div>
         </div>
+      </div>
 
-        <div class="chatBody" id="chatBody" aria-live="polite"></div>
+      <!-- RIGHT: EDITOR -->
+      <div class="card" id="editor">
+        <div class="card-h">
+          <h2>Embedded JavaScript Editor</h2>
+          <span class="badge">Try each task live</span>
+        </div>
 
-        <div class="composer">
-          <input id="sendBox" type="text" placeholder="Type a message (local demo)…" />
-          <button class="btn" id="btnSend">Send</button>
+        <div class="content">
+          <p class="mini" style="margin-top:0">
+            Use this editor to build a tiny HTML page and practice DOM selection.
+            Suggested workflow: write HTML + JS → run → inspect output → improve.
+          </p>
+
+          <div class="editorWrap">
+            <div class="editorTop">
+              <div class="chip"><b>Goal:</b> practice selectors on real DOM</div>
+              <div class="chip">
+                <span><b>Quick actions:</b></span>
+                <button type="button" id="copyStarter">Copy Starter</button>
+                <button type="button" id="copyCheat">Copy Cheat Sheet</button>
+              </div>
+            </div>
+
+            <iframe
+              class="editor"
+              id="ppEditor"
+              title="Programmer’s Picnic JavaScript Editor"
+              loading="eager"
+              allow="clipboard-read; clipboard-write; fullscreen"
+              allowfullscreen
+              src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/">
+            </iframe>
+          </div>
+
+          <div class="note">
+            <strong>How to use:</strong>
+            <ol class="steps" style="margin-top:8px">
+              <li>Paste the “Starter” snippet inside the editor.</li>
+              <li>Run it. Confirm selections using <code>console.log</code>.</li>
+              <li>Complete Task 1–3 and the Bonus.</li>
+            </ol>
+          </div>
+
+          <hr class="hr" />
+
+          <div class="two">
+            <div>
+              <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:900">Starter snippet (copy)</div>
+              <pre id="starter"><code>&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1" /&gt;
+  &lt;title&gt;Query Selector Practice&lt;/title&gt;
+  &lt;style&gt;
+    body{font-family:system-ui;margin:20px}
+    .card{border:1px solid #ddd;border-radius:12px;padding:12px;max-width:520px}
+    .done{opacity:.7;text-decoration:line-through}
+    .open{background:#fff7e6}
+    .hl{background: #fff1d6; border-radius:8px; padding:2px 6px;}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;h1 id="title"&gt;Hello DOM&lt;/h1&gt;
+
+  &lt;div class="card" id="menu"&gt;
+    &lt;h2&gt;Card Title&lt;/h2&gt;
+    &lt;p class="item"&gt;Item A&lt;/p&gt;
+    &lt;p class="item"&gt;Item B&lt;/p&gt;
+    &lt;button id="menuBtn"&gt;Toggle Card&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div style="margin-top:14px"&gt;
+    &lt;input type="password" /&gt;
+  &lt;/div&gt;
+
+  &lt;ul id="list"&gt;
+    &lt;li class="li"&gt;One&lt;/li&gt;
+    &lt;li class="li"&gt;Two&lt;/li&gt;
+    &lt;li class="li"&gt;Three&lt;/li&gt;
+    &lt;li class="li"&gt;Four&lt;/li&gt;
+    &lt;li class="li"&gt;Five&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;button id="evenBtn"&gt;Highlight Even Items&lt;/button&gt;
+
+  &lt;script&gt;
+    // Task 1: select #title and change its text
+    const title = document.querySelector("#title");
+    title.textContent = "Query Selector Master ✅";
+
+    // Task 1: select all .item and add class "done"
+    document.querySelectorAll(".item").forEach(el =&gt; el.classList.add("done"));
+
+    // Task 2: select input[type='password'] and set placeholder
+    const pass = document.querySelector("input[type='password']");
+    pass.placeholder = "Enter password";
+
+    // Task 3: scoped selection inside .card
+    const card = document.querySelector(".card");
+    const btn = card.querySelector("button");
+    btn.addEventListener("click", () =&gt; card.classList.toggle("open"));
+
+    // Bonus: highlight even list items on click
+    document.querySelector("#evenBtn").addEventListener("click", () =&gt; {
+      const items = document.querySelectorAll("#list &gt; li");
+      items.forEach((li, i) =&gt; {
+        li.classList.toggle("hl", (i + 1) % 2 === 0); // 2nd, 4th...
+      });
+    });
+
+    console.log("Ready. Try modifying selectors & logic!");
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+
+            <div>
+              <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:900">Cheat sheet (copy)</div>
+              <pre id="cheat"><code>// querySelector (first match)
+document.querySelector("#id");
+document.querySelector(".class");
+document.querySelector("tag");
+
+// querySelectorAll (all matches)
+document.querySelectorAll("li");
+
+// Descendant / child
+document.querySelector(".card h2");
+document.querySelector("#list &gt; li");
+
+// Multiple selectors
+document.querySelector("h1, h2");
+
+// Attributes
+document.querySelector("input[type='password']");
+document.querySelector("a[href^='https']");
+document.querySelector("img[src$='.png']");
+document.querySelector("div[class*='active']");
+
+// Scoped query (cleaner)
+const box = document.querySelector(".box");
+box.querySelector("button");</code></pre>
+
+              <div class="note">
+                <strong>Micro rule:</strong> When your selection is wrong, print it.
+                <pre style="margin-top:10px"><code>const x = document.querySelector(".something");
+console.log("selected:", x);</code></pre>
+              </div>
+
+              <div class="btnrow">
+                <a class="btn secondary" href="#practice">Practice tasks ↑</a>
+                <a class="btn" href="#top">Top ↑</a>
+              </div>
+            </div>
+          </div>
+
+          <p class="foot">
+            © Programmer’s Picnic — Light Saffron Lesson Template • Built for WhatsApp batches & GitHub Pages
+          </p>
         </div>
       </div>
-
-      <!-- Lesson / Docs -->
-      <div class="sideCard">
-        <h2>1) JSON Structure (quick)</h2>
-        <p>
-          This schema keeps it simple:
-          <span class="tag">participants[]</span>
-          <span class="tag">messages[]</span>
-          Each message has:
-          <span class="tag">from</span>
-          <span class="tag">type</span>
-          <span class="tag">text</span>
-          <span class="tag">ts</span>
-          <span class="tag">status</span>
-        </p>
-
-        <h2>2) JavaScript fetch + parse</h2>
-        <pre><code>const url = "./chat.json";
-const data = await fetch(url).then(r =&gt; r.json());
-console.log(data.participants, data.messages);</code></pre>
-
-        <h2>3) Flutter (Dart)</h2>
-        <pre><code>// pubspec.yaml: add http: ^1.2.0
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future&lt;Map&lt;String, dynamic&gt;&gt; loadChat(String url) async {
-  final res = await http.get(Uri.parse(url));
-  if (res.statusCode != 200) throw Exception("HTTP ${res.statusCode}");
-  return jsonDecode(res.body) as Map&lt;String, dynamic&gt;;
-}
-
-// then:
-final data = await loadChat("https://.../chat.json");
-final messages = (data["messages"] as List).cast&lt;Map&lt;String, dynamic&gt;&gt;();</code></pre>
-
-        <h2>4) React (Web)</h2>
-        <pre><code>import { useEffect, useState } from "react";
-
-export default function Chat() {
-  const [data, setData] = useState(null);
-
-  useEffect(() =&gt; {
-    fetch("/chat.json").then(r =&gt; r.json()).then(setData);
-  }, []);
-
-  if (!data) return &lt;div&gt;Loading...&lt;/div&gt;;
-  return (
-    &lt;div&gt;
-      {data.messages.map(m =&gt; (
-        &lt;div key={m.id}&gt;{m.text}&lt;/div&gt;
-      ))}
-    &lt;/div&gt;
-  );
-}</code></pre>
-
-        <h2>5) React Native</h2>
-        <pre><code>// RN can fetch same JSON. Use FlatList for performance.
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
-
-export default function Chat() {
-  const [data, setData] = useState(null);
-
-  useEffect(() =&gt; {
-    fetch("https://&lt;user&gt;.github.io/&lt;repo&gt;/chat.json")
-      .then(r =&gt; r.json())
-      .then(setData);
-  }, []);
-
-  if (!data) return &lt;Text&gt;Loading...&lt;/Text&gt;;
-
-  return (
-    &lt;FlatList
-      data={data.messages}
-      keyExtractor={(item) =&gt; item.id}
-      renderItem={({ item }) =&gt; (
-        &lt;View style={{ padding: 8 }}&gt;
-          &lt;Text&gt;{item.text}&lt;/Text&gt;
-        &lt;/View&gt;
-      )}
-    /&gt;
-  );
-}</code></pre>
-
-        <h2>6) Python</h2>
-        <pre><code>import json, urllib.request
-
-url = "https://&lt;user&gt;.github.io/&lt;repo&gt;/chat.json"
-with urllib.request.urlopen(url) as r:
-    data = json.loads(r.read().decode("utf-8"))
-
-print("Participants:", [p["name"] for p in data["participants"]])
-print("Total messages:", len(data["messages"]))</code></pre>
-
-        <div class="warn">
-          Want this to feel even more WhatsApp-like?
-          Next upgrades: voice notes, stickers, reply-to, reactions, and day grouping with “Today / Yesterday”.
-        </div>
-      </div>
     </div>
-
-    <!-- Embeds -->
-    <div class="embed">
-      <div class="embedHeader">
-        <b>Embedded JavaScript Editor (Programmer’s Picnic)</b>
-        <span class="pill">Try fetch + render</span>
-      </div>
-      <iframe
-        src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-        loading="lazy"
-        allow="clipboard-read; clipboard-write; fullscreen"
-        allowfullscreen></iframe>
-    </div>
-
-    <div class="embed">
-      <div class="embedHeader">
-        <b>Embedded Python Editor (Programmer’s Picnic — Pyodide)</b>
-        <span class="pill">Try Python JSON loader</span>
-      </div>
-      <iframe
-        src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
-        loading="lazy"
-        allow="clipboard-read; clipboard-write; fullscreen"
-        allowfullscreen></iframe>
-    </div>
-
   </div>
 
   <script>
-    "use strict";
-
-    const $ = (id) => document.getElementById(id);
-
-    let CHAT = null;
-
-    function showStatus(msg, kind="warn"){
-      const el = $("status");
-      el.style.display = msg ? "block" : "none";
-      el.textContent = msg || "";
-    }
-
-    function safeText(s){
-      return (s ?? "").toString();
-    }
-
-    function fmtTime(ts){
-      // ts like 2026-02-08T19:03:45+05:30
-      try{
-        const d = new Date(ts);
-        if (isNaN(d.getTime())) return ts;
-        return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-      }catch{
-        return ts;
-      }
-    }
-
-    function fmtDay(ts){
-      try{
-        const d = new Date(ts);
-        if (isNaN(d.getTime())) return "Unknown day";
-        return d.toLocaleDateString([], { weekday:"short", year:"numeric", month:"short", day:"2-digit" });
-      }catch{
-        return "Unknown day";
-      }
-    }
-
-    function ticks(status){
-      // WhatsApp-ish: sent ✓, delivered ✓✓, read ✓✓ (colored)
-      if (status === "delivered") return `<span class="ticks">✓✓</span>`;
-      if (status === "read") return `<span class="ticks read">✓✓</span>`;
-      return `<span class="ticks">✓</span>`;
-    }
-
-    function getParticipant(id){
-      return CHAT?.participants?.find(p => p.id === id) || null;
-    }
-
-    function applyHeader(meId){
-      const me = getParticipant(meId);
-      const other = CHAT.participants.find(p => p.id !== meId) || CHAT.participants[0];
-
-      $("av1").src = other?.avatar || "https://i.pravatar.cc/150?img=13";
-      $("chatTitle").textContent = `${other?.name || "Chat"}`;
-      $("chatSub").textContent = `${CHAT.meta?.title || "JSON Chat Demo"} • ${CHAT.messages?.length || 0} messages`;
-    }
-
-    function render(){
-      if(!CHAT) return;
-
-      const meId = $("meSel").value;
-      const q = $("q").value.trim().toLowerCase();
-      applyHeader(meId);
-
-      const body = $("chatBody");
-      body.innerHTML = "";
-
-      const msgs = (CHAT.messages || [])
-        .filter(m => {
-          if(!q) return true;
-          const t = (safeText(m.text) + " " + safeText(m.media?.caption)).toLowerCase();
-          return t.includes(q);
-        })
-        .slice()
-        .sort((a,b) => new Date(a.ts) - new Date(b.ts));
-
-      let lastDay = null;
-
-      for(const m of msgs){
-        const day = fmtDay(m.ts);
-        if(day !== lastDay){
-          const sep = document.createElement("div");
-          sep.className = "daySep";
-          sep.textContent = day;
-          body.appendChild(sep);
-          lastDay = day;
-        }
-
-        const row = document.createElement("div");
-        const isMe = m.from === meId;
-        row.className = "msgRow " + (isMe ? "me" : "them");
-
-        const bubble = document.createElement("div");
-        bubble.className = "bubble";
-
-        if(m.type === "image" && m.media?.url){
-          const img = document.createElement("img");
-          img.className = "img";
-          img.alt = safeText(m.text || m.media?.caption || "image");
-          img.src = m.media.url;
-          bubble.appendChild(img);
-
-          if(m.media?.caption){
-            const cap = document.createElement("div");
-            cap.className = "text";
-            cap.textContent = safeText(m.media.caption);
-            bubble.appendChild(cap);
-          } else if(m.text) {
-            const cap = document.createElement("div");
-            cap.className = "text";
-            cap.textContent = safeText(m.text);
-            bubble.appendChild(cap);
-          }
-        } else {
-          const text = document.createElement("div");
-          text.className = "text";
-          text.textContent = safeText(m.text);
-          bubble.appendChild(text);
-        }
-
-        const meta = document.createElement("div");
-        meta.className = "meta";
-        meta.innerHTML = `<span>${fmtTime(m.ts)}</span>${isMe ? ticks(m.status) : ""}`;
-        bubble.appendChild(meta);
-
-        row.appendChild(bubble);
-        body.appendChild(row);
-      }
-
-      // autoscroll to bottom
-      body.scrollTop = body.scrollHeight;
-    }
-
-    async function loadChat(){
-      const url = $("jsonUrl").value.trim();
-      showStatus("");
-
-      try{
-        const res = await fetch(url, { cache: "no-store" });
-        if(!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
-        const data = await res.json();
-
-        // light validation
-        if(!Array.isArray(data.participants) || !Array.isArray(data.messages)){
-          throw new Error("Invalid JSON: expected {participants:[], messages:[]}");
-        }
-
-        CHAT = data;
-
-        // populate me selector
-        const sel = $("meSel");
-        sel.innerHTML = "";
-        for(const p of CHAT.participants){
-          const opt = document.createElement("option");
-          opt.value = p.id;
-          opt.textContent = `${p.id} — ${p.name}`;
-          sel.appendChild(opt);
-        }
-        // default "me" = first participant
-        sel.value = CHAT.participants[0]?.id || "u1";
-
-        render();
-        showStatus("Loaded successfully. Try search or send a new message (local demo).");
-      }catch(err){
-        console.error(err);
-        showStatus("Load failed: " + (err?.message || err));
-      }
-    }
-
-    function downloadJson(){
-      if(!CHAT){ showStatus("Nothing to download. Load chat first."); return; }
-      const blob = new Blob([JSON.stringify(CHAT, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "chat.json";
-      document.body.appendChild(a);
-      a.click();
-      URL.revokeObjectURL(a.href);
-      a.remove();
-      showStatus("Downloaded chat.json (your current in-memory version).");
-    }
-
-    function sendLocal(){
-      if(!CHAT) return showStatus("Load chat first.");
-      const text = $("sendBox").value.trim();
-      if(!text) return;
-
-      const meId = $("meSel").value;
-      const id = "m" + String(Date.now());
-      const now = new Date();
-      const ts = now.toISOString(); // timezone differs, ok for demo
-
-      CHAT.messages.push({
-        id,
-        from: meId,
-        type: "text",
-        text,
-        ts,
-        status: "sent"
+    // Copy helpers (works outside the iframe; copies the snippets shown on this page)
+    function copyTextFromPre(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        flashBtn(id === "starter" ? "copyStarter" : "copyCheat", "Copied ✅");
+      }).catch(() => {
+        flashBtn(id === "starter" ? "copyStarter" : "copyCheat", "Copy failed");
       });
-
-      $("sendBox").value = "";
-      render();
     }
 
-    // events
-    $("btnLoad").addEventListener("click", loadChat);
-    $("btnDownload").addEventListener("click", downloadJson);
-    $("q").addEventListener("input", render);
-    $("meSel").addEventListener("change", render);
-    $("btnSend").addEventListener("click", sendLocal);
-    $("sendBox").addEventListener("keydown", (e) => {
-      if(e.key === "Enter") sendLocal();
-    });
+    function flashBtn(btnId, msg){
+      const b = document.getElementById(btnId);
+      if (!b) return;
+      const old = b.textContent;
+      b.textContent = msg;
+      setTimeout(() => b.textContent = old, 1100);
+    }
 
-    // auto-load on open
-    loadChat();
+    document.getElementById("copyStarter")?.addEventListener("click", () => copyTextFromPre("starter"));
+    document.getElementById("copyCheat")?.addEventListener("click", () => copyTextFromPre("cheat"));
   </script>
 </body>
 </html>
