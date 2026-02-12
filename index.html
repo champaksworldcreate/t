@@ -1,695 +1,530 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Query Selector in JavaScript — Teachable Lesson + Embedded Editor</title>
-  <meta name="description" content="A comprehensive, teachable lesson on querySelector and querySelectorAll with real patterns, exercises, and an embedded JavaScript editor." />
-  <style>
-    :root{
-      --bg1:#fff7e6;
-      --bg2:#fff1d6;
-      --card:rgba(255,255,255,.92);
-      --line:rgba(31,41,55,.12);
-      --text:#111827;
-      --muted:#6b7280;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --shadow:0 10px 30px rgba(17,24,39,.10);
-      --radius:18px;
-      --radius2:24px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      --sans: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      color:var(--text);
-      background:
-        radial-gradient(1100px 700px at 10% 0%, #fffaf2 0%, var(--bg1) 45%, var(--bg2) 100%);
-    }
-    a{color:inherit}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    header.hero{
-      position:relative;
-      border:1px solid var(--line);
-      border-radius:var(--radius2);
-      background:linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
-      box-shadow:var(--shadow);
-      padding:22px 18px;
-      overflow:hidden;
-    }
-    .hero::before{
-      content:"";
-      position:absolute; inset:-40px -80px auto auto;
-      width:320px;height:320px;border-radius:999px;
-      background:radial-gradient(circle at 30% 30%, rgba(245,158,11,.35), rgba(217,119,6,.08) 60%, transparent 70%);
-      filter:blur(.2px);
-      transform:rotate(10deg);
-      pointer-events:none;
-    }
-    .hero-top{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-    .brand{
-      display:flex;align-items:center;gap:10px;
-      font-weight:800;letter-spacing:.2px
-    }
-    .logo{
-      width:38px;height:38px;border-radius:12px;
-      background:linear-gradient(145deg,var(--brand2),var(--brand));
-      box-shadow:0 8px 18px rgba(217,119,6,.25);
-      display:grid;place-items:center;
-      color:white;font-weight:900;
-      user-select:none;
-    }
-    h1{margin:6px 0 6px;font-size:clamp(20px,3.2vw,34px);line-height:1.1}
-    .sub{margin:0;color:var(--muted);max-width:70ch}
-    .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.65);
-      font-size:13px;color:#1f2937
-    }
-    .pill b{color:var(--brand)}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:16px;
-      margin-top:16px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
-    .card{
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      background:var(--card);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .card-h{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--line);
-      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap
-    }
-    .card-h h2{margin:0;font-size:16px}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;
-      background:rgba(245,158,11,.12);
-      border:1px solid rgba(245,158,11,.25);
-      color:#7c2d12;font-size:12px;font-weight:700
-    }
-    .content{padding:14px}
-    .toc{
-      display:grid;gap:8px;margin:0;padding:0;list-style:none
-    }
-    .toc a{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:10px 12px;border-radius:14px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.6);
-      text-decoration:none;
-      transition:transform .08s ease, background .2s ease;
-      font-size:14px;
-    }
-    .toc a:hover{transform:translateY(-1px);background:rgba(255,255,255,.82)}
-    .toc small{color:var(--muted)}
-    .k{
-      display:inline-flex;align-items:center;justify-content:center;
-      width:26px;height:26px;border-radius:10px;
-      background:linear-gradient(145deg, rgba(245,158,11,.25), rgba(217,119,6,.12));
-      border:1px solid rgba(245,158,11,.25);
-      font-weight:800;color:#92400e;
-      font-size:12px;
-      flex:0 0 auto;
-    }
-    .note{
-      border-left:4px solid var(--brand);
-      background:rgba(217,119,6,.06);
-      padding:10px 12px;border-radius:12px;
-      color:#1f2937;margin:10px 0 0
-    }
-    .note strong{color:#7c2d12}
-    pre{
-      margin:0;
-      background:#0b1020;
-      color:#e5e7eb;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.08);
-      overflow:auto;
-      font-family:var(--mono);
-      font-size:13px;
-      line-height:1.45;
-    }
-    code{font-family:var(--mono)}
-    .two{
-      display:grid;gap:12px;
-      grid-template-columns:1fr 1fr;
-    }
-    @media (max-width: 900px){
-      .two{grid-template-columns:1fr}
-    }
-    .mini{
-      font-size:13px;color:var(--muted);margin-top:6px
-    }
-    .steps{margin:10px 0 0;padding-left:18px}
-    .steps li{margin:8px 0;color:#1f2937}
-    .q{
-      border:1px dashed rgba(217,119,6,.35);
-      background:rgba(255,247,230,.7);
-      border-radius:14px;
-      padding:12px;
-      margin-top:12px;
-    }
-    .q h3{margin:0 0 6px;font-size:14px}
-    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{
-      appearance:none;border:0;cursor:pointer;
-      padding:10px 12px;border-radius:14px;
-      background:linear-gradient(145deg,var(--brand2),var(--brand));
-      color:white;font-weight:800;
-      box-shadow:0 12px 18px rgba(217,119,6,.18);
-      text-decoration:none;
-      display:inline-flex;align-items:center;gap:8px;
-    }
-    .btn.secondary{
-      background:rgba(255,255,255,.78);
-      color:#111827;border:1px solid var(--line);
-      box-shadow:none;
-      font-weight:800;
-    }
-    .btn:active{transform:translateY(1px)}
-    .editorWrap{
-      position:relative;
-      height:720px;
-      border-radius:16px;
-      overflow:hidden;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.55);
-    }
-    @media (max-width: 980px){
-      .editorWrap{height:660px}
-    }
-    .editorTop{
-      position:absolute;left:10px;right:10px;top:10px;
-      display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;
-      z-index:3;
-      pointer-events:none;
-    }
-    .chip{
-      pointer-events:auto;
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;
-      background:rgba(255,255,255,.85);
-      border:1px solid var(--line);
-      box-shadow:0 10px 18px rgba(17,24,39,.06);
-      font-size:12px;color:#111827;
-    }
-    .chip b{color:var(--brand)}
-    .chip button{
-      pointer-events:auto;
-      cursor:pointer;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.9);
-      border-radius:10px;
-      padding:6px 9px;
-      font-weight:800;
-    }
-    iframe.editor{
-      width:100%;height:100%;
-      border:0;
-      display:block;
-      background:white;
-    }
-    section{scroll-margin-top:14px}
-    .foot{
-      margin-top:16px;
-      color:var(--muted);
-      font-size:13px;
-      text-align:center;
-    }
-    .hr{
-      height:1px;background:var(--line);margin:14px 0;border:0
-    }
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-
-    <header class="hero" id="top">
-      <div class="hero-top">
-        <div>
-          <div class="brand">
-            <div class="logo">PP</div>
-            <div>
-              <div style="font-size:13px;color:var(--muted);font-weight:700">Programmer’s Picnic</div>
-              <div style="font-size:14px;font-weight:900">JavaScript Lesson</div>
-            </div>
-          </div>
-          <h1>Query Selector in JavaScript</h1>
-          <p class="sub">
-            Master <code>querySelector()</code> and <code>querySelectorAll()</code> using real-world DOM patterns,
-            common mistakes to avoid, and hands-on tasks you can run in the embedded editor.
-          </p>
-          <div class="pillrow">
-            <div class="pill"><b>Goal:</b> Select elements like CSS</div>
-            <div class="pill"><b>Skill:</b> DOM selection + UI wiring</div>
-            <div class="pill"><b>Outcome:</b> Build interactive pages faster</div>
-          </div>
-        </div>
-
-        <div class="pillrow" style="align-items:flex-start;justify-content:flex-end">
-          <a class="btn secondary" href="#editor">Open Editor ↓</a>
-          <a class="btn" href="#practice">Practice Tasks →</a>
-        </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Triangle Checker + Visualizer (a, b, c)</title>
+    <style>
+      :root{
+        --bg1:#fff7e6; --bg2:#fff1d6;
+        --card: rgba(255,255,255,.9);
+        --ink:#1f2937; --muted:#6b7280;
+        --brand:#d97706; --brand2:#f59e0b;
+        --line: rgba(31,41,55,.14);
+        --shadow: 0 10px 30px rgba(31,41,55,.10);
+        --r: 18px;
+      }
+      *{box-sizing:border-box}
+      body{
+        margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink);
+        background:
+          radial-gradient(1200px 600px at 10% 0%, rgba(245,158,11,.24), transparent 60%),
+          radial-gradient(900px 460px at 90% 15%, rgba(217,119,6,.18), transparent 60%),
+          linear-gradient(180deg, var(--bg1), #fff);
+      }
+      header{
+        max-width:1100px; margin:18px auto 0; padding:0 14px;
+      }
+      .hero{
+        border:1px solid var(--line);
+        background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+        border-radius: 22px;
+        padding: 16px 16px 14px;
+        box-shadow: var(--shadow);
+      }
+      .hero h1{margin:0; font-size:20px}
+      .hero p{margin:6px 0 0; color:var(--muted); line-height:1.4}
+      .wrap{
+        max-width:1100px; margin:14px auto 30px; padding:0 14px;
+        display:grid; gap:14px;
+        grid-template-columns: 1.05fr .95fr;
+      }
+      @media (max-width: 980px){
+        .wrap{grid-template-columns:1fr}
+      }
+      .card{
+        border:1px solid var(--line);
+        background: var(--card);
+        border-radius: var(--r);
+        box-shadow: var(--shadow);
+        overflow:hidden;
+      }
+      .card .hd{
+        padding:12px 14px;
+        border-bottom:1px solid var(--line);
+        display:flex; align-items:center; justify-content:space-between; gap:10px;
+      }
+      .card .hd .title{
+        font-weight:700; display:flex; align-items:center; gap:10px;
+      }
+      .badge{
+        font-size:12px; padding:4px 10px; border-radius:999px;
+        border:1px solid rgba(217,119,6,.35);
+        background: rgba(245,158,11,.16);
+        color: #92400e;
+        white-space:nowrap;
+      }
+      .card .bd{padding:14px}
+      .grid{
+        display:grid; gap:10px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      @media (max-width: 520px){
+        .grid{grid-template-columns:1fr}
+      }
+      label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
+      input{
+        width:100%; padding:12px 12px;
+        border-radius: 14px;
+        border:1px solid rgba(31,41,55,.18);
+        background: rgba(255,255,255,.92);
+        outline:none;
+        font-size:16px;
+      }
+      input:focus{border-color: rgba(217,119,6,.55); box-shadow: 0 0 0 4px rgba(245,158,11,.18)}
+      .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+      button{
+        border:1px solid rgba(217,119,6,.35);
+        background: linear-gradient(180deg, rgba(245,158,11,.92), rgba(217,119,6,.92));
+        color:white; font-weight:700;
+        padding:10px 12px; border-radius: 14px;
+        cursor:pointer;
+      }
+      button.secondary{
+        background: rgba(255,255,255,.92);
+        color: var(--ink);
+        border:1px solid rgba(31,41,55,.18);
+      }
+      button:active{transform: translateY(1px)}
+      .msg{
+        margin-top:12px;
+        padding:12px 12px;
+        border-radius: 14px;
+        border:1px solid rgba(31,41,55,.14);
+        background: rgba(255,255,255,.78);
+      }
+      .msg strong{display:inline-block; margin-right:6px}
+      .ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08)}
+      .bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.08)}
+      canvas{
+        width:100%; height:320px;
+        border-radius: 16px;
+        border:1px solid rgba(31,41,55,.14);
+        background:
+          radial-gradient(900px 350px at 25% 25%, rgba(245,158,11,.18), transparent 60%),
+          linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+      }
+      .small{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.45}
+      .codebox{
+        width:100%;
+        min-height: 280px;
+        resize: vertical;
+        border-radius: 16px;
+        border:1px solid rgba(31,41,55,.14);
+        padding:12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.45;
+        background: rgba(255,255,255,.92);
+      }
+      .iframeWrap{
+        border:1px solid rgba(31,41,55,.14);
+        border-radius: 18px;
+        overflow:hidden;
+        background: rgba(255,255,255,.78);
+      }
+      iframe{
+        width:100%;
+        height:520px;
+        border:0;
+        display:block;
+        background:white;
+      }
+      .hint{
+        font-size:12px; color:var(--muted);
+      }
+      .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="hero">
+        <h1>Triangle Checker + Visualizer (a, b, c)</h1>
+        <p>
+          Enter three side lengths. We’ll check triangle possibility using the triangle inequality, classify the type
+          (Equilateral / Isosceles / Scalene), and draw it.
+        </p>
       </div>
-
-      <p class="note">
-        <strong>One sentence takeaway:</strong> <code>querySelector</code> lets JavaScript find elements using <b>CSS selectors</b>.
-        If you can write it in CSS, you can use it in JS.
-      </p>
     </header>
 
-    <div class="grid">
-      <!-- LEFT: LESSON -->
-      <div class="card">
-        <div class="card-h">
-          <h2>Lesson Map</h2>
-          <span class="badge">CSS → JS DOM Superpower</span>
+    <main class="wrap">
+      <!-- LEFT: Visualizer -->
+      <section class="card">
+        <div class="hd">
+          <div class="title">Visualizer <span class="badge">No server • Works offline</span></div>
+          <div class="hint">Tip: try <span class="mono">3,4,5</span> or <span class="mono">5,5,5</span></div>
         </div>
-        <div class="content">
-          <ul class="toc">
-            <li><a href="#concept"><span><span class="k">1</span> What is <code>querySelector</code>?</span><small>first match / null</small></a></li>
-            <li><a href="#all"><span><span class="k">2</span> <code>querySelectorAll</code> & NodeList</span><small>many matches</small></a></li>
-            <li><a href="#selectors"><span><span class="k">3</span> Selectors you must know</span><small>id/class/attr</small></a></li>
-            <li><a href="#scoping"><span><span class="k">4</span> Scoping (search inside an element)</span><small>clean + fast</small></a></li>
-            <li><a href="#patterns"><span><span class="k">5</span> Real-world patterns</span><small>toggle, forms</small></a></li>
-            <li><a href="#mistakes"><span><span class="k">6</span> Common mistakes</span><small>debug mindset</small></a></li>
-            <li><a href="#practice"><span><span class="k">7</span> Practice set</span><small>tasks + answers</small></a></li>
-          </ul>
-
-          <hr class="hr" />
-
-          <section id="concept">
-            <h2 style="margin:0 0 10px;font-size:18px">1) What is <code>querySelector()</code>?</h2>
-            <p class="mini">
-              <code>document.querySelector(selector)</code> finds the <b>first</b> element that matches a CSS selector.
-              If nothing matches, it returns <b><code>null</code></b>.
-            </p>
-            <div class="two">
-              <div>
-                <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:800">Example</div>
-                <pre><code>// First element with id="title"
-const title = document.querySelector("#title");
-
-// First element with class="card"
-const card = document.querySelector(".card");
-
-// First &lt;p&gt; tag
-const p = document.querySelector("p");
-
-console.log(title, card, p);</code></pre>
-              </div>
-              <div>
-                <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:800">Remember</div>
-                <div class="note" style="margin:0">
-                  <strong>Returns only one element.</strong><br/>
-                  If you want all matching elements, use <code>querySelectorAll()</code>.
-                </div>
-                <div class="note">
-                  <strong>Null-safe:</strong> Always check before using properties.
-                  <pre style="margin-top:10px"><code>const el = document.querySelector(".missing");
-if (el) el.classList.add("ok");</code></pre>
-                </div>
-              </div>
+        <div class="bd">
+          <div class="grid">
+            <div>
+              <label for="a">a</label>
+              <input id="a" type="number" min="0" step="any" value="3" />
             </div>
-          </section>
-
-          <hr class="hr" />
-
-          <section id="all">
-            <h2 style="margin:0 0 10px;font-size:18px">2) <code>querySelectorAll()</code> & NodeList</h2>
-            <p class="mini">
-              <code>document.querySelectorAll(selector)</code> returns <b>all matches</b> as a <b>NodeList</b>.
-              NodeList supports <code>forEach</code>, but it’s not a full Array.
-            </p>
-            <pre><code>const buttons = document.querySelectorAll(".btn");
-
-// NodeList supports forEach:
-buttons.forEach(btn =&gt; btn.classList.add("ready"));
-
-// If you want Array methods like map/filter:
-const arr = Array.from(buttons);</code></pre>
-          </section>
-
-          <hr class="hr" />
-
-          <section id="selectors">
-            <h2 style="margin:0 0 10px;font-size:18px">3) Selectors you must know</h2>
-            <pre><code>// ID
-document.querySelector("#nav");
-
-// Class
-document.querySelector(".card");
-
-// Tag
-document.querySelectorAll("li");
-
-// Descendant (space)
-document.querySelector(".card h2");
-
-// Direct child (>)
-document.querySelector("ul &gt; li");
-
-// Multiple selectors (,)
-document.querySelector("h1, h2, h3");
-
-// Attribute
-document.querySelector("input[type='password']");
-
-// Attribute starts-with / ends-with / contains
-document.querySelector("a[href^='https']");
-document.querySelector("img[src$='.png']");
-document.querySelector("div[class*='active']");</code></pre>
-
-            <div class="note">
-              <strong>Pro tip:</strong> If you can style it in CSS, you can select it in JS.
+            <div>
+              <label for="b">b</label>
+              <input id="b" type="number" min="0" step="any" value="4" />
             </div>
-          </section>
-
-          <hr class="hr" />
-
-          <section id="scoping">
-            <h2 style="margin:0 0 10px;font-size:18px">4) Scoping: search inside an element</h2>
-            <p class="mini">
-              Instead of searching the whole document, first pick a container and then query inside it.
-              This keeps code clean and avoids accidental matches.
-            </p>
-            <pre><code>const card = document.querySelector(".card");
-
-// Only searches inside .card
-const btn = card.querySelector("button");</code></pre>
-          </section>
-
-          <hr class="hr" />
-
-          <section id="patterns">
-            <h2 style="margin:0 0 10px;font-size:18px">5) Real-world patterns</h2>
-
-            <div class="q">
-              <h3>Pattern A: Toggle menu</h3>
-              <pre><code>const menuBtn = document.querySelector("#menuBtn");
-const menu = document.querySelector("#menu");
-
-menuBtn.addEventListener("click", () =&gt; {
-  menu.classList.toggle("open");
-});</code></pre>
+            <div>
+              <label for="c">c</label>
+              <input id="c" type="number" min="0" step="any" value="5" />
             </div>
+          </div>
 
-            <div class="q">
-              <h3>Pattern B: Read form values</h3>
-              <pre><code>const email = document.querySelector("input[name='email']").value;
-const pass  = document.querySelector("input[name='password']").value;
+          <div class="row">
+            <button id="btnCheck">Check + Draw</button>
+            <button class="secondary" id="btnRandom">Random Valid</button>
+            <button class="secondary" id="btnClear">Clear</button>
+          </div>
 
-console.log({ email, pass });</code></pre>
+          <div id="result" class="msg" aria-live="polite">
+            Enter values and click <strong>Check + Draw</strong>.
+          </div>
+
+          <div style="margin-top:12px">
+            <canvas id="cv" width="900" height="520"></canvas>
+            <div class="small">
+              Drawing logic: We place the base on a horizontal line and compute the third point using the Law of Cosines.
+              If the triangle is invalid, nothing is drawn.
             </div>
-
-            <div class="q">
-              <h3>Pattern C: Highlight current nav link</h3>
-              <pre><code>document.querySelectorAll("nav a").forEach(a =&gt; {
-  if (a.href === location.href) a.classList.add("active");
-});</code></pre>
-            </div>
-          </section>
-
-          <hr class="hr" />
-
-          <section id="mistakes">
-            <h2 style="margin:0 0 10px;font-size:18px">6) Common mistakes</h2>
-            <ol class="steps">
-              <li><b>Forgetting</b> <code>#</code> for id and <code>.</code> for class:
-                <pre><code>querySelector("title")   // selects &lt;title&gt; tag (not #title)
-querySelector("#title")  // correct for id</code></pre>
-              </li>
-              <li><b>Expecting multiple elements</b> from <code>querySelector</code>:
-                <pre><code>document.querySelector(".item") // only the first one</code></pre>
-              </li>
-              <li><b>Crashing on null</b>:
-                <pre><code>document.querySelector(".missing").textContent = "Hi"; // crash</code></pre>
-              </li>
-              <li><b>NodeList isn’t Array</b>:
-                <pre><code>document.querySelectorAll("li").map(...) // ❌ no map
-Array.from(document.querySelectorAll("li")).map(...) // ✅</code></pre>
-              </li>
-            </ol>
-          </section>
-
-          <hr class="hr" />
-
-          <section id="practice">
-            <h2 style="margin:0 0 10px;font-size:18px">7) Practice set (run in the editor)</h2>
-            <p class="mini">
-              In the embedded editor, create a small HTML structure and then solve these tasks using <code>querySelector</code>
-              and <code>querySelectorAll</code>.
-            </p>
-
-            <div class="q">
-              <h3>Task 1 — Pick elements</h3>
-              <ul class="steps">
-                <li>Select an element by id and change its text.</li>
-                <li>Select all elements with a class and add a class <code>"done"</code> to each.</li>
-              </ul>
-            </div>
-
-            <div class="q">
-              <h3>Task 2 — Attribute selector</h3>
-              <ul class="steps">
-                <li>Select <code>input[type="password"]</code> and set placeholder to “Enter password”.</li>
-              </ul>
-            </div>
-
-            <div class="q">
-              <h3>Task 3 — Scoped selection</h3>
-              <ul class="steps">
-                <li>Select a container <code>.card</code>, then select a <code>button</code> inside it and wire a click.</li>
-              </ul>
-            </div>
-
-            <div class="q">
-              <h3>Bonus — Mini UI</h3>
-              <ul class="steps">
-                <li>Create 5 list items. On button click, highlight only the even ones.</li>
-              </ul>
-            </div>
-
-            <div class="note">
-              <strong>Tip:</strong> In the editor, use <code>console.log()</code> a lot. Always verify what you selected.
-            </div>
-          </section>
-
-          <div class="btnrow">
-            <a class="btn" href="#editor">Go to Editor ↓</a>
-            <a class="btn secondary" href="#top">Back to top ↑</a>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- RIGHT: EDITOR -->
-      <div class="card" id="editor">
-        <div class="card-h">
-          <h2>Embedded JavaScript Editor</h2>
-          <span class="badge">Try each task live</span>
+      <!-- RIGHT: Python code + Embedded editor -->
+      <section class="card">
+        <div class="hd">
+          <div class="title">Python Code + Embedded Editor <span class="badge">7PM-ready</span></div>
+          <div class="hint">Copy the code → paste into the editor → Run</div>
         </div>
+        <div class="bd">
+          <textarea id="pyCode" class="codebox" spellcheck="false"></textarea>
+          <div class="row" style="margin-top:10px">
+            <button id="btnCopy">Copy Code</button>
+            <button class="secondary" id="btnPasteHints">Show Input Example</button>
+          </div>
 
-        <div class="content">
-          <p class="mini" style="margin-top:0">
-            Use this editor to build a tiny HTML page and practice DOM selection.
-            Suggested workflow: write HTML + JS → run → inspect output → improve.
-          </p>
-
-          <div class="editorWrap">
-            <div class="editorTop">
-              <div class="chip"><b>Goal:</b> practice selectors on real DOM</div>
-              <div class="chip">
-                <span><b>Quick actions:</b></span>
-                <button type="button" id="copyStarter">Copy Starter</button>
-                <button type="button" id="copyCheat">Copy Cheat Sheet</button>
-              </div>
-            </div>
-
+          <div class="small">
+            Embedded Programmer’s Picnic Python Editor (Teacher mode):
+          </div>
+          <div class="iframeWrap" style="margin-top:10px">
             <iframe
-              class="editor"
-              id="ppEditor"
-              title="Programmer’s Picnic JavaScript Editor"
+              title="Programmer's Picnic Python Editor"
+              src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
               loading="eager"
               allow="clipboard-read; clipboard-write; fullscreen"
               allowfullscreen
-              src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/">
-            </iframe>
+            ></iframe>
           </div>
-
-          <div class="note">
-            <strong>How to use:</strong>
-            <ol class="steps" style="margin-top:8px">
-              <li>Paste the “Starter” snippet inside the editor.</li>
-              <li>Run it. Confirm selections using <code>console.log</code>.</li>
-              <li>Complete Task 1–3 and the Bonus.</li>
-            </ol>
-          </div>
-
-          <hr class="hr" />
-
-          <div class="two">
-            <div>
-              <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:900">Starter snippet (copy)</div>
-              <pre id="starter"><code>&lt;!doctype html&gt;
-&lt;html&gt;
-&lt;head&gt;
-  &lt;meta charset="utf-8" /&gt;
-  &lt;meta name="viewport" content="width=device-width,initial-scale=1" /&gt;
-  &lt;title&gt;Query Selector Practice&lt;/title&gt;
-  &lt;style&gt;
-    body{font-family:system-ui;margin:20px}
-    .card{border:1px solid #ddd;border-radius:12px;padding:12px;max-width:520px}
-    .done{opacity:.7;text-decoration:line-through}
-    .open{background:#fff7e6}
-    .hl{background: #fff1d6; border-radius:8px; padding:2px 6px;}
-  &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-
-  &lt;h1 id="title"&gt;Hello DOM&lt;/h1&gt;
-
-  &lt;div class="card" id="menu"&gt;
-    &lt;h2&gt;Card Title&lt;/h2&gt;
-    &lt;p class="item"&gt;Item A&lt;/p&gt;
-    &lt;p class="item"&gt;Item B&lt;/p&gt;
-    &lt;button id="menuBtn"&gt;Toggle Card&lt;/button&gt;
-  &lt;/div&gt;
-
-  &lt;div style="margin-top:14px"&gt;
-    &lt;input type="password" /&gt;
-  &lt;/div&gt;
-
-  &lt;ul id="list"&gt;
-    &lt;li class="li"&gt;One&lt;/li&gt;
-    &lt;li class="li"&gt;Two&lt;/li&gt;
-    &lt;li class="li"&gt;Three&lt;/li&gt;
-    &lt;li class="li"&gt;Four&lt;/li&gt;
-    &lt;li class="li"&gt;Five&lt;/li&gt;
-  &lt;/ul&gt;
-
-  &lt;button id="evenBtn"&gt;Highlight Even Items&lt;/button&gt;
-
-  &lt;script&gt;
-    // Task 1: select #title and change its text
-    const title = document.querySelector("#title");
-    title.textContent = "Query Selector Master ✅";
-
-    // Task 1: select all .item and add class "done"
-    document.querySelectorAll(".item").forEach(el =&gt; el.classList.add("done"));
-
-    // Task 2: select input[type='password'] and set placeholder
-    const pass = document.querySelector("input[type='password']");
-    pass.placeholder = "Enter password";
-
-    // Task 3: scoped selection inside .card
-    const card = document.querySelector(".card");
-    const btn = card.querySelector("button");
-    btn.addEventListener("click", () =&gt; card.classList.toggle("open"));
-
-    // Bonus: highlight even list items on click
-    document.querySelector("#evenBtn").addEventListener("click", () =&gt; {
-      const items = document.querySelectorAll("#list &gt; li");
-      items.forEach((li, i) =&gt; {
-        li.classList.toggle("hl", (i + 1) % 2 === 0); // 2nd, 4th...
-      });
-    });
-
-    console.log("Ready. Try modifying selectors & logic!");
-  &lt;/script&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-            </div>
-
-            <div>
-              <div class="mini" style="margin-bottom:8px;color:#111827;font-weight:900">Cheat sheet (copy)</div>
-              <pre id="cheat"><code>// querySelector (first match)
-document.querySelector("#id");
-document.querySelector(".class");
-document.querySelector("tag");
-
-// querySelectorAll (all matches)
-document.querySelectorAll("li");
-
-// Descendant / child
-document.querySelector(".card h2");
-document.querySelector("#list &gt; li");
-
-// Multiple selectors
-document.querySelector("h1, h2");
-
-// Attributes
-document.querySelector("input[type='password']");
-document.querySelector("a[href^='https']");
-document.querySelector("img[src$='.png']");
-document.querySelector("div[class*='active']");
-
-// Scoped query (cleaner)
-const box = document.querySelector(".box");
-box.querySelector("button");</code></pre>
-
-              <div class="note">
-                <strong>Micro rule:</strong> When your selection is wrong, print it.
-                <pre style="margin-top:10px"><code>const x = document.querySelector(".something");
-console.log("selected:", x);</code></pre>
-              </div>
-
-              <div class="btnrow">
-                <a class="btn secondary" href="#practice">Practice tasks ↑</a>
-                <a class="btn" href="#top">Top ↑</a>
-              </div>
-            </div>
-          </div>
-
-          <p class="foot">
-            © Programmer’s Picnic — Light Saffron Lesson Template • Built for WhatsApp batches & GitHub Pages
-          </p>
         </div>
-      </div>
-    </div>
-  </div>
+      </section>
+    </main>
 
-  <script>
-    // Copy helpers (works outside the iframe; copies the snippets shown on this page)
-    function copyTextFromPre(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const text = el.innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        flashBtn(id === "starter" ? "copyStarter" : "copyCheat", "Copied ✅");
-      }).catch(() => {
-        flashBtn(id === "starter" ? "copyStarter" : "copyCheat", "Copy failed");
+    <script>
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+
+      const els = {
+        a: $("a"),
+        b: $("b"),
+        c: $("c"),
+        btnCheck: $("btnCheck"),
+        btnRandom: $("btnRandom"),
+        btnClear: $("btnClear"),
+        res: $("result"),
+        cv: $("cv"),
+        py: $("pyCode"),
+        btnCopy: $("btnCopy"),
+        btnPasteHints: $("btnPasteHints"),
+      };
+
+      // ----- Python snippet (matches the visualizer rules) -----
+      const PY_SNIPPET =
+`# Triangle checker + type (Equilateral / Isosceles / Scalene)
+# Rule: A triangle is possible iff a, b, c are positive AND
+#       a + b > c, a + c > b, b + c > a
+
+def triangle_type(a, b, c, eps=1e-9):
+    # Basic validation
+    if a <= 0 or b <= 0 or c <= 0:
+        return (False, "Not a triangle (sides must be positive)")
+
+    # Triangle inequality
+    if (a + b) <= c + eps or (a + c) <= b + eps or (b + c) <= a + eps:
+        return (False, "Not a triangle (triangle inequality failed)")
+
+    # Classification
+    # Use tolerance eps for float inputs
+    ab = abs(a - b) <= eps
+    bc = abs(b - c) <= eps
+    ca = abs(c - a) <= eps
+
+    if ab and bc:   # implies all equal
+        return (True, "Equilateral")
+    if ab or bc or ca:
+        return (True, "Isosceles")
+    return (True, "Scalene")
+
+
+# ---- Demo I/O ----
+# You can edit these values or read from input.
+try:
+    a = float(input("Enter a: ").strip())
+    b = float(input("Enter b: ").strip())
+    c = float(input("Enter c: ").strip())
+
+    ok, kind = triangle_type(a, b, c)
+    if ok:
+        print("Triangle is possible ✅")
+        print("Type:", kind)
+    else:
+        print("Triangle is NOT possible ❌")
+        print("Reason:", kind)
+except ValueError:
+    print("Please enter valid numbers.")`;
+
+      els.py.value = PY_SNIPPET;
+
+      // ----- Math helpers -----
+      function nearlyEqual(x, y, eps = 1e-9) {
+        return Math.abs(x - y) <= eps;
+      }
+
+      function trianglePossible(a, b, c, eps = 1e-9) {
+        if (!(a > 0 && b > 0 && c > 0)) return { ok: false, reason: "Sides must be positive." };
+        if (a + b <= c + eps || a + c <= b + eps || b + c <= a + eps) {
+          return { ok: false, reason: "Triangle inequality failed (sum of two sides must be greater than the third)." };
+        }
+        return { ok: true };
+      }
+
+      function triangleType(a, b, c, eps = 1e-9) {
+        const ab = nearlyEqual(a, b, eps);
+        const bc = nearlyEqual(b, c, eps);
+        const ca = nearlyEqual(c, a, eps);
+        if (ab && bc) return "Equilateral";
+        if (ab || bc || ca) return "Isosceles";
+        return "Scalene";
+      }
+
+      // ----- Drawing -----
+      const ctx = els.cv.getContext("2d");
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, els.cv.width, els.cv.height);
+
+        // subtle grid
+        ctx.globalAlpha = 0.08;
+        ctx.beginPath();
+        for (let x = 0; x <= els.cv.width; x += 45) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, els.cv.height);
+        }
+        for (let y = 0; y <= els.cv.height; y += 45) {
+          ctx.moveTo(0, y);
+          ctx.lineTo(els.cv.width, y);
+        }
+        ctx.strokeStyle = "#111827";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      function drawTriangle(a, b, c) {
+        // We'll draw with base = c, and sides:
+        // AC = b, BC = a, AB = c
+        // Place A=(0,0), B=(c,0). Find C=(x,y):
+        // x = (b^2 + c^2 - a^2) / (2c)
+        // y = sqrt(b^2 - x^2)
+        const eps = 1e-9;
+
+        if (c <= eps) return false;
+
+        const x = (b*b + c*c - a*a) / (2*c);
+        const y2 = b*b - x*x;
+        if (y2 < -1e-6) return false;
+        const y = Math.sqrt(Math.max(0, y2));
+
+        // raw coordinates
+        const A = { x: 0, y: 0 };
+        const B = { x: c, y: 0 };
+        const C = { x: x, y: y };
+
+        // fit to canvas with padding
+        const pad = 70;
+        const minX = Math.min(A.x, B.x, C.x);
+        const maxX = Math.max(A.x, B.x, C.x);
+        const minY = Math.min(A.y, B.y, C.y);
+        const maxY = Math.max(A.y, B.y, C.y);
+
+        const w = maxX - minX || 1;
+        const h = maxY - minY || 1;
+
+        const sx = (els.cv.width - 2*pad) / w;
+        const sy = (els.cv.height - 2*pad) / h;
+        const s = Math.min(sx, sy);
+
+        function mapP(P) {
+          // flip Y (canvas down is +y, we want C "up")
+          return {
+            x: pad + (P.x - minX) * s,
+            y: els.cv.height - pad - (P.y - minY) * s,
+          };
+        }
+
+        const A2 = mapP(A), B2 = mapP(B), C2 = mapP(C);
+
+        clearCanvas();
+
+        // triangle fill
+        ctx.beginPath();
+        ctx.moveTo(A2.x, A2.y);
+        ctx.lineTo(B2.x, B2.y);
+        ctx.lineTo(C2.x, C2.y);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(245, 158, 11, 0.18)";
+        ctx.fill();
+
+        // edges
+        ctx.strokeStyle = "#1f2937";
+        ctx.lineWidth = 4;
+        ctx.lineJoin = "round";
+        ctx.stroke();
+
+        // points
+        function dot(P, label) {
+          ctx.beginPath();
+          ctx.arc(P.x, P.y, 8, 0, Math.PI*2);
+          ctx.fillStyle = "#d97706";
+          ctx.fill();
+
+          ctx.font = "700 16px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+          ctx.fillStyle = "#1f2937";
+          ctx.fillText(label, P.x + 12, P.y - 12);
+        }
+        dot(A2, "A");
+        dot(B2, "B");
+        dot(C2, "C");
+
+        // side labels
+        ctx.font = "600 14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        ctx.fillStyle = "#374151";
+
+        const midAB = { x:(A2.x+B2.x)/2, y:(A2.y+B2.y)/2 };
+        const midAC = { x:(A2.x+C2.x)/2, y:(A2.y+C2.y)/2 };
+        const midBC = { x:(B2.x+C2.x)/2, y:(B2.y+C2.y)/2 };
+
+        ctx.fillText(`c = ${c}`, midAB.x + 8, midAB.y + 18);
+        ctx.fillText(`b = ${b}`, midAC.x + 8, midAC.y - 8);
+        ctx.fillText(`a = ${a}`, midBC.x + 8, midBC.y - 8);
+
+        return true;
+      }
+
+      // ----- UI actions -----
+      function readSides() {
+        const a = Number(els.a.value);
+        const b = Number(els.b.value);
+        const c = Number(els.c.value);
+        return { a, b, c };
+      }
+
+      function setResult(ok, title, extra) {
+        els.res.classList.remove("ok", "bad");
+        els.res.classList.add(ok ? "ok" : "bad");
+        els.res.innerHTML = `<strong>${title}</strong> ${extra || ""}`;
+      }
+
+      function checkAndDraw() {
+        const { a, b, c } = readSides();
+
+        if (![a,b,c].every(Number.isFinite)) {
+          setResult(false, "Invalid input ❌", "Please enter numbers.");
+          clearCanvas();
+          return;
+        }
+
+        const poss = trianglePossible(a, b, c);
+        if (!poss.ok) {
+          setResult(false, "Triangle NOT possible ❌", poss.reason);
+          clearCanvas();
+          return;
+        }
+
+        const kind = triangleType(a, b, c);
+        setResult(true, "Triangle possible ✅", `Type: <strong>${kind}</strong>`);
+
+        const drew = drawTriangle(a, b, c);
+        if (!drew) {
+          // Extremely rare with floating errors; we still keep the classification.
+          setResult(true, "Triangle possible ✅", `Type: <strong>${kind}</strong> (drawing fallback)`);
+          clearCanvas();
+        }
+      }
+
+      function randomValidTriangle() {
+        // Create a random triangle by picking two sides and ensuring the third is in (|a-b|, a+b)
+        const a = +(2 + Math.random()*10).toFixed(2);
+        const b = +(2 + Math.random()*10).toFixed(2);
+        const lo = Math.abs(a - b) + 0.2;
+        const hi = a + b - 0.2;
+        const c = +(lo + Math.random()*(hi - lo)).toFixed(2);
+
+        els.a.value = a;
+        els.b.value = b;
+        els.c.value = c;
+        checkAndDraw();
+      }
+
+      els.btnCheck.addEventListener("click", checkAndDraw);
+      els.btnRandom.addEventListener("click", randomValidTriangle);
+      els.btnClear.addEventListener("click", () => {
+        els.a.value = "";
+        els.b.value = "";
+        els.c.value = "";
+        setResult(false, "Cleared.", "Enter sides and click Check + Draw.");
+        clearCanvas();
       });
-    }
 
-    function flashBtn(btnId, msg){
-      const b = document.getElementById(btnId);
-      if (!b) return;
-      const old = b.textContent;
-      b.textContent = msg;
-      setTimeout(() => b.textContent = old, 1100);
-    }
+      ["input","change"].forEach(evt=>{
+        els.a.addEventListener(evt, ()=>{ /* optional live */ });
+        els.b.addEventListener(evt, ()=>{ /* optional live */ });
+        els.c.addEventListener(evt, ()=>{ /* optional live */ });
+      });
 
-    document.getElementById("copyStarter")?.addEventListener("click", () => copyTextFromPre("starter"));
-    document.getElementById("copyCheat")?.addEventListener("click", () => copyTextFromPre("cheat"));
-  </script>
-</body>
+      els.btnCopy.addEventListener("click", async () => {
+        try{
+          await navigator.clipboard.writeText(els.py.value);
+          els.btnCopy.textContent = "Copied ✅";
+          setTimeout(()=> els.btnCopy.textContent = "Copy Code", 900);
+        }catch(e){
+          alert("Copy failed. Please select the text and copy manually.");
+        }
+      });
+
+      els.btnPasteHints.addEventListener("click", () => {
+        alert(
+          "Example runs:\\n\\n" +
+          "a=3, b=4, c=5  -> Scalene\\n" +
+          "a=5, b=5, c=5  -> Equilateral\\n" +
+          "a=5, b=5, c=8  -> Isosceles\\n" +
+          "a=1, b=2, c=3  -> Not possible"
+        );
+      });
+
+      // initial draw
+      clearCanvas();
+      checkAndDraw();
+    </script>
+  </body>
 </html>
