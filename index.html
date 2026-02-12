@@ -1,530 +1,773 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Triangle Checker + Visualizer (a, b, c)</title>
-    <style>
-      :root{
-        --bg1:#fff7e6; --bg2:#fff1d6;
-        --card: rgba(255,255,255,.9);
-        --ink:#1f2937; --muted:#6b7280;
-        --brand:#d97706; --brand2:#f59e0b;
-        --line: rgba(31,41,55,.14);
-        --shadow: 0 10px 30px rgba(31,41,55,.10);
-        --r: 18px;
-      }
-      *{box-sizing:border-box}
-      body{
-        margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink);
-        background:
-          radial-gradient(1200px 600px at 10% 0%, rgba(245,158,11,.24), transparent 60%),
-          radial-gradient(900px 460px at 90% 15%, rgba(217,119,6,.18), transparent 60%),
-          linear-gradient(180deg, var(--bg1), #fff);
-      }
-      header{
-        max-width:1100px; margin:18px auto 0; padding:0 14px;
-      }
-      .hero{
-        border:1px solid var(--line);
-        background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
-        border-radius: 22px;
-        padding: 16px 16px 14px;
-        box-shadow: var(--shadow);
-      }
-      .hero h1{margin:0; font-size:20px}
-      .hero p{margin:6px 0 0; color:var(--muted); line-height:1.4}
-      .wrap{
-        max-width:1100px; margin:14px auto 30px; padding:0 14px;
-        display:grid; gap:14px;
-        grid-template-columns: 1.05fr .95fr;
-      }
-      @media (max-width: 980px){
-        .wrap{grid-template-columns:1fr}
-      }
-      .card{
-        border:1px solid var(--line);
-        background: var(--card);
-        border-radius: var(--r);
-        box-shadow: var(--shadow);
-        overflow:hidden;
-      }
-      .card .hd{
-        padding:12px 14px;
-        border-bottom:1px solid var(--line);
-        display:flex; align-items:center; justify-content:space-between; gap:10px;
-      }
-      .card .hd .title{
-        font-weight:700; display:flex; align-items:center; gap:10px;
-      }
-      .badge{
-        font-size:12px; padding:4px 10px; border-radius:999px;
-        border:1px solid rgba(217,119,6,.35);
-        background: rgba(245,158,11,.16);
-        color: #92400e;
-        white-space:nowrap;
-      }
-      .card .bd{padding:14px}
-      .grid{
-        display:grid; gap:10px;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-      @media (max-width: 520px){
-        .grid{grid-template-columns:1fr}
-      }
-      label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
-      input{
-        width:100%; padding:12px 12px;
-        border-radius: 14px;
-        border:1px solid rgba(31,41,55,.18);
-        background: rgba(255,255,255,.92);
-        outline:none;
-        font-size:16px;
-      }
-      input:focus{border-color: rgba(217,119,6,.55); box-shadow: 0 0 0 4px rgba(245,158,11,.18)}
-      .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-      button{
-        border:1px solid rgba(217,119,6,.35);
-        background: linear-gradient(180deg, rgba(245,158,11,.92), rgba(217,119,6,.92));
-        color:white; font-weight:700;
-        padding:10px 12px; border-radius: 14px;
-        cursor:pointer;
-      }
-      button.secondary{
-        background: rgba(255,255,255,.92);
-        color: var(--ink);
-        border:1px solid rgba(31,41,55,.18);
-      }
-      button:active{transform: translateY(1px)}
-      .msg{
-        margin-top:12px;
-        padding:12px 12px;
-        border-radius: 14px;
-        border:1px solid rgba(31,41,55,.14);
-        background: rgba(255,255,255,.78);
-      }
-      .msg strong{display:inline-block; margin-right:6px}
-      .ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08)}
-      .bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.08)}
-      canvas{
-        width:100%; height:320px;
-        border-radius: 16px;
-        border:1px solid rgba(31,41,55,.14);
-        background:
-          radial-gradient(900px 350px at 25% 25%, rgba(245,158,11,.18), transparent 60%),
-          linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
-      }
-      .small{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.45}
-      .codebox{
-        width:100%;
-        min-height: 280px;
-        resize: vertical;
-        border-radius: 16px;
-        border:1px solid rgba(31,41,55,.14);
-        padding:12px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size: 13px;
-        line-height: 1.45;
-        background: rgba(255,255,255,.92);
-      }
-      .iframeWrap{
-        border:1px solid rgba(31,41,55,.14);
-        border-radius: 18px;
-        overflow:hidden;
-        background: rgba(255,255,255,.78);
-      }
-      iframe{
-        width:100%;
-        height:520px;
-        border:0;
-        display:block;
-        background:white;
-      }
-      .hint{
-        font-size:12px; color:var(--muted);
-      }
-      .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="hero">
-        <h1>Triangle Checker + Visualizer (a, b, c)</h1>
-        <p>
-          Enter three side lengths. We’ll check triangle possibility using the triangle inequality, classify the type
-          (Equilateral / Isosceles / Scalene), and draw it.
-        </p>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Triangle Visualizer: Type + Right Angle + Angles + Animation + Area/Perimeter</title>
+  <style>
+    :root{
+      --bg1:#fff7e6; --bg2:#fff1d6;
+      --card: rgba(255,255,255,.92);
+      --ink:#1f2937; --muted:#6b7280;
+      --brand:#d97706; --brand2:#f59e0b;
+      --line: rgba(31,41,55,.14);
+      --shadow: 0 12px 34px rgba(31,41,55,.10);
+      --r: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(245,158,11,.24), transparent 60%),
+        radial-gradient(900px 460px at 90% 15%, rgba(217,119,6,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg1), #fff);
+    }
+    header{max-width:1150px; margin:18px auto 0; padding:0 14px}
+    .hero{
+      border:1px solid var(--line);
+      background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      border-radius: 22px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+    .hero h1{margin:0; font-size:20px}
+    .hero p{margin:6px 0 0; color:var(--muted); line-height:1.4}
+    .wrap{
+      max-width:1150px; margin:14px auto 30px; padding:0 14px;
+      display:grid; gap:14px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .hd{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .title{font-weight:800; display:flex; align-items:center; gap:10px}
+    .badge{
+      font-size:12px; padding:4px 10px; border-radius:999px;
+      border:1px solid rgba(217,119,6,.35);
+      background: rgba(245,158,11,.16);
+      color: #92400e;
+      white-space:nowrap;
+    }
+    .bd{padding:14px}
+    .grid{
+      display:grid; gap:10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
+
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
+    input, select{
+      width:100%; padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(31,41,55,.18);
+      background: rgba(255,255,255,.92);
+      outline:none;
+      font-size:16px;
+    }
+    input:focus, select:focus{border-color: rgba(217,119,6,.55); box-shadow: 0 0 0 4px rgba(245,158,11,.18)}
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center}
+    button{
+      border:1px solid rgba(217,119,6,.35);
+      background: linear-gradient(180deg, rgba(245,158,11,.92), rgba(217,119,6,.92));
+      color:white; font-weight:800;
+      padding:10px 12px; border-radius: 14px;
+      cursor:pointer;
+    }
+    button.secondary{
+      background: rgba(255,255,255,.92);
+      color: var(--ink);
+      border:1px solid rgba(31,41,55,.18);
+      font-weight:700;
+    }
+    button:active{transform: translateY(1px)}
+    .msg{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(31,41,55,.14);
+      background: rgba(255,255,255,.78);
+      line-height:1.5;
+    }
+    .ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08)}
+    .bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.08)}
+    .kpi{
+      margin-top:10px;
+      display:grid; gap:10px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width:520px){ .kpi{grid-template-columns:1fr} }
+    .kpi .box{
+      border:1px dashed rgba(31,41,55,.18);
+      border-radius: 14px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.65);
+    }
+    .kpi .box .k{font-size:12px; color:var(--muted)}
+    .kpi .box .v{font-weight:900; margin-top:4px}
+
+    canvas{
+      width:100%; height:360px;
+      border-radius: 16px;
+      border:1px solid rgba(31,41,55,.14);
+      background:
+        radial-gradient(900px 350px at 25% 25%, rgba(245,158,11,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+    }
+    .small{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.45}
+    .codebox{
+      width:100%;
+      min-height: 300px;
+      resize: vertical;
+      border-radius: 16px;
+      border:1px solid rgba(31,41,55,.14);
+      padding:12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      background: rgba(255,255,255,.92);
+    }
+    .iframeWrap{
+      border:1px solid rgba(31,41,55,.14);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(255,255,255,.78);
+    }
+    iframe{width:100%; height:540px; border:0; display:block; background:white;}
+    .hint{font-size:12px; color:var(--muted)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .sliderWrap{display:flex; gap:10px; align-items:center}
+    input[type="range"]{padding:0; height:34px}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="hero">
+      <h1>Triangle Visualizer (a, b, c): Type + Right Angle + Angles + Animation + Area/Perimeter</h1>
+      <p>
+        Uses triangle inequality to validate, classifies (Equilateral/Isosceles/Scalene), checks right-angle using dot products / Pythagoras,
+        shows all angles, area (Heron), perimeter, and animates the drawing.
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LEFT -->
+    <section class="card">
+      <div class="hd">
+        <div class="title">Visualizer <span class="badge">All 4 upgrades ✅</span></div>
+        <div class="hint">Try <span class="mono">3,4,5</span> • <span class="mono">5,5,5</span> • <span class="mono">1,2,3</span></div>
       </div>
-    </header>
-
-    <main class="wrap">
-      <!-- LEFT: Visualizer -->
-      <section class="card">
-        <div class="hd">
-          <div class="title">Visualizer <span class="badge">No server • Works offline</span></div>
-          <div class="hint">Tip: try <span class="mono">3,4,5</span> or <span class="mono">5,5,5</span></div>
-        </div>
-        <div class="bd">
-          <div class="grid">
-            <div>
-              <label for="a">a</label>
-              <input id="a" type="number" min="0" step="any" value="3" />
-            </div>
-            <div>
-              <label for="b">b</label>
-              <input id="b" type="number" min="0" step="any" value="4" />
-            </div>
-            <div>
-              <label for="c">c</label>
-              <input id="c" type="number" min="0" step="any" value="5" />
-            </div>
+      <div class="bd">
+        <div class="grid">
+          <div>
+            <label for="a">a</label>
+            <input id="a" type="number" min="0" step="any" value="3" />
           </div>
-
-          <div class="row">
-            <button id="btnCheck">Check + Draw</button>
-            <button class="secondary" id="btnRandom">Random Valid</button>
-            <button class="secondary" id="btnClear">Clear</button>
+          <div>
+            <label for="b">b</label>
+            <input id="b" type="number" min="0" step="any" value="4" />
           </div>
-
-          <div id="result" class="msg" aria-live="polite">
-            Enter values and click <strong>Check + Draw</strong>.
-          </div>
-
-          <div style="margin-top:12px">
-            <canvas id="cv" width="900" height="520"></canvas>
-            <div class="small">
-              Drawing logic: We place the base on a horizontal line and compute the third point using the Law of Cosines.
-              If the triangle is invalid, nothing is drawn.
-            </div>
+          <div>
+            <label for="c">c</label>
+            <input id="c" type="number" min="0" step="any" value="5" />
           </div>
         </div>
-      </section>
 
-      <!-- RIGHT: Python code + Embedded editor -->
-      <section class="card">
-        <div class="hd">
-          <div class="title">Python Code + Embedded Editor <span class="badge">7PM-ready</span></div>
-          <div class="hint">Copy the code → paste into the editor → Run</div>
+        <div class="row">
+          <button id="btnCheck">Check + Animate</button>
+          <button class="secondary" id="btnPause">Pause</button>
+          <button class="secondary" id="btnRandom">Random Valid</button>
+          <button class="secondary" id="btnClear">Clear</button>
         </div>
-        <div class="bd">
-          <textarea id="pyCode" class="codebox" spellcheck="false"></textarea>
-          <div class="row" style="margin-top:10px">
-            <button id="btnCopy">Copy Code</button>
-            <button class="secondary" id="btnPasteHints">Show Input Example</button>
-          </div>
 
+        <div class="row" style="margin-top:8px">
+          <div class="sliderWrap">
+            <span class="hint">Speed</span>
+            <input id="speed" type="range" min="0.4" max="3.5" value="1.4" step="0.1" />
+            <span class="hint mono" id="speedVal">1.4×</span>
+          </div>
+          <div class="sliderWrap">
+            <span class="hint">Show</span>
+            <select id="showMode">
+              <option value="labels" selected>Labels + Right-Angle Marker</option>
+              <option value="angles">Angle Values (°)</option>
+              <option value="clean">Clean (no labels)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="result" class="msg" aria-live="polite">
+          Enter values and click <strong>Check + Animate</strong>.
+        </div>
+
+        <div class="kpi">
+          <div class="box">
+            <div class="k">Perimeter</div>
+            <div class="v" id="kPer">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Area (Heron)</div>
+            <div class="v" id="kArea">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Angles (A, B, C)</div>
+            <div class="v" id="kAng">—</div>
+          </div>
+          <div class="box">
+            <div class="k">Right Angle At</div>
+            <div class="v" id="kRight">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <canvas id="cv" width="950" height="560"></canvas>
           <div class="small">
-            Embedded Programmer’s Picnic Python Editor (Teacher mode):
-          </div>
-          <div class="iframeWrap" style="margin-top:10px">
-            <iframe
-              title="Programmer's Picnic Python Editor"
-              src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
-              loading="eager"
-              allow="clipboard-read; clipboard-write; fullscreen"
-              allowfullscreen
-            ></iframe>
+            Right-angle detection is done by checking the dot product at each vertex (perpendicular sides ⇒ dot ≈ 0).
+            Angles are computed using the Law of Cosines.
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
 
-    <script>
-      "use strict";
+    <!-- RIGHT -->
+    <section class="card">
+      <div class="hd">
+        <div class="title">Python Code + Embedded Editor <span class="badge">Teacher mode</span></div>
+        <div class="hint">Copy → paste → run</div>
+      </div>
+      <div class="bd">
+        <textarea id="pyCode" class="codebox" spellcheck="false"></textarea>
 
-      const $ = (id) => document.getElementById(id);
+        <div class="row" style="margin-top:10px">
+          <button id="btnCopy">Copy Code</button>
+          <button class="secondary" id="btnExamples">Examples</button>
+        </div>
 
-      const els = {
-        a: $("a"),
-        b: $("b"),
-        c: $("c"),
-        btnCheck: $("btnCheck"),
-        btnRandom: $("btnRandom"),
-        btnClear: $("btnClear"),
-        res: $("result"),
-        cv: $("cv"),
-        py: $("pyCode"),
-        btnCopy: $("btnCopy"),
-        btnPasteHints: $("btnPasteHints"),
-      };
+        <div class="small">Embedded Programmer’s Picnic Python Editor:</div>
+        <div class="iframeWrap" style="margin-top:10px">
+          <iframe
+            title="Programmer's Picnic Python Editor"
+            src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
+            loading="eager"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
 
-      // ----- Python snippet (matches the visualizer rules) -----
-      const PY_SNIPPET =
-`# Triangle checker + type (Equilateral / Isosceles / Scalene)
-# Rule: A triangle is possible iff a, b, c are positive AND
-#       a + b > c, a + c > b, b + c > a
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
 
-def triangle_type(a, b, c, eps=1e-9):
-    # Basic validation
+const els = {
+  a: $("a"), b: $("b"), c: $("c"),
+  btnCheck: $("btnCheck"), btnPause: $("btnPause"),
+  btnRandom: $("btnRandom"), btnClear: $("btnClear"),
+  res: $("result"), cv: $("cv"),
+  speed: $("speed"), speedVal: $("speedVal"),
+  showMode: $("showMode"),
+  kPer: $("kPer"), kArea: $("kArea"), kAng: $("kAng"), kRight: $("kRight"),
+  py: $("pyCode"), btnCopy: $("btnCopy"), btnExamples: $("btnExamples"),
+};
+
+els.speedVal.textContent = `${Number(els.speed.value).toFixed(1)}×`;
+els.speed.addEventListener("input", () => els.speedVal.textContent = `${Number(els.speed.value).toFixed(1)}×`);
+
+const ctx = els.cv.getContext("2d");
+let anim = { running:false, t:0, speed:1.4, P:null, segments:[], totalLen:1, paused:false };
+
+function nearlyEqual(x,y,eps=1e-9){ return Math.abs(x-y) <= eps; }
+function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
+function dist(P,Q){ const dx=P.x-Q.x, dy=P.y-Q.y; return Math.hypot(dx,dy); }
+
+function trianglePossible(a,b,c,eps=1e-9){
+  if(!(a>0 && b>0 && c>0)) return {ok:false, reason:"Sides must be positive."};
+  if(a+b <= c+eps || a+c <= b+eps || b+c <= a+eps){
+    return {ok:false, reason:"Triangle inequality failed (sum of two sides must be greater than the third)."};
+  }
+  return {ok:true};
+}
+
+function triangleType(a,b,c,eps=1e-9){
+  const ab = nearlyEqual(a,b,eps), bc = nearlyEqual(b,c,eps), ca = nearlyEqual(c,a,eps);
+  if(ab && bc) return "Equilateral";
+  if(ab || bc || ca) return "Isosceles";
+  return "Scalene";
+}
+
+function heronArea(a,b,c){
+  const s=(a+b+c)/2;
+  const v = s*(s-a)*(s-b)*(s-c);
+  return Math.sqrt(Math.max(0,v));
+}
+
+function angleFromSides(opposite, side1, side2){
+  // cos(theta) = (side1^2 + side2^2 - opposite^2) / (2*side1*side2)
+  const denom = 2*side1*side2;
+  if(denom === 0) return 0;
+  const cosT = clamp((side1*side1 + side2*side2 - opposite*opposite)/denom, -1, 1);
+  return Math.acos(cosT) * 180/Math.PI;
+}
+
+function rightAngleVertex(A,B,C,eps=1e-6){
+  // At A: (B-A)·(C-A) == 0
+  function dot(P,Q){ return P.x*Q.x + P.y*Q.y; }
+  function sub(P,Q){ return {x:P.x-Q.x, y:P.y-Q.y}; }
+  const BA = sub(B,A), CA = sub(C,A);
+  const AB = sub(A,B), CB = sub(C,B);
+  const AC = sub(A,C), BC = sub(B,C);
+  const dA = dot(BA, CA);
+  const dB = dot(AB, CB);
+  const dC = dot(AC, BC);
+  const mags = [
+    Math.hypot(BA.x,BA.y)*Math.hypot(CA.x,CA.y),
+    Math.hypot(AB.x,AB.y)*Math.hypot(CB.x,CB.y),
+    Math.hypot(AC.x,AC.y)*Math.hypot(BC.x,BC.y),
+  ];
+  const nA = mags[0] ? Math.abs(dA)/mags[0] : 1;
+  const nB = mags[1] ? Math.abs(dB)/mags[1] : 1;
+  const nC = mags[2] ? Math.abs(dC)/mags[2] : 1;
+
+  const m = Math.min(nA,nB,nC);
+  if(m > eps) return null;
+  if(m === nA) return "A";
+  if(m === nB) return "B";
+  return "C";
+}
+
+function clearCanvas(){
+  ctx.clearRect(0,0,els.cv.width, els.cv.height);
+  // light grid
+  ctx.globalAlpha = 0.08;
+  ctx.beginPath();
+  for(let x=0;x<=els.cv.width;x+=48){ ctx.moveTo(x,0); ctx.lineTo(x,els.cv.height); }
+  for(let y=0;y<=els.cv.height;y+=48){ ctx.moveTo(0,y); ctx.lineTo(els.cv.width,y); }
+  ctx.strokeStyle="#111827"; ctx.lineWidth=1; ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+
+function fitToCanvas(points){
+  const pad=80;
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(const p of points){
+    minX=Math.min(minX,p.x); maxX=Math.max(maxX,p.x);
+    minY=Math.min(minY,p.y); maxY=Math.max(maxY,p.y);
+  }
+  const w=(maxX-minX)||1, h=(maxY-minY)||1;
+  const sx=(els.cv.width-2*pad)/w, sy=(els.cv.height-2*pad)/h;
+  const s=Math.min(sx,sy);
+
+  return points.map(p=>({
+    x: pad + (p.x-minX)*s,
+    y: els.cv.height - pad - (p.y-minY)*s, // flip
+  }));
+}
+
+function computeTrianglePoints(a,b,c){
+  // Use AB as base = c, place A(0,0), B(c,0)
+  // AC=b, BC=a => find C using law of cosines
+  const eps=1e-9;
+  if(c<=eps) return null;
+
+  const x = (b*b + c*c - a*a) / (2*c);
+  const y2 = b*b - x*x;
+  if(y2 < -1e-6) return null;
+  const y = Math.sqrt(Math.max(0,y2));
+
+  const A={x:0,y:0}, B={x:c,y:0}, C={x:x,y:y};
+  const [A2,B2,C2] = fitToCanvas([A,B,C]);
+  return { A:A2, B:B2, C:C2 };
+}
+
+function drawPoint(P,label){
+  ctx.beginPath(); ctx.arc(P.x,P.y,8,0,Math.PI*2);
+  ctx.fillStyle="#d97706"; ctx.fill();
+  ctx.font="800 16px system-ui"; ctx.fillStyle="#1f2937";
+  ctx.fillText(label, P.x+12, P.y-12);
+}
+
+function drawRightAngleMarker(at, A,B,C){
+  // Draw a little square at the right-angled vertex.
+  // We build two unit vectors along the adjacent sides and draw a small L-shape.
+  function sub(P,Q){ return {x:P.x-Q.x, y:P.y-Q.y}; }
+  function norm(V){ const m=Math.hypot(V.x,V.y)||1; return {x:V.x/m, y:V.y/m}; }
+  function add(P,V,sc){ return {x:P.x+V.x*sc, y:P.y+V.y*sc}; }
+
+  let P, V1, V2;
+  const L = 26;
+
+  if(at==="A"){
+    P=A; V1=norm(sub(B,A)); V2=norm(sub(C,A));
+  }else if(at==="B"){
+    P=B; V1=norm(sub(A,B)); V2=norm(sub(C,B));
+  }else{
+    P=C; V1=norm(sub(A,C)); V2=norm(sub(B,C));
+  }
+
+  const p1 = add(P,V1,L);
+  const p2 = add(P,V2,L);
+  const corner = add(p1, V2, L); // p1 + V2*L
+
+  ctx.beginPath();
+  ctx.moveTo(p1.x,p1.y);
+  ctx.lineTo(corner.x,corner.y);
+  ctx.lineTo(p2.x,p2.y);
+  ctx.strokeStyle="#1f2937";
+  ctx.lineWidth=4;
+  ctx.lineJoin="round";
+  ctx.stroke();
+}
+
+function drawAngleText(A,B,C, angA, angB, angC){
+  // Simple angle labels near vertices
+  ctx.font="800 13px system-ui";
+  ctx.fillStyle="#374151";
+  ctx.fillText(`${angA.toFixed(1)}°`, A.x+14, A.y+18);
+  ctx.fillText(`${angB.toFixed(1)}°`, B.x+14, B.y+18);
+  ctx.fillText(`${angC.toFixed(1)}°`, C.x+14, C.y+18);
+}
+
+function drawEdgePartial(P,Q, t){
+  // draw from P to Q by fraction t (0..1)
+  const x = P.x + (Q.x-P.x)*t;
+  const y = P.y + (Q.y-P.y)*t;
+  ctx.beginPath();
+  ctx.moveTo(P.x,P.y);
+  ctx.lineTo(x,y);
+  ctx.stroke();
+}
+
+function setResult(ok, title, html){
+  els.res.classList.remove("ok","bad");
+  els.res.classList.add(ok ? "ok" : "bad");
+  els.res.innerHTML = `<strong>${title}</strong> ${html||""}`;
+}
+
+function updateKPIs(per, area, angA, angB, angC, rightAt){
+  els.kPer.textContent  = per ? per.toFixed(4) : "—";
+  els.kArea.textContent = area ? area.toFixed(4) : "—";
+  els.kAng.textContent  = (angA||angB||angC) ? `${angA.toFixed(1)}°, ${angB.toFixed(1)}°, ${angC.toFixed(1)}°` : "—";
+  els.kRight.textContent= rightAt ? rightAt : "No";
+}
+
+function readSides(){
+  const a=Number(els.a.value), b=Number(els.b.value), c=Number(els.c.value);
+  return {a,b,c};
+}
+
+/* ---------------- Animation Engine ---------------- */
+function startAnimation(points, showMode, rightAt, labelsData){
+  anim.P = points;
+  anim.t = 0;
+  anim.speed = Number(els.speed.value);
+  anim.running = true;
+  anim.paused = false;
+
+  const {A,B,C} = points;
+
+  // segments in order: AB, BC, CA
+  anim.segments = [
+    { from:A, to:B, name:"AB" },
+    { from:B, to:C, name:"BC" },
+    { from:C, to:A, name:"CA" },
+  ];
+
+  anim.totalLen = anim.segments.reduce((s,g)=> s + dist(g.from,g.to), 0) || 1;
+
+  function frame(){
+    if(!anim.running) return;
+    if(!anim.paused){
+      anim.speed = Number(els.speed.value);
+      anim.t = Math.min(1, anim.t + 0.012 * anim.speed);
+    }
+
+    // draw background
+    clearCanvas();
+
+    // draw filled triangle faintly when near done
+    if(anim.t > 0.70){
+      ctx.globalAlpha = clamp((anim.t-0.70)/0.30, 0, 1) * 0.25;
+      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.lineTo(C.x,C.y); ctx.closePath();
+      ctx.fillStyle = "rgba(245, 158, 11, 1)";
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // edges progressive by total length
+    ctx.strokeStyle = "#1f2937";
+    ctx.lineWidth = 5;
+    ctx.lineJoin = "round";
+
+    let remaining = anim.t * anim.totalLen;
+    for(const seg of anim.segments){
+      const L = dist(seg.from, seg.to);
+      const frac = clamp(remaining / L, 0, 1);
+      if(frac > 0) drawEdgePartial(seg.from, seg.to, frac);
+      remaining -= L;
+    }
+
+    // Points + annotations after some progress
+    if(anim.t > 0.25){
+      drawPoint(A,"A");
+      drawPoint(B,"B");
+      drawPoint(C,"C");
+    }
+
+    if(showMode !== "clean" && anim.t > 0.55){
+      // side labels
+      if(showMode === "labels"){
+        ctx.font="800 14px system-ui";
+        ctx.fillStyle="#374151";
+        const midAB={x:(A.x+B.x)/2, y:(A.y+B.y)/2};
+        const midBC={x:(B.x+C.x)/2, y:(B.y+C.y)/2};
+        const midCA={x:(C.x+A.x)/2, y:(C.y+A.y)/2};
+        ctx.fillText(labelsData.ab, midAB.x+8, midAB.y+18);
+        ctx.fillText(labelsData.bc, midBC.x+8, midBC.y-8);
+        ctx.fillText(labelsData.ca, midCA.x+8, midCA.y-8);
+
+        if(rightAt) drawRightAngleMarker(rightAt, A,B,C);
+      } else if(showMode === "angles"){
+        drawAngleText(A,B,C, labelsData.angA, labelsData.angB, labelsData.angC);
+        if(rightAt) drawRightAngleMarker(rightAt, A,B,C);
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function stopAnimation(){
+  anim.running = false;
+}
+
+/* ---------------- Main Check + Draw ---------------- */
+function checkAndAnimate(){
+  stopAnimation();
+
+  const {a,b,c} = readSides();
+  if(![a,b,c].every(Number.isFinite)){
+    setResult(false, "Invalid input ❌", "Please enter numbers.");
+    updateKPIs(null,null,null,null,null,null);
+    clearCanvas();
+    return;
+  }
+
+  const poss = trianglePossible(a,b,c);
+  if(!poss.ok){
+    setResult(false, "Triangle NOT possible ❌", poss.reason);
+    updateKPIs(null,null,null,null,null,null);
+    clearCanvas();
+    return;
+  }
+
+  // Type
+  const baseType = triangleType(a,b,c);
+
+  // Angles: A opposite a, B opposite b, C opposite c (by naming sides a,b,c)
+  // (This is the standard convention if you choose it; we will also show labels in canvas separately.)
+  const angA = angleFromSides(a, b, c);
+  const angB = angleFromSides(b, a, c);
+  const angC = angleFromSides(c, a, b);
+
+  // Area & perimeter
+  const per = a+b+c;
+  const area = heronArea(a,b,c);
+
+  // For drawing we use points built from base c, AC=b, BC=a (so:
+  // AB = c, AC = b, BC = a)
+  const pts = computeTrianglePoints(a,b,c);
+  if(!pts){
+    setResult(true, "Triangle possible ✅", `Type: <strong>${baseType}</strong> (drawing fallback)`);
+    updateKPIs(per, area, angA, angB, angC, null);
+    clearCanvas();
+    return;
+  }
+
+  // Right angle vertex from points
+  const rightAt = rightAngleVertex(pts.A, pts.B, pts.C, 0.012); // tolerance in normalized dot
+
+  // Compose type with right-angle info
+  const finalType = rightAt ? `Right-angled ${baseType}` : baseType;
+
+  setResult(true, "Triangle possible ✅", `Type: <strong>${finalType}</strong>`);
+  updateKPIs(per, area, angA, angB, angC, rightAt ? rightAt : "No");
+
+  const showMode = els.showMode.value;
+
+  startAnimation(
+    pts,
+    showMode,
+    rightAt,
+    {
+      ab: `c = ${c}`,
+      bc: `a = ${a}`,
+      ca: `b = ${b}`,
+      angA, angB, angC
+    }
+  );
+}
+
+function randomValidTriangle(){
+  const a = +(2 + Math.random()*10).toFixed(2);
+  const b = +(2 + Math.random()*10).toFixed(2);
+  const lo = Math.abs(a-b) + 0.2;
+  const hi = a+b - 0.2;
+  const c = +(lo + Math.random()*(hi-lo)).toFixed(2);
+  els.a.value=a; els.b.value=b; els.c.value=c;
+  checkAndAnimate();
+}
+
+/* ---------------- Pause/Resume ---------------- */
+function togglePause(){
+  if(!anim.running) return;
+  anim.paused = !anim.paused;
+  els.btnPause.textContent = anim.paused ? "Resume" : "Pause";
+}
+
+/* ---------------- Python Snippet (All 4) ---------------- */
+const PY_SNIPPET =
+`# Triangle: possible? type? right-angled? angles? area? perimeter?
+# Works for int/float inputs.
+
+import math
+
+def is_triangle(a, b, c, eps=1e-9):
     if a <= 0 or b <= 0 or c <= 0:
-        return (False, "Not a triangle (sides must be positive)")
+        return (False, "Sides must be positive.")
+    if a + b <= c + eps or a + c <= b + eps or b + c <= a + eps:
+        return (False, "Triangle inequality failed.")
+    return (True, "")
 
-    # Triangle inequality
-    if (a + b) <= c + eps or (a + c) <= b + eps or (b + c) <= a + eps:
-        return (False, "Not a triangle (triangle inequality failed)")
-
-    # Classification
-    # Use tolerance eps for float inputs
-    ab = abs(a - b) <= eps
-    bc = abs(b - c) <= eps
-    ca = abs(c - a) <= eps
-
-    if ab and bc:   # implies all equal
-        return (True, "Equilateral")
+def classify(a, b, c, eps=1e-9):
+    ab = abs(a-b) <= eps
+    bc = abs(b-c) <= eps
+    ca = abs(c-a) <= eps
+    if ab and bc:
+        return "Equilateral"
     if ab or bc or ca:
-        return (True, "Isosceles")
-    return (True, "Scalene")
+        return "Isosceles"
+    return "Scalene"
 
+def right_angled(a, b, c, eps=1e-7):
+    # Sort and test Pythagoras: x^2 + y^2 == z^2
+    x, y, z = sorted([a, b, c])
+    return abs(x*x + y*y - z*z) <= eps
 
-# ---- Demo I/O ----
-# You can edit these values or read from input.
+def angle(opposite, s1, s2):
+    # Law of Cosines: cos(theta) = (s1^2 + s2^2 - opposite^2)/(2*s1*s2)
+    denom = 2*s1*s2
+    if denom == 0:
+        return 0.0
+    cosT = (s1*s1 + s2*s2 - opposite*opposite) / denom
+    cosT = max(-1.0, min(1.0, cosT))
+    return math.degrees(math.acos(cosT))
+
+def area_heron(a, b, c):
+    s = (a+b+c)/2
+    v = s*(s-a)*(s-b)*(s-c)
+    return math.sqrt(max(0.0, v))
+
+def triangle_report(a, b, c):
+    ok, reason = is_triangle(a, b, c)
+    if not ok:
+        return {"ok": False, "reason": reason}
+
+    t = classify(a, b, c)
+    is_right = right_angled(a, b, c)
+
+    # Angles opposite sides a, b, c
+    A = angle(a, b, c)
+    B = angle(b, a, c)
+    C = angle(c, a, b)
+
+    per = a + b + c
+    ar = area_heron(a, b, c)
+
+    if is_right:
+        t = "Right-angled " + t
+
+    return {
+        "ok": True,
+        "type": t,
+        "right": is_right,
+        "angles": (A, B, C),
+        "perimeter": per,
+        "area": ar
+    }
+
+# ---- I/O ----
 try:
     a = float(input("Enter a: ").strip())
     b = float(input("Enter b: ").strip())
     c = float(input("Enter c: ").strip())
 
-    ok, kind = triangle_type(a, b, c)
-    if ok:
-        print("Triangle is possible ✅")
-        print("Type:", kind)
+    r = triangle_report(a, b, c)
+    if not r["ok"]:
+        print("Triangle NOT possible ❌")
+        print("Reason:", r["reason"])
     else:
-        print("Triangle is NOT possible ❌")
-        print("Reason:", kind)
+        print("Triangle possible ✅")
+        print("Type:", r["type"])
+        print("Angles (A,B,C):", tuple(round(x, 2) for x in r["angles"]))
+        print("Perimeter:", round(r["perimeter"], 4))
+        print("Area:", round(r["area"], 4))
 except ValueError:
     print("Please enter valid numbers.")`;
 
-      els.py.value = PY_SNIPPET;
+els.py.value = PY_SNIPPET;
 
-      // ----- Math helpers -----
-      function nearlyEqual(x, y, eps = 1e-9) {
-        return Math.abs(x - y) <= eps;
-      }
+/* ---------------- Wire UI ---------------- */
+els.btnCheck.addEventListener("click", () => { els.btnPause.textContent="Pause"; checkAndAnimate(); });
+els.btnPause.addEventListener("click", togglePause);
+els.btnRandom.addEventListener("click", () => { els.btnPause.textContent="Pause"; randomValidTriangle(); });
+els.btnClear.addEventListener("click", () => {
+  stopAnimation();
+  els.a.value=""; els.b.value=""; els.c.value="";
+  setResult(false, "Cleared.", "Enter sides and click Check + Animate.");
+  updateKPIs(null,null,null,null,null,null);
+  clearCanvas();
+});
+els.showMode.addEventListener("change", () => {
+  if(anim.running) checkAndAnimate(); // refresh view mode
+});
 
-      function trianglePossible(a, b, c, eps = 1e-9) {
-        if (!(a > 0 && b > 0 && c > 0)) return { ok: false, reason: "Sides must be positive." };
-        if (a + b <= c + eps || a + c <= b + eps || b + c <= a + eps) {
-          return { ok: false, reason: "Triangle inequality failed (sum of two sides must be greater than the third)." };
-        }
-        return { ok: true };
-      }
+els.btnCopy.addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(els.py.value);
+    els.btnCopy.textContent = "Copied ✅";
+    setTimeout(()=> els.btnCopy.textContent = "Copy Code", 900);
+  }catch(e){
+    alert("Copy failed. Please select the text and copy manually.");
+  }
+});
 
-      function triangleType(a, b, c, eps = 1e-9) {
-        const ab = nearlyEqual(a, b, eps);
-        const bc = nearlyEqual(b, c, eps);
-        const ca = nearlyEqual(c, a, eps);
-        if (ab && bc) return "Equilateral";
-        if (ab || bc || ca) return "Isosceles";
-        return "Scalene";
-      }
+els.btnExamples.addEventListener("click", () => {
+  alert(
+    "Quick examples:\\n\\n" +
+    "3,4,5  -> Right-angled Scalene\\n" +
+    "5,5,5  -> Equilateral\\n" +
+    "5,5,Math.sqrt(50)  -> Isosceles Right-angled (approx)\\n" +
+    "1,2,3  -> Not possible"
+  );
+});
 
-      // ----- Drawing -----
-      const ctx = els.cv.getContext("2d");
-
-      function clearCanvas() {
-        ctx.clearRect(0, 0, els.cv.width, els.cv.height);
-
-        // subtle grid
-        ctx.globalAlpha = 0.08;
-        ctx.beginPath();
-        for (let x = 0; x <= els.cv.width; x += 45) {
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, els.cv.height);
-        }
-        for (let y = 0; y <= els.cv.height; y += 45) {
-          ctx.moveTo(0, y);
-          ctx.lineTo(els.cv.width, y);
-        }
-        ctx.strokeStyle = "#111827";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-      }
-
-      function drawTriangle(a, b, c) {
-        // We'll draw with base = c, and sides:
-        // AC = b, BC = a, AB = c
-        // Place A=(0,0), B=(c,0). Find C=(x,y):
-        // x = (b^2 + c^2 - a^2) / (2c)
-        // y = sqrt(b^2 - x^2)
-        const eps = 1e-9;
-
-        if (c <= eps) return false;
-
-        const x = (b*b + c*c - a*a) / (2*c);
-        const y2 = b*b - x*x;
-        if (y2 < -1e-6) return false;
-        const y = Math.sqrt(Math.max(0, y2));
-
-        // raw coordinates
-        const A = { x: 0, y: 0 };
-        const B = { x: c, y: 0 };
-        const C = { x: x, y: y };
-
-        // fit to canvas with padding
-        const pad = 70;
-        const minX = Math.min(A.x, B.x, C.x);
-        const maxX = Math.max(A.x, B.x, C.x);
-        const minY = Math.min(A.y, B.y, C.y);
-        const maxY = Math.max(A.y, B.y, C.y);
-
-        const w = maxX - minX || 1;
-        const h = maxY - minY || 1;
-
-        const sx = (els.cv.width - 2*pad) / w;
-        const sy = (els.cv.height - 2*pad) / h;
-        const s = Math.min(sx, sy);
-
-        function mapP(P) {
-          // flip Y (canvas down is +y, we want C "up")
-          return {
-            x: pad + (P.x - minX) * s,
-            y: els.cv.height - pad - (P.y - minY) * s,
-          };
-        }
-
-        const A2 = mapP(A), B2 = mapP(B), C2 = mapP(C);
-
-        clearCanvas();
-
-        // triangle fill
-        ctx.beginPath();
-        ctx.moveTo(A2.x, A2.y);
-        ctx.lineTo(B2.x, B2.y);
-        ctx.lineTo(C2.x, C2.y);
-        ctx.closePath();
-        ctx.fillStyle = "rgba(245, 158, 11, 0.18)";
-        ctx.fill();
-
-        // edges
-        ctx.strokeStyle = "#1f2937";
-        ctx.lineWidth = 4;
-        ctx.lineJoin = "round";
-        ctx.stroke();
-
-        // points
-        function dot(P, label) {
-          ctx.beginPath();
-          ctx.arc(P.x, P.y, 8, 0, Math.PI*2);
-          ctx.fillStyle = "#d97706";
-          ctx.fill();
-
-          ctx.font = "700 16px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-          ctx.fillStyle = "#1f2937";
-          ctx.fillText(label, P.x + 12, P.y - 12);
-        }
-        dot(A2, "A");
-        dot(B2, "B");
-        dot(C2, "C");
-
-        // side labels
-        ctx.font = "600 14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
-        ctx.fillStyle = "#374151";
-
-        const midAB = { x:(A2.x+B2.x)/2, y:(A2.y+B2.y)/2 };
-        const midAC = { x:(A2.x+C2.x)/2, y:(A2.y+C2.y)/2 };
-        const midBC = { x:(B2.x+C2.x)/2, y:(B2.y+C2.y)/2 };
-
-        ctx.fillText(`c = ${c}`, midAB.x + 8, midAB.y + 18);
-        ctx.fillText(`b = ${b}`, midAC.x + 8, midAC.y - 8);
-        ctx.fillText(`a = ${a}`, midBC.x + 8, midBC.y - 8);
-
-        return true;
-      }
-
-      // ----- UI actions -----
-      function readSides() {
-        const a = Number(els.a.value);
-        const b = Number(els.b.value);
-        const c = Number(els.c.value);
-        return { a, b, c };
-      }
-
-      function setResult(ok, title, extra) {
-        els.res.classList.remove("ok", "bad");
-        els.res.classList.add(ok ? "ok" : "bad");
-        els.res.innerHTML = `<strong>${title}</strong> ${extra || ""}`;
-      }
-
-      function checkAndDraw() {
-        const { a, b, c } = readSides();
-
-        if (![a,b,c].every(Number.isFinite)) {
-          setResult(false, "Invalid input ❌", "Please enter numbers.");
-          clearCanvas();
-          return;
-        }
-
-        const poss = trianglePossible(a, b, c);
-        if (!poss.ok) {
-          setResult(false, "Triangle NOT possible ❌", poss.reason);
-          clearCanvas();
-          return;
-        }
-
-        const kind = triangleType(a, b, c);
-        setResult(true, "Triangle possible ✅", `Type: <strong>${kind}</strong>`);
-
-        const drew = drawTriangle(a, b, c);
-        if (!drew) {
-          // Extremely rare with floating errors; we still keep the classification.
-          setResult(true, "Triangle possible ✅", `Type: <strong>${kind}</strong> (drawing fallback)`);
-          clearCanvas();
-        }
-      }
-
-      function randomValidTriangle() {
-        // Create a random triangle by picking two sides and ensuring the third is in (|a-b|, a+b)
-        const a = +(2 + Math.random()*10).toFixed(2);
-        const b = +(2 + Math.random()*10).toFixed(2);
-        const lo = Math.abs(a - b) + 0.2;
-        const hi = a + b - 0.2;
-        const c = +(lo + Math.random()*(hi - lo)).toFixed(2);
-
-        els.a.value = a;
-        els.b.value = b;
-        els.c.value = c;
-        checkAndDraw();
-      }
-
-      els.btnCheck.addEventListener("click", checkAndDraw);
-      els.btnRandom.addEventListener("click", randomValidTriangle);
-      els.btnClear.addEventListener("click", () => {
-        els.a.value = "";
-        els.b.value = "";
-        els.c.value = "";
-        setResult(false, "Cleared.", "Enter sides and click Check + Draw.");
-        clearCanvas();
-      });
-
-      ["input","change"].forEach(evt=>{
-        els.a.addEventListener(evt, ()=>{ /* optional live */ });
-        els.b.addEventListener(evt, ()=>{ /* optional live */ });
-        els.c.addEventListener(evt, ()=>{ /* optional live */ });
-      });
-
-      els.btnCopy.addEventListener("click", async () => {
-        try{
-          await navigator.clipboard.writeText(els.py.value);
-          els.btnCopy.textContent = "Copied ✅";
-          setTimeout(()=> els.btnCopy.textContent = "Copy Code", 900);
-        }catch(e){
-          alert("Copy failed. Please select the text and copy manually.");
-        }
-      });
-
-      els.btnPasteHints.addEventListener("click", () => {
-        alert(
-          "Example runs:\\n\\n" +
-          "a=3, b=4, c=5  -> Scalene\\n" +
-          "a=5, b=5, c=5  -> Equilateral\\n" +
-          "a=5, b=5, c=8  -> Isosceles\\n" +
-          "a=1, b=2, c=3  -> Not possible"
-        );
-      });
-
-      // initial draw
-      clearCanvas();
-      checkAndDraw();
-    </script>
-  </body>
+clearCanvas();
+checkAndAnimate();
+</script>
+</body>
 </html>
