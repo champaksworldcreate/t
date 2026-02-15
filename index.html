@@ -17,28 +17,31 @@
   --brand2:#f59e0b;
   --border:rgba(31,41,55,0.12);
   --shadow:0 12px 30px rgba(17,24,39,0.08);
+  --ring:0 0 0 4px rgba(217,119,6,0.18);
 }
 
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:linear-gradient(180deg,var(--bg0),var(--bg1));
+  background:radial-gradient(1100px 520px at 12% 0%, rgba(245,158,11,0.22), transparent 60%),
+             radial-gradient(900px 420px at 92% 18%, rgba(217,119,6,0.18), transparent 55%),
+             linear-gradient(180deg,var(--bg0),var(--bg1));
   color:var(--ink);
 }
 
 .wrap{max-width:1100px;margin:auto;padding:20px}
 
-h1{font-size:38px;margin-bottom:10px}
-h2{margin-top:0}
+h1{font-size:38px;margin:6px 0 8px}
+p{color:var(--muted);margin-top:0}
 
 .card{
   background:var(--card);
   border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px;
+  border-radius:22px;
+  padding:18px;
   box-shadow:var(--shadow);
-  margin-bottom:20px;
+  margin:18px 0;
 }
 
 .badge{
@@ -47,35 +50,42 @@ h2{margin-top:0}
   border-radius:999px;
   background:rgba(245,158,11,0.15);
   border:1px solid rgba(217,119,6,0.3);
-  font-weight:700;
+  font-weight:800;
   color:#92400e;
   margin:4px;
 }
 
-/* SLIDER */
-
+/* Slider */
 .slider{
   position:relative;
   overflow:hidden;
   border-radius:22px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.65);
 }
 
 .slides{
   display:flex;
-  transition:transform 0.4s ease;
+  transition:transform 0.42s ease;
+  will-change: transform;
 }
 
 .slide{
   min-width:100%;
-  padding:30px;
-  background:rgba(255,255,255,0.95);
+  padding:26px 22px;
+  background:rgba(255,255,255,0.93);
   border-right:1px solid var(--border);
 }
 
 .slide h3{
-  margin-top:0;
+  margin:0 0 8px;
   color:var(--brand);
+  letter-spacing:-0.2px;
 }
+
+.slide p{margin:6px 0;color:var(--muted)}
+.slide ul{margin:10px 0 0;padding-left:18px}
+.slide li{margin:6px 0}
 
 .navBtn{
   position:absolute;
@@ -84,32 +94,79 @@ h2{margin-top:0}
   background:white;
   border:1px solid var(--border);
   border-radius:50%;
-  width:40px;
-  height:40px;
+  width:44px;
+  height:44px;
   cursor:pointer;
   box-shadow:var(--shadow);
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  font-weight:900;
+  color:#92400e;
+  user-select:none;
 }
-
+.navBtn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
 .navBtn.left{left:10px}
 .navBtn.right{right:10px}
 
 .dots{
-  text-align:center;
-  margin-top:10px;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:12px;
 }
 
 .dot{
-  display:inline-block;
   width:10px;
   height:10px;
   border-radius:50%;
-  background:#ddd;
-  margin:4px;
+  background:#e5e7eb;
   cursor:pointer;
+  border:1px solid rgba(31,41,55,0.12);
 }
-
 .dot.active{
   background:var(--brand);
+  border-color:rgba(217,119,6,0.45);
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+.btn{
+  border:1px solid var(--border);
+  background:white;
+  color:var(--ink);
+  padding:10px 12px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(17,24,39,0.06);
+  cursor:pointer;
+  font-weight:800;
+}
+.btn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
+.btn.primary{
+  border-color:rgba(217,119,6,0.35);
+  background:linear-gradient(135deg, rgba(217,119,6,0.12), rgba(245,158,11,0.16));
+}
+
+.small{font-size:13px;color:var(--muted);font-weight:700}
+kbd{
+  background:rgba(17,24,39,0.06);
+  border:1px solid rgba(31,41,55,0.12);
+  padding:2px 6px;
+  border-radius:8px;
+  font-size:12px;
+}
+
+@media (max-width:720px){
+  h1{font-size:30px}
+  .navBtn{width:40px;height:40px}
 }
 </style>
 </head>
@@ -118,113 +175,269 @@ h2{margin-top:0}
 <div class="wrap">
 
 <h1>🟠 Basic JavaScript Course</h1>
-<p>Foundation Track — Build real interactive web applications.</p>
+<p>Foundation Track — Build real interactive web applications. Slides below show what students will make.</p>
 
 <div class="card">
-<h2>What You Will Be Able To Build</h2>
-
-<div class="slider">
-  <div class="slides" id="slides">
-
-    <div class="slide">
-      <h3>📝 To-Do App</h3>
-      <p>Add tasks, delete tasks, mark complete.</p>
-      <p>Learn arrays, DOM updates, event handling.</p>
+  <div class="toolbar">
+    <div>
+      <h2 style="margin:0">What You Will Build</h2>
+      <div class="small">Use arrows or <kbd>←</kbd> <kbd>→</kbd> • Swipe on mobile</div>
     </div>
-
-    <div class="slide">
-      <h3>🧮 Calculator</h3>
-      <p>Perform operations + track history.</p>
-      <p>Learn functions, conditions, dynamic updates.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" id="btnPrev" type="button">‹ Prev</button>
+      <button class="btn primary" id="btnNext" type="button">Next ›</button>
+      <button class="btn" id="btnAuto" type="button" aria-pressed="false">▶ Autoplay</button>
     </div>
-
-    <div class="slide">
-      <h3>🧠 Quiz Application</h3>
-      <p>Multiple choice questions + scoring.</p>
-      <p>Learn objects, logic flow, UI rendering.</p>
-    </div>
-
-    <div class="slide">
-      <h3>📋 Form Validator</h3>
-      <p>Validate name, email, phone input.</p>
-      <p>Learn regex basics + input events.</p>
-    </div>
-
-    <div class="slide">
-      <h3>🔔 UI Components</h3>
-      <p>Modal, Toast, Tabs, Dropdown.</p>
-      <p>Learn reusable component thinking.</p>
-    </div>
-
   </div>
 
-  <button class="navBtn left" onclick="prevSlide()">‹</button>
-  <button class="navBtn right" onclick="nextSlide()">›</button>
-</div>
+  <div class="slider" id="slider" aria-label="Course build slides">
+    <div class="slides" id="slides">
 
-<div class="dots" id="dots"></div>
+      <!-- ORIGINAL + MORE SLIDES -->
+      <div class="slide">
+        <h3>📝 To-Do App</h3>
+        <p>Add tasks, delete tasks, mark complete. Fast UI updates.</p>
+        <ul>
+          <li>Arrays + objects</li>
+          <li>DOM updates</li>
+          <li>Event handling</li>
+        </ul>
+      </div>
 
+      <div class="slide">
+        <h3>🧮 Calculator + History</h3>
+        <p>Perform operations and store history of calculations.</p>
+        <ul>
+          <li>Functions + conditions</li>
+          <li>String parsing basics</li>
+          <li>Dynamic rendering</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🧠 Quiz App (MCQ)</h3>
+        <p>Questions, options, scoring, retry, and result summary.</p>
+        <ul>
+          <li>Objects + arrays</li>
+          <li>UI rendering pattern</li>
+          <li>State tracking</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>📋 Form Validator</h3>
+        <p>Validate name, email, phone — show friendly errors.</p>
+        <ul>
+          <li>Input events</li>
+          <li>Regex basics</li>
+          <li>Error messages UI</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🔔 UI Components Pack</h3>
+        <p>Modal, Toast, Tabs, Dropdown, Accordion.</p>
+        <ul>
+          <li>Reusable DOM patterns</li>
+          <li>Event delegation basics</li>
+          <li>Component mindset</li>
+        </ul>
+      </div>
+
+      <!-- NEW SLIDES -->
+      <div class="slide">
+        <h3>🗂 Notes App (Save/Load)</h3>
+        <p>Create notes with tags, delete notes, search notes.</p>
+        <ul>
+          <li>localStorage (basic)</li>
+          <li>Filter + search</li>
+          <li>List rendering</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>💸 Expense Tracker (Mini)</h3>
+        <p>Add income/expense entries and show totals.</p>
+        <ul>
+          <li>Array of objects</li>
+          <li>Reduce totals</li>
+          <li>UI table rendering</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🔎 Search & Filter Panel</h3>
+        <p>Search items, filter categories, sort by name/price.</p>
+        <ul>
+          <li>String methods</li>
+          <li>Filter/sort patterns</li>
+          <li>Instant UI refresh</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🎛 Counter Dashboard</h3>
+        <p>Multiple counters with reset and limit rules.</p>
+        <ul>
+          <li>Functions + state</li>
+          <li>Events</li>
+          <li>Clean code habits</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🧩 JSON-driven Card Grid</h3>
+        <p>Render cards from JSON data (title, tags, buttons).</p>
+        <ul>
+          <li>Objects + templates</li>
+          <li>createElement</li>
+          <li>Reusable render function</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🧭 URL Parameters (Mini Router)</h3>
+        <p>Switch sections using <code>?page=home</code> style links.</p>
+        <ul>
+          <li>URLSearchParams</li>
+          <li>Navigation logic</li>
+          <li>Shareable links</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>⭐ Bookmarks / Favorites</h3>
+        <p>Save favorites and load them next time.</p>
+        <ul>
+          <li>localStorage list</li>
+          <li>Toggle UI state</li>
+          <li>Persist data</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🧰 Mini “Utility Kit”</h3>
+        <p>Your own helper functions for real projects.</p>
+        <ul>
+          <li>Debounce (basic)</li>
+          <li>Format numbers/dates</li>
+          <li>Safe DOM helpers</li>
+        </ul>
+      </div>
+
+      <div class="slide">
+        <h3>🚀 Final Mini Project: Interactive Landing Page</h3>
+        <p>A polished page with sections, components, and small apps embedded.</p>
+        <ul>
+          <li>Components + layout</li>
+          <li>Events + DOM</li>
+          <li>Deploy to GitHub Pages</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <button class="navBtn left" id="navLeft" aria-label="Previous slide" type="button">‹</button>
+    <button class="navBtn right" id="navRight" aria-label="Next slide" type="button">›</button>
+  </div>
+
+  <div class="dots" id="dots" aria-label="Slide indicators"></div>
 </div>
 
 <div class="card">
-<h2>Skills You Will Gain</h2>
-
-<span class="badge">Clean Fundamentals</span>
-<span class="badge">DOM Mastery</span>
-<span class="badge">Event Handling</span>
-<span class="badge">Logic Building</span>
-<span class="badge">Mini Project Deployment</span>
-
+  <h2 style="margin-top:0">Skills You Will Gain</h2>
+  <span class="badge">Clean Fundamentals</span>
+  <span class="badge">DOM Mastery</span>
+  <span class="badge">Event Handling</span>
+  <span class="badge">Logic Building</span>
+  <span class="badge">localStorage Basics</span>
+  <span class="badge">Mini Project Deployment</span>
 </div>
 
 </div>
 
 <script>
-const slides = document.getElementById('slides');
-const totalSlides = slides.children.length;
-const dotsContainer = document.getElementById('dots');
+const slidesEl = document.getElementById('slides');
+const sliderEl = document.getElementById('slider');
+const total = slidesEl.children.length;
+const dotsEl = document.getElementById('dots');
+
 let index = 0;
+let auto = false;
+let timer = null;
 
-// Create dots
-for(let i=0;i<totalSlides;i++){
+// Build dots
+for (let i = 0; i < total; i++) {
   const dot = document.createElement('span');
-  dot.classList.add('dot');
-  dot.onclick = () => goToSlide(i);
-  dotsContainer.appendChild(dot);
-}
-updateDots();
-
-function updateSlide(){
-  slides.style.transform = `translateX(-${index*100}%)`;
-  updateDots();
+  dot.className = 'dot';
+  dot.title = 'Go to slide ' + (i + 1);
+  dot.addEventListener('click', () => go(i));
+  dotsEl.appendChild(dot);
 }
 
-function updateDots(){
-  const dots = document.querySelectorAll('.dot');
-  dots.forEach((d,i)=>{
-    d.classList.toggle('active', i===index);
-  });
+function render() {
+  slidesEl.style.transform = `translateX(-${index * 100}%)`;
+  const dots = dotsEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => d.classList.toggle('active', i === index));
 }
 
-function nextSlide(){
-  index = (index+1)%totalSlides;
-  updateSlide();
+function next() {
+  index = (index + 1) % total;
+  render();
 }
 
-function prevSlide(){
-  index = (index-1+totalSlides)%totalSlides;
-  updateSlide();
+function prev() {
+  index = (index - 1 + total) % total;
+  render();
 }
 
-function goToSlide(i){
-  index=i;
-  updateSlide();
+function go(i) {
+  index = Math.max(0, Math.min(total - 1, i));
+  render();
 }
 
-document.addEventListener('keydown',(e)=>{
-  if(e.key==="ArrowRight") nextSlide();
-  if(e.key==="ArrowLeft") prevSlide();
+document.getElementById('navLeft').addEventListener('click', prev);
+document.getElementById('navRight').addEventListener('click', next);
+document.getElementById('btnPrev').addEventListener('click', prev);
+document.getElementById('btnNext').addEventListener('click', next);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
 });
+
+// Autoplay toggle
+const btnAuto = document.getElementById('btnAuto');
+btnAuto.addEventListener('click', () => {
+  auto = !auto;
+  btnAuto.setAttribute('aria-pressed', String(auto));
+  btnAuto.textContent = auto ? '⏸ Stop' : '▶ Autoplay';
+  if (auto) {
+    timer = setInterval(next, 2600);
+  } else {
+    clearInterval(timer);
+    timer = null;
+  }
+});
+
+// Swipe support (basic)
+let startX = 0, moved = 0;
+sliderEl.addEventListener('touchstart', (e) => {
+  startX = e.touches[0].clientX;
+  moved = 0;
+}, {passive:true});
+
+sliderEl.addEventListener('touchmove', (e) => {
+  moved = e.touches[0].clientX - startX;
+}, {passive:true});
+
+sliderEl.addEventListener('touchend', () => {
+  if (Math.abs(moved) > 45) {
+    moved < 0 ? next() : prev();
+  }
+});
+
+render();
 </script>
 
 </body>
