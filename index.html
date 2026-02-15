@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>MongoDB in Browser — JSON Collections Playground</title>
+<title>MongoDB for Beginners — Interactive Playground</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <link rel="icon"
@@ -29,15 +29,16 @@ color:var(--ink);
 }
 .wrap{max-width:1200px;margin:auto;padding:20px}
 .card{
-background:rgba(255,255,255,0.95);
+background:rgba(255,255,255,0.96);
 border:1px solid rgba(0,0,0,0.08);
 border-radius:16px;
-padding:14px;
-margin-bottom:18px;
+padding:16px;
+margin-bottom:20px;
 box-shadow:0 10px 30px rgba(0,0,0,0.05);
 }
-h1{margin:0;font-size:18px}
-.muted{color:var(--muted);font-size:12px;font-weight:800}
+h1{margin:0;font-size:20px}
+h2{margin:0 0 10px 0}
+.muted{color:var(--muted);font-size:13px}
 textarea,select,input{
 width:100%;
 padding:10px;
@@ -46,7 +47,7 @@ border:1px solid rgba(0,0,0,0.15);
 font-family:monospace;
 font-size:13px;
 }
-textarea{min-height:120px;resize:vertical}
+textarea{min-height:110px}
 button{
 padding:8px 12px;
 border-radius:10px;
@@ -56,9 +57,6 @@ cursor:pointer;
 }
 .btn{background:linear-gradient(135deg,#f59e0b,#d97706);color:white}
 .btn-outline{background:white;border:1px solid rgba(0,0,0,0.15)}
-.btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.15)}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.samples{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .chip{
 padding:6px 10px;
 border-radius:999px;
@@ -68,6 +66,8 @@ font-size:12px;
 font-weight:900;
 cursor:pointer;
 }
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.samples{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 table{
 width:100%;
 border-collapse:collapse;
@@ -81,6 +81,11 @@ text-align:left;
 }
 .ok{color:var(--ok);font-weight:900}
 .danger{color:var(--danger);font-weight:900}
+.help-section{
+border-top:1px dashed rgba(0,0,0,0.1);
+margin-top:12px;
+padding-top:12px;
+}
 </style>
 </head>
 
@@ -88,63 +93,115 @@ text-align:left;
 <div class="wrap">
 
 <div class="card">
-<h1>MongoDB Playground (In-Browser)</h1>
-<div class="muted">Runs entirely on your device. Includes Users, Employees, Orders, and Books.</div>
+<h1>📚 MongoDB for Complete Beginners</h1>
+<div class="muted">
+This playground runs entirely in your browser.  
+You will learn how MongoDB queries work step-by-step.
+</div>
 </div>
 
+<!-- EXPLANATION SECTION -->
 <div class="card">
+<h2>🧠 How MongoDB Querying Works (Beginner Explanation)</h2>
+
+<p><b>1️⃣ What is a Collection?</b></p>
+<p>A collection is like a table in SQL.  
+Example: <b>books</b>, <b>users</b>, <b>employees</b>.</p>
+
+<p><b>2️⃣ What is a Document?</b></p>
+<p>A document is one record (a JSON object).</p>
+
+<pre>
+{
+  "BookId": 1,
+  "BookName": "The Recursion Sutras",
+  "Author": "Champak Roy",
+  "Subject": "Recursion"
+}
+</pre>
+
+<p><b>3️⃣ What is a Query?</b></p>
+<p>A query tells MongoDB what to find.</p>
+
+Example:
+<pre>
+{ "Author": "Champak Roy" }
+</pre>
+
+This means:
+👉 "Find all documents where Author equals Champak Roy"
+
+<p><b>4️⃣ What is Projection?</b></p>
+<p>Projection decides which fields to show.</p>
+
+<pre>
+{ "BookName": 1, "Subject": 1 }
+</pre>
+
+This means:
+👉 "Only show BookName and Subject fields"
+
+<p><b>5️⃣ What is Update?</b></p>
+<p>Updates modify documents using operators like <code>$set</code>.</p>
+
+<pre>
+{ "$set": { "Subject": "OOP Programming" } }
+</pre>
+
+This means:
+👉 Change Subject field.
+
+</div>
+
+<!-- PLAYGROUND -->
+<div class="card">
+<h2>🛠️ Try It Yourself</h2>
 
 <div class="row">
 <div style="flex:1">
-<div class="muted">Collection</div>
+<label>Collection</label>
 <select id="collection"></select>
 </div>
 
 <div style="flex:1">
-<div class="muted">Operation</div>
+<label>Operation</label>
 <select id="operation">
-<option value="find">find</option>
-<option value="insertOne">insertOne</option>
-<option value="insertMany">insertMany</option>
-<option value="updateMany">updateMany</option>
-<option value="deleteMany">deleteMany</option>
-<option value="aggregate">aggregate</option>
+<option value="find">find (Search)</option>
+<option value="insertOne">insertOne (Add)</option>
+<option value="updateMany">updateMany (Modify)</option>
+<option value="deleteMany">deleteMany (Remove)</option>
 </select>
 </div>
 </div>
 
 <div class="row" style="margin-top:10px">
 <div style="flex:1">
-<div class="muted">Filter (JSON)</div>
+<label>Filter (What to search for)</label>
 <textarea id="filter">{}</textarea>
 </div>
 
 <div style="flex:1">
-<div class="muted">Payload (Projection / Update / Docs)</div>
+<label>Payload (Projection or Update)</label>
 <textarea id="payload">{}</textarea>
 </div>
 </div>
 
-<div style="margin-top:10px">
-<div class="muted">Aggregate Pipeline (JSON Array)</div>
-<textarea id="pipeline">[]</textarea>
-</div>
-
-<div class="row" style="margin-top:10px">
-<button class="btn" onclick="run()">Run</button>
-<button class="btn-outline" onclick="resetDB()">Reset Sample DB</button>
+<div style="margin-top:12px">
+<button class="btn" onclick="run()">Run Query</button>
+<button class="btn-outline" onclick="resetDB()">Reset Sample Database</button>
 </div>
 
 <div class="samples">
-<button class="chip" onclick="loadDemo('books_all')">Books: Show All</button>
-<button class="chip" onclick="loadDemo('books_rec')">Books: Recursion</button>
-<button class="chip" onclick="loadDemo('books_author')">Books: By Champak Roy</button>
-<button class="chip" onclick="loadDemo('books_update')">Books: Update Subject</button>
+<button class="chip" onclick="demo('books_all')">Show All Books</button>
+<button class="chip" onclick="demo('books_rec')">Find Recursion Books</button>
+<button class="chip" onclick="demo('books_author')">Find Champak Roy Books</button>
+<button class="chip" onclick="demo('books_update')">Update Book Subject</button>
 </div>
 
-<div id="output" style="margin-top:14px"></div>
+<div id="output" style="margin-top:16px"></div>
 
 </div>
+
 </div>
 
 <script>
@@ -152,31 +209,29 @@ let db;
 
 function sampleDB(){
 return{
-users:[
-{_id:1,name:"Asha",age:22,city:"Delhi",active:true,points:15},
-{_id:2,name:"Ravi",age:29,city:"Mumbai",active:true,points:40}
-],
-employees:[
-{_id:"e1",name:"Riya",dept:"Eng",salary:120000},
-{_id:"e2",name:"Aman",dept:"HR",salary:90000}
-],
-orders:[
-{_id:"o1",userId:1,total:999,status:"PAID"},
-{_id:"o2",userId:2,total:499,status:"CANCEL"}
-],
 books:[
 {BookId:1,BookName:"The Recursion Sutras",Author:"Champak Roy",Subject:"Recursion"},
 {BookId:2,BookName:"How to Do Object Oriented Programing?",Author:"Champak Roy",Subject:"OOPS"},
 {BookId:3,BookName:"The Big Book of Java Programs",Author:"Champak Roy",Subject:"Java Programming"}
+],
+users:[
+{_id:1,name:"Asha",age:22},
+{_id:2,name:"Ravi",age:29}
 ]
 };
 }
 
-function rebuildCollections(){
-const sel=document.getElementById("collection");
+function loadDB(){
+let stored=localStorage.getItem("mongoDB");
+db=stored?JSON.parse(stored):sampleDB();
+populateCollections();
+}
+
+function populateCollections(){
+let sel=document.getElementById("collection");
 sel.innerHTML="";
 Object.keys(db).forEach(c=>{
-const o=document.createElement("option");
+let o=document.createElement("option");
 o.value=c;
 o.textContent=c;
 sel.appendChild(o);
@@ -186,37 +241,13 @@ sel.appendChild(o);
 function resetDB(){
 db=sampleDB();
 localStorage.setItem("mongoDB",JSON.stringify(db));
-rebuildCollections();
-document.getElementById("output").innerHTML='<div class="ok">Sample DB Reset</div>';
-}
-
-function loadDB(){
-let stored=localStorage.getItem("mongoDB");
-db=stored?JSON.parse(stored):sampleDB();
-rebuildCollections();
-}
-
-function renderTable(rows){
-if(!rows.length){
-document.getElementById("output").innerHTML="No results.";
-return;
-}
-let cols=Object.keys(rows[0]);
-let html="<table><thead><tr>";
-cols.forEach(c=>html+="<th>"+c+"</th>");
-html+="</tr></thead><tbody>";
-rows.forEach(r=>{
-html+="<tr>";
-cols.forEach(c=>html+="<td>"+JSON.stringify(r[c])+"</td>");
-html+="</tr>";
-});
-html+="</tbody></table>";
-document.getElementById("output").innerHTML=html;
+populateCollections();
+document.getElementById("output").innerHTML='<div class="ok">Database Reset</div>';
 }
 
 function matches(doc,filter){
 for(let k in filter){
-if(doc[k]!==filter[k])return false;
+if(doc[k]!==filter[k]) return false;
 }
 return true;
 }
@@ -227,7 +258,6 @@ let collection=document.getElementById("collection").value;
 let op=document.getElementById("operation").value;
 let filter=JSON.parse(document.getElementById("filter").value||"{}");
 let payload=JSON.parse(document.getElementById("payload").value||"{}");
-let pipeline=JSON.parse(document.getElementById("pipeline").value||"[]");
 
 let coll=db[collection];
 
@@ -240,15 +270,15 @@ if(payload[k]===1)o[k]=d[k];
 });
 return o;
 });
-renderTable(result);
+render(result);
 }
 
-else if(op==="insertOne"){
+if(op==="insertOne"){
 coll.push(payload);
-renderTable([payload]);
+render([payload]);
 }
 
-else if(op==="updateMany"){
+if(op==="updateMany"){
 coll.forEach(d=>{
 if(matches(d,filter)){
 if(payload.$set){
@@ -256,58 +286,64 @@ Object.assign(d,payload.$set);
 }
 }
 });
-renderTable(coll);
+render(coll);
 }
 
-else if(op==="deleteMany"){
+if(op==="deleteMany"){
 db[collection]=coll.filter(d=>!matches(d,filter));
-renderTable(db[collection]);
-}
-
-else if(op==="aggregate"){
-let result=coll;
-pipeline.forEach(stage=>{
-if(stage.$match){
-result=result.filter(d=>matches(d,stage.$match));
-}
-});
-renderTable(result);
+render(db[collection]);
 }
 
 localStorage.setItem("mongoDB",JSON.stringify(db));
+
 }
 catch(e){
 document.getElementById("output").innerHTML='<div class="danger">'+e.message+'</div>';
 }
 }
 
-function loadDemo(id){
+function render(rows){
+if(!rows.length){
+document.getElementById("output").innerHTML="No Results";
+return;
+}
+let cols=Object.keys(rows[0]);
+let html="<table><tr>";
+cols.forEach(c=>html+="<th>"+c+"</th>");
+html+="</tr>";
+rows.forEach(r=>{
+html+="<tr>";
+cols.forEach(c=>html+="<td>"+r[c]+"</td>");
+html+="</tr>";
+});
+html+="</table>";
+document.getElementById("output").innerHTML=html;
+}
+
+function demo(id){
 if(id==="books_all"){
 document.getElementById("collection").value="books";
 document.getElementById("operation").value="find";
 document.getElementById("filter").value="{}";
 document.getElementById("payload").value='{"BookId":1,"BookName":1,"Author":1,"Subject":1}';
 }
-
 if(id==="books_rec"){
 document.getElementById("collection").value="books";
 document.getElementById("operation").value="find";
 document.getElementById("filter").value='{"Subject":"Recursion"}';
 document.getElementById("payload").value='{"BookName":1,"Author":1}';
 }
-
 if(id==="books_author"){
 document.getElementById("collection").value="books";
 document.getElementById("operation").value="find";
 document.getElementById("filter").value='{"Author":"Champak Roy"}';
 document.getElementById("payload").value='{"BookName":1,"Subject":1}';
 }
-
 if(id==="books_update"){
 document.getElementById("collection").value="books";
 document.getElementById("operation").value="updateMany";
 document.getElementById("filter").value='{"BookId":2}';
-document.getElementById("payload").value='{"$set":{"Subject":"Object-Oriented Programming (OOP)"}}';
+document.getElementById("payload").value='{"$set":{"Subject":"Object-Oriented Programming"}}';
 }
 }
 
