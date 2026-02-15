@@ -1,847 +1,580 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Triangle Visualizer: Type + Right Angle + Angles + Animation + Area/Perimeter (Degenerate Allowed)</title>
-  <style>
-    :root{
-      --bg1:#fff7e6; --bg2:#fff1d6;
-      --card: rgba(255,255,255,.92);
-      --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706; --brand2:#f59e0b;
-      --line: rgba(31,41,55,.14);
-      --shadow: 0 12px 34px rgba(31,41,55,.10);
-      --r: 18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 10% 0%, rgba(245,158,11,.24), transparent 60%),
-        radial-gradient(900px 460px at 90% 15%, rgba(217,119,6,.18), transparent 60%),
-        linear-gradient(180deg, var(--bg1), #fff);
-    }
-    header{max-width:1150px; margin:18px auto 0; padding:0 14px}
-    .hero{
-      border:1px solid var(--line);
-      background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
-      border-radius: 22px;
-      padding: 14px 16px;
-      box-shadow: var(--shadow);
-    }
-    .hero h1{margin:0; font-size:20px}
-    .hero p{margin:6px 0 0; color:var(--muted); line-height:1.4}
-    .wrap{
-      max-width:1150px; margin:14px auto 30px; padding:0 14px;
-      display:grid; gap:14px;
-      grid-template-columns: 1.1fr .9fr;
-    }
-    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
-
-    .card{
-      border:1px solid var(--line);
-      background: var(--card);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .hd{
-      padding:12px 14px;
-      border-bottom:1px solid var(--line);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .title{font-weight:800; display:flex; align-items:center; gap:10px}
-    .badge{
-      font-size:12px; padding:4px 10px; border-radius:999px;
-      border:1px solid rgba(217,119,6,.35);
-      background: rgba(245,158,11,.16);
-      color: #92400e;
-      white-space:nowrap;
-    }
-    .bd{padding:14px}
-    .grid{
-      display:grid; gap:10px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
-
-    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
-    input, select{
-      width:100%; padding:12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(31,41,55,.18);
-      background: rgba(255,255,255,.92);
-      outline:none;
-      font-size:16px;
-    }
-    input:focus, select:focus{border-color: rgba(217,119,6,.55); box-shadow: 0 0 0 4px rgba(245,158,11,.18)}
-    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center}
-    button{
-      border:1px solid rgba(217,119,6,.35);
-      background: linear-gradient(180deg, rgba(245,158,11,.92), rgba(217,119,6,.92));
-      color:white; font-weight:800;
-      padding:10px 12px; border-radius: 14px;
-      cursor:pointer;
-    }
-    button.secondary{
-      background: rgba(255,255,255,.92);
-      color: var(--ink);
-      border:1px solid rgba(31,41,55,.18);
-      font-weight:700;
-    }
-    button:active{transform: translateY(1px)}
-    .msg{
-      margin-top:12px;
-      padding:12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(31,41,55,.14);
-      background: rgba(255,255,255,.78);
-      line-height:1.5;
-    }
-    .ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08)}
-    .bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.08)}
-    .kpi{
-      margin-top:10px;
-      display:grid; gap:10px;
-      grid-template-columns: 1fr 1fr;
-    }
-    @media (max-width:520px){ .kpi{grid-template-columns:1fr} }
-    .kpi .box{
-      border:1px dashed rgba(31,41,55,.18);
-      border-radius: 14px;
-      padding:10px 12px;
-      background: rgba(255,255,255,.65);
-    }
-    .kpi .box .k{font-size:12px; color:var(--muted)}
-    .kpi .box .v{font-weight:900; margin-top:4px}
-
-    canvas{
-      width:100%; height:360px;
-      border-radius: 16px;
-      border:1px solid rgba(31,41,55,.14);
-      background:
-        radial-gradient(900px 350px at 25% 25%, rgba(245,158,11,.18), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
-    }
-    .small{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.45}
-    .codebox{
-      width:100%;
-      min-height: 310px;
-      resize: vertical;
-      border-radius: 16px;
-      border:1px solid rgba(31,41,55,.14);
-      padding:12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 13px;
-      line-height: 1.5;
-      background: rgba(255,255,255,.92);
-    }
-    .iframeWrap{
-      border:1px solid rgba(31,41,55,.14);
-      border-radius: 18px;
-      overflow:hidden;
-      background: rgba(255,255,255,.78);
-    }
-    iframe{width:100%; height:540px; border:0; display:block; background:white;}
-    .hint{font-size:12px; color:var(--muted)}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-    .sliderWrap{display:flex; gap:10px; align-items:center}
-    input[type="range"]{padding:0; height:34px}
-  </style>
-</head>
-
-<body>
-  <header>
-    <div class="hero">
-      <h1>Triangle Visualizer (a, b, c)</h1>
-      <p>
-        Checks: possible/degenerate/invalid • type • right-angle • angles • area/perimeter • animated drawing.
-        <b>Degenerate triangles are treated as valid</b> (e.g., <span class="mono">a + b == c</span>) → straight line, area 0.
-      </p>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <!-- LEFT -->
-    <section class="card">
-      <div class="hd">
-        <div class="title">Visualizer <span class="badge">a+b==c valid ✅</span></div>
-        <div class="hint">Try <span class="mono">3,4,5</span> • <span class="mono">1,2,3</span> • <span class="mono">5,5,10</span></div>
-      </div>
-      <div class="bd">
-        <div class="grid">
-          <div>
-            <label for="a">a</label>
-            <input id="a" type="number" min="0" step="any" value="3" />
-          </div>
-          <div>
-            <label for="b">b</label>
-            <input id="b" type="number" min="0" step="any" value="4" />
-          </div>
-          <div>
-            <label for="c">c</label>
-            <input id="c" type="number" min="0" step="any" value="5" />
-          </div>
-        </div>
-
-        <div class="row">
-          <button id="btnCheck">Check + Animate</button>
-          <button class="secondary" id="btnPause">Pause</button>
-          <button class="secondary" id="btnRandom">Random Valid</button>
-          <button class="secondary" id="btnClear">Clear</button>
-        </div>
-
-        <div class="row" style="margin-top:8px">
-          <div class="sliderWrap">
-            <span class="hint">Speed</span>
-            <input id="speed" type="range" min="0.4" max="3.5" value="1.4" step="0.1" />
-            <span class="hint mono" id="speedVal">1.4×</span>
-          </div>
-          <div class="sliderWrap">
-            <span class="hint">Show</span>
-            <select id="showMode">
-              <option value="labels" selected>Labels + Right-Angle Marker</option>
-              <option value="angles">Angle Values (°)</option>
-              <option value="clean">Clean (no labels)</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="result" class="msg" aria-live="polite">
-          Enter values and click <strong>Check + Animate</strong>.
-        </div>
-
-        <div class="kpi">
-          <div class="box">
-            <div class="k">Perimeter</div>
-            <div class="v" id="kPer">—</div>
-          </div>
-          <div class="box">
-            <div class="k">Area (Heron)</div>
-            <div class="v" id="kArea">—</div>
-          </div>
-          <div class="box">
-            <div class="k">Angles (A, B, C) opposite (a, b, c)</div>
-            <div class="v" id="kAng">—</div>
-          </div>
-          <div class="box">
-            <div class="k">Right Angle At</div>
-            <div class="v" id="kRight">—</div>
-          </div>
-        </div>
-
-        <div style="margin-top:12px">
-          <canvas id="cv" width="950" height="560"></canvas>
-          <div class="small">
-            Degenerate (a+b==c) draws as a straight line; angles show <span class="mono">180°, 0°, 0°</span> with 180° opposite the largest side.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT -->
-    <section class="card">
-      <div class="hd">
-        <div class="title">Python Code + Embedded Editor <span class="badge">Teacher mode</span></div>
-        <div class="hint">Copy → paste → run</div>
-      </div>
-      <div class="bd">
-        <textarea id="pyCode" class="codebox" spellcheck="false"></textarea>
-
-        <div class="row" style="margin-top:10px">
-          <button id="btnCopy">Copy Code</button>
-          <button class="secondary" id="btnExamples">Examples</button>
-        </div>
-
-        <div class="small">Embedded Programmer’s Picnic Python Editor:</div>
-        <div class="iframeWrap" style="margin-top:10px">
-          <iframe
-            title="Programmer's Picnic Python Editor"
-            src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
-            loading="eager"
-            allow="clipboard-read; clipboard-write; fullscreen"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </div>
-    </section>
-  </main>
-
-<script>
-"use strict";
-const $ = (id) => document.getElementById(id);
-
-const els = {
-  a: $("a"), b: $("b"), c: $("c"),
-  btnCheck: $("btnCheck"), btnPause: $("btnPause"),
-  btnRandom: $("btnRandom"), btnClear: $("btnClear"),
-  res: $("result"), cv: $("cv"),
-  speed: $("speed"), speedVal: $("speedVal"),
-  showMode: $("showMode"),
-  kPer: $("kPer"), kArea: $("kArea"), kAng: $("kAng"), kRight: $("kRight"),
-  py: $("pyCode"), btnCopy: $("btnCopy"), btnExamples: $("btnExamples"),
-};
-
-els.speedVal.textContent = `${Number(els.speed.value).toFixed(1)}×`;
-els.speed.addEventListener("input", () => els.speedVal.textContent = `${Number(els.speed.value).toFixed(1)}×`);
-
-const ctx = els.cv.getContext("2d");
-
-let anim = { running:false, t:0, speed:1.4, segments:[], totalLen:1, paused:false, P:null, rightAt:null, showMode:"labels", labelsData:null };
-
-function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
-function nearlyEqual(x,y,eps=1e-9){ return Math.abs(x-y) <= eps; }
-function dist(P,Q){ return Math.hypot(P.x-Q.x, P.y-Q.y); }
-
-function trianglePossibleOrDegenerate(a,b,c,eps=1e-9){
-  if(!(a>0 && b>0 && c>0)) return {ok:false, deg:false, reason:"Sides must be positive."};
-
-  const ab=a+b, ac=a+c, bc=b+c;
-
-  // INVALID only if strict less-than
-  if(ab < c - eps || ac < b - eps || bc < a - eps){
-    return {ok:false, deg:false, reason:"Invalid: one side is greater than the sum of the other two."};
-  }
-
-  const deg = (Math.abs(ab - c) <= eps) || (Math.abs(ac - b) <= eps) || (Math.abs(bc - a) <= eps);
-  return {ok:true, deg, reason: deg ? "Degenerate (straight line): equality case." : ""};
-}
-
-function triangleType(a,b,c,eps=1e-9){
-  const ab = nearlyEqual(a,b,eps), bc = nearlyEqual(b,c,eps), ca = nearlyEqual(c,a,eps);
-  if(ab && bc) return "Equilateral";
-  if(ab || bc || ca) return "Isosceles";
-  return "Scalene";
-}
-
-function heronArea(a,b,c){
-  const s=(a+b+c)/2;
-  return Math.sqrt(Math.max(0, s*(s-a)*(s-b)*(s-c)));
-}
-
-function angleFromSides(opposite, s1, s2){
-  // cos(theta) = (s1^2 + s2^2 - opposite^2) / (2*s1*s2)
-  const denom = 2*s1*s2;
-  if(denom === 0) return 0;
-  const cosT = clamp((s1*s1 + s2*s2 - opposite*opposite)/denom, -1, 1);
-  return Math.acos(cosT) * 180/Math.PI;
-}
-
-function degenerateAnglesForABC(a,b,c,eps=1e-9){
-  // 180° opposite the largest side (ties: pick one consistently)
-  const maxV = Math.max(a,b,c);
-
-  let A=0, B=0, C=0;
-  if(Math.abs(a - maxV) <= eps) A=180;
-  else if(Math.abs(b - maxV) <= eps) B=180;
-  else C=180;
-
-  return {A,B,C};
-}
-
-function normalizeForDrawing(a,b,c){
-  // Choose base as the largest side so degenerate always draws as a straight line (y=0)
-  const arr = [
-    {name:"a", v:a},
-    {name:"b", v:b},
-    {name:"c", v:c},
-  ].sort((p,q)=> q.v - p.v); // desc
-
-  const base = arr[0];         // AB
-  const s1 = arr[1];           // AC
-  const s2 = arr[2];           // BC
-
-  // We'll draw: AB = base.v, AC = s1.v, BC = s2.v
-  return {
-    AB: base.v, ABn: base.name,
-    AC: s1.v,   ACn: s1.name,
-    BC: s2.v,   BCn: s2.name
-  };
-}
-
-function computePointsForDraw(norm){
-  // Place A(0,0), B(AB,0), find C with AC and BC
-  const AB = norm.AB, AC = norm.AC, BC = norm.BC;
-  const eps = 1e-12;
-  if(AB <= eps) return null;
-
-  // x = (AC^2 + AB^2 - BC^2) / (2 AB)
-  const x = (AC*AC + AB*AB - BC*BC) / (2*AB);
-  const y2 = AC*AC - x*x;
-
-  if(y2 < -1e-6) return null;      // invalid geometry (shouldn't happen if validated)
-  const y = Math.sqrt(Math.max(0, y2)); // y can be 0 for degenerate
-
-  const A={x:0,y:0}, B={x:AB,y:0}, C={x:x,y:y};
-
-  // Fit to canvas
-  const pad=80;
-  const pts=[A,B,C];
-  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
-  for(const p of pts){
-    minX=Math.min(minX,p.x); maxX=Math.max(maxX,p.x);
-    minY=Math.min(minY,p.y); maxY=Math.max(maxY,p.y);
-  }
-  const w=(maxX-minX)||1, h=(maxY-minY)||1;
-  const sx=(els.cv.width-2*pad)/w, sy=(els.cv.height-2*pad)/h;
-  const s=Math.min(sx,sy);
-
-  const map = (p)=>({
-    x: pad + (p.x-minX)*s,
-    y: els.cv.height - pad - (p.y-minY)*s
-  });
-
-  return {A:map(A), B:map(B), C:map(C)};
-}
-
-function dot(U,V){ return U.x*V.x + U.y*V.y; }
-function sub(P,Q){ return {x:P.x-Q.x, y:P.y-Q.y}; }
-
-function rightAngleVertexFromPoints(A,B,C,epsNorm=0.012){
-  // normalized dot ~ 0 => right angle
-  const BA=sub(B,A), CA=sub(C,A);
-  const AB=sub(A,B), CB=sub(C,B);
-  const AC=sub(A,C), BC=sub(B,C);
-
-  const dA = dot(BA,CA), dB = dot(AB,CB), dC = dot(AC,BC);
-
-  const mA = Math.hypot(BA.x,BA.y)*Math.hypot(CA.x,CA.y) || 1;
-  const mB = Math.hypot(AB.x,AB.y)*Math.hypot(CB.x,CB.y) || 1;
-  const mC = Math.hypot(AC.x,AC.y)*Math.hypot(BC.x,BC.y) || 1;
-
-  const nA = Math.abs(dA)/mA, nB=Math.abs(dB)/mB, nC=Math.abs(dC)/mC;
-  const m = Math.min(nA,nB,nC);
-  if(m > epsNorm) return null;
-  if(m === nA) return "A";
-  if(m === nB) return "B";
-  return "C";
-}
-
-function clearCanvas(){
-  ctx.clearRect(0,0,els.cv.width, els.cv.height);
-  ctx.globalAlpha = 0.08;
-  ctx.beginPath();
-  for(let x=0;x<=els.cv.width;x+=48){ ctx.moveTo(x,0); ctx.lineTo(x,els.cv.height); }
-  for(let y=0;y<=els.cv.height;y+=48){ ctx.moveTo(0,y); ctx.lineTo(els.cv.width,y); }
-  ctx.strokeStyle="#111827"; ctx.lineWidth=1; ctx.stroke();
-  ctx.globalAlpha = 1;
-}
-
-function drawPoint(P,label){
-  ctx.beginPath(); ctx.arc(P.x,P.y,8,0,Math.PI*2);
-  ctx.fillStyle="#d97706"; ctx.fill();
-  ctx.font="800 16px system-ui"; ctx.fillStyle="#1f2937";
-  ctx.fillText(label, P.x+12, P.y-12);
-}
-
-function drawRightAngleMarker(at, A,B,C){
-  function norm(V){ const m=Math.hypot(V.x,V.y)||1; return {x:V.x/m, y:V.y/m}; }
-  function add(P,V,sc){ return {x:P.x+V.x*sc, y:P.y+V.y*sc}; }
-
-  let P, V1, V2;
-  const L = 26;
-
-  if(at==="A"){
-    P=A; V1=norm(sub(B,A)); V2=norm(sub(C,A));
-  }else if(at==="B"){
-    P=B; V1=norm(sub(A,B)); V2=norm(sub(C,B));
-  }else{
-    P=C; V1=norm(sub(A,C)); V2=norm(sub(B,C));
-  }
-
-  const p1 = add(P,V1,L);
-  const p2 = add(P,V2,L);
-  const corner = add(p1, V2, L);
-
-  ctx.beginPath();
-  ctx.moveTo(p1.x,p1.y);
-  ctx.lineTo(corner.x,corner.y);
-  ctx.lineTo(p2.x,p2.y);
-  ctx.strokeStyle="#1f2937";
-  ctx.lineWidth=4;
-  ctx.lineJoin="round";
-  ctx.stroke();
-}
-
-function drawAngleText(A,B,C, angA, angB, angC){
-  ctx.font="900 13px system-ui";
-  ctx.fillStyle="#374151";
-  ctx.fillText(`${angA.toFixed(1)}°`, A.x+14, A.y+18);
-  ctx.fillText(`${angB.toFixed(1)}°`, B.x+14, B.y+18);
-  ctx.fillText(`${angC.toFixed(1)}°`, C.x+14, C.y+18);
-}
-
-function drawEdgePartial(P,Q, t){
-  const x = P.x + (Q.x-P.x)*t;
-  const y = P.y + (Q.y-P.y)*t;
-  ctx.beginPath();
-  ctx.moveTo(P.x,P.y);
-  ctx.lineTo(x,y);
-  ctx.stroke();
-}
-
-function setResult(ok, title, html){
-  els.res.classList.remove("ok","bad");
-  els.res.classList.add(ok ? "ok" : "bad");
-  els.res.innerHTML = `<strong>${title}</strong> ${html||""}`;
-}
-
-function updateKPIs(per, area, angA, angB, angC, rightAt){
-  els.kPer.textContent  = Number.isFinite(per) ? per.toFixed(4) : "—";
-  els.kArea.textContent = Number.isFinite(area) ? area.toFixed(4) : "—";
-  els.kAng.textContent  = (Number.isFinite(angA) && Number.isFinite(angB) && Number.isFinite(angC))
-    ? `${angA.toFixed(1)}°, ${angB.toFixed(1)}°, ${angC.toFixed(1)}°`
-    : "—";
-  els.kRight.textContent= rightAt ? rightAt : "No";
-}
-
-/* ---------------- Animation ---------------- */
-function startAnimation(points, showMode, rightAt, labelsData){
-  anim.P = points;
-  anim.t = 0;
-  anim.speed = Number(els.speed.value);
-  anim.running = true;
-  anim.paused = false;
-  anim.rightAt = rightAt;
-  anim.showMode = showMode;
-  anim.labelsData = labelsData;
-
-  const {A,B,C} = points;
-  anim.segments = [
-    { from:A, to:B },
-    { from:B, to:C },
-    { from:C, to:A },
-  ];
-  anim.totalLen = anim.segments.reduce((s,g)=> s + dist(g.from,g.to), 0) || 1;
-
-  function frame(){
-    if(!anim.running) return;
-
-    if(!anim.paused){
-      anim.speed = Number(els.speed.value);
-      anim.t = Math.min(1, anim.t + 0.012 * anim.speed);
-    }
-
-    clearCanvas();
-
-    if(anim.t > 0.70){
-      ctx.globalAlpha = clamp((anim.t-0.70)/0.30, 0, 1) * 0.25;
-      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.lineTo(C.x,C.y); ctx.closePath();
-      ctx.fillStyle = "rgba(245, 158, 11, 1)";
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-
-    ctx.strokeStyle = "#1f2937";
-    ctx.lineWidth = 5;
-    ctx.lineJoin = "round";
-
-    let remaining = anim.t * anim.totalLen;
-    for(const seg of anim.segments){
-      const L = dist(seg.from, seg.to);
-      const frac = clamp(remaining / L, 0, 1);
-      if(frac > 0) drawEdgePartial(seg.from, seg.to, frac);
-      remaining -= L;
-    }
-
-    if(anim.t > 0.25){
-      drawPoint(A,"A"); drawPoint(B,"B"); drawPoint(C,"C");
-    }
-
-    if(showMode !== "clean" && anim.t > 0.55){
-      if(showMode === "labels"){
-        ctx.font="900 14px system-ui";
-        ctx.fillStyle="#374151";
-        const midAB={x:(A.x+B.x)/2, y:(A.y+B.y)/2};
-        const midBC={x:(B.x+C.x)/2, y:(B.y+C.y)/2};
-        const midCA={x:(C.x+A.x)/2, y:(C.y+A.y)/2};
-        ctx.fillText(labelsData.ab, midAB.x+8, midAB.y+18);
-        ctx.fillText(labelsData.bc, midBC.x+8, midBC.y-8);
-        ctx.fillText(labelsData.ca, midCA.x+8, midCA.y-8);
-
-        if(rightAt) drawRightAngleMarker(rightAt, A,B,C);
-      } else if(showMode === "angles"){
-        drawAngleText(A,B,C, labelsData.angA, labelsData.angB, labelsData.angC);
-        if(rightAt) drawRightAngleMarker(rightAt, A,B,C);
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#d97706" />
+    <title>Basic JavaScript Course — Introduction | Programmer’s Picnic</title>
+    <meta
+      name="description"
+      content="Basic JavaScript Course (Programmer’s Picnic) — Introduction, importance, topics, outcomes, components and utilities students can build after completing the course."
+    />
+
+    <style>
+      :root {
+        /* Light Saffron Theme */
+        --bg0: #fff7e6;
+        --bg1: #fff1d6;
+        --card: rgba(255, 255, 255, 0.88);
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --brand: #d97706;
+        --brand2: #f59e0b;
+        --border: rgba(31, 41, 55, 0.12);
+        --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+        --ring: 0 0 0 4px rgba(217, 119, 6, 0.18);
+        --radius: 18px;
+        --radius2: 24px;
       }
-    }
 
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-}
-
-function stopAnimation(){ anim.running = false; }
-
-function togglePause(){
-  if(!anim.running) return;
-  anim.paused = !anim.paused;
-  els.btnPause.textContent = anim.paused ? "Resume" : "Pause";
-}
-
-/* ---------------- Main Logic ---------------- */
-function readSides(){
-  const a=Number(els.a.value), b=Number(els.b.value), c=Number(els.c.value);
-  return {a,b,c};
-}
-
-function checkAndAnimate(){
-  stopAnimation();
-
-  const {a,b,c} = readSides();
-  if(![a,b,c].every(Number.isFinite)){
-    setResult(false, "Invalid input ❌", "Please enter numbers.");
-    updateKPIs(NaN,NaN,NaN,NaN,NaN,null);
-    clearCanvas();
-    return;
-  }
-
-  const poss = trianglePossibleOrDegenerate(a,b,c);
-  if(!poss.ok){
-    setResult(false, "Triangle NOT valid ❌", poss.reason);
-    updateKPIs(NaN,NaN,NaN,NaN,NaN,null);
-    clearCanvas();
-    return;
-  }
-
-  const per = a+b+c;
-
-  // Angles opposite (a,b,c)
-  let angA, angB, angC;
-  let area;
-  let baseType = triangleType(a,b,c);
-  let typeText = baseType;
-  let rightAt = null;
-
-  const showMode = els.showMode.value;
-
-  if(poss.deg){
-    // Degenerate: straight line
-    const da = degenerateAnglesForABC(a,b,c);
-    angA = da.A; angB = da.B; angC = da.C;
-    area = 0;
-
-    typeText = "Degenerate (Straight Line)";
-    setResult(true, "Valid ✅", `Type: <strong>${typeText}</strong> <span class="hint">(because an equality holds)</span>`);
-    updateKPIs(per, area, angA, angB, angC, null);
-
-    // Draw as a line by normalizing base as largest side
-    const norm = normalizeForDrawing(a,b,c);
-    const pts = computePointsForDraw(norm);
-    if(!pts){ clearCanvas(); return; }
-
-    startAnimation(
-      pts,
-      showMode,
-      null, // no right-angle marker for degenerate
-      {
-        ab: `${norm.ABn} = ${norm.AB}`,
-        ca: `${norm.ACn} = ${norm.AC}`,
-        bc: `${norm.BCn} = ${norm.BC}`,
-        angA, angB, angC
+      * {
+        box-sizing: border-box;
       }
-    );
-    return;
-  }
 
-  // Non-degenerate triangle
-  angA = angleFromSides(a, b, c);
-  angB = angleFromSides(b, a, c);
-  angC = angleFromSides(c, a, b);
-  area = heronArea(a,b,c);
+      body {
+        margin: 0;
+        color: var(--ink);
+        font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+        background: radial-gradient(1100px 520px at 12% 0%, rgba(245, 158, 11, 0.25), transparent 60%),
+          radial-gradient(900px 420px at 92% 18%, rgba(217, 119, 6, 0.22), transparent 55%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        min-height: 100vh;
+      }
 
-  // For drawing, normalize base as largest (looks stable)
-  const norm = normalizeForDrawing(a,b,c);
-  const pts = computePointsForDraw(norm);
-  if(!pts){
-    setResult(true, "Triangle possible ✅", `Type: <strong>${baseType}</strong> (drawing fallback)`);
-    updateKPIs(per, area, angA, angB, angC, null);
-    clearCanvas();
-    return;
-  }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
 
-  rightAt = rightAngleVertexFromPoints(pts.A, pts.B, pts.C, 0.012);
-  if(rightAt) typeText = `Right-angled ${baseType}`;
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 18px 14px 64px;
+      }
 
-  setResult(true, "Triangle possible ✅", `Type: <strong>${typeText}</strong>`);
-  updateKPIs(per, area, angA, angB, angC, rightAt);
+      /* Top bar */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 247, 230, 0.75);
+        border-bottom: 1px solid var(--border);
+      }
 
-  startAnimation(
-    pts,
-    showMode,
-    rightAt,
-    {
-      ab: `${norm.ABn} = ${norm.AB}`,
-      ca: `${norm.ACn} = ${norm.AC}`,
-      bc: `${norm.BCn} = ${norm.BC}`,
-      angA, angB, angC
-    }
-  );
-}
+      .topbar .row {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
 
-function randomValidTriangle(){
-  // create a random VALID triangle (non-degenerate most times)
-  const a = +(2 + Math.random()*10).toFixed(2);
-  const b = +(2 + Math.random()*10).toFixed(2);
-  const lo = Math.abs(a-b) + 0.2;
-  const hi = a+b - 0.2;
-  const c = +(lo + Math.random()*(hi-lo)).toFixed(2);
-  els.a.value=a; els.b.value=b; els.c.value=c;
-  checkAndAnimate();
-}
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
 
-/* ---------------- Python Snippet (Degenerate Allowed) ---------------- */
-const PY_SNIPPET =
-`# Triangle: valid? (including degenerate) type? right-angled? angles? area? perimeter?
-# Degenerate allowed: a+b==c (straight line) is considered VALID.
+      .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: var(--shadow);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 900;
+      }
 
-import math
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
 
-def valid_or_degenerate(a, b, c, eps=1e-9):
-    if a <= 0 or b <= 0 or c <= 0:
-        return (False, False, "Sides must be positive.")
+      .btn {
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+        cursor: pointer;
+        font-weight: 700;
+      }
 
-    # INVALID only if strict less-than
-    if a + b < c - eps or a + c < b - eps or b + c < a - eps:
-        return (False, False, "Invalid: one side is greater than the sum of the other two.")
+      .btn.primary {
+        border-color: rgba(217, 119, 6, 0.35);
+        background: linear-gradient(135deg, rgba(217, 119, 6, 0.12), rgba(245, 158, 11, 0.16));
+      }
 
-    deg = (abs((a+b)-c) <= eps) or (abs((a+c)-b) <= eps) or (abs((b+c)-a) <= eps)
-    return (True, deg, "")
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow), var(--ring);
+      }
 
-def classify(a, b, c, eps=1e-9):
-    ab = abs(a-b) <= eps
-    bc = abs(b-c) <= eps
-    ca = abs(c-a) <= eps
-    if ab and bc:
-        return "Equilateral"
-    if ab or bc or ca:
-        return "Isosceles"
-    return "Scalene"
+      .hero {
+        margin-top: 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius2);
+        overflow: hidden;
+        background:
+          radial-gradient(1200px 600px at 12% -10%, rgba(245, 158, 11, 0.35), transparent 60%),
+          radial-gradient(900px 520px at 92% 5%, rgba(217, 119, 6, 0.25), transparent 55%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.62));
+        box-shadow: var(--shadow);
+      }
 
-def right_angled(a, b, c, eps=1e-7):
-    x, y, z = sorted([a, b, c])
-    return abs(x*x + y*y - z*z) <= eps
+      .hero .inner {
+        padding: 22px 18px;
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 14px;
+        align-items: start;
+      }
 
-def angle(opposite, s1, s2):
-    denom = 2*s1*s2
-    if denom == 0:
-        return 0.0
-    cosT = (s1*s1 + s2*s2 - opposite*opposite) / denom
-    cosT = max(-1.0, min(1.0, cosT))
-    return math.degrees(math.acos(cosT))
+      .kicker {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        background: rgba(255, 255, 255, 0.6);
+        font-weight: 800;
+        color: #92400e;
+        width: fit-content;
+      }
 
-def area_heron(a, b, c):
-    s = (a+b+c)/2
-    v = s*(s-a)*(s-b)*(s-c)
-    return math.sqrt(max(0.0, v))
+      h1 {
+        margin: 10px 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.08;
+        letter-spacing: -0.5px;
+      }
 
-def degenerate_angles(a, b, c, eps=1e-9):
-    m = max(a,b,c)
-    A = 180.0 if abs(a-m) <= eps else 0.0
-    B = 180.0 if abs(b-m) <= eps else 0.0
-    C = 180.0 if abs(c-m) <= eps else 0.0
-    return (A,B,C)
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+        max-width: 70ch;
+      }
 
-def triangle_report(a, b, c):
-    ok, deg, reason = valid_or_degenerate(a, b, c)
-    if not ok:
-        return {"ok": False, "reason": reason}
+      .heroCard {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.78);
+        padding: 14px;
+      }
 
-    per = a+b+c
+      .metaGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
 
-    if deg:
-        A,B,C = degenerate_angles(a,b,c)
-        return {
-            "ok": True,
-            "degenerate": True,
-            "type": "Degenerate (Straight Line)",
-            "right": False,
-            "angles": (A,B,C),
-            "perimeter": per,
-            "area": 0.0
+      .pill {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.65);
+        border-radius: 14px;
+        padding: 10px;
+      }
+      .pill b {
+        display: block;
+      }
+      .pill small {
+        color: var(--muted);
+      }
+
+      .grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+
+      .card {
+        grid-column: span 6;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--card);
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+
+      .card.wide {
+        grid-column: span 12;
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 20px;
+        letter-spacing: -0.2px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      .badgeRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .badge {
+        font-weight: 800;
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        background: rgba(245, 158, 11, 0.12);
+        color: #92400e;
+        padding: 7px 10px;
+        border-radius: 999px;
+      }
+
+      .twoCol {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .callout {
+        border: 1px dashed rgba(217, 119, 6, 0.35);
+        border-radius: var(--radius);
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      .callout b {
+        color: #92400e;
+      }
+
+      .footer {
+        margin-top: 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 18px;
+        z-index: 50;
+        background: rgba(17, 24, 39, 0.92);
+        color: white;
+        padding: 10px 12px;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
+      }
+
+      @media (max-width: 880px) {
+        .hero .inner {
+          grid-template-columns: 1fr;
         }
+        .card {
+          grid-column: span 12;
+        }
+        .twoCol {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
 
-    t = classify(a, b, c)
-    is_right = right_angled(a, b, c)
+  <body>
+    <header class="topbar">
+      <div class="row">
+        <div class="brand">
+          <div class="logo">PP</div>
+          <div>
+            <div style="font-size: 14px; opacity: 0.85">Programmer’s Picnic</div>
+            <div style="font-size: 12px; color: var(--muted); font-weight: 700">
+              Basic JavaScript Course • Foundation Track
+            </div>
+          </div>
+        </div>
 
-    A = angle(a, b, c)
-    B = angle(b, a, c)
-    C = angle(c, a, b)
+        <div class="actions">
+          <button class="btn" id="btnPrint" title="Print / Save as PDF">🖨 Print</button>
+          <button class="btn" id="btnCopy" title="Copy page summary">📋 Copy</button>
+          <button class="btn primary" id="btnWhatsApp" title="Share on WhatsApp">🟢 WhatsApp</button>
+        </div>
+      </div>
+    </header>
 
-    ar = area_heron(a, b, c)
+    <main class="wrap">
+      <section class="hero" id="top">
+        <div class="inner">
+          <div>
+            <div class="kicker">🟠 Basic JavaScript Course</div>
+            <h1>Introduction • Importance • Topics • Outcomes</h1>
+            <p class="sub">
+              JavaScript is the language that makes the web interactive. This course builds your
+              foundation in ECMAScript-based JavaScript so you can confidently create UI, handle
+              user actions, and build complete mini-apps—then move smoothly to Advanced JS and
+              TypeScript later.
+            </p>
 
-    if is_right:
-        t = "Right-angled " + t
+            <div class="badgeRow" aria-label="Highlights">
+              <span class="badge">Daily Coding</span>
+              <span class="badge">Weekly Mini-Projects</span>
+              <span class="badge">Debugging Skills</span>
+              <span class="badge">DOM + Events</span>
+              <span class="badge">Clean Fundamentals</span>
+            </div>
+          </div>
 
-    return {
-        "ok": True,
-        "degenerate": False,
-        "type": t,
-        "right": is_right,
-        "angles": (A, B, C),
-        "perimeter": per,
-        "area": ar
-    }
+          <aside class="heroCard" aria-label="Course snapshot">
+            <h2 style="margin-bottom: 6px">Course Snapshot</h2>
+            <p class="muted" style="margin: 0 0 10px">
+              Foundation Track (Beginner → Confident Builder)
+            </p>
+            <div class="metaGrid">
+              <div class="pill">
+                <b>Level</b>
+                <small>Beginner to strong basics</small>
+              </div>
+              <div class="pill">
+                <b>Mode</b>
+                <small>Interactive + practice-first</small>
+              </div>
+              <div class="pill">
+                <b>Focus</b>
+                <small>Logic + DOM + mini-apps</small>
+              </div>
+              <div class="pill">
+                <b>Outcome</b>
+                <small>Build real web interactions</small>
+              </div>
+            </div>
 
-# ---- I/O ----
-try:
-    a = float(input("Enter a: ").strip())
-    b = float(input("Enter b: ").strip())
-    c = float(input("Enter c: ").strip())
+            <div class="callout" style="margin-top: 12px">
+              <b>Final goal:</b> students should be able to build small but complete web apps and
+              explain their code confidently.
+            </div>
+          </aside>
+        </div>
+      </section>
 
-    r = triangle_report(a, b, c)
+      <section class="grid" aria-label="Course introduction content">
+        <article class="card wide">
+          <h2>1) Introduction</h2>
+          <p class="muted" style="margin: 0">
+            JavaScript is the “brain” of a webpage. HTML gives structure, CSS gives design, and
+            JavaScript controls interaction—clicks, forms, dynamic updates, and data.
+          </p>
 
-    if not r["ok"]:
-        print("Triangle NOT valid ❌")
-        print("Reason:", r["reason"])
-    else:
-        print("Triangle valid ✅")
-        print("Type:", r["type"])
-        print("Angles (A,B,C) opposite (a,b,c):", tuple(round(x, 2) for x in r["angles"]))
-        print("Perimeter:", round(r["perimeter"], 4))
-        print("Area:", round(r["area"], 4))
-        print("Degenerate:", r["degenerate"])
-except ValueError:
-    print("Please enter valid numbers.")`;
+          <div class="twoCol" style="margin-top: 12px">
+            <div>
+              <h3 style="margin: 0 0 6px; font-size: 16px">Where does JavaScript come from?</h3>
+              <p class="muted" style="margin: 0">
+                JavaScript follows the ECMAScript specification (the official standard). Learning
+                JS basics properly means you’re learning a real engineering language, not random
+                tricks.
+              </p>
+            </div>
+            <div>
+              <h3 style="margin: 0 0 6px; font-size: 16px">What will we do in this course?</h3>
+              <p class="muted" style="margin: 0">
+                We will learn fundamentals with daily practice, build mini-projects, and develop
+                debugging confidence using browser DevTools.
+              </p>
+            </div>
+          </div>
+        </article>
 
-els.py.value = PY_SNIPPET;
+        <article class="card">
+          <h2>2) Why this course is important</h2>
+          <ul>
+            <li><b>JavaScript powers the modern internet</b> (every interactive site uses it).</li>
+            <li><b>Foundation first</b>: strong basics make advanced JS/TypeScript easy.</li>
+            <li><b>Career-ready skill</b>: frontend, full-stack, freelancing, product building.</li>
+            <li><b>Engineering mindset</b>: clean code + debugging + structured thinking.</li>
+          </ul>
+          <div class="callout" style="margin-top: 12px">
+            <b>Course promise:</b> No blind memorization. We build, test, and explain.
+          </div>
+        </article>
 
-/* ---------------- Wire UI ---------------- */
-els.btnCheck.addEventListener("click", () => { els.btnPause.textContent="Pause"; checkAndAnimate(); });
-els.btnPause.addEventListener("click", togglePause);
-els.btnRandom.addEventListener("click", () => { els.btnPause.textContent="Pause"; randomValidTriangle(); });
-els.btnClear.addEventListener("click", () => {
-  stopAnimation();
-  els.a.value=""; els.b.value=""; els.c.value="";
-  setResult(false, "Cleared.", "Enter sides and click Check + Animate.");
-  updateKPIs(NaN,NaN,NaN,NaN,NaN,null);
-  clearCanvas();
-});
-els.showMode.addEventListener("change", () => { if(anim.running) checkAndAnimate(); });
+        <article class="card">
+          <h2>3) Topics covered</h2>
+          <ul>
+            <li><b>Core JS:</b> variables, types, operators, conditions, loops</li>
+            <li><b>Functions:</b> parameters, return, arrow functions</li>
+            <li><b>Data:</b> strings, arrays, objects (practical methods)</li>
+            <li><b>Logic:</b> small problem solving + clean patterns</li>
+            <li><b>DOM:</b> select elements, update text/styles, create elements</li>
+            <li><b>Events:</b> click, input, submit, event handling basics</li>
+            <li><b>Errors:</b> common mistakes + simple error handling</li>
+          </ul>
+        </article>
 
-els.btnCopy.addEventListener("click", async () => {
-  try{
-    await navigator.clipboard.writeText(els.py.value);
-    els.btnCopy.textContent = "Copied ✅";
-    setTimeout(()=> els.btnCopy.textContent = "Copy Code", 900);
-  }catch(e){
-    alert("Copy failed. Please select the text and copy manually.");
-  }
-});
+        <article class="card">
+          <h2>4) What students can build after completion</h2>
+          <ul>
+            <li>To-Do app (add/delete/mark done)</li>
+            <li>Quiz app (MCQ + score + retry)</li>
+            <li>Calculator (with history)</li>
+            <li>Form validator (name/email/phone rules)</li>
+            <li>Notes mini-app (basic save/load)</li>
+            <li>Interactive landing page (dynamic sections)</li>
+          </ul>
+          <p class="muted" style="margin-top: 10px">
+            These are “complete mini-apps” you can deploy on GitHub Pages.
+          </p>
+        </article>
 
-els.btnExamples.addEventListener("click", () => {
-  alert(
-    "Examples:\\n\\n" +
-    "3,4,5  -> Right-angled Scalene\\n" +
-    "5,5,5  -> Equilateral\\n" +
-    "1,2,3  -> VALID Degenerate (straight line), area=0\\n" +
-    "2,3,10 -> INVALID"
-  );
-});
+        <article class="card">
+          <h2>5) UI components students will create</h2>
+          <ul>
+            <li><b>Modal</b> (popup dialog)</li>
+            <li><b>Toast</b> (notification messages)</li>
+            <li><b>Tabs</b> (switch sections)</li>
+            <li><b>Accordion</b> (expand/collapse)</li>
+            <li><b>Dropdown</b> (simple menu)</li>
+            <li><b>Form feedback</b> (inline validation messages)</li>
+          </ul>
+          <div class="callout" style="margin-top: 12px">
+            <b>Big win:</b> students learn to build UI without copy-paste libraries.
+          </div>
+        </article>
 
-clearCanvas();
-checkAndAnimate();
-</script>
-</body>
+        <article class="card">
+          <h2>6) Utilities & skills students will gain</h2>
+          <ul>
+            <li>Reusable helper functions (clean code habits)</li>
+            <li>Basic data filtering & sorting (arrays of objects)</li>
+            <li>Event-driven UI update pattern</li>
+            <li>Simple localStorage usage (save/load)</li>
+            <li>Debugging with Console + Breakpoints</li>
+            <li>Readable code structure (small modules mindset)</li>
+          </ul>
+        </article>
+
+        <article class="card wide">
+          <h2>7) Final outcome</h2>
+          <div class="twoCol">
+            <div>
+              <h3 style="margin: 0 0 6px; font-size: 16px">Students will confidently:</h3>
+              <ul>
+                <li>Write JavaScript programs with clarity</li>
+                <li>Handle user input and events</li>
+                <li>Update the DOM dynamically</li>
+                <li>Build mini projects end-to-end</li>
+                <li>Debug errors independently</li>
+              </ul>
+            </div>
+            <div>
+              <h3 style="margin: 0 0 6px; font-size: 16px">Ready for next step:</h3>
+              <ul>
+                <li>Advanced JavaScript (async, fetch, architecture)</li>
+                <li>TypeScript (typing + scalable projects)</li>
+                <li>Frameworks later (React/Next) with strong base</li>
+              </ul>
+              <div class="callout" style="margin-top: 10px">
+                <b>Message:</b> Strong basics today → super expert tomorrow.
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="footer" aria-label="Footer call to action">
+        <div>
+          <b>Programmer’s Picnic</b>
+          <div class="muted" style="font-size: 13px">
+            Basic JavaScript Course • Foundation Track • Light Saffron Theme
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn" href="#top">⬆ Back to top</a>
+          <button class="btn primary" id="btnCopyLink">🔗 Copy Link</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.getElementById("toast");
+      const showToast = (msg) => {
+        toast.textContent = msg;
+        toast.classList.add("show");
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => toast.classList.remove("show"), 1400);
+      };
+
+      const pageSummary = () => {
+        return [
+          "Basic JavaScript Course — Foundation Track (Programmer’s Picnic)",
+          "",
+          "Includes: Introduction, Importance, Topics, Outcomes, Components & Utilities.",
+          "Outcome: Students can build mini-apps (To-Do, Quiz, Calculator, Form Validator) and UI components (Modal, Toast, Tabs).",
+          "",
+          "Open: " + location.href,
+        ].join("\n");
+      };
+
+      document.getElementById("btnPrint").addEventListener("click", () => {
+        window.print();
+      });
+
+      document.getElementById("btnCopy").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(pageSummary());
+          showToast("Copied summary ✅");
+        } catch (e) {
+          prompt("Copy this:", pageSummary());
+        }
+      });
+
+      document.getElementById("btnCopyLink").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          showToast("Link copied ✅");
+        } catch (e) {
+          prompt("Copy this link:", location.href);
+        }
+      });
+
+      document.getElementById("btnWhatsApp").addEventListener("click", () => {
+        const text = encodeURIComponent(pageSummary());
+        const wa = "https://wa.me/?text=" + text;
+        window.open(wa, "_blank", "noopener,noreferrer");
+      });
+    </script>
+  </body>
 </html>
