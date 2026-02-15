@@ -1,580 +1,231 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#d97706" />
-    <title>Basic JavaScript Course — Introduction | Programmer’s Picnic</title>
-    <meta
-      name="description"
-      content="Basic JavaScript Course (Programmer’s Picnic) — Introduction, importance, topics, outcomes, components and utilities students can build after completing the course."
-    />
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#d97706" />
+<title>Basic JavaScript Course — Introduction</title>
 
-    <style>
-      :root {
-        /* Light Saffron Theme */
-        --bg0: #fff7e6;
-        --bg1: #fff1d6;
-        --card: rgba(255, 255, 255, 0.88);
-        --ink: #1f2937;
-        --muted: #6b7280;
-        --brand: #d97706;
-        --brand2: #f59e0b;
-        --border: rgba(31, 41, 55, 0.12);
-        --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
-        --ring: 0 0 0 4px rgba(217, 119, 6, 0.18);
-        --radius: 18px;
-        --radius2: 24px;
-      }
+<style>
+:root{
+  --bg0:#fff7e6;
+  --bg1:#fff1d6;
+  --card:rgba(255,255,255,0.9);
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --brand:#d97706;
+  --brand2:#f59e0b;
+  --border:rgba(31,41,55,0.12);
+  --shadow:0 12px 30px rgba(17,24,39,0.08);
+}
 
-      * {
-        box-sizing: border-box;
-      }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:linear-gradient(180deg,var(--bg0),var(--bg1));
+  color:var(--ink);
+}
 
-      body {
-        margin: 0;
-        color: var(--ink);
-        font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial,
-          "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-        background: radial-gradient(1100px 520px at 12% 0%, rgba(245, 158, 11, 0.25), transparent 60%),
-          radial-gradient(900px 420px at 92% 18%, rgba(217, 119, 6, 0.22), transparent 55%),
-          linear-gradient(180deg, var(--bg0), var(--bg1));
-        min-height: 100vh;
-      }
+.wrap{max-width:1100px;margin:auto;padding:20px}
 
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
+h1{font-size:38px;margin-bottom:10px}
+h2{margin-top:0}
 
-      .wrap {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 18px 14px 64px;
-      }
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
 
-      /* Top bar */
-      .topbar {
-        position: sticky;
-        top: 0;
-        z-index: 20;
-        backdrop-filter: blur(10px);
-        background: rgba(255, 247, 230, 0.75);
-        border-bottom: 1px solid var(--border);
-      }
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(245,158,11,0.15);
+  border:1px solid rgba(217,119,6,0.3);
+  font-weight:700;
+  color:#92400e;
+  margin:4px;
+}
 
-      .topbar .row {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 10px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-      }
+/* SLIDER */
 
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 800;
-        letter-spacing: 0.2px;
-      }
+.slider{
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
+}
 
-      .logo {
-        width: 34px;
-        height: 34px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--brand), var(--brand2));
-        box-shadow: var(--shadow);
-        display: grid;
-        place-items: center;
-        color: white;
-        font-weight: 900;
-      }
+.slides{
+  display:flex;
+  transition:transform 0.4s ease;
+}
 
-      .actions {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-      }
+.slide{
+  min-width:100%;
+  padding:30px;
+  background:rgba(255,255,255,0.95);
+  border-right:1px solid var(--border);
+}
 
-      .btn {
-        border: 1px solid var(--border);
-        background: white;
-        color: var(--ink);
-        padding: 10px 12px;
-        border-radius: 14px;
-        box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
-        cursor: pointer;
-        font-weight: 700;
-      }
+.slide h3{
+  margin-top:0;
+  color:var(--brand);
+}
 
-      .btn.primary {
-        border-color: rgba(217, 119, 6, 0.35);
-        background: linear-gradient(135deg, rgba(217, 119, 6, 0.12), rgba(245, 158, 11, 0.16));
-      }
+.navBtn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:white;
+  border:1px solid var(--border);
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+}
 
-      .btn:focus-visible {
-        outline: none;
-        box-shadow: var(--shadow), var(--ring);
-      }
+.navBtn.left{left:10px}
+.navBtn.right{right:10px}
 
-      .hero {
-        margin-top: 16px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius2);
-        overflow: hidden;
-        background:
-          radial-gradient(1200px 600px at 12% -10%, rgba(245, 158, 11, 0.35), transparent 60%),
-          radial-gradient(900px 520px at 92% 5%, rgba(217, 119, 6, 0.25), transparent 55%),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.62));
-        box-shadow: var(--shadow);
-      }
+.dots{
+  text-align:center;
+  margin-top:10px;
+}
 
-      .hero .inner {
-        padding: 22px 18px;
-        display: grid;
-        grid-template-columns: 1.25fr 0.75fr;
-        gap: 14px;
-        align-items: start;
-      }
+.dot{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ddd;
+  margin:4px;
+  cursor:pointer;
+}
 
-      .kicker {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(217, 119, 6, 0.25);
-        background: rgba(255, 255, 255, 0.6);
-        font-weight: 800;
-        color: #92400e;
-        width: fit-content;
-      }
+.dot.active{
+  background:var(--brand);
+}
+</style>
+</head>
 
-      h1 {
-        margin: 10px 0 8px;
-        font-size: clamp(28px, 4vw, 44px);
-        line-height: 1.08;
-        letter-spacing: -0.5px;
-      }
+<body>
+<div class="wrap">
 
-      .sub {
-        margin: 0;
-        color: var(--muted);
-        font-size: 16px;
-        max-width: 70ch;
-      }
+<h1>🟠 Basic JavaScript Course</h1>
+<p>Foundation Track — Build real interactive web applications.</p>
 
-      .heroCard {
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: rgba(255, 255, 255, 0.78);
-        padding: 14px;
-      }
+<div class="card">
+<h2>What You Will Be Able To Build</h2>
 
-      .metaGrid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-      }
+<div class="slider">
+  <div class="slides" id="slides">
 
-      .pill {
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.65);
-        border-radius: 14px;
-        padding: 10px;
-      }
-      .pill b {
-        display: block;
-      }
-      .pill small {
-        color: var(--muted);
-      }
+    <div class="slide">
+      <h3>📝 To-Do App</h3>
+      <p>Add tasks, delete tasks, mark complete.</p>
+      <p>Learn arrays, DOM updates, event handling.</p>
+    </div>
 
-      .grid {
-        margin-top: 16px;
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 14px;
-      }
+    <div class="slide">
+      <h3>🧮 Calculator</h3>
+      <p>Perform operations + track history.</p>
+      <p>Learn functions, conditions, dynamic updates.</p>
+    </div>
 
-      .card {
-        grid-column: span 6;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--card);
-        box-shadow: var(--shadow);
-        padding: 16px;
-      }
+    <div class="slide">
+      <h3>🧠 Quiz Application</h3>
+      <p>Multiple choice questions + scoring.</p>
+      <p>Learn objects, logic flow, UI rendering.</p>
+    </div>
 
-      .card.wide {
-        grid-column: span 12;
-      }
+    <div class="slide">
+      <h3>📋 Form Validator</h3>
+      <p>Validate name, email, phone input.</p>
+      <p>Learn regex basics + input events.</p>
+    </div>
 
-      h2 {
-        margin: 0 0 10px;
-        font-size: 20px;
-        letter-spacing: -0.2px;
-      }
+    <div class="slide">
+      <h3>🔔 UI Components</h3>
+      <p>Modal, Toast, Tabs, Dropdown.</p>
+      <p>Learn reusable component thinking.</p>
+    </div>
 
-      .muted {
-        color: var(--muted);
-      }
+  </div>
 
-      ul {
-        margin: 10px 0 0;
-        padding-left: 18px;
-      }
+  <button class="navBtn left" onclick="prevSlide()">‹</button>
+  <button class="navBtn right" onclick="nextSlide()">›</button>
+</div>
 
-      li {
-        margin: 6px 0;
-      }
+<div class="dots" id="dots"></div>
 
-      .badgeRow {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 10px;
-      }
+</div>
 
-      .badge {
-        font-weight: 800;
-        border: 1px solid rgba(217, 119, 6, 0.25);
-        background: rgba(245, 158, 11, 0.12);
-        color: #92400e;
-        padding: 7px 10px;
-        border-radius: 999px;
-      }
+<div class="card">
+<h2>Skills You Will Gain</h2>
 
-      .twoCol {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
+<span class="badge">Clean Fundamentals</span>
+<span class="badge">DOM Mastery</span>
+<span class="badge">Event Handling</span>
+<span class="badge">Logic Building</span>
+<span class="badge">Mini Project Deployment</span>
 
-      .callout {
-        border: 1px dashed rgba(217, 119, 6, 0.35);
-        border-radius: var(--radius);
-        padding: 12px;
-        background: rgba(255, 255, 255, 0.6);
-      }
+</div>
 
-      .callout b {
-        color: #92400e;
-      }
+</div>
 
-      .footer {
-        margin-top: 18px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: rgba(255, 255, 255, 0.7);
-        padding: 14px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-        justify-content: space-between;
-      }
+<script>
+const slides = document.getElementById('slides');
+const totalSlides = slides.children.length;
+const dotsContainer = document.getElementById('dots');
+let index = 0;
 
-      .toast {
-        position: fixed;
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 18px;
-        z-index: 50;
-        background: rgba(17, 24, 39, 0.92);
-        color: white;
-        padding: 10px 12px;
-        border-radius: 14px;
-        box-shadow: var(--shadow);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.18s ease, transform 0.18s ease;
-      }
-      .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(-4px);
-      }
+// Create dots
+for(let i=0;i<totalSlides;i++){
+  const dot = document.createElement('span');
+  dot.classList.add('dot');
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+updateDots();
 
-      @media (max-width: 880px) {
-        .hero .inner {
-          grid-template-columns: 1fr;
-        }
-        .card {
-          grid-column: span 12;
-        }
-        .twoCol {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
+function updateSlide(){
+  slides.style.transform = `translateX(-${index*100}%)`;
+  updateDots();
+}
 
-  <body>
-    <header class="topbar">
-      <div class="row">
-        <div class="brand">
-          <div class="logo">PP</div>
-          <div>
-            <div style="font-size: 14px; opacity: 0.85">Programmer’s Picnic</div>
-            <div style="font-size: 12px; color: var(--muted); font-weight: 700">
-              Basic JavaScript Course • Foundation Track
-            </div>
-          </div>
-        </div>
+function updateDots(){
+  const dots = document.querySelectorAll('.dot');
+  dots.forEach((d,i)=>{
+    d.classList.toggle('active', i===index);
+  });
+}
 
-        <div class="actions">
-          <button class="btn" id="btnPrint" title="Print / Save as PDF">🖨 Print</button>
-          <button class="btn" id="btnCopy" title="Copy page summary">📋 Copy</button>
-          <button class="btn primary" id="btnWhatsApp" title="Share on WhatsApp">🟢 WhatsApp</button>
-        </div>
-      </div>
-    </header>
+function nextSlide(){
+  index = (index+1)%totalSlides;
+  updateSlide();
+}
 
-    <main class="wrap">
-      <section class="hero" id="top">
-        <div class="inner">
-          <div>
-            <div class="kicker">🟠 Basic JavaScript Course</div>
-            <h1>Introduction • Importance • Topics • Outcomes</h1>
-            <p class="sub">
-              JavaScript is the language that makes the web interactive. This course builds your
-              foundation in ECMAScript-based JavaScript so you can confidently create UI, handle
-              user actions, and build complete mini-apps—then move smoothly to Advanced JS and
-              TypeScript later.
-            </p>
+function prevSlide(){
+  index = (index-1+totalSlides)%totalSlides;
+  updateSlide();
+}
 
-            <div class="badgeRow" aria-label="Highlights">
-              <span class="badge">Daily Coding</span>
-              <span class="badge">Weekly Mini-Projects</span>
-              <span class="badge">Debugging Skills</span>
-              <span class="badge">DOM + Events</span>
-              <span class="badge">Clean Fundamentals</span>
-            </div>
-          </div>
+function goToSlide(i){
+  index=i;
+  updateSlide();
+}
 
-          <aside class="heroCard" aria-label="Course snapshot">
-            <h2 style="margin-bottom: 6px">Course Snapshot</h2>
-            <p class="muted" style="margin: 0 0 10px">
-              Foundation Track (Beginner → Confident Builder)
-            </p>
-            <div class="metaGrid">
-              <div class="pill">
-                <b>Level</b>
-                <small>Beginner to strong basics</small>
-              </div>
-              <div class="pill">
-                <b>Mode</b>
-                <small>Interactive + practice-first</small>
-              </div>
-              <div class="pill">
-                <b>Focus</b>
-                <small>Logic + DOM + mini-apps</small>
-              </div>
-              <div class="pill">
-                <b>Outcome</b>
-                <small>Build real web interactions</small>
-              </div>
-            </div>
+document.addEventListener('keydown',(e)=>{
+  if(e.key==="ArrowRight") nextSlide();
+  if(e.key==="ArrowLeft") prevSlide();
+});
+</script>
 
-            <div class="callout" style="margin-top: 12px">
-              <b>Final goal:</b> students should be able to build small but complete web apps and
-              explain their code confidently.
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="grid" aria-label="Course introduction content">
-        <article class="card wide">
-          <h2>1) Introduction</h2>
-          <p class="muted" style="margin: 0">
-            JavaScript is the “brain” of a webpage. HTML gives structure, CSS gives design, and
-            JavaScript controls interaction—clicks, forms, dynamic updates, and data.
-          </p>
-
-          <div class="twoCol" style="margin-top: 12px">
-            <div>
-              <h3 style="margin: 0 0 6px; font-size: 16px">Where does JavaScript come from?</h3>
-              <p class="muted" style="margin: 0">
-                JavaScript follows the ECMAScript specification (the official standard). Learning
-                JS basics properly means you’re learning a real engineering language, not random
-                tricks.
-              </p>
-            </div>
-            <div>
-              <h3 style="margin: 0 0 6px; font-size: 16px">What will we do in this course?</h3>
-              <p class="muted" style="margin: 0">
-                We will learn fundamentals with daily practice, build mini-projects, and develop
-                debugging confidence using browser DevTools.
-              </p>
-            </div>
-          </div>
-        </article>
-
-        <article class="card">
-          <h2>2) Why this course is important</h2>
-          <ul>
-            <li><b>JavaScript powers the modern internet</b> (every interactive site uses it).</li>
-            <li><b>Foundation first</b>: strong basics make advanced JS/TypeScript easy.</li>
-            <li><b>Career-ready skill</b>: frontend, full-stack, freelancing, product building.</li>
-            <li><b>Engineering mindset</b>: clean code + debugging + structured thinking.</li>
-          </ul>
-          <div class="callout" style="margin-top: 12px">
-            <b>Course promise:</b> No blind memorization. We build, test, and explain.
-          </div>
-        </article>
-
-        <article class="card">
-          <h2>3) Topics covered</h2>
-          <ul>
-            <li><b>Core JS:</b> variables, types, operators, conditions, loops</li>
-            <li><b>Functions:</b> parameters, return, arrow functions</li>
-            <li><b>Data:</b> strings, arrays, objects (practical methods)</li>
-            <li><b>Logic:</b> small problem solving + clean patterns</li>
-            <li><b>DOM:</b> select elements, update text/styles, create elements</li>
-            <li><b>Events:</b> click, input, submit, event handling basics</li>
-            <li><b>Errors:</b> common mistakes + simple error handling</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <h2>4) What students can build after completion</h2>
-          <ul>
-            <li>To-Do app (add/delete/mark done)</li>
-            <li>Quiz app (MCQ + score + retry)</li>
-            <li>Calculator (with history)</li>
-            <li>Form validator (name/email/phone rules)</li>
-            <li>Notes mini-app (basic save/load)</li>
-            <li>Interactive landing page (dynamic sections)</li>
-          </ul>
-          <p class="muted" style="margin-top: 10px">
-            These are “complete mini-apps” you can deploy on GitHub Pages.
-          </p>
-        </article>
-
-        <article class="card">
-          <h2>5) UI components students will create</h2>
-          <ul>
-            <li><b>Modal</b> (popup dialog)</li>
-            <li><b>Toast</b> (notification messages)</li>
-            <li><b>Tabs</b> (switch sections)</li>
-            <li><b>Accordion</b> (expand/collapse)</li>
-            <li><b>Dropdown</b> (simple menu)</li>
-            <li><b>Form feedback</b> (inline validation messages)</li>
-          </ul>
-          <div class="callout" style="margin-top: 12px">
-            <b>Big win:</b> students learn to build UI without copy-paste libraries.
-          </div>
-        </article>
-
-        <article class="card">
-          <h2>6) Utilities & skills students will gain</h2>
-          <ul>
-            <li>Reusable helper functions (clean code habits)</li>
-            <li>Basic data filtering & sorting (arrays of objects)</li>
-            <li>Event-driven UI update pattern</li>
-            <li>Simple localStorage usage (save/load)</li>
-            <li>Debugging with Console + Breakpoints</li>
-            <li>Readable code structure (small modules mindset)</li>
-          </ul>
-        </article>
-
-        <article class="card wide">
-          <h2>7) Final outcome</h2>
-          <div class="twoCol">
-            <div>
-              <h3 style="margin: 0 0 6px; font-size: 16px">Students will confidently:</h3>
-              <ul>
-                <li>Write JavaScript programs with clarity</li>
-                <li>Handle user input and events</li>
-                <li>Update the DOM dynamically</li>
-                <li>Build mini projects end-to-end</li>
-                <li>Debug errors independently</li>
-              </ul>
-            </div>
-            <div>
-              <h3 style="margin: 0 0 6px; font-size: 16px">Ready for next step:</h3>
-              <ul>
-                <li>Advanced JavaScript (async, fetch, architecture)</li>
-                <li>TypeScript (typing + scalable projects)</li>
-                <li>Frameworks later (React/Next) with strong base</li>
-              </ul>
-              <div class="callout" style="margin-top: 10px">
-                <b>Message:</b> Strong basics today → super expert tomorrow.
-              </div>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="footer" aria-label="Footer call to action">
-        <div>
-          <b>Programmer’s Picnic</b>
-          <div class="muted" style="font-size: 13px">
-            Basic JavaScript Course • Foundation Track • Light Saffron Theme
-          </div>
-        </div>
-        <div class="actions">
-          <a class="btn" href="#top">⬆ Back to top</a>
-          <button class="btn primary" id="btnCopyLink">🔗 Copy Link</button>
-        </div>
-      </section>
-    </main>
-
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-    <script>
-      const toast = document.getElementById("toast");
-      const showToast = (msg) => {
-        toast.textContent = msg;
-        toast.classList.add("show");
-        clearTimeout(showToast._t);
-        showToast._t = setTimeout(() => toast.classList.remove("show"), 1400);
-      };
-
-      const pageSummary = () => {
-        return [
-          "Basic JavaScript Course — Foundation Track (Programmer’s Picnic)",
-          "",
-          "Includes: Introduction, Importance, Topics, Outcomes, Components & Utilities.",
-          "Outcome: Students can build mini-apps (To-Do, Quiz, Calculator, Form Validator) and UI components (Modal, Toast, Tabs).",
-          "",
-          "Open: " + location.href,
-        ].join("\n");
-      };
-
-      document.getElementById("btnPrint").addEventListener("click", () => {
-        window.print();
-      });
-
-      document.getElementById("btnCopy").addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(pageSummary());
-          showToast("Copied summary ✅");
-        } catch (e) {
-          prompt("Copy this:", pageSummary());
-        }
-      });
-
-      document.getElementById("btnCopyLink").addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(location.href);
-          showToast("Link copied ✅");
-        } catch (e) {
-          prompt("Copy this link:", location.href);
-        }
-      });
-
-      document.getElementById("btnWhatsApp").addEventListener("click", () => {
-        const text = encodeURIComponent(pageSummary());
-        const wa = "https://wa.me/?text=" + text;
-        window.open(wa, "_blank", "noopener,noreferrer");
-      });
-    </script>
-  </body>
+</body>
 </html>
