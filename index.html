@@ -4,15 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#d97706" />
-  <title>Day 1 — Debugging & Testing JavaScript in the Browser</title>
-  <meta name="description" content="Day 1 JavaScript: debugging and testing in the browser using DevTools, console, breakpoints, sources, network, storage, and common workflows." />
+  <title>Day 1 — Debugging & Testing in the Browser (JS + HTML Preview Editors)</title>
 
   <style>
     :root{
       --bg0:#fff7e6; --bg1:#fff1d6;
       --card:rgba(255,255,255,.9);
       --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706; --brand2:#f59e0b;
+      --brand:#d97706;
       --border:rgba(31,41,55,.12);
       --shadow:0 14px 40px rgba(17,24,39,.10);
       --ring:0 0 0 4px rgba(217,119,6,.18);
@@ -29,8 +28,7 @@
         radial-gradient(900px 420px at 92% 18%, rgba(217,119,6,.18), transparent 55%),
         linear-gradient(180deg,var(--bg0),var(--bg1));
     }
-    a{color:inherit}
-    .wrap{max-width:1080px;margin:0 auto;padding:16px 14px 64px}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px 14px 64px}
     .hero{
       border:1px solid var(--border);
       border-radius:var(--r2);
@@ -39,13 +37,6 @@
       padding:18px;
       overflow:hidden;
       position:relative;
-    }
-    .hero::after{
-      content:"";
-      position:absolute; inset:-50px -50px auto auto;
-      width:260px; height:260px; border-radius:999px;
-      background:radial-gradient(circle at 30% 30%, rgba(245,158,11,.22), transparent 60%);
-      pointer-events:none;
     }
     h1{margin:0 0 8px;font-size:clamp(26px,3.5vw,44px);letter-spacing:-.6px}
     .sub{margin:0;color:var(--muted);font-weight:650;line-height:1.45}
@@ -72,22 +63,7 @@
       border-color:rgba(217,119,6,.35);
       background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));
     }
-    .btn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
-    .kbd{
-      font-family:var(--mono);
-      font-size:12px;
-      background:rgba(17,24,39,.06);
-      border:1px solid rgba(31,41,55,.12);
-      padding:2px 6px;
-      border-radius:8px;
-      white-space:nowrap;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      margin-top:14px;
-    }
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
     .card{
       grid-column:span 12;
       border:1px solid var(--border);
@@ -107,29 +83,11 @@
     .kicker{margin:0;color:#92400e;font-weight:900;letter-spacing:.2px}
     h2{margin:6px 0 0;font-size:18px;letter-spacing:-.2px}
     p{margin:10px 0 0;line-height:1.55}
-    .muted{color:var(--muted);font-weight:650}
-    .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    @media(max-width:900px){.cols{grid-template-columns:1fr}}
     ul{margin:10px 0 0;padding-left:18px}
     li{margin:8px 0;line-height:1.5}
-    pre, code{
-      font-family:var(--mono);
-      background:rgba(17,24,39,.06);
-      border:1px solid rgba(31,41,55,.12);
-      border-radius:14px;
-    }
-    pre{padding:12px;overflow:auto;margin:12px 0 0;font-size:13px;line-height:1.45}
-    .callout{
-      border:1px solid rgba(217,119,6,.22);
-      background:rgba(245,158,11,.10);
-      border-radius:18px;
-      padding:12px;
-      margin-top:12px;
-      font-weight:750;
-      color:#92400e;
-    }
+    .muted{color:var(--muted);font-weight:650}
 
-    /* editor embed */
+    /* embeds */
     .embedWrap{
       border:1px solid var(--border);
       border-radius:22px;
@@ -146,35 +104,12 @@
         radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%),
         radial-gradient(800px 320px at 92% 10%, rgba(217,119,6,.14), transparent 55%);
     }
-    iframe.ppEditor{
-      width:100%;
-      height:680px;
-      border:0;
-      background:white;
-    }
-    @media(max-width:700px){
-      iframe.ppEditor{height:760px}
-    }
+    iframe.ppEditor{width:100%;height:680px;border:0;background:white}
+    @media(max-width:700px){iframe.ppEditor{height:760px}}
 
-    /* tiny checklist */
-    .checklist{display:grid;gap:10px;margin-top:12px}
-    .check{
-      border:1px solid rgba(31,41,55,.12);
-      background:rgba(255,255,255,.78);
-      border-radius:18px;
-      padding:12px;
-      display:flex;gap:12px;align-items:flex-start;
-    }
-    .check b{min-width:28px;height:28px;display:grid;place-items:center;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid rgba(217,119,6,.22);color:#92400e}
-    .footer{
-      margin-top:14px;
-      border:1px solid var(--border);
-      border-radius:var(--r2);
-      background:rgba(255,255,255,.7);
-      box-shadow:var(--shadow);
-      padding:14px;
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-    }
+    /* two editors layout */
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    @media(max-width:980px){.two{grid-template-columns:1fr}}
   </style>
 </head>
 
@@ -186,344 +121,100 @@
           <div class="pill">🟠 Programmer’s Picnic • JavaScript Champion</div>
           <h1>Day 1 — Debugging & Testing in the Browser</h1>
           <p class="sub">
-            Today you’ll learn the real superpower of JS developers: <b>browser DevTools</b>.
-            You’ll debug errors, inspect values, pause code with breakpoints, test APIs, and verify storage/caching.
+            Practice debugging in DevTools, then test by building quick HTML+JS experiments using our editors.
           </p>
         </div>
         <div class="row">
-          <button class="btn primary" id="btnJumpEditor" type="button">🧪 Jump to Practice Editor</button>
+          <button class="btn primary" id="btnJumpEditors" type="button">🧪 Jump to Editors</button>
           <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
         </div>
-      </div>
-
-      <div class="callout">
-        Shortcut: open DevTools quickly → <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">I</span> (Windows/Linux),
-        or <span class="kbd">Cmd</span> + <span class="kbd">Option</span> + <span class="kbd">I</span> (Mac).
       </div>
     </section>
 
     <section class="grid">
-      <!-- 1: MINDSET -->
       <article class="card">
         <div class="hd">
-          <p class="kicker">1) Debugging mindset</p>
-          <h2>Debugging is not “guessing” — it’s a repeatable process</h2>
-        </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>4-step process:</b></p>
-              <ul>
-                <li><b>Reproduce</b> the bug (same steps every time)</li>
-                <li><b>Observe</b> what you see (error message / wrong value)</li>
-                <li><b>Isolate</b> the cause (which line? which input?)</li>
-                <li><b>Fix + verify</b> (test again, add guards)</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Golden rules:</b></p>
-              <ul>
-                <li>Trust the browser: read the <b>exact error</b></li>
-                <li>Check <b>inputs</b> before you blame logic</li>
-                <li>Use breakpoints, don’t spam logs forever</li>
-                <li>After fix: test “happy path” + “edge cases”</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 2: CONSOLE -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">2) Console essentials</p>
-          <h2>Console methods you’ll use daily</h2>
-        </div>
-        <div class="bd">
-          <p class="muted">These help you inspect values quickly.</p>
-          <pre><code>// Basic logging
-console.log("Hello");
-console.info("Info");
-console.warn("Warning");
-console.error("Error");
-
-// Inspect objects better
-console.table([{id:1,name:"A"},{id:2,name:"B"}]);
-console.dir(document.body);
-
-// Group logs
-console.group("Login flow");
-console.log("Step 1: validate");
-console.log("Step 2: fetch");
-console.groupEnd();
-
-// Measure time
-console.time("fetch");
-console.timeEnd("fetch");
-
-// Assertions
-console.assert(2 + 2 === 4, "Math broken");</code></pre>
-          <div class="callout">
-            Tip: In Console you can also run JS directly like a scratchpad:
-            <span class="kbd">document.querySelector("h1").textContent</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- 3: COMMON ERRORS -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">3) Common errors (and what they really mean)</p>
-          <h2>Read error messages like a pro</h2>
-        </div>
-        <div class="bd">
-          <div class="checklist">
-            <div class="check">
-              <b>1</b>
-              <div>
-                <div><b>Uncaught ReferenceError</b> — “x is not defined”</div>
-                <div class="muted">You used a variable that doesn’t exist (typo / scope issue).</div>
-              </div>
-            </div>
-            <div class="check">
-              <b>2</b>
-              <div>
-                <div><b>Uncaught TypeError</b> — “cannot read properties of null”</div>
-                <div class="muted">Your selector returned <b>null</b> (element not found / runs too early).</div>
-              </div>
-            </div>
-            <div class="check">
-              <b>3</b>
-              <div>
-                <div><b>SyntaxError</b> — “Unexpected token …”</div>
-                <div class="muted">A missing bracket/quote, or wrong JS syntax.</div>
-              </div>
-            </div>
-            <div class="check">
-              <b>4</b>
-              <div>
-                <div><b>Network Error / CORS</b></div>
-                <div class="muted">Request blocked or URL/API issue. Use the <b>Network</b> tab.</div>
-              </div>
-            </div>
-          </div>
-
-          <p class="muted" style="margin-top:12px"><b>Example: null element bug</b></p>
-          <pre><code>// Bug:
-const btn = document.querySelector("#start"); // returns null
-btn.addEventListener("click", () => alert("Hi")); // TypeError
-
-// Fix ideas:
-const btn = document.querySelector("#start");
-if(btn) btn.addEventListener("click", () => alert("Hi"));
-
-// OR run after DOM loads:
-window.addEventListener("DOMContentLoaded", () => {
-  document.querySelector("#start").addEventListener("click", () => alert("Hi"));
-});</code></pre>
-        </div>
-      </article>
-
-      <!-- 4: BREAKPOINTS -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">4) Breakpoints (the real power)</p>
-          <h2>Pause code and inspect everything</h2>
-        </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>Where:</b> DevTools → <b>Sources</b></p>
-              <ul>
-                <li>Click a line number → adds a breakpoint</li>
-                <li>Reload page → it will pause there</li>
-                <li>Inspect variables in <b>Scope</b> panel</li>
-                <li>Use <b>Step over</b>, <b>Step into</b>, <b>Step out</b></li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Bonus:</b></p>
-              <ul>
-                <li><b>Conditional breakpoint</b>: pause only when condition is true</li>
-                <li><b>Logpoint</b>: log without changing code</li>
-                <li><b>Debugger statement</b>: put <span class="kbd">debugger;</span> in code to pause</li>
-              </ul>
-            </div>
-          </div>
-
-          <pre><code>function total(price, qty){
-  debugger;           // DevTools will pause here
-  return price * qty;
-}
-console.log(total(10, 3));</code></pre>
-        </div>
-      </article>
-
-      <!-- 5: NETWORK -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">5) Testing APIs (Network tab)</p>
-          <h2>Verify fetch requests, status codes, and JSON</h2>
-        </div>
-        <div class="bd">
-          <p class="muted">When your app calls an API, the Network tab is your truth.</p>
-          <ul>
-            <li>DevTools → <b>Network</b> → filter <b>Fetch/XHR</b></li>
-            <li>Click a request → check <b>Status</b>, <b>Response</b>, <b>Headers</b></li>
-            <li>Use “Disable cache” while DevTools is open for clean testing</li>
-          </ul>
-          <pre><code>// Quick fetch test (run in console)
-fetch("https://jsonplaceholder.typicode.com/todos/1")
-  .then(r => r.json())
-  .then(console.log)
-  .catch(console.error);</code></pre>
-        </div>
-      </article>
-
-      <!-- 6: STORAGE -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">6) Testing storage & state</p>
-          <h2>localStorage, sessionStorage, cookies</h2>
-        </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>Where:</b> DevTools → <b>Application</b> tab</p>
-              <ul>
-                <li>Local Storage: saved even after closing tab</li>
-                <li>Session Storage: cleared when tab closes</li>
-                <li>Cookies: auth/session and server-related data</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Common debug checks:</b></p>
-              <ul>
-                <li>Is your key saved?</li>
-                <li>Is JSON valid?</li>
-                <li>Do you clear old data when schema changes?</li>
-              </ul>
-            </div>
-          </div>
-          <pre><code>// localStorage quick tests
-localStorage.setItem("pp_demo", JSON.stringify({x:1, at:Date.now()}));
-JSON.parse(localStorage.getItem("pp_demo"));
-localStorage.removeItem("pp_demo");</code></pre>
-        </div>
-      </article>
-
-      <!-- 7: MINI TESTING -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">7) Browser testing habits</p>
-          <h2>How to “test” without a full testing framework</h2>
-        </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>Manual test checklist:</b></p>
-              <ul>
-                <li>Happy path works (normal input)</li>
-                <li>Edge cases: empty, huge, invalid values</li>
-                <li>Refresh page: state remains as expected</li>
-                <li>Slow network / offline cases</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Quick “micro-tests”:</b></p>
-              <ul>
-                <li>Use <span class="kbd">console.assert</span></li>
-                <li>Write small pure functions and test in console</li>
-                <li>Keep logs temporary—remove after fix</li>
-              </ul>
-            </div>
-          </div>
-          <pre><code>// Micro-tests
-function clamp(n, min, max){
-  return Math.max(min, Math.min(max, n));
-}
-console.assert(clamp(5, 0, 10) === 5, "clamp(5) failed");
-console.assert(clamp(-2, 0, 10) === 0, "clamp(-2) failed");
-console.assert(clamp(99, 0, 10) === 10, "clamp(99) failed");</code></pre>
-        </div>
-      </article>
-
-      <!-- PRACTICE EDITOR -->
-      <article class="card" id="editor">
-        <div class="hd">
-          <p class="kicker">Practice</p>
-          <h2>Try Debugging Tasks in Our JavaScript Editor</h2>
+          <p class="kicker">Practice Area</p>
+          <h2>Use both editors: JavaScript + HTML Preview</h2>
         </div>
         <div class="bd">
           <p class="muted">
-            Open DevTools and try these tasks inside the editor:
+            Recommended workflow for Day 1:
           </p>
           <ul>
-            <li>Print variables with <span class="kbd">console.log</span> and <span class="kbd">console.table</span></li>
-            <li>Add <span class="kbd">debugger;</span> inside a function</li>
-            <li>Fix a “cannot read properties of null” by checking selectors</li>
+            <li>Use the <b>HTML Preview Editor</b> to quickly build a page with buttons/inputs.</li>
+            <li>Then debug your JS logic using DevTools (Console + Sources breakpoints).</li>
+            <li>Use the <b>JavaScript Editor</b> for standalone JS practice and experiments.</li>
           </ul>
 
-          <div class="embedWrap">
-            <div class="embedTop">
-              <div>
-                <div class="pill">🧪 Live Practice</div>
-                <p class="sub">Use DevTools → Console + Sources while running code here.</p>
+          <div class="two" id="editors">
+            <!-- HTML Preview Editor -->
+            <div class="embedWrap">
+              <div class="embedTop">
+                <div>
+                  <div class="pill">🧩 HTML Preview Editor</div>
+                  <p class="sub">Build a mini page and test interactions fast.</p>
+                </div>
+                <div class="row">
+                  <a class="btn" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html" target="_blank" rel="noopener">Open ↗</a>
+                </div>
               </div>
-              <div class="row">
-                <a class="btn" href="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/" target="_blank" rel="noopener">Open in new tab ↗</a>
-              </div>
+              <iframe
+                class="ppEditor"
+                title="Programmer’s Picnic HTML Preview Editor"
+                src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+                loading="eager"
+                allow="clipboard-read; clipboard-write; fullscreen"
+                allowfullscreen
+              ></iframe>
             </div>
 
-            <iframe
-              class="ppEditor"
-              title="Programmer’s Picnic JavaScript Editor"
-              src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-              loading="eager"
-              allow="clipboard-read; clipboard-write; fullscreen"
-              allowfullscreen
-            ></iframe>
-          </div>
-
-          <div class="callout">
-            Pro tip: If something doesn’t update, hard reload:
-            <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">R</span>
+            <!-- JavaScript Editor -->
+            <div class="embedWrap">
+              <div class="embedTop">
+                <div>
+                  <div class="pill">🧪 JavaScript Editor</div>
+                  <p class="sub">Practice console logs, debugger, functions, and micro-tests.</p>
+                </div>
+                <div class="row">
+                  <a class="btn" href="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/" target="_blank" rel="noopener">Open ↗</a>
+                </div>
+              </div>
+              <iframe
+                class="ppEditor"
+                title="Programmer’s Picnic JavaScript Editor"
+                src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+                loading="eager"
+                allow="clipboard-read; clipboard-write; fullscreen"
+                allowfullscreen
+              ></iframe>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- ASSIGNMENT -->
       <article class="card">
         <div class="hd">
-          <p class="kicker">Assignment</p>
-          <h2>Day 1 tasks (submit screenshots / notes)</h2>
+          <p class="kicker">Mini assignments</p>
+          <h2>Debugging tasks to try today</h2>
         </div>
         <div class="bd">
-          <ol style="margin:10px 0 0;padding-left:18px">
-            <li style="margin:10px 0">Create a function <span class="kbd">sum(a,b)</span>. Add <span class="kbd">debugger;</span> inside it. Step through the values.</li>
-            <li style="margin:10px 0">Create an object array and print it using <span class="kbd">console.table</span>.</li>
-            <li style="margin:10px 0">Intentionally create a <span class="kbd">ReferenceError</span> and explain how you fixed it.</li>
-            <li style="margin:10px 0">Make a fetch call. Verify it in <b>Network</b> tab and note status code + response.</li>
-          </ol>
+          <ul>
+            <li>Create an HTML button + input. Add a click handler. Put <b>debugger;</b> inside and step through.</li>
+            <li>Intentionally cause: <b>ReferenceError</b>, <b>TypeError</b>, and fix them using the error line.</li>
+            <li>Use <b>console.table</b> to print an array of objects.</li>
+            <li>Write a small function and validate it using <b>console.assert</b>.</li>
+          </ul>
         </div>
       </article>
-    </section>
-
-    <section class="footer">
-      <div>
-        <b>DevTools shortcut:</b> <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">I</span>
-      </div>
-      <div class="row">
-        <span class="pill">Day 1 Complete ✅</span>
-      </div>
     </section>
   </main>
 
   <script>
     const $ = (id) => document.getElementById(id);
     $("btnPrint").addEventListener("click", () => window.print());
-    $("btnJumpEditor").addEventListener("click", () => {
-      document.getElementById("editor").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("btnJumpEditors").addEventListener("click", () => {
+      document.getElementById("editors").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   </script>
 </body>
