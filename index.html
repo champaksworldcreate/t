@@ -4,19 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#d97706" />
-  <title>Day 1 — Debugging & Testing in the Browser (JS + HTML Preview Editors)</title>
+  <title>Day 1 — Debugging & Testing (Toggle Editors)</title>
 
   <style>
     :root{
       --bg0:#fff7e6; --bg1:#fff1d6;
       --card:rgba(255,255,255,.9);
       --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706;
+      --brand:#d97706; --brand2:#f59e0b;
       --border:rgba(31,41,55,.12);
       --shadow:0 14px 40px rgba(17,24,39,.10);
       --ring:0 0 0 4px rgba(217,119,6,.18);
       --r2:24px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
     }
     *{box-sizing:border-box}
     body{
@@ -35,8 +34,6 @@
       background:rgba(255,255,255,.78);
       box-shadow:var(--shadow);
       padding:18px;
-      overflow:hidden;
-      position:relative;
     }
     h1{margin:0 0 8px;font-size:clamp(26px,3.5vw,44px);letter-spacing:-.6px}
     .sub{margin:0;color:var(--muted);font-weight:650;line-height:1.45}
@@ -63,6 +60,7 @@
       border-color:rgba(217,119,6,.35);
       background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));
     }
+    .btn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
     .card{
       grid-column:span 12;
@@ -87,7 +85,35 @@
     li{margin:8px 0;line-height:1.5}
     .muted{color:var(--muted);font-weight:650}
 
-    /* embeds */
+    /* toggle area */
+    .toggleBar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      padding:10px;
+      border:1px solid rgba(31,41,55,.12);
+      border-radius:18px;
+      background:rgba(255,255,255,.72);
+      margin-top:12px;
+    }
+    .seg{
+      display:flex;
+      border:1px solid rgba(31,41,55,.12);
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.7);
+    }
+    .seg button{
+      border:0;
+      background:transparent;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:950;
+      color:var(--ink);
+    }
+    .seg button.active{
+      background:linear-gradient(135deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
+      color:#92400e;
+    }
+
     .embedWrap{
       border:1px solid var(--border);
       border-radius:22px;
@@ -104,12 +130,9 @@
         radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%),
         radial-gradient(800px 320px at 92% 10%, rgba(217,119,6,.14), transparent 55%);
     }
-    iframe.ppEditor{width:100%;height:680px;border:0;background:white}
-    @media(max-width:700px){iframe.ppEditor{height:760px}}
-
-    /* two editors layout */
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    @media(max-width:980px){.two{grid-template-columns:1fr}}
+    iframe.ppEditor{width:100%;height:720px;border:0;background:white}
+    @media(max-width:700px){iframe.ppEditor{height:780px}}
+    .hidden{display:none !important}
   </style>
 </head>
 
@@ -120,9 +143,7 @@
         <div>
           <div class="pill">🟠 Programmer’s Picnic • JavaScript Champion</div>
           <h1>Day 1 — Debugging & Testing in the Browser</h1>
-          <p class="sub">
-            Practice debugging in DevTools, then test by building quick HTML+JS experiments using our editors.
-          </p>
+          <p class="sub">Use DevTools like a pro, and practice using our editors (toggle between them).</p>
         </div>
         <div class="row">
           <button class="btn primary" id="btnJumpEditors" type="button">🧪 Jump to Editors</button>
@@ -135,60 +156,66 @@
       <article class="card">
         <div class="hd">
           <p class="kicker">Practice Area</p>
-          <h2>Use both editors: JavaScript + HTML Preview</h2>
+          <h2>Toggle Editors: HTML Preview ↔ JavaScript</h2>
         </div>
         <div class="bd">
           <p class="muted">
-            Recommended workflow for Day 1:
+            Recommended Day 1 workflow: build a small HTML page → add JS → debug using Console + Sources breakpoints.
           </p>
-          <ul>
-            <li>Use the <b>HTML Preview Editor</b> to quickly build a page with buttons/inputs.</li>
-            <li>Then debug your JS logic using DevTools (Console + Sources breakpoints).</li>
-            <li>Use the <b>JavaScript Editor</b> for standalone JS practice and experiments.</li>
-          </ul>
 
-          <div class="two" id="editors">
-            <!-- HTML Preview Editor -->
-            <div class="embedWrap">
-              <div class="embedTop">
-                <div>
-                  <div class="pill">🧩 HTML Preview Editor</div>
-                  <p class="sub">Build a mini page and test interactions fast.</p>
-                </div>
-                <div class="row">
-                  <a class="btn" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html" target="_blank" rel="noopener">Open ↗</a>
-                </div>
-              </div>
-              <iframe
-                class="ppEditor"
-                title="Programmer’s Picnic HTML Preview Editor"
-                src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
-                loading="eager"
-                allow="clipboard-read; clipboard-write; fullscreen"
-                allowfullscreen
-              ></iframe>
+          <div class="toggleBar" id="editors">
+            <div class="row">
+              <span class="pill" id="activeLabel">🧩 HTML Preview Editor</span>
+              <span class="muted" id="activeHint">Build a mini page and test interactions fast.</span>
             </div>
 
-            <!-- JavaScript Editor -->
-            <div class="embedWrap">
-              <div class="embedTop">
-                <div>
-                  <div class="pill">🧪 JavaScript Editor</div>
-                  <p class="sub">Practice console logs, debugger, functions, and micro-tests.</p>
-                </div>
-                <div class="row">
-                  <a class="btn" href="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/" target="_blank" rel="noopener">Open ↗</a>
-                </div>
+            <div class="row">
+              <div class="seg" role="tablist" aria-label="Editor toggle">
+                <button id="tabHtml" class="active" type="button" role="tab" aria-selected="true">🧩 HTML Preview</button>
+                <button id="tabJs" type="button" role="tab" aria-selected="false">🧪 JavaScript</button>
               </div>
-              <iframe
-                class="ppEditor"
-                title="Programmer’s Picnic JavaScript Editor"
-                src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-                loading="eager"
-                allow="clipboard-read; clipboard-write; fullscreen"
-                allowfullscreen
-              ></iframe>
+              <a class="btn" id="btnOpenNew" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html" target="_blank" rel="noopener">Open ↗</a>
             </div>
+          </div>
+
+          <!-- HTML Preview Editor -->
+          <div class="embedWrap" id="panelHtml" role="tabpanel" aria-label="HTML Preview Editor">
+            <div class="embedTop">
+              <div>
+                <div class="pill">🧩 HTML Preview Editor</div>
+                <p class="sub">Perfect for quick UI + DOM experiments.</p>
+              </div>
+            </div>
+            <iframe
+              class="ppEditor"
+              title="Programmer’s Picnic HTML Preview Editor"
+              src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+              loading="eager"
+              allow="clipboard-read; clipboard-write; fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <!-- JavaScript Editor -->
+          <div class="embedWrap hidden" id="panelJs" role="tabpanel" aria-label="JavaScript Editor">
+            <div class="embedTop">
+              <div>
+                <div class="pill">🧪 JavaScript Editor</div>
+                <p class="sub">Practice console logs, debugger, functions, and micro-tests.</p>
+              </div>
+            </div>
+            <iframe
+              class="ppEditor"
+              title="Programmer’s Picnic JavaScript Editor"
+              src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+              loading="eager"
+              allow="clipboard-read; clipboard-write; fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <div style="margin-top:12px" class="muted">
+            Tip: If preview is blank locally, run via Live Server / http server. Also try hard reload.
           </div>
         </div>
       </article>
@@ -212,10 +239,55 @@
 
   <script>
     const $ = (id) => document.getElementById(id);
+
     $("btnPrint").addEventListener("click", () => window.print());
     $("btnJumpEditors").addEventListener("click", () => {
       document.getElementById("editors").scrollIntoView({ behavior: "smooth", block: "start" });
     });
+
+    const tabs = {
+      html: {
+        tab: $("tabHtml"),
+        panel: $("panelHtml"),
+        label: "🧩 HTML Preview Editor",
+        hint: "Build a mini page and test interactions fast.",
+        url: "https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+      },
+      js: {
+        tab: $("tabJs"),
+        panel: $("panelJs"),
+        label: "🧪 JavaScript Editor",
+        hint: "Practice console logs, debugger, functions, and micro-tests.",
+        url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+      }
+    };
+
+    function setActive(key){
+      const a = tabs[key];
+      const b = key === "html" ? tabs.js : tabs.html;
+
+      a.tab.classList.add("active");
+      a.tab.setAttribute("aria-selected", "true");
+      a.panel.classList.remove("hidden");
+
+      b.tab.classList.remove("active");
+      b.tab.setAttribute("aria-selected", "false");
+      b.panel.classList.add("hidden");
+
+      $("activeLabel").textContent = a.label;
+      $("activeHint").textContent = a.hint;
+      $("btnOpenNew").href = a.url;
+      $("btnOpenNew").textContent = "Open ↗";
+
+      // persist for refresh
+      localStorage.setItem("pp_day1_editor", key);
+    }
+
+    tabs.html.tab.addEventListener("click", () => setActive("html"));
+    tabs.js.tab.addEventListener("click", () => setActive("js"));
+
+    // restore
+    setActive(localStorage.getItem("pp_day1_editor") === "js" ? "js" : "html");
   </script>
 </body>
 </html>
