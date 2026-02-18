@@ -3,2195 +3,845 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Punya Yatra • Route Builder (Temple-Grade Ultimate)</title>
-
-    <!-- Optional: Leaflet (map + route line). If you already load Leaflet elsewhere, you can remove these 2 lines. -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
+    <title>Learning Sutras — Home</title>
+    <meta
+      name="description"
+      content="Learning Sutras — Practical coding lessons + interactive practice (Python, JS, SQL, DSA)."
     />
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-      defer
-    ></script>
+    <meta name="theme-color" content="#d97706" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="./crx_styles_v1.css" />
 
     <style>
+      /* ===========================
+         Home-only UI (hero + tiles)
+         =========================== */
       :root {
-        /* Light saffron temple grade */
-        --bg: #fff7ed;
+        --bg: #fff7e6;
         --card: #ffffff;
         --ink: #1f2937;
         --muted: #6b7280;
-
-        --brand: #d97706; /* saffron */
-        --brand2: #f59e0b; /* amber */
-        --ring: rgba(245, 158, 11, 0.25);
-        --border: rgba(217, 119, 6, 0.18);
-
+        --brand: #d97706;
+        --brand2: #10b981;
+        --border: rgba(31, 41, 55, 0.12);
         --shadow: 0 18px 45px rgba(31, 41, 55, 0.12);
-        --shadow2: 0 10px 25px rgba(217, 119, 6, 0.16);
-
-        --radius: 18px;
-        --radius2: 22px;
-
-        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        --r: 18px;
       }
 
-      * {
-        box-sizing: border-box;
-      }
-      html,
       body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        font-family: var(--sans);
+        background: var(--bg);
         color: var(--ink);
-        background: radial-gradient(
-            1200px 520px at 10% 0%,
-            rgba(245, 158, 11, 0.22),
-            transparent 60%
-          ),
-          radial-gradient(
-            900px 460px at 90% 20%,
-            rgba(217, 119, 6, 0.18),
-            transparent 60%
-          ),
-          linear-gradient(180deg, var(--bg), #ffffff);
       }
 
-      /* ---------- Layout ---------- */
-      .wrap {
-        max-width: 1200px;
+      /* App shell width (85%) */
+      .ls-shell {
+        width: 85%;
+        max-width: 1600px;
         margin: 0 auto;
-        padding: 18px 14px 30px;
       }
-
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 14px 14px;
-        border: 1px solid var(--border);
-        background: linear-gradient(145deg, #ffffff, #fff7ed);
-        border-radius: var(--radius2);
-        box-shadow: var(--shadow2);
-        position: sticky;
-        top: 10px;
-        z-index: 20;
-        backdrop-filter: blur(10px);
+      @media (max-width: 1024px) {
+        .ls-shell {
+          width: 92%;
+        }
       }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        min-width: 220px;
-      }
-      .logo {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: radial-gradient(
-            18px 18px at 30% 30%,
-            rgba(245, 158, 11, 0.65),
-            transparent 60%
-          ),
-          radial-gradient(
-            18px 18px at 70% 70%,
-            rgba(217, 119, 6, 0.55),
-            transparent 60%
-          ),
-          linear-gradient(135deg, #fff7ed, #ffffff);
-        box-shadow: 0 8px 18px rgba(217, 119, 6, 0.18);
-        display: grid;
-        place-items: center;
-        position: relative;
-        overflow: hidden;
-      }
-      .logo:before {
-        content: "";
-        position: absolute;
-        inset: -40%;
-        background: conic-gradient(
-          from 0deg,
-          rgba(245, 158, 11, 0.55),
-          rgba(217, 119, 6, 0.08),
-          rgba(245, 158, 11, 0.55)
-        );
-        animation: spin 6.5s linear infinite;
-        filter: blur(2px);
-        opacity: 0.25;
-      }
-      .logo span {
-        position: relative;
-        font-size: 20px;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
+      @media (max-width: 720px) {
+        .ls-shell {
+          width: 96%;
         }
       }
 
-      .brand h1 {
-        font-size: 15px;
+      /* Full-bleed header */
+      #ls-header {
+        width: 100vw !important;
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+        left: auto !important;
+        transform: none !important;
+        z-index: 999999 !important;
+      }
+
+      /* HERO */
+      .hero {
+        padding: 0;
+        overflow: hidden;
+        border-radius: 18px;
+        position: relative;
+      }
+      .hero-inner {
+        position: relative;
+        min-height: 280px;
+      }
+      .slides {
+        display: flex;
+        width: auto; /* JS sets dynamic width */
+        transform: translateX(0%);
+        transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+      }
+      .slide {
+        width: 100%;
+        flex: 0 0 100%;
+        padding: 22px;
+        box-sizing: border-box;
+        position: relative;
+        min-height: 280px;
+        display: grid;
+        gap: 14px;
+        align-content: center;
+        background: radial-gradient(
+            1200px 500px at 10% 0%,
+            rgba(217, 119, 6, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 420px at 90% 20%,
+            rgba(16, 185, 129, 0.12),
+            transparent 60%
+          ),
+          #fff;
+        border: 1px solid var(--border);
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 6px 10px;
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        width: fit-content;
+      }
+      .hero-title {
+        font-size: 34px;
         margin: 0;
         line-height: 1.1;
       }
-      .brand .sub {
-        margin: 2px 0 0;
-        font-size: 12px;
+      .hero-sub {
+        margin: 0;
         color: var(--muted);
+        font-weight: 600;
+        max-width: 70ch;
+      }
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 6px;
       }
 
-      .actions {
+      .hero-nav {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .hero-btn {
+        pointer-events: auto;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        border: 1px solid rgba(31, 41, 55, 0.14);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 22px rgba(31, 41, 55, 0.12);
+        cursor: pointer;
+        font-size: 20px;
+        display: grid;
+        place-items: center;
+      }
+      .hero-btn.prev {
+        left: 12px;
+      }
+      .hero-btn.next {
+        right: 12px;
+      }
+
+      .hero-dots {
+        pointer-events: auto;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         gap: 8px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
+        align-items: center;
+      }
+      .dotbtn {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 41, 55, 0.18);
+        background: rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+        padding: 0;
+      }
+      .dotbtn.on {
+        background: linear-gradient(90deg, #d97706, #10b981);
+        border-color: transparent;
+        width: 22px;
       }
 
+      /* Sections */
+      .crx-section {
+        margin: 16px 0;
+      }
+
+      .ls-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+      @media (max-width: 980px) {
+        .ls-grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .ls-tile {
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+        padding: 14px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .kicker {
+        font-weight: 800;
+        font-size: 12px;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        padding: 6px 10px;
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        background: rgba(16, 185, 129, 0.08);
+      }
+
+      .ls-actions-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      /* Buttons (local) */
       .btn {
-        border: 1px solid var(--border);
+        border: 1px solid rgba(31, 41, 55, 0.14);
         background: #fff;
-        color: var(--ink);
-        border-radius: 14px;
-        padding: 10px 12px;
-        font-weight: 700;
-        font-size: 13px;
+        color: #0f172a;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 800;
         cursor: pointer;
-        box-shadow: 0 10px 18px rgba(31, 41, 55, 0.08);
-        transition: transform 0.12s ease, box-shadow 0.12s ease,
-          border-color 0.12s ease;
-        user-select: none;
+        box-shadow: 0 10px 24px rgba(31, 41, 55, 0.08);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        white-space: nowrap;
       }
       .btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 16px 28px rgba(31, 41, 55, 0.12);
-        border-color: rgba(217, 119, 6, 0.35);
-      }
-      .btn:active {
-        transform: translateY(0px);
+        box-shadow: 0 16px 30px rgba(31, 41, 55, 0.12);
       }
       .btn.primary {
-        background: linear-gradient(135deg, #fff7ed, #fff);
-        border-color: rgba(217, 119, 6, 0.35);
+        border-color: transparent;
+        color: #fff;
+        background: linear-gradient(135deg, #f59e0b, #10b981);
       }
-      .btn.brand {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.28), #fff);
-        border-color: rgba(217, 119, 6, 0.4);
-      }
-      .btn.danger {
-        border-color: rgba(239, 68, 68, 0.35);
+      .btn.ghost {
+        background: rgba(255, 255, 255, 0.9);
       }
       .btn.small {
-        padding: 7px 10px;
-        border-radius: 12px;
+        padding: 8px 12px;
         font-size: 12px;
       }
-      .btn:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-        transform: none;
-      }
 
-      .grid {
-        display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
-        gap: 14px;
-        margin-top: 14px;
-      }
-      @media (max-width: 980px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
-        .brand {
-          min-width: unset;
-        }
-      }
-
-      .card {
-        border: 1px solid var(--border);
-        background: linear-gradient(180deg, #ffffff, #fffdf8);
-        border-radius: var(--radius2);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-
-      .card-h {
-        padding: 14px 14px 12px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        border-bottom: 1px solid rgba(217, 119, 6, 0.12);
-        background: radial-gradient(
-            700px 220px at 12% 0%,
-            rgba(245, 158, 11, 0.18),
-            transparent 60%
-          ),
-          linear-gradient(180deg, #fff, #fffaf2);
-      }
-      .card-h h2 {
-        margin: 0;
-        font-size: 14px;
-        letter-spacing: 0.2px;
-      }
-      .card-h p {
-        margin: 2px 0 0;
+      .muted {
         color: var(--muted);
-        font-size: 12px;
-      }
-      .card-b {
-        padding: 14px;
+        font-weight: 600;
       }
 
-      /* ---------- Wizard ---------- */
-      .wizard {
-        display: grid;
-        gap: 12px;
-      }
-
-      .steps {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
-        font-size: 12px;
-        font-weight: 800;
-        color: var(--muted);
-      }
-      .chip b {
-        width: 18px;
-        height: 18px;
-        border-radius: 999px;
-        background: rgba(245, 158, 11, 0.18);
-        display: grid;
-        place-items: center;
-        color: var(--brand);
-        font-size: 11px;
-      }
-      .chip.active {
-        color: var(--ink);
-        border-color: rgba(217, 119, 6, 0.35);
-        background: linear-gradient(135deg, #fff7ed, #fff);
-        box-shadow: 0 12px 22px rgba(217, 119, 6, 0.12);
-      }
-      .chip.done {
-        color: var(--ink);
-        border-color: rgba(34, 197, 94, 0.35);
-      }
-      .chip.done b {
-        background: rgba(34, 197, 94, 0.14);
-        color: #16a34a;
-      }
-
-      .progress {
-        height: 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
-        overflow: hidden;
-        position: relative;
-      }
-      .progress > i {
-        display: block;
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(
-          90deg,
-          rgba(245, 158, 11, 0.65),
-          rgba(217, 119, 6, 0.6)
-        );
-        border-radius: 999px;
-        box-shadow: 0 12px 22px rgba(217, 119, 6, 0.18);
-        transition: width 0.22s ease;
-      }
-
-      .row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      @media (max-width: 560px) {
-        .row {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      label {
-        display: block;
-        font-size: 12px;
-        font-weight: 800;
-        margin: 0 0 6px;
-        letter-spacing: 0.2px;
-      }
-      .field {
-        border: 1px solid var(--border);
-        background: #fff;
-        border-radius: 14px;
-        padding: 10px 12px;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        box-shadow: 0 12px 18px rgba(31, 41, 55, 0.06);
-      }
-      .field:focus-within {
-        border-color: rgba(245, 158, 11, 0.6);
-        box-shadow: 0 0 0 4px var(--ring);
-      }
-      select,
-      input[type="text"],
-      input[type="time"],
-      input[type="number"],
-      textarea {
-        width: 100%;
-        border: 0;
-        outline: none;
-        font: inherit;
-        background: transparent;
-        color: var(--ink);
-      }
-      textarea {
-        resize: vertical;
-        min-height: 44px;
-      }
-      .hint {
-        margin: 0;
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      .panel {
-        border: 1px dashed rgba(217, 119, 6, 0.35);
-        border-radius: 18px;
-        padding: 12px;
-        background: radial-gradient(
-            800px 220px at 10% 0%,
-            rgba(245, 158, 11, 0.14),
-            transparent 60%
-          ),
-          #fff;
-      }
-
-      .place-preview {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .place-card {
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 12px;
-        background: linear-gradient(145deg, #fff, #fffaf2);
-        box-shadow: 0 10px 22px rgba(217, 119, 6, 0.1);
-        position: relative;
-        overflow: hidden;
-      }
-      .place-card:before {
-        content: "";
-        position: absolute;
-        inset: -1px;
-        border-radius: 18px;
-        background: radial-gradient(
-            120px 120px at 12% 0%,
-            rgba(245, 158, 11, 0.18),
-            transparent 60%
-          ),
-          radial-gradient(
-            120px 120px at 90% 80%,
-            rgba(217, 119, 6, 0.12),
-            transparent 60%
-          );
-        pointer-events: none;
-      }
-      .place-card > * {
-        position: relative;
-      }
-      .place-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-      }
-      .place-title h3 {
-        margin: 0;
-        font-size: 14px;
-      }
-      .badge {
-        font-size: 11px;
-        font-weight: 900;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(245, 158, 11, 0.1);
-        color: var(--brand);
-        white-space: nowrap;
-      }
-      .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 8px;
-      }
-      .tag {
-        font-size: 11px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
-        color: var(--muted);
-      }
-
-      .wizard-actions {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
-      /* ---------- Itinerary ---------- */
-      .stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px;
-      }
-      @media (max-width: 560px) {
-        .stats {
-          grid-template-columns: 1fr;
-        }
-      }
-      .stat {
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 12px;
-        background: #fff;
-        box-shadow: 0 10px 18px rgba(31, 41, 55, 0.06);
-      }
-      .stat .k {
-        font-size: 12px;
-        color: var(--muted);
-        font-weight: 800;
-      }
-      .stat .v {
-        font-size: 16px;
-        font-weight: 1000;
-        margin-top: 2px;
-      }
-      .mono {
-        font-family: var(--mono);
-      }
-
-      .daybar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 12px;
-      }
-      .day-tabs {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .daytab {
-        padding: 8px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
-        font-weight: 900;
-        font-size: 12px;
-        cursor: pointer;
-      }
-      .daytab.active {
-        border-color: rgba(217, 119, 6, 0.45);
-        background: linear-gradient(135deg, #fff7ed, #fff);
-        box-shadow: 0 12px 22px rgba(217, 119, 6, 0.12);
-      }
-
-      .list {
-        margin-top: 12px;
-        display: grid;
-        gap: 10px;
-      }
-
-      .item {
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        background: linear-gradient(145deg, #fff, #fffaf2);
-        box-shadow: 0 12px 22px rgba(31, 41, 55, 0.09);
-        overflow: hidden;
-      }
-      .item.dragging {
-        opacity: 0.6;
-      }
-
-      .item-top {
-        padding: 10px 12px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        border-bottom: 1px solid rgba(217, 119, 6, 0.12);
-        background: radial-gradient(
-            700px 220px at 12% 0%,
-            rgba(245, 158, 11, 0.14),
-            transparent 60%
-          ),
-          #fff;
-      }
-      .item-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        min-width: 0;
-      }
-      .handle {
-        width: 34px;
-        height: 34px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: linear-gradient(135deg, #fff7ed, #fff);
-        display: grid;
-        place-items: center;
-        cursor: grab;
-        user-select: none;
-        box-shadow: 0 10px 18px rgba(217, 119, 6, 0.12);
-      }
-      .idx {
-        width: 28px;
-        height: 28px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(245, 158, 11, 0.12);
-        color: var(--brand);
-        display: grid;
-        place-items: center;
-        font-weight: 1000;
-        font-size: 12px;
-        flex: 0 0 auto;
-      }
-      .name {
-        min-width: 0;
-      }
-      .name .t {
-        margin: 0;
-        font-size: 13px;
-        font-weight: 1000;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .name .m {
-        margin: 2px 0 0;
-        font-size: 12px;
-        color: var(--muted);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .item-actions {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-
-      .item-body {
-        padding: 12px;
-        display: grid;
-        gap: 10px;
-      }
-      .minirow {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px;
-      }
-      @media (max-width: 820px) {
-        .minirow {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
-        font-size: 12px;
-        color: var(--muted);
-        font-weight: 800;
-      }
-      .pill strong {
-        color: var(--ink);
-      }
-
-      .divider {
-        height: 1px;
-        background: rgba(217, 119, 6, 0.12);
-        margin: 10px 0;
-      }
-
-      /* ---------- Map ---------- */
-      #map {
-        height: 320px;
-        border-radius: 18px;
-        border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: 0 14px 30px rgba(31, 41, 55, 0.1);
-      }
-
-      .toast-wrap {
+      /* Toast */
+      .ls-toast {
         position: fixed;
         left: 50%;
-        bottom: 14px;
+        bottom: 18px;
         transform: translateX(-50%);
-        z-index: 80;
-        display: grid;
-        gap: 8px;
-        width: min(520px, calc(100% - 24px));
-        pointer-events: none;
+        background: rgba(15, 23, 42, 0.92);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 999px;
+        box-shadow: 0 18px 45px rgba(31, 41, 55, 0.25);
+        display: none;
+        z-index: 999999;
+        font-weight: 800;
       }
-      .toast {
-        pointer-events: none;
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.92);
-        backdrop-filter: blur(10px);
-        padding: 10px 12px;
-        border-radius: 16px;
-        box-shadow: 0 18px 40px rgba(31, 41, 55, 0.18);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        animation: floatUp 0.26s ease;
+      .ls-toast.on {
+        display: block;
+        animation: toastIn 0.25s ease both;
       }
-      @keyframes floatUp {
+      @keyframes toastIn {
         from {
-          transform: translateY(8px);
+          transform: translateX(-50%) translateY(10px);
           opacity: 0;
         }
         to {
-          transform: translateY(0px);
+          transform: translateX(-50%) translateY(0);
           opacity: 1;
         }
       }
-      .toast b {
-        font-size: 12px;
-      }
-      .toast span {
-        font-size: 12px;
-        color: var(--muted);
-      }
 
-      .kbd {
-        font-family: var(--mono);
-        font-size: 11px;
-        border: 1px solid var(--border);
-        background: #fff;
-        padding: 2px 6px;
-        border-radius: 8px;
+      /* Back to top */
+      #back-to-top {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(31, 41, 55, 0.14);
+        box-shadow: 0 18px 45px rgba(31, 41, 55, 0.18);
+        cursor: pointer;
+        user-select: none;
+        z-index: 9999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        font-weight: 900;
       }
-
-      /* “Temple glow” flourish */
-      .glowline {
-        height: 10px;
-        border-radius: 999px;
-        margin-top: 10px;
-        background: radial-gradient(
-            160px 20px at 20% 50%,
-            rgba(245, 158, 11, 0.5),
-            transparent 60%
-          ),
-          radial-gradient(
-            160px 20px at 80% 50%,
-            rgba(217, 119, 6, 0.4),
-            transparent 60%
-          );
-        opacity: 0.7;
+      #back-to-top.on {
+        opacity: 1;
+        pointer-events: auto;
       }
     </style>
   </head>
 
   <body>
-    <div class="wrap">
-      <div class="topbar">
-        <div class="brand">
-          <div class="logo" aria-hidden="true"><span>🛕</span></div>
-          <div>
-            <h1>Punya Yatra • Route Builder</h1>
-            <p class="sub">Temple-Grade Ultimate: Stepwise search + day planning + drag move + optimize + map + WhatsApp</p>
+    <!-- Header (full bleed) -->
+    <header id="ls-header">
+      <div class="ls-shell">
+        <div class="crx-topnav">
+          <div class="crx-brand">
+            <img
+              class="crx-avatar"
+              alt="Champak Roy"
+              src="https://programmer-s-picnic.github.io/json-images/pics/champak-roy.jpg"
+            />
+            <div>
+              <div class="crx-brand-title">Learning Sutras</div>
+              <div class="crx-brand-sub">Practical coding lessons + projects</div>
+            </div>
           </div>
-        </div>
 
-        <div class="actions">
-          <button class="btn brand" id="btnOptimizeAll" title="Optimize order day-wise">
-            ✨ Optimize
-          </button>
-          <button class="btn primary" id="btnSavePlan" title="Save to this device">
-            💾 Save
-          </button>
-          <button class="btn" id="btnLoadPlan" title="Load a saved plan">
-            📂 Load
-          </button>
-          <button class="btn brand" id="btnShareWA" title="Share on WhatsApp">
-            💬 WhatsApp
-          </button>
-          <button class="btn" id="btnOpenMaps" title="Open route in Google Maps">
-            🗺 Open Maps
-          </button>
-          <button class="btn danger" id="btnClearAll" title="Clear itinerary">
-            🧹 Clear
-          </button>
+          <nav class="crx-links" aria-label="Primary">
+            <a
+              class="crx-link"
+              target="_blank"
+              rel="noopener"
+              href="https://www.learnwithchampak.live/search?q=python"
+              >Python</a
+            >
+            <a
+              class="crx-link"
+              target="_blank"
+              rel="noopener"
+              href="https://www.learnwithchampak.live/search?q=dsa"
+              >DSA</a
+            >
+            <a
+              class="crx-link"
+              target="_blank"
+              rel="noopener"
+              href="https://www.learnwithchampak.live/search?q=javascript"
+              >JavaScript</a
+            >
+            <a
+              class="crx-link"
+              target="_blank"
+              rel="noopener"
+              href="https://www.learnwithchampak.live/search?q=sql"
+              >SQL</a
+            >
+            <a
+              class="crx-link"
+              target="_blank"
+              rel="noopener"
+              href="https://www.learnwithchampak.live/search?q=mongodb"
+              >MongoDB</a
+            >
+            <a
+              class="crx-link"
+              target="_blank"
+              rel="noopener"
+              href="https://www.learnwithchampak.live/search?q=projects"
+              >Projects</a
+            >
+          </nav>
         </div>
       </div>
+    </header>
 
-      <div class="grid">
-        <!-- LEFT: Stepwise Wizard -->
-        <section class="card">
-          <header class="card-h">
-            <div>
-              <h2>Stepwise Search (Temple Flow)</h2>
-              <p>Follow the steps: City → Category → Place → Add → Arrange → Share</p>
-            </div>
-            <div class="pill"><strong class="mono" id="dbStatus">Loading…</strong></div>
-          </header>
-          <div class="card-b">
-            <div class="wizard">
-              <div class="steps" id="stepsRow">
-                <div class="chip active" data-step="1"><b>1</b> City</div>
-                <div class="chip" data-step="2"><b>2</b> Category</div>
-                <div class="chip" data-step="3"><b>3</b> Place</div>
-                <div class="chip" data-step="4"><b>4</b> Add</div>
-              </div>
+    <div class="ls-shell">
+      <main id="crx-dashboard-home" role="main">
+        <!-- HERO SLIDER -->
+        <section class="crx-section hero crx_fade_in" id="lsHero">
+          <div class="hero-inner">
+            <!-- JSON will populate slides -->
+            <div class="slides" id="heroSlides" aria-label="Hero slider"></div>
 
-              <div class="progress" aria-hidden="true"><i id="prog"></i></div>
-
-              <div class="panel">
-                <div class="row">
-                  <div>
-                    <label>Step 1 • Select City</label>
-                    <div class="field">
-                      <span aria-hidden="true">🏙️</span>
-                      <select id="citySelect">
-                        <option value="">Loading cities…</option>
-                      </select>
-                    </div>
-                    <p class="hint">
-                      Tip: You can switch city anytime — your itinerary remains.
-                    </p>
-                  </div>
-
-                  <div>
-                    <label>Step 2 • Select Category</label>
-                    <div class="field">
-                      <span aria-hidden="true">🏷️</span>
-                      <select id="categorySelect" disabled>
-                        <option value="">Choose city first</option>
-                      </select>
-                    </div>
-                    <p class="hint">Categories are derived from place tags in your JSON.</p>
-                  </div>
-                </div>
-
-                <div class="glowline" aria-hidden="true"></div>
-
-                <div class="row" style="margin-top: 10px">
-                  <div>
-                    <label>Step 3 • Search / Select Place</label>
-                    <div class="field">
-                      <span aria-hidden="true">🔎</span>
-                      <input
-                        id="placeSearch"
-                        type="text"
-                        placeholder="Type to filter places… (e.g., vishwanath, ghat, annapurna)"
-                        disabled
-                      />
-                    </div>
-                    <div style="margin-top: 8px" class="field">
-                      <span aria-hidden="true">📍</span>
-                      <select id="placeSelect" disabled>
-                        <option value="">Choose category first</option>
-                      </select>
-                    </div>
-                    <p class="hint">
-                      Power tip: after typing, press <span class="kbd">Enter</span> to pick the top match.
-                    </p>
-                  </div>
-
-                  <div>
-                    <label>Step 4 • Add to Itinerary</label>
-                    <div class="row">
-                      <div>
-                        <div class="field">
-                          <span aria-hidden="true">🗓️</span>
-                          <select id="daySelect" disabled>
-                            <option value="1">Day 1</option>
-                            <option value="2">Day 2</option>
-                            <option value="3">Day 3</option>
-                            <option value="4">Day 4</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div>
-                        <div class="field">
-                          <span aria-hidden="true">🕉️</span>
-                          <input
-                            id="timeSelect"
-                            type="time"
-                            value="08:00"
-                            disabled
-                            title="Optional: planned time"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div style="margin-top: 8px" class="field">
-                      <span aria-hidden="true">📝</span>
-                      <input
-                        id="noteInput"
-                        type="text"
-                        placeholder="Optional note (e.g., Rudrabhishek, Darshan window, Prasad)"
-                        disabled
-                      />
-                    </div>
-
-                    <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap">
-                      <button class="btn brand" id="btnAdd" disabled>➕ Add Place</button>
-                      <button class="btn" id="btnAddFeatured" title="Quick add featured places for this city">
-                        ⭐ Add Featured
-                      </button>
-                      <button class="btn" id="btnJumpItinerary" title="Scroll to itinerary">
-                        ⬇️ Itinerary
-                      </button>
-                    </div>
-
-                    <p class="hint" id="addHint" style="margin-top: 10px">
-                      Select a place to unlock “Add Place”.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="place-preview" id="placePreview" style="display: none">
-                <div class="place-card">
-                  <div class="place-title">
-                    <h3 id="pvName">—</h3>
-                    <span class="badge" id="pvBadge">—</span>
-                  </div>
-                  <p class="hint" id="pvMeta" style="margin-top: 6px">—</p>
-                  <div class="tags" id="pvTags"></div>
-                </div>
-              </div>
+            <div class="hero-nav" aria-hidden="false">
+              <button
+                class="hero-btn prev"
+                id="heroPrev"
+                aria-label="Previous slide"
+                type="button"
+              >
+                ‹
+              </button>
+              <button
+                class="hero-btn next"
+                id="heroNext"
+                aria-label="Next slide"
+                type="button"
+              >
+                ›
+              </button>
+              <!-- JSON will populate dots -->
+              <div class="hero-dots" id="heroDots" aria-label="Slide dots"></div>
             </div>
           </div>
         </section>
 
-        <!-- RIGHT: Itinerary + Map -->
-        <section class="card">
-          <header class="card-h">
-            <div>
-              <h2>Move / Arrange (Drag + Buttons)</h2>
-              <p>Drag the handle • Use ↑ ↓ • Optimize day order • Share</p>
-            </div>
-            <div class="pill" title="Auto-saved locally">
-              <strong id="autosaveDot">●</strong>
-              <span>AutoSave</span>
-            </div>
-          </header>
+        <!-- TODAY -->
+        <section class="crx-section crx_fade_in" id="lsToday">
+          <h1 style="margin-bottom: 6px">Today at Learning Sutras</h1>
+          <p style="margin-bottom: 14px">
+            Quick wins for the day — complete 1 tile to keep your streak.
+          </p>
 
-          <div class="card-b">
-            <div class="stats">
-              <div class="stat">
-                <div class="k">Places</div>
-                <div class="v" id="statPlaces">0</div>
-              </div>
-              <div class="stat">
-                <div class="k">Total Distance (approx)</div>
-                <div class="v"><span id="statKm">0.0</span> <span class="k">km</span></div>
-              </div>
-              <div class="stat">
-                <div class="k">Days Used</div>
-                <div class="v" id="statDays">0</div>
+          <div class="ls-grid-3">
+            <div class="ls-tile" id="tileChallenge">
+              <div class="kicker">✅ Daily Challenge</div>
+              <h3 id="challengeTitle">Loading…</h3>
+              <div class="muted" id="challengePrompt"></div>
+              <div class="ls-actions-row">
+                <button class="btn primary small" id="btnChallengeDone">
+                  Mark Done (+10)
+                </button>
+                <button class="btn ghost small" id="btnChallengeCopy">
+                  Copy Prompt
+                </button>
               </div>
             </div>
 
-            <div class="daybar">
-              <div class="day-tabs" id="dayTabs"></div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end">
-                <button class="btn small" id="btnOptimizeDay">✨ Optimize Day</button>
-                <button class="btn small" id="btnExport">⬇️ Export</button>
-                <button class="btn small" id="btnImport">⬆️ Import</button>
+            <div class="ls-tile" id="tileMCQ">
+              <div class="kicker">🧠 Daily MCQ</div>
+              <h3 id="mcqQ">Loading…</h3>
+              <div class="ls-actions-row">
+                <button class="btn ghost small" id="btnMcqReveal">
+                  Reveal
+                </button>
+                <button class="btn primary small" id="btnMcqCorrect">
+                  I got it (+5)
+                </button>
               </div>
+              <div class="muted" id="mcqA" style="display: none"></div>
             </div>
 
-            <div class="divider"></div>
-
-            <div id="itineraryEmpty" class="place-card" style="box-shadow: none; background: #fff">
-              <div class="place-title">
-                <h3>🪔 Your itinerary is empty</h3>
-                <span class="badge">Start with Step 1</span>
+            <div class="ls-tile" id="tileVisual">
+              <div class="kicker">🧩 Today’s Visual</div>
+              <h3 id="visualTitle">Loading…</h3>
+              <div class="muted" id="visualSub"></div>
+              <div class="ls-actions-row">
+                <button class="btn primary small" id="btnVisualOpen">
+                  Open
+                </button>
+                <button class="btn ghost small" id="btnVisualWatched">
+                  Watched (+3)
+                </button>
               </div>
-              <p class="hint" style="margin-top: 8px">
-                Add places from the left panel. Then reorder by dragging or using ↑ ↓.
-              </p>
-            </div>
-
-            <div class="list" id="itineraryList"></div>
-
-            <div class="divider"></div>
-
-            <div id="mapWrap" style="display: none">
-              <label>Map Preview</label>
-              <div id="map"></div>
-              <p class="hint" style="margin-top: 8px">
-                Markers + route line update when you switch Day or reorder.
-              </p>
             </div>
           </div>
-        </section>
-      </div>
 
-      <div class="toast-wrap" id="toasts"></div>
+          <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap">
+            <button class="btn ghost small" data-filter="all">All</button>
+            <button class="btn ghost small" data-filter="python">Python</button>
+            <button class="btn ghost small" data-filter="dsa">DSA</button>
+            <button class="btn ghost small" data-filter="javascript">
+              JavaScript
+            </button>
+            <button class="btn ghost small" data-filter="sql">SQL</button>
+            <button class="btn ghost small" data-filter="mongodb">MongoDB</button>
+            <button class="btn ghost small" data-filter="interview">
+              Interview
+            </button>
+            <button class="btn ghost small" data-filter="projects">Projects</button>
+          </div>
+        </section>
+
+        <!-- EDITORS -->
+        <section class="crx-section crx_fade_in" id="lsEditors">
+          <h1 style="margin-bottom: 6px">Editors</h1>
+          <p style="margin-bottom: 14px">
+            Practice instantly using embedded tools (Python/JS/SQL/HTML/MongoDB).
+          </p>
+
+          <div class="ls-tile">
+            <div class="ls-actions-row" style="margin-bottom: 10px">
+              <button class="btn ghost small" data-tab="python">Python</button>
+              <button class="btn ghost small" data-tab="javascript">JavaScript</button>
+              <button class="btn ghost small" data-tab="sql">SQL</button>
+              <button class="btn ghost small" data-tab="html">HTML</button>
+              <button class="btn ghost small" data-tab="mongodb">MongoDB</button>
+            </div>
+
+            <div id="editorPane"></div>
+          </div>
+        </section>
+
+        <!-- BUILD FOR YOU -->
+        <section class="crx-section crx_fade_in" id="lsBuildForYou">
+          <h1 style="margin-bottom: 6px">Build For You</h1>
+          <p style="margin-bottom: 14px">
+            Want a custom app / dashboard / automation? Tap Request and send details
+            on WhatsApp.
+          </p>
+
+          <div id="crx-build-grid"></div>
+        </section>
+
+        <!-- FEED -->
+        <section class="crx-section crx_fade_in" id="lsFeed">
+          <h1 style="margin-bottom: 6px">Latest</h1>
+          <p style="margin-bottom: 14px" class="muted">
+            Latest content and quick links.
+          </p>
+
+          <div id="crx-feed-panel">
+            <div id="crx-card-list"></div>
+          </div>
+        </section>
+
+        <div id="back-to-top" aria-label="Back to top" title="Back to top">↑</div>
+      </main>
+    </div>
+
+    <div class="ls-toast" id="lsToast">Saved</div>
+
+    <!-- Demo Modal -->
+    <div class="ls_modal" id="lsDemoModal" aria-hidden="true">
+      <div class="ls_modal_backdrop" data-modal-close></div>
+
+      <div class="ls_modal_panel" role="dialog" aria-modal="true" aria-label="Demo">
+        <div class="ls_modal_top">
+          <div class="ls_modal_title" id="lsDemoTitle">Demo</div>
+          <button class="ls_modal_close" type="button" aria-label="Close" data-modal-close>×</button>
+        </div>
+
+        <div class="ls_modal_body">
+          <iframe
+            id="lsDemoFrame"
+            title="Demo"
+            loading="eager"
+            referrerpolicy="no-referrer"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
     </div>
 
     <script>
-      /***********************
-       * Temple-Grade Ultimate Route Builder
-       * - Stepwise wizard (City → Category → Place → Add)
-       * - Search filter + Enter to pick top match
-       * - Itinerary day grouping + tabs
-       * - Move: drag & drop + up/down
-       * - Distance estimates + totals
-       * - Optimize order (nearest-neighbor) day-wise
-       * - Save/Load slots (localStorage) + autosave
-       * - Export/Import JSON
-       * - WhatsApp share + Google Maps route link
-       * - Optional Leaflet map (if Leaflet loads)
-       ***********************/
-
-      // ---------- Helpers ----------
-      const $ = (sel) => document.querySelector(sel);
-      const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-
-      const toastWrap = $("#toasts");
-      function toast(title, msg = "") {
-        const el = document.createElement("div");
-        el.className = "toast";
-        el.innerHTML = `<div><b>${escapeHtml(title)}</b><div><span>${escapeHtml(
-          msg
-        )}</span></div></div><span class="kbd">OK</span>`;
-        toastWrap.prepend(el);
-        setTimeout(() => el.remove(), 2600);
-      }
+      // --------------------------
+      // Helpers
+      // --------------------------
+      const $ = (id) => document.getElementById(id);
 
       function escapeHtml(s) {
-        return String(s ?? "")
+        return String(s)
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
           .replaceAll('"', "&quot;")
           .replaceAll("'", "&#039;");
       }
-
-      function haversineKm(a, b) {
-        // a/b: {lat,lng}
-        if (!a || !b) return 0;
-        const toRad = (x) => (x * Math.PI) / 180;
-        const R = 6371;
-        const dLat = toRad(b.lat - a.lat);
-        const dLng = toRad(b.lng - a.lng);
-        const lat1 = toRad(a.lat);
-        const lat2 = toRad(b.lat);
-        const h =
-          Math.sin(dLat / 2) ** 2 +
-          Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
-        return 2 * R * Math.asin(Math.sqrt(h));
+      function escapeAttr(s) {
+        return escapeHtml(s).replaceAll("`", "&#096;");
       }
 
-      function round1(x) {
-        return Math.round(x * 10) / 10;
+      function toast(msg = "Saved") {
+        const t = $("lsToast");
+        if (!t) return;
+        t.textContent = msg;
+        t.classList.add("on");
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => t.classList.remove("on"), 1400);
       }
 
-      function uid() {
-        return (
-          Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
-        );
+      function waOpen(text) {
+        const url = "https://wa.me/?text=" + encodeURIComponent(text);
+        window.open(url, "_blank", "noopener");
       }
 
-      // ---------- Data model ----------
-      const STATE = {
-        cities: [],
-        city: null,
-        category: "",
-        placesFiltered: [],
-        place: null,
+      // --------------------------
+      // HERO slider logic (JSON-driven + Demo Modal)
+      // --------------------------
+      const LS_HERO_SLIDES_URL =
+        "https://programmer-s-picnic.github.io/json-images/homepageslides.json";
 
-        // itinerary items:
-        // {id, cityId, placeId, nameEn, nameHi, tags[], lat,lng, day, time, note}
-        items: [],
-
-        dayActive: 1,
-        daysMax: 4,
-
-        // map
-        map: null,
-        mapLayer: null,
-        mapMarkers: [],
-        mapPolyline: null,
-      };
-
-      // ---------- Elements ----------
-      const dbStatus = $("#dbStatus");
-      const citySelect = $("#citySelect");
-      const categorySelect = $("#categorySelect");
-      const placeSearch = $("#placeSearch");
-      const placeSelect = $("#placeSelect");
-      const daySelect = $("#daySelect");
-      const timeSelect = $("#timeSelect");
-      const noteInput = $("#noteInput");
-      const btnAdd = $("#btnAdd");
-      const btnAddFeatured = $("#btnAddFeatured");
-      const btnJumpItinerary = $("#btnJumpItinerary");
-      const addHint = $("#addHint");
-
-      const stepsRow = $("#stepsRow");
-      const prog = $("#prog");
-
-      const placePreview = $("#placePreview");
-      const pvName = $("#pvName");
-      const pvBadge = $("#pvBadge");
-      const pvMeta = $("#pvMeta");
-      const pvTags = $("#pvTags");
-
-      const itineraryList = $("#itineraryList");
-      const itineraryEmpty = $("#itineraryEmpty");
-
-      const statPlaces = $("#statPlaces");
-      const statKm = $("#statKm");
-      const statDays = $("#statDays");
-
-      const dayTabs = $("#dayTabs");
-
-      const btnOptimizeAll = $("#btnOptimizeAll");
-      const btnOptimizeDay = $("#btnOptimizeDay");
-      const btnShareWA = $("#btnShareWA");
-      const btnOpenMaps = $("#btnOpenMaps");
-      const btnClearAll = $("#btnClearAll");
-
-      const btnSavePlan = $("#btnSavePlan");
-      const btnLoadPlan = $("#btnLoadPlan");
-
-      const btnExport = $("#btnExport");
-      const btnImport = $("#btnImport");
-
-      // ---------- Storage keys ----------
-      const KEY_AUTOSAVE = "pp_route_autosave_v1";
-      const KEY_SAVES = "pp_route_saved_plans_v1"; // array of {name, ts, data}
-
-      function autosave() {
-        try {
-          localStorage.setItem(KEY_AUTOSAVE, JSON.stringify(serializePlan()));
-          $("#autosaveDot").style.color = "#16a34a";
-          setTimeout(() => ($("#autosaveDot").style.color = "var(--brand)"), 600);
-        } catch {}
-      }
-
-      function loadAutosave() {
-        try {
-          const raw = localStorage.getItem(KEY_AUTOSAVE);
-          if (!raw) return false;
-          const data = JSON.parse(raw);
-          if (data && Array.isArray(data.items)) {
-            deserializePlan(data);
-            toast("AutoSave restored", "Your last route was loaded.");
-            return true;
-          }
-        } catch {}
-        return false;
-      }
-
-      function getSavedPlans() {
-        try {
-          return JSON.parse(localStorage.getItem(KEY_SAVES) || "[]");
-        } catch {
-          return [];
-        }
-      }
-
-      function setSavedPlans(arr) {
-        try {
-          localStorage.setItem(KEY_SAVES, JSON.stringify(arr));
-        } catch {}
-      }
-
-      // ---------- Plan serialize ----------
-      function serializePlan() {
-        return {
-          v: 1,
-          ts: Date.now(),
-          cityId: STATE.city?.id || "",
-          dayActive: STATE.dayActive,
-          items: STATE.items.map((x) => ({ ...x })),
-        };
-      }
-
-      function deserializePlan(plan) {
-        STATE.items = Array.isArray(plan.items) ? plan.items.map((x) => ({ ...x })) : [];
-        STATE.dayActive = Number(plan.dayActive || 1) || 1;
-        renderDayTabs();
-        renderItinerary();
-        updateStats();
-        updateMap();
-      }
-
-      // ---------- Wizard state UI ----------
-      function setStep(stepNum) {
-        const pct = ((stepNum - 1) / 3) * 100;
-        prog.style.width = `${pct}%`;
-
-        $$("#stepsRow .chip").forEach((c) => {
-          const n = Number(c.getAttribute("data-step"));
-          c.classList.toggle("active", n === stepNum);
-          c.classList.toggle("done", n < stepNum);
-        });
-      }
-
-      function updateWizardLock() {
-        // Step 1 always enabled
-        const hasCity = !!STATE.city;
-        categorySelect.disabled = !hasCity;
-
-        const hasCategory = hasCity && !!STATE.category;
-        placeSearch.disabled = !hasCategory;
-        placeSelect.disabled = !hasCategory;
-
-        const hasPlace = hasCategory && !!STATE.place;
-        daySelect.disabled = !hasPlace;
-        timeSelect.disabled = !hasPlace;
-        noteInput.disabled = !hasPlace;
-        btnAdd.disabled = !hasPlace;
-
-        if (!hasCity) setStep(1);
-        else if (!hasCategory) setStep(2);
-        else if (!hasPlace) setStep(3);
-        else setStep(4);
-
-        addHint.textContent = !hasCity
-          ? "Select a city to begin."
-          : !hasCategory
-          ? "Select a category to unlock places."
-          : !hasPlace
-          ? "Select a place to unlock Add Place."
-          : "Ready. Add the selected place into your itinerary.";
-      }
-
-      // ---------- Load locations.json (with fallback paths) ----------
-      async function fetchWithFallback(urls) {
-        for (const u of urls) {
-          try {
-            const res = await fetch(u, { cache: "no-store" });
-            if (!res.ok) continue;
-            return await res.json();
-          } catch {}
-        }
-        return null;
-      }
-
-      async function loadLocations() {
-        dbStatus.textContent = "Loading…";
-        const data = await fetchWithFallback([
-          "data/locations.json",
-          "Locations.json",
-          "locations.json",
-          "./Locations.json",
-          "./data/Locations.json",
-        ]);
-
-        if (!data || !Array.isArray(data.cities)) {
-          dbStatus.textContent = "No DB";
-          toast("locations.json not found", "Place it at data/locations.json or Locations.json");
-          citySelect.innerHTML = `<option value="">DB missing</option>`;
-          return;
-        }
-
-        STATE.cities = data.cities;
-        dbStatus.textContent = `DB OK (${STATE.cities.length})`;
-
-        // Populate cities
-        citySelect.innerHTML = `<option value="">Select a city…</option>`;
-        for (const c of STATE.cities) {
-          const opt = document.createElement("option");
-          opt.value = c.id;
-          opt.textContent = (c.name && (c.name.en || c.name.hi)) || c.id;
-          citySelect.appendChild(opt);
-        }
-
-        // If autosave had cityId, try preselect it
-        const raw = localStorage.getItem(KEY_AUTOSAVE);
-        if (raw) {
-          try {
-            const plan = JSON.parse(raw);
-            if (plan?.cityId) citySelect.value = plan.cityId;
-          } catch {}
-        }
-
-        // apply city selection if already set
-        handleCityChange();
-      }
-
-      // ---------- Derive categories ----------
-      function deriveCategories(city) {
-        const set = new Set();
-        for (const p of city?.places || []) {
-          (p.tags || []).forEach((t) => set.add(String(t).trim()));
-        }
-        // nice ordering (common first)
-        const common = ["temple", "ghat", "shiv", "jyotirlinga", "katha", "ritual", "festival"];
-        const rest = Array.from(set).filter((x) => x && !common.includes(x));
-        const ordered = [
-          ...common.filter((x) => set.has(x)),
-          ...rest.sort((a, b) => a.localeCompare(b)),
-        ];
-        return ordered;
-      }
-
-      function findPlaceById(city, placeId) {
-        return (city?.places || []).find((p) => p.id === placeId) || null;
-      }
-
-      function filterPlaces(city, category, query) {
-        const q = String(query || "").trim().toLowerCase();
-        const arr = (city?.places || [])
-          .filter((p) => (p.tags || []).includes(category))
-          .map((p) => ({
-            ...p,
-            _label: (p.name?.en || p.name?.hi || p.id || "").toLowerCase(),
-          }));
-
-        if (!q) return arr;
-
-        // score: contains query -> higher
-        const scored = arr
-          .map((p) => {
-            const name = p._label;
-            let score = 0;
-            if (name === q) score += 100;
-            if (name.startsWith(q)) score += 60;
-            if (name.includes(q)) score += 40;
-            // tag match adds small bump
-            if ((p.tags || []).some((t) => String(t).toLowerCase().includes(q))) score += 10;
-            return { p, score };
-          })
-          .sort((a, b) => b.score - a.score);
-
-        return scored.filter((x) => x.score > 0).map((x) => x.p);
-      }
-
-      // ---------- City / Category / Place handlers ----------
-      function handleCityChange() {
-        const id = citySelect.value;
-        STATE.city = STATE.cities.find((c) => c.id === id) || null;
-
-        // reset downstream
-        STATE.category = "";
-        STATE.place = null;
-
-        categorySelect.innerHTML = `<option value="">Select category…</option>`;
-        placeSelect.innerHTML = `<option value="">Select place…</option>`;
-        placeSearch.value = "";
-
-        if (!STATE.city) {
-          updateWizardLock();
-          hidePreview();
-          return;
-        }
-
-        const cats = deriveCategories(STATE.city);
-        for (const cat of cats) {
-          const opt = document.createElement("option");
-          opt.value = cat;
-          opt.textContent = cat.toUpperCase();
-          categorySelect.appendChild(opt);
-        }
-
-        // default category if exists
-        if (cats.length) {
-          categorySelect.value = cats[0];
-          handleCategoryChange();
-        }
-
-        toast("City selected", (STATE.city.name?.en || STATE.city.id) + "");
-        updateWizardLock();
-      }
-
-      function handleCategoryChange() {
-        STATE.category = categorySelect.value || "";
-        STATE.place = null;
-        hidePreview();
-
-        placeSearch.value = "";
-        placeSelect.innerHTML = `<option value="">Select place…</option>`;
-
-        if (!STATE.city || !STATE.category) {
-          updateWizardLock();
-          return;
-        }
-
-        // initial list (no query)
-        STATE.placesFiltered = filterPlaces(STATE.city, STATE.category, "");
-        fillPlaceSelect(STATE.placesFiltered);
-
-        updateWizardLock();
-      }
-
-      function fillPlaceSelect(list) {
-        placeSelect.innerHTML = `<option value="">Select place…</option>`;
-        for (const p of list) {
-          const opt = document.createElement("option");
-          opt.value = p.id;
-          opt.textContent = p.name?.en || p.name?.hi || p.id;
-          placeSelect.appendChild(opt);
-        }
-      }
-
-      function handlePlaceSearchInput() {
-        if (!STATE.city || !STATE.category) return;
-        STATE.placesFiltered = filterPlaces(STATE.city, STATE.category, placeSearch.value);
-        fillPlaceSelect(STATE.placesFiltered);
-
-        // keep selection if still exists
-        if (STATE.place && STATE.placesFiltered.some((p) => p.id === STATE.place.id)) {
-          placeSelect.value = STATE.place.id;
-        } else {
-          STATE.place = null;
-          hidePreview();
-        }
-
-        updateWizardLock();
-      }
-
-      function handlePlaceChange() {
-        const pid = placeSelect.value;
-        STATE.place = findPlaceById(STATE.city, pid);
-        if (STATE.place) showPreview(STATE.place);
-        else hidePreview();
-        updateWizardLock();
-      }
-
-      function showPreview(p) {
-        placePreview.style.display = "";
-        pvName.textContent = p.name?.en || p.name?.hi || p.id;
-        pvBadge.textContent = p.featured ? "FEATURED" : "PLACE";
-        const latlng =
-          typeof p.lat === "number" && typeof p.lng === "number"
-            ? `Lat ${p.lat.toFixed(4)}, Lng ${p.lng.toFixed(4)}`
-            : "No coordinates in JSON";
-        pvMeta.textContent = `${(STATE.city?.name?.en || STATE.city?.id || "")} • ${latlng}`;
-
-        pvTags.innerHTML = "";
-        (p.tags || []).slice(0, 12).forEach((t) => {
-          const s = document.createElement("span");
-          s.className = "tag";
-          s.textContent = t;
-          pvTags.appendChild(s);
-        });
-      }
-      function hidePreview() {
-        placePreview.style.display = "none";
-      }
-
-      // ---------- Add to itinerary ----------
-      function addSelectedPlace({ forceDay = null } = {}) {
-        if (!STATE.city || !STATE.place) return;
-
-        // prevent duplicates within same day: allow if user wants, but default warn
-        const targetDay = Number(forceDay || daySelect.value || 1);
-
-        const exists = STATE.items.some(
-          (x) => x.placeId === STATE.place.id && Number(x.day) === targetDay
-        );
-        if (exists) {
-          toast("Already added", "This place is already in the selected day.");
-          return;
-        }
-
-        const p = STATE.place;
-        const item = {
-          id: uid(),
-          cityId: STATE.city.id,
-          placeId: p.id,
-          nameEn: p.name?.en || "",
-          nameHi: p.name?.hi || "",
-          tags: Array.isArray(p.tags) ? p.tags.slice() : [],
-          lat: typeof p.lat === "number" ? p.lat : null,
-          lng: typeof p.lng === "number" ? p.lng : null,
-          day: targetDay,
-          time: timeSelect.value || "",
-          note: (noteInput.value || "").trim(),
+      async function loadHeroSlidesFromJSON() {
+        // Safe fallback so the hero never breaks
+        const FALLBACK = {
+          autoplayMs: 6000,
+          slides: [
+            {
+              badge: "🧩 Learn by Seeing",
+              title: "Visualizers + interactive practice.",
+              sub: "Sorting, recursion, patterns — open visuals and then code immediately in the embedded editors below.",
+              demoTitle: "Demo",
+              demoUrl: "",
+              cta: [
+                {
+                  type: "link",
+                  label: "Explore Visualizers",
+                  href: "https://www.learnwithchampak.live/search?q=visualizer",
+                  variant: "primary"
+                },
+                {
+                  type: "button",
+                  label: "Open Editors",
+                  action: "scroll",
+                  targetId: "lsEditors",
+                  variant: "ghost"
+                }
+              ]
+            }
+          ]
         };
 
-        STATE.items.push(item);
-        STATE.dayActive = targetDay;
-
-        renderDayTabs();
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-
-        toast("Added to itinerary", `${item.nameEn || item.nameHi || item.placeId} • Day ${targetDay}`);
-      }
-
-      function addFeaturedForCity() {
-        if (!STATE.city) {
-          toast("Select a city first", "Then you can quick-add featured places.");
-          return;
-        }
-        const featured = (STATE.city.places || []).filter((p) => p.featured);
-        if (!featured.length) {
-          toast("No featured places", "Add featured:true in your locations.json places.");
-          return;
-        }
-
-        // Add featured to Day 1 in rank order if present
-        const sorted = featured.slice().sort((a, b) => {
-          const ra = Number(a.featuredRank ?? 9999);
-          const rb = Number(b.featuredRank ?? 9999);
-          return ra - rb;
-        });
-
-        let added = 0;
-        for (const p of sorted) {
-          // temporarily set STATE.place
-          const prev = STATE.place;
-          STATE.place = p;
-          const before = STATE.items.length;
-          addSelectedPlace({ forceDay: 1 });
-          if (STATE.items.length > before) added++;
-          STATE.place = prev;
-        }
-        STATE.dayActive = 1;
-        renderDayTabs();
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-        toast("Featured added", `${added} place(s) added to Day 1.`);
-      }
-
-      // ---------- Day tabs ----------
-      function renderDayTabs() {
-        dayTabs.innerHTML = "";
-        const usedDays = new Set(STATE.items.map((x) => Number(x.day)));
-        for (let d = 1; d <= STATE.daysMax; d++) {
-          const btn = document.createElement("button");
-          btn.className = "daytab" + (STATE.dayActive === d ? " active" : "");
-          btn.textContent = usedDays.has(d) ? `Day ${d} • ${countDay(d)}` : `Day ${d}`;
-          btn.title = usedDays.has(d)
-            ? "Switch to this day"
-            : "Empty day (still selectable)";
-          btn.addEventListener("click", () => {
-            STATE.dayActive = d;
-            renderDayTabs();
-            renderItinerary();
-            updateMap();
-            autosave();
-          });
-          dayTabs.appendChild(btn);
+        try {
+          const res = await fetch(LS_HERO_SLIDES_URL, { cache: "no-store" });
+          if (!res.ok) throw new Error("slides.json HTTP " + res.status);
+          const data = await res.json();
+          if (!data || !Array.isArray(data.slides) || data.slides.length === 0)
+            throw new Error("slides.json invalid");
+          return data;
+        } catch (e) {
+          console.warn("Hero slides: using fallback. Reason:", e);
+          return FALLBACK;
         }
       }
 
-      function countDay(day) {
-        return STATE.items.filter((x) => Number(x.day) === Number(day)).length;
+      function lsOpenDemoModal(url, title) {
+        const modal = $("lsDemoModal");
+        const frame = $("lsDemoFrame");
+        const t = $("lsDemoTitle");
+        if (!modal || !frame || !t) return;
+
+        t.textContent = title || "Demo";
+        frame.src = url;
+
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("ls_modal_open");
       }
 
-      function itemsForActiveDay() {
-        return STATE.items.filter((x) => Number(x.day) === Number(STATE.dayActive));
+      function lsCloseDemoModal() {
+        const modal = $("lsDemoModal");
+        const frame = $("lsDemoFrame");
+        if (!modal || !frame) return;
+
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("ls_modal_open");
+        frame.src = "about:blank";
       }
 
-      // ---------- Itinerary rendering ----------
-      function updateStats() {
-        statPlaces.textContent = String(STATE.items.length);
-
-        const usedDays = new Set(STATE.items.map((x) => Number(x.day)));
-        statDays.textContent = String(usedDays.size);
-
-        // total distance across day sequences (sum each day sequentially)
-        let total = 0;
-        for (let d = 1; d <= STATE.daysMax; d++) {
-          const dayItems = STATE.items
-            .filter((x) => Number(x.day) === d)
-            .slice();
-          // preserve current order in STATE.items but day wise order should be their relative order in STATE.items
-          // We'll compute based on their order in STATE.items by filtering keeps order.
-          for (let i = 0; i < dayItems.length - 1; i++) {
-            total += haversineKm(dayItems[i], dayItems[i + 1]);
-          }
+      // Global modal close handlers (backdrop, close button, Esc)
+      document.addEventListener("click", (e) => {
+        if (e.target.closest("[data-modal-close]")) lsCloseDemoModal();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const modal = $("lsDemoModal");
+          if (modal && modal.getAttribute("aria-hidden") === "false") lsCloseDemoModal();
         }
-        statKm.textContent = String(round1(total));
-      }
+      });
 
-      function renderItinerary() {
-        const dayItems = itemsForActiveDay();
-        itineraryList.innerHTML = "";
+      async function initHeroSlider() {
+        const slidesEl = $("heroSlides");
+        const dotsEl = $("heroDots");
+        const nextBtn = $("heroNext");
+        const prevBtn = $("heroPrev");
 
-        itineraryEmpty.style.display = STATE.items.length ? "none" : "";
+        if (!slidesEl || !dotsEl || !nextBtn || !prevBtn) return;
 
-        if (!dayItems.length) {
-          // show a light empty state even if other days exist
-          if (STATE.items.length) {
-            const empty = document.createElement("div");
-            empty.className = "place-card";
-            empty.style.boxShadow = "none";
-            empty.style.background = "#fff";
-            empty.innerHTML = `
-              <div class="place-title">
-                <h3>Day ${STATE.dayActive} is empty</h3>
-                <span class="badge">Add places</span>
+        const data = await loadHeroSlidesFromJSON();
+        const slides = data.slides || [];
+        const autoplayMs = Number(data.autoplayMs || 6000);
+
+        slidesEl.innerHTML = slides
+          .map((s) => {
+            const ctas = (s.cta || [])
+              .map((c) => {
+                const variant = c.variant === "ghost" ? "ghost" : "primary";
+
+                if (c.type === "link" && c.href) {
+                  return `<a class="btn ${variant}" target="_blank" rel="noopener" href="${escapeAttr(
+                    c.href
+                  )}">${escapeHtml(c.label || "Open")}</a>`;
+                }
+
+                return `<button class="btn ${variant}" type="button"
+                    data-hero-action="${escapeAttr(c.action || "")}"
+                    data-hero-target="${escapeAttr(c.targetId || "")}"
+                  >${escapeHtml(c.label || "Action")}</button>`;
+              })
+              .join("");
+
+            const demoBtn =
+              s.demoUrl && String(s.demoUrl).trim()
+                ? `<button class="btn ghost" type="button"
+                    data-demo-url="${escapeAttr(s.demoUrl)}"
+                    data-demo-title="${escapeAttr(s.demoTitle || "Demo")}"
+                  >View Demo</button>`
+                : "";
+
+            return `
+              <div class="slide">
+                <div class="hero-badge">${escapeHtml(s.badge || "")}</div>
+                <h1 class="hero-title">${escapeHtml(s.title || "")}</h1>
+                <p class="hero-sub">${escapeHtml(s.sub || "")}</p>
+                <div class="hero-cta">${ctas}${demoBtn}</div>
               </div>
-              <p class="hint" style="margin-top:8px">Switch days using tabs above, or add places into this day.</p>
             `;
-            itineraryList.appendChild(empty);
-          }
-          return;
+          })
+          .join("");
+
+        dotsEl.innerHTML = slides
+          .map(
+            (_, idx) =>
+              `<button class="dotbtn ${idx === 0 ? "on" : ""}" data-dot="${idx}" aria-label="Slide ${
+                idx + 1
+              }" type="button"></button>`
+          )
+          .join("");
+
+        const dotBtns = Array.from(dotsEl.querySelectorAll(".dotbtn"));
+
+        slidesEl.style.width = `${slides.length * 100}%`;
+
+        let i = 0;
+        let timer = null;
+
+        function go(n) {
+          const total = Math.max(1, slides.length);
+          i = (n + total) % total;
+          const step = 100 / total;
+          slidesEl.style.transform = `translateX(${-i * step}%)`;
+          dotBtns.forEach((d) => d.classList.toggle("on", Number(d.dataset.dot) === i));
+        }
+        function next() {
+          go(i + 1);
+        }
+        function prev() {
+          go(i - 1);
+        }
+        function restart() {
+          clearInterval(timer);
+          if (slides.length > 1) timer = setInterval(next, autoplayMs);
         }
 
-        dayItems.forEach((item, idx) => {
-          const el = document.createElement("div");
-          el.className = "item";
-          el.draggable = true;
-          el.dataset.id = item.id;
+        nextBtn.addEventListener("click", () => {
+          next();
+          restart();
+        });
+        prevBtn.addEventListener("click", () => {
+          prev();
+          restart();
+        });
 
-          const cityLabel =
-            STATE.cities.find((c) => c.id === item.cityId)?.name?.en || item.cityId;
+        dotBtns.forEach((d) =>
+          d.addEventListener("click", () => {
+            go(Number(d.dataset.dot));
+            restart();
+          })
+        );
 
-          const title = item.nameEn || item.nameHi || item.placeId;
+        document.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-hero-action]");
+          if (b) {
+            const action = b.getAttribute("data-hero-action");
+            const targetId = b.getAttribute("data-hero-target");
 
-          // distance from previous in this day
-          const prev = idx > 0 ? dayItems[idx - 1] : null;
-          const dk = prev ? haversineKm(prev, item) : 0;
+            if (action === "scroll" && targetId) {
+              $(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            } else if (action === "whatsappShare") {
+              const streak =
+                localStorage.getItem("ls_streak_v1") ||
+                localStorage.getItem("ls_streak") ||
+                "0";
+              const points =
+                localStorage.getItem("ls_points_v1") ||
+                localStorage.getItem("ls_points") ||
+                "0";
 
-          el.innerHTML = `
-            <div class="item-top">
-              <div class="item-left">
-                <div class="handle" title="Drag to move">⠿</div>
-                <div class="idx">${idx + 1}</div>
-                <div class="name">
-                  <p class="t">${escapeHtml(title)}</p>
-                  <p class="m">${escapeHtml(cityLabel)} • ${escapeHtml(
-                    item.tags?.slice(0, 3).join(" • ") || "—"
-                  )}</p>
-                </div>
-              </div>
-
-              <div class="item-actions">
-                <button class="btn small" data-act="up" title="Move up">⬆</button>
-                <button class="btn small" data-act="down" title="Move down">⬇</button>
-                <button class="btn small" data-act="remove" title="Remove">❌</button>
-              </div>
-            </div>
-
-            <div class="item-body">
-              <div class="minirow">
-                <div class="field" title="Change Day">
-                  <span aria-hidden="true">🗓️</span>
-                  <select data-k="day">
-                    ${[1, 2, 3, 4]
-                      .map(
-                        (d) =>
-                          `<option value="${d}" ${
-                            Number(item.day) === d ? "selected" : ""
-                          }>Day ${d}</option>`
-                      )
-                      .join("")}
-                  </select>
-                </div>
-
-                <div class="field" title="Planned time">
-                  <span aria-hidden="true">🕒</span>
-                  <input data-k="time" type="time" value="${escapeHtml(
-                    item.time || "08:00"
-                  )}"/>
-                </div>
-
-                <div class="field" title="Approx distance from previous stop in this day">
-                  <span aria-hidden="true">📏</span>
-                  <input type="text" value="${
-                    idx === 0 ? "Start" : `${round1(dk)} km from previous`
-                  }" readonly />
-                </div>
-              </div>
-
-              <div class="field">
-                <span aria-hidden="true">📝</span>
-                <input data-k="note" type="text" placeholder="Note (optional)" value="${escapeHtml(
-                  item.note || ""
-                )}"/>
-              </div>
-
-              <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <span class="pill"><strong>Lat</strong> ${
-                  item.lat != null ? item.lat.toFixed(5) : "—"
-                }</span>
-                <span class="pill"><strong>Lng</strong> ${
-                  item.lng != null ? item.lng.toFixed(5) : "—"
-                }</span>
-                <span class="pill"><strong>ID</strong> <span class="mono">${escapeHtml(
-                  item.placeId
-                )}</span></span>
-              </div>
-            </div>
-          `;
-
-          // action buttons
-          el.querySelectorAll("[data-act]").forEach((b) => {
-            b.addEventListener("click", () => {
-              const act = b.getAttribute("data-act");
-              if (act === "up") moveItemInDay(item.id, -1);
-              if (act === "down") moveItemInDay(item.id, +1);
-              if (act === "remove") removeItem(item.id);
-            });
-          });
-
-          // editable fields
-          el.querySelectorAll("[data-k]").forEach((inp) => {
-            inp.addEventListener("change", () => {
-              const k = inp.getAttribute("data-k");
-              const v = inp.value;
-              const it = STATE.items.find((x) => x.id === item.id);
-              if (!it) return;
-              if (k === "day") {
-                it.day = Number(v) || 1;
-                // if moved day, keep active day in sync
-                STATE.dayActive = Number(it.day);
-                renderDayTabs();
-                renderItinerary();
-                updateStats();
-                updateMap();
-                autosave();
-                toast("Moved day", `${title} → Day ${it.day}`);
-              } else if (k === "time") {
-                it.time = v;
-                autosave();
-              } else if (k === "note") {
-                it.note = v;
-                autosave();
+              if (typeof waOpen === "function") {
+                waOpen(
+                  `🔥 Learning Sutras Daily\nStreak: ${streak} days\nPoints: ${points}\n\nJoin:\nhttps://www.learnwithchampak.live/`
+                );
+              } else {
+                const msg = encodeURIComponent(
+                  `🔥 Learning Sutras Daily\nStreak: ${streak} days\nPoints: ${points}\n\nJoin:\nhttps://www.learnwithchampak.live/`
+                );
+                window.open("https://wa.me/?text=" + msg, "_blank", "noopener");
               }
-            });
-          });
-
-          // drag n drop
-          el.addEventListener("dragstart", (e) => {
-            el.classList.add("dragging");
-            e.dataTransfer.setData("text/plain", item.id);
-            e.dataTransfer.effectAllowed = "move";
-          });
-          el.addEventListener("dragend", () => {
-            el.classList.remove("dragging");
-          });
-
-          el.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-          });
-
-          el.addEventListener("drop", (e) => {
-            e.preventDefault();
-            const fromId = e.dataTransfer.getData("text/plain");
-            const toId = item.id;
-            if (!fromId || fromId === toId) return;
-            reorderWithinDay(fromId, toId);
-          });
-
-          itineraryList.appendChild(el);
-        });
-      }
-
-      function removeItem(id) {
-        const it = STATE.items.find((x) => x.id === id);
-        STATE.items = STATE.items.filter((x) => x.id !== id);
-        renderDayTabs();
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-        toast("Removed", it ? it.nameEn || it.nameHi || it.placeId : "Item removed");
-      }
-
-      function moveItemInDay(id, delta) {
-        const day = STATE.dayActive;
-        const indices = STATE.items
-          .map((x, i) => ({ x, i }))
-          .filter((t) => Number(t.x.day) === Number(day))
-          .map((t) => t.i);
-
-        const posInDay = indices.findIndex((i) => STATE.items[i].id === id);
-        if (posInDay < 0) return;
-
-        const newPosInDay = posInDay + delta;
-        if (newPosInDay < 0 || newPosInDay >= indices.length) return;
-
-        const fromIndex = indices[posInDay];
-        const toIndex = indices[newPosInDay];
-
-        // swap in STATE.items using real indices
-        const tmp = STATE.items[fromIndex];
-        STATE.items[fromIndex] = STATE.items[toIndex];
-        STATE.items[toIndex] = tmp;
-
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-      }
-
-      function reorderWithinDay(fromId, toId) {
-        const day = STATE.dayActive;
-
-        const fromIndex = STATE.items.findIndex(
-          (x) => x.id === fromId && Number(x.day) === Number(day)
-        );
-        const toIndex = STATE.items.findIndex(
-          (x) => x.id === toId && Number(x.day) === Number(day)
-        );
-        if (fromIndex < 0 || toIndex < 0) return;
-
-        const [moved] = STATE.items.splice(fromIndex, 1);
-        STATE.items.splice(toIndex, 0, moved);
-
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-      }
-
-      // ---------- Optimize order (nearest neighbor) ----------
-      function optimizeDay(day) {
-        const items = STATE.items.filter((x) => Number(x.day) === Number(day));
-        if (items.length < 3) {
-          toast("Optimize skipped", "Need at least 3 places in a day.");
-          return;
-        }
-
-        // Keep items without coordinates at end (cannot optimize)
-        const withCoord = items.filter((x) => x.lat != null && x.lng != null);
-        const noCoord = items.filter((x) => x.lat == null || x.lng == null);
-
-        if (withCoord.length < 3) {
-          toast("Not enough coordinates", "Add lat/lng in JSON for better optimization.");
-          return;
-        }
-
-        // Start from first item in current day order (as anchor)
-        const start = withCoord[0];
-        const remaining = withCoord.slice(1);
-
-        const route = [start];
-        let current = start;
-
-        while (remaining.length) {
-          let bestIdx = 0;
-          let bestDist = Infinity;
-          for (let i = 0; i < remaining.length; i++) {
-            const d = haversineKm(current, remaining[i]);
-            if (d < bestDist) {
-              bestDist = d;
-              bestIdx = i;
             }
+            return;
           }
-          const next = remaining.splice(bestIdx, 1)[0];
-          route.push(next);
-          current = next;
-        }
 
-        const optimized = [...route, ...noCoord];
-
-        // Replace in STATE.items preserving other days and overall list structure:
-        // We'll rebuild STATE.items by scanning and replacing positions of this day in order.
-        const dayPositions = STATE.items
-          .map((x, i) => ({ x, i }))
-          .filter((t) => Number(t.x.day) === Number(day))
-          .map((t) => t.i);
-
-        for (let k = 0; k < dayPositions.length; k++) {
-          STATE.items[dayPositions[k]] = optimized[k];
-        }
-
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-
-        toast("Optimized", `Day ${day} route optimized (nearest-neighbor).`);
-      }
-
-      function optimizeAllDays() {
-        const used = new Set(STATE.items.map((x) => Number(x.day)));
-        if (!used.size) {
-          toast("Nothing to optimize", "Add places first.");
-          return;
-        }
-        [...used].sort((a, b) => a - b).forEach((d) => optimizeDay(d));
-        toast("Temple-Grade", "All used days optimized.");
-      }
-
-      // ---------- WhatsApp + Maps ----------
-      function buildShareText() {
-        const cityLabel = STATE.city?.name?.en || STATE.city?.id || "Punya Yatra";
-        const lines = [];
-        lines.push(`🛕 ${cityLabel} • Yatra Plan`);
-        lines.push(`(Made with Punya Yatra Route Builder)`);
-
-        for (let d = 1; d <= STATE.daysMax; d++) {
-          const dayItems = STATE.items.filter((x) => Number(x.day) === d);
-          if (!dayItems.length) continue;
-          lines.push("");
-          lines.push(`📅 Day ${d}`);
-          dayItems.forEach((it, i) => {
-            const title = it.nameEn || it.nameHi || it.placeId;
-            const t = it.time ? ` • ${it.time}` : "";
-            const note = it.note ? ` • ${it.note}` : "";
-            lines.push(`${i + 1}. ${title}${t}${note}`);
-          });
-        }
-
-        const km = statKm.textContent || "0.0";
-        lines.push("");
-        lines.push(`📏 Approx total distance: ${km} km`);
-        lines.push(`🗺 Open in Maps: ${buildGoogleMapsRouteUrl() || "Add coordinates for route link"}`);
-
-        return lines.join("\n");
-      }
-
-      function buildGoogleMapsRouteUrl() {
-        // Build route for ACTIVE DAY if possible; else use first used day
-        const day = STATE.items.some((x) => Number(x.day) === STATE.dayActive)
-          ? STATE.dayActive
-          : (STATE.items[0]?.day || 1);
-
-        const dayItems = STATE.items.filter((x) => Number(x.day) === Number(day));
-        const coords = dayItems
-          .filter((x) => x.lat != null && x.lng != null)
-          .map((x) => `${x.lat},${x.lng}`);
-
-        if (coords.length < 2) return "";
-
-        // Google Maps directions: origin, destination, waypoints
-        const origin = coords[0];
-        const destination = coords[coords.length - 1];
-        const waypoints = coords.slice(1, -1).join("|");
-
-        const u = new URL("https://www.google.com/maps/dir/");
-        u.searchParams.set("api", "1");
-        u.searchParams.set("origin", origin);
-        u.searchParams.set("destination", destination);
-        if (waypoints) u.searchParams.set("waypoints", waypoints);
-        u.searchParams.set("travelmode", "walking");
-        return u.toString();
-      }
-
-      function shareWhatsApp() {
-        if (!STATE.items.length) {
-          toast("Empty itinerary", "Add some places first.");
-          return;
-        }
-        const text = buildShareText();
-        const wa = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(wa, "_blank", "noopener,noreferrer");
-      }
-
-      function openMaps() {
-        const url = buildGoogleMapsRouteUrl();
-        if (!url) {
-          toast("Maps route needs coordinates", "Ensure places have lat/lng in locations.json.");
-          return;
-        }
-        window.open(url, "_blank", "noopener,noreferrer");
-      }
-
-      // ---------- Save / Load ----------
-      function savePlan() {
-        if (!STATE.items.length) {
-          toast("Nothing to save", "Add places first.");
-          return;
-        }
-        const name = prompt("Save name (e.g., 'Kashi Day Darshan'):");
-        if (!name) return;
-
-        const plans = getSavedPlans();
-        plans.unshift({ name, ts: Date.now(), data: serializePlan() });
-
-        // keep last 20
-        setSavedPlans(plans.slice(0, 20));
-        toast("Saved", name);
-      }
-
-      function loadPlan() {
-        const plans = getSavedPlans();
-        if (!plans.length) {
-          toast("No saved plans", "Use Save first.");
-          return;
-        }
-
-        // Simple chooser text
-        const menu = plans
-          .slice(0, 10)
-          .map((p, i) => `${i + 1}. ${p.name} (${new Date(p.ts).toLocaleString()})`)
-          .join("\n");
-
-        const pick = prompt("Select plan number:\n\n" + menu + "\n\nEnter 1-" + Math.min(10, plans.length));
-        if (!pick) return;
-        const idx = Number(pick) - 1;
-        const chosen = plans[idx];
-        if (!chosen) {
-          toast("Invalid selection", "Try again.");
-          return;
-        }
-
-        deserializePlan(chosen.data);
-
-        // attempt to set city select
-        if (chosen.data?.cityId) {
-          citySelect.value = chosen.data.cityId;
-          handleCityChange();
-        }
-
-        toast("Loaded", chosen.name);
-        autosave();
-      }
-
-      // ---------- Export / Import ----------
-      function exportPlan() {
-        const data = serializePlan();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-        const a = document.createElement("a");
-        const name = `punya-yatra-plan-${Date.now()}.json`;
-        a.href = URL.createObjectURL(blob);
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          URL.revokeObjectURL(a.href);
-          a.remove();
-        }, 600);
-        toast("Exported", name);
-      }
-
-      function importPlan() {
-        const inp = document.createElement("input");
-        inp.type = "file";
-        inp.accept = "application/json";
-        inp.onchange = async () => {
-          const file = inp.files?.[0];
-          if (!file) return;
-          try {
-            const text = await file.text();
-            const plan = JSON.parse(text);
-            if (!plan || !Array.isArray(plan.items)) {
-              toast("Invalid file", "Missing plan.items array");
-              return;
-            }
-            deserializePlan(plan);
-            if (plan?.cityId) {
-              citySelect.value = plan.cityId;
-              handleCityChange();
-            }
-            toast("Imported", file.name);
-            autosave();
-          } catch (e) {
-            toast("Import failed", String(e?.message || e));
+          const demoBtn = e.target.closest("[data-demo-url]");
+          if (demoBtn) {
+            const url = demoBtn.getAttribute("data-demo-url");
+            const title = demoBtn.getAttribute("data-demo-title") || "Demo";
+            if (url) lsOpenDemoModal(url, title);
           }
-        };
-        inp.click();
-      }
-
-      // ---------- Clear ----------
-      function clearAll() {
-        if (!STATE.items.length) {
-          toast("Already empty", "Nothing to clear.");
-          return;
-        }
-        if (!confirm("Clear the entire itinerary?")) return;
-        STATE.items = [];
-        STATE.dayActive = 1;
-        renderDayTabs();
-        renderItinerary();
-        updateStats();
-        updateMap();
-        autosave();
-        toast("Cleared", "Itinerary reset.");
-      }
-
-      // ---------- Map (Leaflet optional) ----------
-      function initMapIfPossible() {
-        // Leaflet loads with defer, so wait a bit
-        const tryInit = () => {
-          if (!window.L || !window.L.map) return false;
-          if (STATE.map) return true;
-
-          $("#mapWrap").style.display = "";
-          STATE.map = L.map("map", { zoomControl: true }).setView([25.3176, 82.9739], 13);
-
-          STATE.mapLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 19,
-            attribution: "&copy; OpenStreetMap",
-          }).addTo(STATE.map);
-
-          updateMap();
-          return true;
-        };
-
-        let tries = 0;
-        const t = setInterval(() => {
-          tries++;
-          if (tryInit() || tries > 25) clearInterval(t);
-        }, 120);
-      }
-
-      function updateMap() {
-        if (!STATE.map) return;
-
-        // clear markers/polyline
-        STATE.mapMarkers.forEach((m) => m.remove());
-        STATE.mapMarkers = [];
-        if (STATE.mapPolyline) {
-          STATE.mapPolyline.remove();
-          STATE.mapPolyline = null;
-        }
-
-        const dayItems = itemsForActiveDay().filter((x) => x.lat != null && x.lng != null);
-        if (!dayItems.length) return;
-
-        const latlngs = dayItems.map((x) => [x.lat, x.lng]);
-
-        // markers
-        dayItems.forEach((it, i) => {
-          const title = it.nameEn || it.nameHi || it.placeId;
-          const m = L.marker([it.lat, it.lng]).addTo(STATE.map);
-          m.bindPopup(`<b>${escapeHtml(i + 1 + ". " + title)}</b><br/>Day ${it.day} ${escapeHtml(it.time || "")}`);
-          STATE.mapMarkers.push(m);
         });
 
-        // polyline
-        if (latlngs.length >= 2) {
-          STATE.mapPolyline = L.polyline(latlngs, { weight: 4, opacity: 0.8 }).addTo(STATE.map);
-        }
+        slidesEl.addEventListener("mouseenter", () => clearInterval(timer));
+        slidesEl.addEventListener("mouseleave", restart);
 
-        // fit bounds
-        const bounds = L.latLngBounds(latlngs);
-        STATE.map.fitBounds(bounds.pad(0.25));
+        go(0);
+        restart();
       }
 
-      // ---------- Wizard key interactions ----------
-      citySelect.addEventListener("change", () => {
-        handleCityChange();
-        updateWizardLock();
-        autosave();
-      });
-
-      categorySelect.addEventListener("change", () => {
-        handleCategoryChange();
-        updateWizardLock();
-        autosave();
-      });
-
-      placeSearch.addEventListener("input", () => {
-        handlePlaceSearchInput();
-        updateWizardLock();
-      });
-
-      placeSearch.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          // pick top match
-          const first = STATE.placesFiltered?.[0];
-          if (first) {
-            placeSelect.value = first.id;
-            handlePlaceChange();
-            toast("Selected", first.name?.en || first.name?.hi || first.id);
-          }
+      // --------------------------
+      // Dummy content loaders (keep yours here)
+      // --------------------------
+      function initBackToTop() {
+        const btn = $("back-to-top");
+        if (!btn) return;
+        function update() {
+          btn.classList.toggle("on", window.scrollY > 450);
         }
+        window.addEventListener("scroll", update, { passive: true });
+        update();
+        btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      }
+
+      // Boot
+      document.addEventListener("DOMContentLoaded", () => {
+        initHeroSlider();
+        initBackToTop();
       });
-
-      placeSelect.addEventListener("change", () => {
-        handlePlaceChange();
-        updateWizardLock();
-      });
-
-      btnAdd.addEventListener("click", () => addSelectedPlace());
-      btnAddFeatured.addEventListener("click", () => addFeaturedForCity());
-      btnJumpItinerary.addEventListener("click", () => {
-        document.querySelector(".grid").scrollIntoView({ behavior: "smooth", block: "start" });
-        toast("Jumped", "Itinerary panel opened.");
-      });
-
-      btnOptimizeDay.addEventListener("click", () => optimizeDay(STATE.dayActive));
-      btnOptimizeAll.addEventListener("click", () => optimizeAllDays());
-
-      btnShareWA.addEventListener("click", () => shareWhatsApp());
-      btnOpenMaps.addEventListener("click", () => openMaps());
-
-      btnClearAll.addEventListener("click", () => clearAll());
-
-      btnSavePlan.addEventListener("click", () => savePlan());
-      btnLoadPlan.addEventListener("click", () => loadPlan());
-
-      btnExport.addEventListener("click", () => exportPlan());
-      btnImport.addEventListener("click", () => importPlan());
-
-      // ---------- Start ----------
-      (function boot() {
-        // restore autosave first (items), then load DB and city
-        loadAutosave();
-        renderDayTabs();
-        renderItinerary();
-        updateStats();
-        updateWizardLock();
-        initMapIfPossible();
-        loadLocations();
-
-        // default day select
-        daySelect.value = String(STATE.dayActive);
-
-        // keep daySelect in sync with active day
-        dayTabs.addEventListener("click", () => {
-          daySelect.value = String(STATE.dayActive);
-        });
-
-        // periodic autosave (belt & suspenders)
-        setInterval(() => {
-          if (STATE.items.length) autosave();
-        }, 12000);
-      })();
     </script>
   </body>
 </html>
