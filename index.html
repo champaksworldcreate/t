@@ -1,1569 +1,943 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Saturday Questions — Spiral SVG (No Text Patterns)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Saturday Questions — Spiral Challenge</title>
+  <meta name="description" content="Programmer’s Picnic — Saturday Questions. Spiral pattern targets shown as SVG. Solve in the embedded Python editor." />
 
-<style>
-:root{
-  --bg:#fff7e6;
-  --panel:#ffffff;
-  --ink:#1f2328;
-  --muted:#59636e;
-  --saffron:#ff9f1c;
-  --saffron2:#ffb74d;
-  --line:rgba(31,35,40,.12);
-  --radius:18px;
-  --shadow:0 10px 30px rgba(31,35,40,.10);
-  --sans:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  --mono:ui-monospace,Consolas,monospace;
-}
+  <style>
+    :root{
+      --bg: #fff7e6;
+      --panel: rgba(255,255,255,.78);
+      --panelSolid: #ffffff;
+      --ink: #1f2328;
+      --muted: #5b6570;
+      --line: rgba(31,35,40,.12);
+      --saffron: #ff9f1c;
+      --saffron2: #ffb74d;
+      --shadow: 0 12px 34px rgba(31,35,40,.12);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:var(--sans);
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 700px at 10% 0%, rgba(255,159,28,.22), transparent 60%),
-    radial-gradient(900px 600px at 90% 10%, rgba(255,183,77,.20), transparent 55%),
-    var(--bg);
-}
+    *{ box-sizing: border-box; }
+    html,body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 700px at 12% 0%, rgba(255,159,28,.22), transparent 60%),
+        radial-gradient(900px 600px at 92% 10%, rgba(255,183,77,.20), transparent 55%),
+        var(--bg);
+    }
 
-.topbar{
-  position:sticky; top:0; z-index:10;
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:14px 16px;
-  backdrop-filter: blur(10px);
-  background: rgba(255,247,230,.78);
-  border-bottom: 1px solid var(--line);
-}
+    /* Layout */
+    .wrap{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 14px;
+    }
 
-.brand{display:flex; align-items:center; gap:12px; min-width:240px}
-.logo{
-  width:44px;height:44px;border-radius:14px;
-  background: linear-gradient(145deg, var(--saffron), var(--saffron2));
-  display:grid; place-items:center;
-  font-weight:900; color:#111;
-  box-shadow: 0 8px 18px rgba(255,159,28,.30);
-}
-.title{font-weight:900;font-size:18px}
-.subtitle{color:var(--muted);font-size:12px;margin-top:2px}
+    /* Header */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(255,247,230,.80);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 240px;
+    }
+    .logo{
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, var(--saffron), var(--saffron2));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: #111;
+      box-shadow: 0 10px 18px rgba(255,159,28,.25);
+      user-select: none;
+    }
+    .brand-title{
+      font-weight: 950;
+      letter-spacing: .2px;
+      font-size: 18px;
+      line-height: 1.05;
+    }
+    .brand-sub{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
 
-.actions{display:flex; gap:10px; align-items:center}
-.btn{
-  border:1px solid rgba(255,159,28,.30);
-  background: linear-gradient(180deg, rgba(255,159,28,.22), rgba(255,183,77,.14));
-  color:#111;
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
-  font-weight:800;
-}
-.btn.ghost{
-  background: rgba(255,255,255,.65);
-  border: 1px solid var(--line);
-}
-.btn:hover{filter:brightness(.985); transform: translateY(-1px)}
-.btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
+    .actions{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .date-pill{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      color: #111;
+      white-space: nowrap;
+    }
+    .btn{
+      border: 1px solid rgba(255,159,28,.30);
+      background: linear-gradient(180deg, rgba(255,159,28,.22), rgba(255,183,77,.14));
+      color: #111;
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 900;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover{ filter: brightness(.985); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px); }
+    .btn.ghost{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      color: var(--ink);
+    }
+    .btn:disabled{ opacity: .55; cursor: not-allowed; transform: none; }
 
-.layout{
-  display:grid;
-  grid-template-columns: 340px 1fr;
-  gap:14px;
-  padding:14px;
-  max-width:1400px;
-  margin:0 auto;
-}
+    /* Panels */
+    .grid{
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .panel{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-head{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.62);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .panel-title{ font-weight: 950; font-size: 16px; }
+    .panel-sub{ color: var(--muted); font-size: 12px; margin-top: 4px; }
 
-.panel{
-  background: rgba(255,255,255,.75);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-}
+    /* Left: list */
+    .filters{
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.52);
+    }
+    .row{ display: flex; gap: 10px; margin-top: 10px; }
+    .input, .select{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.90);
+      outline: none;
+      font-family: var(--sans);
+    }
+    .input:focus, .select:focus{
+      border-color: rgba(255,159,28,.55);
+      box-shadow: 0 0 0 4px rgba(255,159,28,.16);
+    }
+    .q-list{
+      padding: 10px;
+      max-height: calc(100vh - 270px);
+      overflow: auto;
+    }
+    .q-item{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.86);
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .q-item:hover{ border-color: rgba(255,159,28,.40); transform: translateY(-1px); }
+    .q-item.active{
+      border-color: rgba(255,159,28,.75);
+      box-shadow: 0 0 0 4px rgba(255,159,28,.12);
+    }
+    .q-title{ font-weight: 950; font-size: 13px; }
+    .q-meta{ margin-top: 6px; display:flex; flex-wrap:wrap; gap: 6px; color: var(--muted); font-size: 11px; }
+    .pill{
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      color: #111;
+      font-weight: 800;
+    }
+    .tip{
+      padding: 10px 14px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.52);
+    }
 
-.panel-head{
-  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-  padding:14px 14px 10px;
-  border-bottom:1px solid var(--line);
-  background: rgba(255,255,255,.65);
-}
-.panel-title{font-weight:900;font-size:16px}
-.panel-sub{color:var(--muted);font-size:12px;margin-top:4px}
-.work-actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    /* Right: content */
+    .work{
+      min-height: calc(100vh - 160px);
+    }
+    .work-actions{ display:flex; gap: 10px; flex-wrap: wrap; justify-content:flex-end; }
 
-.filters{
-  padding:12px 14px 10px;
-  border-bottom:1px solid var(--line);
-}
-.row{display:flex; gap:10px; margin-top:10px}
-.input{
-  width:100%;
-  padding:10px 12px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.9);
-  outline:none;
-}
-.input:focus{border-color: rgba(255,159,28,.55); box-shadow:0 0 0 4px rgba(255,159,28,.16)}
+    .work-grid{
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+      padding: 12px;
+    }
 
-.q-list{max-height: calc(100vh - 240px); overflow:auto; padding:10px}
-.q-item{
-  border:1px solid var(--line);
-  border-radius:16px;
-  background: rgba(255,255,255,.82);
-  padding:10px;
-  margin-bottom:10px;
-  cursor:pointer;
-}
-.q-item:hover{border-color: rgba(255,159,28,.40); transform: translateY(-1px)}
-.q-item.active{
-  border-color: rgba(255,159,28,.70);
-  box-shadow: 0 0 0 4px rgba(255,159,28,.14);
-}
-.q-title{font-weight:900;font-size:13px}
-.q-meta{color:var(--muted);font-size:11px;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px}
-.pill{
-  padding:2px 8px; border-radius:999px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.85);
-}
+    .card{
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.88);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 340px;
+    }
+    .card.editor{ min-height: 580px; }
+    .card-head{
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-title{ font-weight: 950; }
+    .card-actions{ display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
-.tip{padding:10px 14px 14px; color:var(--muted); font-size:12px}
+    .chip{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.88);
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+    .chip:hover{ border-color: rgba(255,159,28,.40); }
+    .chip:disabled{ opacity: .55; cursor: not-allowed; }
 
-.work{min-height: calc(100vh - 120px)}
-.work-grid{
-  display:grid;
-  grid-template-columns: 1.05fr .95fr;
-  gap:12px;
-  padding:12px;
-}
+    .content{
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
 
-.card{
-  border:1px solid var(--line);
-  border-radius:18px;
-  background: rgba(255,255,255,.86);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  min-height: 320px;
-}
-.card.editor{min-height: 560px}
+    .svg-wrap{ padding: 12px 14px 14px; }
+    .svg-card{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.84);
+      padding: 10px;
+      overflow: auto;
+    }
 
-.card-head{
-  padding:10px 12px;
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  border-bottom:1px solid var(--line);
-  background: rgba(255,255,255,.7);
-}
-.card-title{font-weight:900}
-.card-actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .section{
+      display: none;
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      background: rgba(255,247,230,.40);
+    }
+    .section-title{ font-weight: 950; margin: 0 0 8px; color: var(--ink); }
+    .code{
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+      overflow: auto;
+      margin: 0;
+      color: #111;
+      white-space: pre;
+    }
+    .small{
+      padding: 0 12px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
 
-.chip{
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.85);
-  padding:8px 10px;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:800;
-}
-.chip:hover{border-color: rgba(255,159,28,.40)}
-.chip:disabled{opacity:.5; cursor:not-allowed}
+    .editor-iframe-wrap{
+      padding: 10px;
+      flex: 1;
+      min-height: 420px;
+    }
+    iframe.editor{
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.95);
+    }
 
-.content{padding:12px 14px; line-height:1.55; font-size:14px}
-.muted{color:var(--muted)}
+    .footer{
+      padding: 12px 14px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.58);
+    }
 
-.svg-wrap{padding: 12px 14px 14px}
-.svg-card{
-  border:1px solid var(--line);
-  border-radius:16px;
-  background: rgba(255,255,255,.78);
-  padding:10px;
-  overflow:auto;
-}
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      font-weight: 800;
+    }
+    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-2px); }
 
-.editor-iframe-wrap{padding:10px; flex:1; min-height:420px}
-.editor-iframe{
-  width:100%; height:100%; min-height:420px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background: rgba(255,255,255,.9);
-}
-
-.small{padding:0 12px 12px; font-size:12px}
-.footer{padding:10px 14px 14px}
-.toast{
-  position:fixed; left:50%; bottom:18px;
-  transform: translateX(-50%);
-  padding:10px 12px; border-radius:14px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.9);
-  box-shadow: var(--shadow);
-  opacity:0; pointer-events:none;
-  transition: opacity .2s ease, transform .2s ease;
-}
-.toast.show{opacity:1; transform: translateX(-50%) translateY(-2px)}
-
-@media (max-width: 980px){
-  .layout{grid-template-columns: 1fr}
-  .q-list{max-height: 40vh}
-  .work-grid{grid-template-columns: 1fr}
-}
-</style>
+    @media (max-width: 1020px){
+      .grid{ grid-template-columns: 1fr; }
+      .q-list{ max-height: 42vh; }
+      .work-grid{ grid-template-columns: 1fr; }
+      .work{ min-height: auto; }
+      .date-pill{ order: 3; }
+    }
+  </style>
 </head>
 
 <body>
-<header class="topbar">
-  <div class="brand">
-    <div class="logo" aria-hidden="true">PP</div>
-    <div>
-      <div class="title">Saturday Questions</div>
-      <div class="subtitle">Spiral Patterns (SVG only) • Direct, Reverse, and Inverted Series</div>
-    </div>
-  </div>
-  <div class="actions">
-    <button class="btn ghost" id="btnReload" title="Reload questions">↻ Reload</button>
-    <button class="btn" id="btnShare" title="Copy share link">Share</button>
-    <button class="btn ghost" id="btnTeacher" title="Toggle teacher mode">Teacher</button>
-  </div>
-</header>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">PP</div>
+        <div>
+          <div class="brand-title">Saturday Questions</div>
+          <div class="brand-sub">Spiral Patterns • SVG targets only • Solve in the embedded Python editor</div>
+        </div>
+      </div>
 
-<main class="layout">
-  <aside class="panel bank">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title">Question Bank</div>
-        <div class="panel-sub">Questions JSON is embedded in this page</div>
+      <div class="actions">
+        <div class="date-pill" id="todayDate">Saturday, 21 February 2026</div>
+        <button class="btn ghost" id="btnTeacher" title="Toggle teacher mode">Teacher</button>
+        <button class="btn" id="btnShare" title="Copy share link">Share</button>
       </div>
     </div>
+  </header>
 
-    <div class="filters">
-      <input id="qSearch" class="input" placeholder="Search (title, tags)..." />
-      <div class="row">
-        <select id="qDifficulty" class="input">
-          <option value="">All levels</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-        <select id="qTag" class="input">
-          <option value="">All tags</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="qList" class="q-list" role="list"></div>
-    <div class="tip">Tip: Share a specific question using <code>?q=&lt;id&gt;</code> in the URL.</div>
-  </aside>
-
-  <section class="panel work">
-    <div class="panel-head">
-      <div>
-        <div id="qTitle" class="panel-title">Pick a question</div>
-        <div id="qMeta" class="panel-sub">Difficulty • Tags • Estimated time</div>
-      </div>
-      <div class="work-actions">
-        <button class="btn ghost" id="btnCopyStarter" disabled>Copy starter</button>
-        <a class="btn" id="btnOpenEditor" href="#" target="_blank" rel="noopener">Open editor</a>
-      </div>
-    </div>
-
-    <div class="work-grid">
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">Target Output (SVG)</div>
-          <div class="card-actions">
-            <button class="chip" id="btnHints" disabled>Hints</button>
-            <button class="chip" id="btnSolution" disabled>Solution</button>
+  <div class="wrap">
+    <div class="grid">
+      <!-- Left -->
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Question Bank</div>
+            <div class="panel-sub">Pick a question. Share with <code>?q=&lt;id&gt;</code></div>
           </div>
         </div>
 
-        <div class="content muted">
-          The target is shown as an SVG grid (no text-pattern in the question).
-        </div>
-
-        <div class="svg-wrap">
-          <div class="svg-card" id="svgTarget"></div>
-        </div>
-
-        <div id="qHintsWrap" class="content" style="display:none; border-top:1px solid var(--line);">
-          <div style="font-weight:900; margin-bottom:6px;">Hints</div>
-          <ol id="qHints" style="margin:0; padding-left:18px;"></ol>
-        </div>
-
-        <div id="qSolutionWrap" class="content" style="display:none; border-top:1px solid var(--line);">
-          <div style="font-weight:900; margin-bottom:6px;">Solution (Teacher mode)</div>
-          <pre id="qSolution" style="margin:0; padding:12px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.78); overflow:auto; font-family:var(--mono); font-size:13px; line-height:1.5;"></pre>
-        </div>
-      </div>
-
-      <div class="card editor">
-        <div class="card-head">
-          <div class="card-title">Programmer’s Picnic Python Editor</div>
-          <div class="card-actions">
-            <span class="pill" id="editorStatus">iframe</span>
-            <button class="chip" id="btnCopyQuestionLink" disabled>Copy Q link</button>
+        <div class="filters">
+          <input id="qSearch" class="input" placeholder="Search (title, tags)..." />
+          <div class="row">
+            <select id="qDifficulty" class="select">
+              <option value="">All levels</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <select id="qTag" class="select">
+              <option value="">All tags</option>
+            </select>
           </div>
         </div>
 
-        <div class="editor-iframe-wrap">
-          <iframe
-            id="ppEditorFrame"
-            class="editor-iframe"
-            title="Programmer's Picnic Python Editor"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <div id="qList" class="q-list" role="list"></div>
+
+        <div class="tip">
+          Teacher mode reveals solutions. Students can use <b>Copy starter</b> and paste into the editor.
+        </div>
+      </aside>
+
+      <!-- Right -->
+      <section class="panel work">
+        <div class="panel-head">
+          <div>
+            <div id="qTitle" class="panel-title">Select a question</div>
+            <div id="qMeta" class="panel-sub">Difficulty • Tags • Estimated time</div>
+          </div>
+          <div class="work-actions">
+            <button class="btn ghost" id="btnCopyStarter" disabled>Copy starter</button>
+            <a class="btn" id="btnOpenEditor" href="#" target="_blank" rel="noopener">Open editor</a>
+          </div>
         </div>
 
-        <div class="small muted">
-          Use <b>Copy starter</b> → paste into editor.
-        </div>
+        <div class="work-grid">
+          <!-- Target -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Target Output</div>
+              <div class="card-actions">
+                <button class="chip" id="btnHints" disabled>Hints</button>
+                <button class="chip" id="btnSolution" disabled>Solution</button>
+              </div>
+            </div>
 
-        <div class="footer">
-          <div class="muted">Theme: Light Saffron • © Programmer’s Picnic</div>
+            <div class="content">
+              The target output is shown as an SVG grid.
+            </div>
+
+            <div class="svg-wrap">
+              <div class="svg-card" id="svgTarget"></div>
+            </div>
+
+            <div class="section" id="hintsSection">
+              <div class="section-title">Hints</div>
+              <ol id="qHints" style="margin:0; padding-left: 18px;"></ol>
+            </div>
+
+            <div class="section" id="solutionSection">
+              <div class="section-title">Solution (Teacher mode)</div>
+              <pre class="code" id="qSolution"></pre>
+            </div>
+          </div>
+
+          <!-- Editor -->
+          <div class="card editor">
+            <div class="card-head">
+              <div class="card-title">Python Editor</div>
+              <div class="card-actions">
+                <span class="pill" id="editorStatus">iframe</span>
+                <button class="chip" id="btnCopyQuestionLink" disabled>Copy Q link</button>
+              </div>
+            </div>
+
+            <div class="editor-iframe-wrap">
+              <iframe
+                id="ppEditorFrame"
+                class="editor"
+                title="Programmer’s Picnic Python Editor"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+
+            <div class="small">
+              Paste starter code into the editor. Share this page with a question selected for direct access.
+            </div>
+
+            <div class="footer">
+              © Programmer’s Picnic • Published: <span id="publishedDate">21 February 2026</span>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
-  </section>
-</main>
+  </div>
 
-<div class="toast" id="toast" aria-live="polite"></div>
+  <div class="toast" id="toast" aria-live="polite"></div>
 
-<!-- ✅ Questions JSON embedded directly -->
-<script id="questions-json" type="application/json">
-{
-  "meta": {
-    "title": "Saturday Questions",
-    "version": 2,
-    "author": "Programmer's Picnic",
-    "updated": "2026-02-21",
-    "notes": "SVG-only targets. Share with ?q=<id>."
-  },
-  "config": {
-    "editor_url": "https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super/?tmode=1"
-  },
-  "questions": [
-    {
-      "id": "Q3-spiral-direct-4x4",
-      "title": "Spiral Grid 4×4 (Direct / Clockwise)",
-      "difficulty": "medium",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 15,
-      "svg_type": "spiral_direct",
-      "n": 4,
-      "hints": [
-        "Use boundaries: top, bottom, left, right.",
-        "Fill: top row → right column → bottom row → left column.",
-        "Shrink boundaries after each side."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO: fill mat in direct spiral order (clockwise)\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for j in range(left, right+1):\n        mat[top][j] = num; num += 1\n    top += 1\n\n    for i in range(top, bottom+1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][left] = num; num += 1\n    left += 1\n\nfor row in mat:\n    print(*row)\n"
+  <!-- Embedded data -->
+  <script id="questions-json" type="application/json">
+  {
+    "meta": {
+      "title": "Saturday Questions",
+      "version": 3,
+      "author": "Programmer's Picnic",
+      "published": "Saturday, 21 February 2026",
+      "notes": "SVG-only targets. Share with ?q=<id>."
     },
-    {
-      "id": "Q4-spiral-reverse-4x4",
-      "title": "Spiral Grid 4×4 (Reverse / Counter-Clockwise)",
-      "difficulty": "hard",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 20,
-      "svg_type": "spiral_reverse",
-      "n": 4,
-      "hints": [
-        "Use boundaries: top, bottom, left, right.",
-        "Fill: left column → bottom row → right column → top row.",
-        "Shrink boundaries after each side."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO: fill mat in reverse spiral order (counter-clockwise)\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for i in range(top, bottom+1):\n        mat[i][left] = num; num += 1\n    left += 1\n\n    for j in range(left, right+1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[top][j] = num; num += 1\n    top += 1\n\nfor row in mat:\n    print(*row)\n"
+    "config": {
+      "editor_url": "https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super/?tmode=1"
     },
-    {
-      "id": "Q5-spiral-direct-4x4-inverted",
-      "title": "Spiral Grid 4×4 (Direct) — Inverted Series",
-      "difficulty": "medium",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 18,
-      "svg_type": "spiral_direct_inverted",
-      "n": 4,
-      "hints": [
-        "First generate the normal direct spiral values (1..n*n).",
-        "Then transform each cell: new = (n*n + 1) - old.",
-        "Print the final matrix."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO:\n# 1) Fill in direct spiral (clockwise) with 1..n*n\n# 2) Convert values to inverted: v = (n*n + 1) - v\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for j in range(left, right+1):\n        mat[top][j] = num; num += 1\n    top += 1\n\n    for i in range(top, bottom+1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][left] = num; num += 1\n    left += 1\n\nmx = n*n + 1\nfor i in range(n):\n    for j in range(n):\n        mat[i][j] = mx - mat[i][j]\n\nfor row in mat:\n    print(*row)\n"
-    },
-    {
-      "id": "Q6-spiral-reverse-4x4-inverted",
-      "title": "Spiral Grid 4×4 (Reverse) — Inverted Series",
-      "difficulty": "hard",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 22,
-      "svg_type": "spiral_reverse_inverted",
-      "n": 4,
-      "hints": [
-        "First generate the normal reverse spiral (counter-clockwise).",
-        "Then invert values using: new = (n*n + 1) - old.",
-        "Verify that 1 becomes 16 and 16 becomes 1."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO:\n# 1) Fill in reverse spiral (counter-clockwise) with 1..n*n\n# 2) Convert values to inverted: v = (n*n + 1) - v\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for i in range(top, bottom+1):\n        mat[i][left] = num; num += 1\n    left += 1\n\n    for j in range(left, right+1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[top][j] = num; num += 1\n    top += 1\n\nmx = n*n + 1\nfor i in range(n):\n    for j in range(n):\n        mat[i][j] = mx - mat[i][j]\n\nfor row in mat:\n    print(*row)\n"
+    "questions": [
+      {
+        "id": "Q3-spiral-direct-4x4",
+        "title": "Spiral 4×4 (Direct / Clockwise)",
+        "difficulty": "medium",
+        "tags": ["loops", "matrix", "spiral"],
+        "estimated_minutes": 15,
+        "svg_type": "spiral_direct",
+        "n": 4,
+        "hints": [
+          "Use boundaries: top, bottom, left, right.",
+          "Fill: top row → right column → bottom row → left column.",
+          "Shrink boundaries after each side."
+        ],
+        "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO: fill mat in direct spiral order (clockwise)\n\nfor row in mat:\n    print(*row)\n",
+        "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for j in range(left, right+1):\n        mat[top][j] = num; num += 1\n    top += 1\n\n    for i in range(top, bottom+1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][left] = num; num += 1\n    left += 1\n\nfor row in mat:\n    print(*row)\n"
+      },
+      {
+        "id": "Q4-spiral-reverse-4x4",
+        "title": "Spiral 4×4 (Reverse / Counter-Clockwise)",
+        "difficulty": "hard",
+        "tags": ["loops", "matrix", "spiral"],
+        "estimated_minutes": 20,
+        "svg_type": "spiral_reverse",
+        "n": 4,
+        "hints": [
+          "Use boundaries: top, bottom, left, right.",
+          "Fill: left column → bottom row → right column → top row.",
+          "Shrink boundaries after each side."
+        ],
+        "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO: fill mat in reverse spiral order (counter-clockwise)\n\nfor row in mat:\n    print(*row)\n",
+        "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for i in range(top, bottom+1):\n        mat[i][left] = num; num += 1\n    left += 1\n\n    for j in range(left, right+1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[top][j] = num; num += 1\n    top += 1\n\nfor row in mat:\n    print(*row)\n"
+      },
+      {
+        "id": "Q5-spiral-direct-4x4-inverted",
+        "title": "Spiral 4×4 (Direct) — Inverted Series",
+        "difficulty": "medium",
+        "tags": ["loops", "matrix", "spiral"],
+        "estimated_minutes": 18,
+        "svg_type": "spiral_direct_inverted",
+        "n": 4,
+        "hints": [
+          "Generate normal direct spiral values first (1..n*n).",
+          "Then convert each cell: new = (n*n + 1) - old.",
+          "Now 1↔16, 2↔15, …"
+        ],
+        "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO:\n# 1) Fill direct spiral (1..n*n)\n# 2) Invert values: v = (n*n + 1) - v\n\nfor row in mat:\n    print(*row)\n",
+        "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for j in range(left, right+1):\n        mat[top][j] = num; num += 1\n    top += 1\n\n    for i in range(top, bottom+1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][left] = num; num += 1\n    left += 1\n\nmx = n*n + 1\nfor i in range(n):\n    for j in range(n):\n        mat[i][j] = mx - mat[i][j]\n\nfor row in mat:\n    print(*row)\n"
+      },
+      {
+        "id": "Q6-spiral-reverse-4x4-inverted",
+        "title": "Spiral 4×4 (Reverse) — Inverted Series",
+        "difficulty": "hard",
+        "tags": ["loops", "matrix", "spiral"],
+        "estimated_minutes": 22,
+        "svg_type": "spiral_reverse_inverted",
+        "n": 4,
+        "hints": [
+          "Generate normal reverse spiral first (1..n*n).",
+          "Then invert values: new = (n*n + 1) - old.",
+          "Check: 1 becomes 16 and 16 becomes 1."
+        ],
+        "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO:\n# 1) Fill reverse spiral (1..n*n)\n# 2) Invert values: v = (n*n + 1) - v\n\nfor row in mat:\n    print(*row)\n",
+        "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for i in range(top, bottom+1):\n        mat[i][left] = num; num += 1\n    left += 1\n\n    for j in range(left, right+1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[top][j] = num; num += 1\n    top += 1\n\nmx = n*n + 1\nfor i in range(n):\n    for j in range(n):\n        mat[i][j] = mx - mat[i][j]\n\nfor row in mat:\n    print(*row)\n"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+
+    const els = {
+      qList: $("#qList"),
+      qSearch: $("#qSearch"),
+      qDifficulty: $("#qDifficulty"),
+      qTag: $("#qTag"),
+      qTitle: $("#qTitle"),
+      qMeta: $("#qMeta"),
+      svgTarget: $("#svgTarget"),
+      btnShare: $("#btnShare"),
+      btnTeacher: $("#btnTeacher"),
+      btnCopyStarter: $("#btnCopyStarter"),
+      btnOpenEditor: $("#btnOpenEditor"),
+      btnCopyQuestionLink: $("#btnCopyQuestionLink"),
+      btnHints: $("#btnHints"),
+      btnSolution: $("#btnSolution"),
+      hintsSection: $("#hintsSection"),
+      solutionSection: $("#solutionSection"),
+      qHints: $("#qHints"),
+      qSolution: $("#qSolution"),
+      editorFrame: $("#ppEditorFrame"),
+      editorStatus: $("#editorStatus"),
+      toast: $("#toast"),
+      todayDate: $("#todayDate"),
+      publishedDate: $("#publishedDate")
+    };
+
+    let DATA = null;
+    let QUESTIONS = [];
+    let CONFIG = { editor_url: "" };
+    let activeId = null;
+    let teacherMode = false;
+
+    // Hard-set publication date (per request)
+    const PUBLISHED_STR = "Saturday, 21 February 2026";
+    els.todayDate.textContent = PUBLISHED_STR;
+    els.publishedDate.textContent = "21 February 2026";
+
+    function toast(msg){
+      els.toast.textContent = msg;
+      els.toast.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => els.toast.classList.remove("show"), 1400);
     }
-  ]
-}
-</script>
 
-<script>
-const $ = (sel) => document.querySelector(sel);
-
-const els = {
-  qList: $("#qList"),
-  qSearch: $("#qSearch"),
-  qDifficulty: $("#qDifficulty"),
-  qTag: $("#qTag"),
-  qTitle: $("#qTitle"),
-  qMeta: $("#qMeta"),
-  svgTarget: $("#svgTarget"),
-  qHintsWrap: $("#qHintsWrap"),
-  qHints: $("#qHints"),
-  qSolutionWrap: $("#qSolutionWrap"),
-  qSolution: $("#qSolution"),
-
-  btnReload: $("#btnReload"),
-  btnShare: $("#btnShare"),
-  btnTeacher: $("#btnTeacher"),
-  btnCopyStarter: $("#btnCopyStarter"),
-  btnOpenEditor: $("#btnOpenEditor"),
-  btnCopyQuestionLink: $("#btnCopyQuestionLink"),
-  btnHints: $("#btnHints"),
-  btnSolution: $("#btnSolution"),
-
-  editorFrame: $("#ppEditorFrame"),
-  editorStatus: $("#editorStatus"),
-  toast: $("#toast"),
-};
-
-let DATA = null;
-let QUESTIONS = [];
-let CONFIG = { editor_url: "" };
-let activeId = null;
-let teacherMode = false;
-
-function toast(msg){
-  els.toast.textContent = msg;
-  els.toast.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => els.toast.classList.remove("show"), 1400);
-}
-
-function getQueryParam(name){
-  return new URL(location.href).searchParams.get(name);
-}
-function setQueryParam(name, value){
-  const u = new URL(location.href);
-  if (value == null || value === "") u.searchParams.delete(name);
-  else u.searchParams.set(name, value);
-  history.replaceState({}, "", u.toString());
-}
-function currentShareLink(){
-  const u = new URL(location.href);
-  if(activeId) u.searchParams.set("q", activeId);
-  return u.toString();
-}
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-  }catch{
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try{ document.execCommand("copy"); }catch{}
-    ta.remove();
-  }
-}
-
-function readEmbeddedJSON(){
-  const raw = $("#questions-json")?.textContent?.trim();
-  if(!raw) throw new Error("Missing embedded questions JSON");
-  return JSON.parse(raw);
-}
-
-/* ---------- SVG generator (grid) ---------- */
-function makeGridSVG(matrix, opts = {}){
-  const n = matrix.length;
-  const cell = opts.cell ?? 64;
-  const pad = opts.pad ?? 14;
-  const r = opts.radius ?? 14;
-
-  const w = pad*2 + n*cell;
-  const h = pad*2 + n*cell;
-
-  const maxVal = Math.max(...matrix.flat());
-  const digits = String(maxVal).length;
-  const font = digits <= 2 ? 18 : 16;
-
-  const bg1 = "rgba(255,159,28,0.10)";
-  const bg2 = "rgba(255,255,255,0.75)";
-  const stroke = "rgba(31,35,40,0.18)";
-  const strokeBold = "rgba(255,159,28,0.75)";
-  const text = "#1f2328";
-
-  let cells = "";
-  for(let i=0;i<n;i++){
-    for(let j=0;j<n;j++){
-      const x = pad + j*cell;
-      const y = pad + i*cell;
-      const v = matrix[i][j];
-      cells += `
-        <g>
-          <rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="${r}" ry="${r}"
-                fill="${(i+j)%2===0?bg2:bg1}" stroke="${stroke}" stroke-width="1.2"/>
-          <text x="${x + cell/2}" y="${y + cell/2}"
-                font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial"
-                font-size="${font}" font-weight="800"
-                fill="${text}" text-anchor="middle" dominant-baseline="central">${v}</text>
-        </g>`;
+    function getQueryParam(name){
+      return new URL(location.href).searchParams.get(name);
     }
-  }
+    function setQueryParam(name, value){
+      const u = new URL(location.href);
+      if (value == null || value === "") u.searchParams.delete(name);
+      else u.searchParams.set(name, value);
+      history.replaceState({}, "", u.toString());
+    }
+    function currentShareLink(){
+      const u = new URL(location.href);
+      if(activeId) u.searchParams.set("q", activeId);
+      return u.toString();
+    }
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch{
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand("copy"); }catch{}
+        ta.remove();
+      }
+    }
 
-  const outer = `
-    <rect x="${pad-6}" y="${pad-6}" width="${n*cell+12}" height="${n*cell+12}"
-          rx="${r+6}" ry="${r+6}" fill="none" stroke="${strokeBold}" stroke-width="2"/>`;
+    function readEmbeddedJSON(){
+      const raw = $("#questions-json")?.textContent?.trim();
+      if(!raw) throw new Error("Missing embedded questions JSON");
+      return JSON.parse(raw);
+    }
 
-  return `
-  <svg viewBox="0 0 ${w} ${h}" width="100%" height="auto" role="img" aria-label="Target grid">
-    <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="rgba(31,35,40,0.12)"/>
-      </filter>
-    </defs>
-    <rect x="0" y="0" width="${w}" height="${h}" rx="18" ry="18" fill="rgba(255,255,255,0.55)"/>
-    <g filter="url(#shadow)">
-      ${outer}
-      ${cells}
-    </g>
-  </svg>`;
-}
+    /* ---------- SVG generator (grid) ---------- */
+    function makeGridSVG(matrix, opts = {}){
+      const n = matrix.length;
+      const cell = opts.cell ?? 64;
+      const pad = opts.pad ?? 14;
+      const r = opts.radius ?? 14;
 
-/* ---------- Build target matrices ---------- */
-function buildSpiralDirect(n){
-  const a = Array.from({length:n}, ()=>Array(n).fill(0));
-  let num = 1;
-  let top = 0, bottom = n-1, left = 0, right = n-1;
+      const w = pad*2 + n*cell;
+      const h = pad*2 + n*cell;
 
-  while(left <= right && top <= bottom){
-    for(let j=left;j<=right;j++) a[top][j]=num++;
-    top++;
-    for(let i=top;i<=bottom;i++) a[i][right]=num++;
-    right--;
-    for(let j=right;j>=left;j--) a[bottom][j]=num++;
-    bottom--;
-    for(let i=bottom;i>=top;i--) a[i][left]=num++;
-    left++;
-  }
-  return a;
-}
+      const maxVal = Math.max(...matrix.flat());
+      const digits = String(maxVal).length;
+      const font = digits <= 2 ? 18 : 16;
 
-function buildSpiralReverse(n){
-  const a = Array.from({length:n}, ()=>Array(n).fill(0));
-  let num = 1;
-  let top = 0, bottom = n-1, left = 0, right = n-1;
+      const bg1 = "rgba(255,159,28,0.10)";
+      const bg2 = "rgba(255,255,255,0.78)";
+      const stroke = "rgba(31,35,40,0.18)";
+      const strokeBold = "rgba(255,159,28,0.75)";
+      const text = "#1f2328";
 
-  while(left <= right && top <= bottom){
-    for(let i=top;i<=bottom;i++) a[i][left]=num++;
-    left++;
-    for(let j=left;j<=right;j++) a[bottom][j]=num++;
-    bottom--;
-    for(let i=bottom;i>=top;i--) a[i][right]=num++;
-    right--;
-    for(let j=right;j>=left;j--) a[top][j]=num++;
-    top++;
-  }
-  return a;
-}
+      let cells = "";
+      for(let i=0;i<n;i++){
+        for(let j=0;j<n;j++){
+          const x = pad + j*cell;
+          const y = pad + i*cell;
+          const v = matrix[i][j];
+          cells += `
+            <g>
+              <rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="${r}" ry="${r}"
+                    fill="${(i+j)%2===0?bg2:bg1}" stroke="${stroke}" stroke-width="1.2"/>
+              <text x="${x + cell/2}" y="${y + cell/2}"
+                    font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial"
+                    font-size="${font}" font-weight="900"
+                    fill="${text}" text-anchor="middle" dominant-baseline="central">${v}</text>
+            </g>`;
+        }
+      }
 
-function invertMatrix(mat){
-  const n = mat.length;
-  const mx = n*n + 1;
-  return mat.map(row => row.map(v => mx - v));
-}
+      const outer = `
+        <rect x="${pad-6}" y="${pad-6}" width="${n*cell+12}" height="${n*cell+12}"
+              rx="${r+6}" ry="${r+6}" fill="none" stroke="${strokeBold}" stroke-width="2"/>`;
 
-function getSVGForQuestion(q){
-  const n = q.n || 4;
-  let mat;
+      return `
+      <svg viewBox="0 0 ${w} ${h}" width="100%" height="auto" role="img" aria-label="Target grid">
+        <defs>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="rgba(31,35,40,0.12)"/>
+          </filter>
+        </defs>
+        <rect x="0" y="0" width="${w}" height="${h}" rx="18" ry="18" fill="rgba(255,255,255,0.52)"/>
+        <g filter="url(#shadow)">
+          ${outer}
+          ${cells}
+        </g>
+      </svg>`;
+    }
 
-  if(q.svg_type === "spiral_direct") mat = buildSpiralDirect(n);
-  else if(q.svg_type === "spiral_reverse") mat = buildSpiralReverse(n);
-  else if(q.svg_type === "spiral_direct_inverted") mat = invertMatrix(buildSpiralDirect(n));
-  else if(q.svg_type === "spiral_reverse_inverted") mat = invertMatrix(buildSpiralReverse(n));
-  else mat = Array.from({length:n}, ()=>Array(n).fill(0));
+    /* ---------- Build matrices ---------- */
+    function buildSpiralDirect(n){
+      const a = Array.from({length:n}, ()=>Array(n).fill(0));
+      let num = 1;
+      let top = 0, bottom = n-1, left = 0, right = n-1;
 
-  return makeGridSVG(mat, { cell: 64, pad: 14, radius: 14 });
-}
+      while(left <= right && top <= bottom){
+        for(let j=left;j<=right;j++) a[top][j]=num++;
+        top++;
+        for(let i=top;i<=bottom;i++) a[i][right]=num++;
+        right--;
+        for(let j=right;j>=left;j--) a[bottom][j]=num++;
+        bottom--;
+        for(let i=bottom;i>=top;i--) a[i][left]=num++;
+        left++;
+      }
+      return a;
+    }
 
-/* ---------- UI list ---------- */
-function pill(text){ return `<span class="pill">${escapeHtml(text)}</span>`; }
-function escapeHtml(s){
-  return (s ?? "").toString()
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+    function buildSpiralReverse(n){
+      const a = Array.from({length:n}, ()=>Array(n).fill(0));
+      let num = 1;
+      let top = 0, bottom = n-1, left = 0, right = n-1;
 
-function buildTagOptions(){
-  const tags = new Set();
-  QUESTIONS.forEach(q => (q.tags || []).forEach(t => tags.add(t)));
-  const all = ["", ...Array.from(tags).sort((a,b)=>a.localeCompare(b))];
-  els.qTag.innerHTML = all.map(t => `<option value="${escapeHtml(t)}">${t ? escapeHtml(t) : "All tags"}</option>`).join("");
-}
+      while(left <= right && top <= bottom){
+        for(let i=top;i<=bottom;i++) a[i][left]=num++;
+        left++;
+        for(let j=left;j<=right;j++) a[bottom][j]=num++;
+        bottom--;
+        for(let i=bottom;i>=top;i--) a[i][right]=num++;
+        right--;
+        for(let j=right;j>=left;j--) a[top][j]=num++;
+        top++;
+      }
+      return a;
+    }
 
-function filterQuestions(){
-  const s = (els.qSearch.value || "").trim().toLowerCase();
-  const diff = els.qDifficulty.value;
-  const tag = els.qTag.value;
+    function invertMatrix(mat){
+      const n = mat.length;
+      const mx = n*n + 1;
+      return mat.map(row => row.map(v => mx - v));
+    }
 
-  return QUESTIONS.filter(q => {
-    if (diff && (q.difficulty || "").toLowerCase() !== diff) return false;
-    if (tag && !(q.tags || []).includes(tag)) return false;
+    function getSVGForQuestion(q){
+      const n = q.n || 4;
+      let mat;
 
-    if (!s) return true;
-    const hay = [q.id, q.title, q.difficulty, (q.tags||[]).join(" ")].join(" ").toLowerCase();
-    return hay.includes(s);
-  });
-}
+      if(q.svg_type === "spiral_direct") mat = buildSpiralDirect(n);
+      else if(q.svg_type === "spiral_reverse") mat = buildSpiralReverse(n);
+      else if(q.svg_type === "spiral_direct_inverted") mat = invertMatrix(buildSpiralDirect(n));
+      else if(q.svg_type === "spiral_reverse_inverted") mat = invertMatrix(buildSpiralReverse(n));
+      else mat = Array.from({length:n}, ()=>Array(n).fill(0));
 
-function renderList(){
-  const list = filterQuestions();
-  if(!list.length){
-    els.qList.innerHTML = "<div class='muted' style='padding:10px'>No questions match.</div>";
-    return;
-  }
+      return makeGridSVG(mat, { cell: 64, pad: 14, radius: 14 });
+    }
 
-  els.qList.innerHTML = list.map(q => {
-    const pills = [
-      pill(q.difficulty || "level"),
-      pill((q.tags || [])[0] || "tag"),
-      pill(q.estimated_minutes ? (q.estimated_minutes + " min") : "time")
-    ].join("");
-    const active = (q.id === activeId) ? "active" : "";
-    return `
-      <div class="q-item ${active}" role="listitem" data-id="${escapeHtml(q.id)}" tabindex="0">
-        <div class="q-title">${escapeHtml(q.title || q.id)}</div>
-        <div class="q-meta">${pills}</div>
-      </div>
-    `;
-  }).join("");
+    /* ---------- List / filters ---------- */
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function pill(text){ return `<span class="pill">${escapeHtml(text)}</span>`; }
 
-  els.qList.querySelectorAll(".q-item").forEach(item => {
-    item.addEventListener("click", () => selectQuestion(item.dataset.id));
-    item.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" || e.key === " ") selectQuestion(item.dataset.id);
+    function buildTagOptions(){
+      const tags = new Set();
+      QUESTIONS.forEach(q => (q.tags || []).forEach(t => tags.add(t)));
+      const all = ["", ...Array.from(tags).sort((a,b)=>a.localeCompare(b))];
+      els.qTag.innerHTML = all.map(t => `<option value="${escapeHtml(t)}">${t ? escapeHtml(t) : "All tags"}</option>`).join("");
+    }
+
+    function filterQuestions(){
+      const s = (els.qSearch.value || "").trim().toLowerCase();
+      const diff = els.qDifficulty.value;
+      const tag = els.qTag.value;
+
+      return QUESTIONS.filter(q => {
+        if (diff && (q.difficulty || "").toLowerCase() !== diff) return false;
+        if (tag && !(q.tags || []).includes(tag)) return false;
+
+        if (!s) return true;
+        const hay = [q.id, q.title, q.difficulty, (q.tags||[]).join(" ")].join(" ").toLowerCase();
+        return hay.includes(s);
+      });
+    }
+
+    function renderList(){
+      const list = filterQuestions();
+      if(!list.length){
+        els.qList.innerHTML = "<div style='padding:10px; color: var(--muted);'>No questions match.</div>";
+        return;
+      }
+
+      els.qList.innerHTML = list.map(q => {
+        const pills = [
+          pill(q.difficulty || "level"),
+          pill((q.tags || [])[0] || "tag"),
+          pill(q.estimated_minutes ? (q.estimated_minutes + " min") : "time")
+        ].join("");
+
+        const active = (q.id === activeId) ? "active" : "";
+        return `
+          <div class="q-item ${active}" role="listitem" data-id="${escapeHtml(q.id)}" tabindex="0">
+            <div class="q-title">${escapeHtml(q.title || q.id)}</div>
+            <div class="q-meta">${pills}</div>
+          </div>
+        `;
+      }).join("");
+
+      els.qList.querySelectorAll(".q-item").forEach(item => {
+        item.addEventListener("click", () => selectQuestion(item.dataset.id));
+        item.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " ") selectQuestion(item.dataset.id);
+        });
+      });
+    }
+
+    /* ---------- Question selection ---------- */
+    function selectQuestion(id, opts = { scroll: false }){
+      const q = QUESTIONS.find(x => x.id === id);
+      if(!q) return;
+
+      activeId = id;
+      setQueryParam("q", id);
+      renderList();
+
+      els.qTitle.textContent = q.title || q.id;
+      els.qMeta.textContent = `${(q.difficulty || "level").toUpperCase()} • ${(q.tags || []).join(", ") || "no tags"} • ${q.estimated_minutes ? (q.estimated_minutes + " min") : "time n/a"}`;
+
+      els.svgTarget.innerHTML = getSVGForQuestion(q);
+
+      // hints
+      els.qHints.innerHTML = "";
+      (q.hints || []).forEach(h => {
+        const li = document.createElement("li");
+        li.textContent = h;
+        els.qHints.appendChild(li);
+      });
+
+      // solution
+      els.qSolution.textContent = (q.solution_code || "").trim();
+
+      // sections collapsed by default
+      els.hintsSection.style.display = "none";
+      els.solutionSection.style.display = "none";
+
+      // buttons enable
+      els.btnCopyStarter.disabled = false;
+      els.btnCopyQuestionLink.disabled = false;
+      els.btnHints.disabled = !(q.hints && q.hints.length);
+      els.btnSolution.disabled = !(q.solution_code && q.solution_code.trim().length);
+
+      toast("Loaded: " + (q.title || q.id));
+    }
+
+    /* ---------- Teacher mode ---------- */
+    function toggleTeacherMode(){
+      teacherMode = !teacherMode;
+      els.btnTeacher.textContent = teacherMode ? "Teacher: ON" : "Teacher";
+      if(!teacherMode) els.solutionSection.style.display = "none";
+      toast(teacherMode ? "Teacher mode ON" : "Teacher mode OFF");
+    }
+
+    /* ---------- Editor ---------- */
+    function initEditor(){
+      const override = getQueryParam("editor");
+      const editorUrl = override || CONFIG.editor_url;
+      els.editorFrame.src = editorUrl;
+      els.btnOpenEditor.href = editorUrl;
+      els.editorStatus.textContent = "iframe";
+    }
+
+    /* ---------- Wire buttons ---------- */
+    els.qSearch.addEventListener("input", renderList);
+    els.qDifficulty.addEventListener("change", renderList);
+    els.qTag.addEventListener("change", renderList);
+
+    els.btnShare.addEventListener("click", async () => {
+      await copyText(currentShareLink());
+      toast("Share link copied!");
     });
-  });
-}
 
-/* ---------- Select question ---------- */
-function selectQuestion(id, opts = { scroll: true }){
-  const q = QUESTIONS.find(x => x.id === id);
-  if(!q) return;
+    els.btnTeacher.addEventListener("click", toggleTeacherMode);
 
-  activeId = id;
-  setQueryParam("q", id);
-  renderList();
-
-  els.qTitle.textContent = q.title || q.id;
-  els.qMeta.textContent = `${(q.difficulty || "level").toUpperCase()} • ${(q.tags || []).join(", ") || "no tags"} • ${q.estimated_minutes ? (q.estimated_minutes + " min") : "time n/a"}`;
-
-  els.svgTarget.innerHTML = getSVGForQuestion(q);
-
-  els.qHints.innerHTML = "";
-  (q.hints || []).forEach(h => {
-    const li = document.createElement("li");
-    li.textContent = h;
-    els.qHints.appendChild(li);
-  });
-
-  els.qSolution.textContent = (q.solution_code || "").trim();
-
-  els.qHintsWrap.style.display = "none";
-  els.qSolutionWrap.style.display = "none";
-
-  els.btnCopyStarter.disabled = false;
-  els.btnCopyQuestionLink.disabled = false;
-  els.btnHints.disabled = !(q.hints && q.hints.length);
-  els.btnSolution.disabled = !(q.solution_code && q.solution_code.trim().length);
-
-  toast("Loaded: " + (q.title || q.id));
-
-  if(opts.scroll){
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-}
-
-/* ---------- Teacher mode ---------- */
-function toggleTeacherMode(){
-  teacherMode = !teacherMode;
-  els.btnTeacher.textContent = teacherMode ? "Teacher: ON" : "Teacher";
-  if(!teacherMode){
-    els.qSolutionWrap.style.display = "none";
-  }
-  toast(teacherMode ? "Teacher mode ON" : "Teacher mode OFF");
-}
-
-/* ---------- Init editor ---------- */
-function initEditor(){
-  const override = getQueryParam("editor");
-  const editorUrl = override || CONFIG.editor_url;
-  els.editorFrame.src = editorUrl;
-  els.btnOpenEditor.href = editorUrl;
-  els.editorStatus.textContent = "iframe: loaded";
-}
-
-/* ---------- Events ---------- */
-els.qSearch.addEventListener("input", renderList);
-els.qDifficulty.addEventListener("change", renderList);
-els.qTag.addEventListener("change", renderList);
-
-els.btnReload.addEventListener("click", () => { boot(); toast("Reloaded"); });
-
-els.btnShare.addEventListener("click", async () => {
-  await copyText(currentShareLink());
-  toast("Share link copied!");
-});
-
-els.btnTeacher.addEventListener("click", toggleTeacherMode);
-
-els.btnHints.addEventListener("click", () => {
-  els.qHintsWrap.style.display = (els.qHintsWrap.style.display === "none") ? "block" : "none";
-});
-
-els.btnSolution.addEventListener("click", () => {
-  if(!teacherMode){
-    toast("Turn on Teacher mode to view solution");
-    return;
-  }
-  els.qSolutionWrap.style.display = (els.qSolutionWrap.style.display === "none") ? "block" : "none";
-});
-
-els.btnCopyStarter.addEventListener("click", async () => {
-  const q = QUESTIONS.find(x => x.id === activeId);
-  await copyText(q?.starter_code || "");
-  toast("Starter code copied!");
-});
-
-els.btnCopyQuestionLink.addEventListener("click", async () => {
-  await copyText(currentShareLink());
-  toast("Question link copied!");
-});
-
-/* ---------- Boot ---------- */
-function boot(){
-  const parsed = readEmbeddedJSON();
-  QUESTIONS = Array.isArray(parsed.questions) ? parsed.questions : [];
-  CONFIG = parsed.config || { editor_url: "" };
-
-  buildTagOptions();
-  initEditor();
-  renderList();
-
-  const fromUrl = getQueryParam("q");
-  if(fromUrl && QUESTIONS.some(q => q.id === fromUrl)){
-    selectQuestion(fromUrl, { scroll:false });
-  }else if(QUESTIONS[0]){
-    selectQuestion(QUESTIONS[0].id, { scroll:false });
-  }
-}
-
-boot();
-</script>
-</body>
-</html><!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Saturday Questions — Spiral SVG (No Text Patterns)</title>
-
-<style>
-:root{
-  --bg:#fff7e6;
-  --panel:#ffffff;
-  --ink:#1f2328;
-  --muted:#59636e;
-  --saffron:#ff9f1c;
-  --saffron2:#ffb74d;
-  --line:rgba(31,35,40,.12);
-  --radius:18px;
-  --shadow:0 10px 30px rgba(31,35,40,.10);
-  --sans:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  --mono:ui-monospace,Consolas,monospace;
-}
-
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:var(--sans);
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 700px at 10% 0%, rgba(255,159,28,.22), transparent 60%),
-    radial-gradient(900px 600px at 90% 10%, rgba(255,183,77,.20), transparent 55%),
-    var(--bg);
-}
-
-.topbar{
-  position:sticky; top:0; z-index:10;
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:14px 16px;
-  backdrop-filter: blur(10px);
-  background: rgba(255,247,230,.78);
-  border-bottom: 1px solid var(--line);
-}
-
-.brand{display:flex; align-items:center; gap:12px; min-width:240px}
-.logo{
-  width:44px;height:44px;border-radius:14px;
-  background: linear-gradient(145deg, var(--saffron), var(--saffron2));
-  display:grid; place-items:center;
-  font-weight:900; color:#111;
-  box-shadow: 0 8px 18px rgba(255,159,28,.30);
-}
-.title{font-weight:900;font-size:18px}
-.subtitle{color:var(--muted);font-size:12px;margin-top:2px}
-
-.actions{display:flex; gap:10px; align-items:center}
-.btn{
-  border:1px solid rgba(255,159,28,.30);
-  background: linear-gradient(180deg, rgba(255,159,28,.22), rgba(255,183,77,.14));
-  color:#111;
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
-  font-weight:800;
-}
-.btn.ghost{
-  background: rgba(255,255,255,.65);
-  border: 1px solid var(--line);
-}
-.btn:hover{filter:brightness(.985); transform: translateY(-1px)}
-.btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
-
-.layout{
-  display:grid;
-  grid-template-columns: 340px 1fr;
-  gap:14px;
-  padding:14px;
-  max-width:1400px;
-  margin:0 auto;
-}
-
-.panel{
-  background: rgba(255,255,255,.75);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-}
-
-.panel-head{
-  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-  padding:14px 14px 10px;
-  border-bottom:1px solid var(--line);
-  background: rgba(255,255,255,.65);
-}
-.panel-title{font-weight:900;font-size:16px}
-.panel-sub{color:var(--muted);font-size:12px;margin-top:4px}
-.work-actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
-
-.filters{
-  padding:12px 14px 10px;
-  border-bottom:1px solid var(--line);
-}
-.row{display:flex; gap:10px; margin-top:10px}
-.input{
-  width:100%;
-  padding:10px 12px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.9);
-  outline:none;
-}
-.input:focus{border-color: rgba(255,159,28,.55); box-shadow:0 0 0 4px rgba(255,159,28,.16)}
-
-.q-list{max-height: calc(100vh - 240px); overflow:auto; padding:10px}
-.q-item{
-  border:1px solid var(--line);
-  border-radius:16px;
-  background: rgba(255,255,255,.82);
-  padding:10px;
-  margin-bottom:10px;
-  cursor:pointer;
-}
-.q-item:hover{border-color: rgba(255,159,28,.40); transform: translateY(-1px)}
-.q-item.active{
-  border-color: rgba(255,159,28,.70);
-  box-shadow: 0 0 0 4px rgba(255,159,28,.14);
-}
-.q-title{font-weight:900;font-size:13px}
-.q-meta{color:var(--muted);font-size:11px;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px}
-.pill{
-  padding:2px 8px; border-radius:999px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.85);
-}
-
-.tip{padding:10px 14px 14px; color:var(--muted); font-size:12px}
-
-.work{min-height: calc(100vh - 120px)}
-.work-grid{
-  display:grid;
-  grid-template-columns: 1.05fr .95fr;
-  gap:12px;
-  padding:12px;
-}
-
-.card{
-  border:1px solid var(--line);
-  border-radius:18px;
-  background: rgba(255,255,255,.86);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  min-height: 320px;
-}
-.card.editor{min-height: 560px}
-
-.card-head{
-  padding:10px 12px;
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  border-bottom:1px solid var(--line);
-  background: rgba(255,255,255,.7);
-}
-.card-title{font-weight:900}
-.card-actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-
-.chip{
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.85);
-  padding:8px 10px;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:800;
-}
-.chip:hover{border-color: rgba(255,159,28,.40)}
-.chip:disabled{opacity:.5; cursor:not-allowed}
-
-.content{padding:12px 14px; line-height:1.55; font-size:14px}
-.muted{color:var(--muted)}
-
-.svg-wrap{padding: 12px 14px 14px}
-.svg-card{
-  border:1px solid var(--line);
-  border-radius:16px;
-  background: rgba(255,255,255,.78);
-  padding:10px;
-  overflow:auto;
-}
-
-.editor-iframe-wrap{padding:10px; flex:1; min-height:420px}
-.editor-iframe{
-  width:100%; height:100%; min-height:420px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background: rgba(255,255,255,.9);
-}
-
-.small{padding:0 12px 12px; font-size:12px}
-.footer{padding:10px 14px 14px}
-.toast{
-  position:fixed; left:50%; bottom:18px;
-  transform: translateX(-50%);
-  padding:10px 12px; border-radius:14px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.9);
-  box-shadow: var(--shadow);
-  opacity:0; pointer-events:none;
-  transition: opacity .2s ease, transform .2s ease;
-}
-.toast.show{opacity:1; transform: translateX(-50%) translateY(-2px)}
-
-@media (max-width: 980px){
-  .layout{grid-template-columns: 1fr}
-  .q-list{max-height: 40vh}
-  .work-grid{grid-template-columns: 1fr}
-}
-</style>
-</head>
-
-<body>
-<header class="topbar">
-  <div class="brand">
-    <div class="logo" aria-hidden="true">PP</div>
-    <div>
-      <div class="title">Saturday Questions</div>
-      <div class="subtitle">Spiral Patterns (SVG only) • Direct, Reverse, and Inverted Series</div>
-    </div>
-  </div>
-  <div class="actions">
-    <button class="btn ghost" id="btnReload" title="Reload questions">↻ Reload</button>
-    <button class="btn" id="btnShare" title="Copy share link">Share</button>
-    <button class="btn ghost" id="btnTeacher" title="Toggle teacher mode">Teacher</button>
-  </div>
-</header>
-
-<main class="layout">
-  <aside class="panel bank">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title">Question Bank</div>
-        <div class="panel-sub">Questions JSON is embedded in this page</div>
-      </div>
-    </div>
-
-    <div class="filters">
-      <input id="qSearch" class="input" placeholder="Search (title, tags)..." />
-      <div class="row">
-        <select id="qDifficulty" class="input">
-          <option value="">All levels</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-        <select id="qTag" class="input">
-          <option value="">All tags</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="qList" class="q-list" role="list"></div>
-    <div class="tip">Tip: Share a specific question using <code>?q=&lt;id&gt;</code> in the URL.</div>
-  </aside>
-
-  <section class="panel work">
-    <div class="panel-head">
-      <div>
-        <div id="qTitle" class="panel-title">Pick a question</div>
-        <div id="qMeta" class="panel-sub">Difficulty • Tags • Estimated time</div>
-      </div>
-      <div class="work-actions">
-        <button class="btn ghost" id="btnCopyStarter" disabled>Copy starter</button>
-        <a class="btn" id="btnOpenEditor" href="#" target="_blank" rel="noopener">Open editor</a>
-      </div>
-    </div>
-
-    <div class="work-grid">
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">Target Output (SVG)</div>
-          <div class="card-actions">
-            <button class="chip" id="btnHints" disabled>Hints</button>
-            <button class="chip" id="btnSolution" disabled>Solution</button>
-          </div>
-        </div>
-
-        <div class="content muted">
-          The target is shown as an SVG grid (no text-pattern in the question).
-        </div>
-
-        <div class="svg-wrap">
-          <div class="svg-card" id="svgTarget"></div>
-        </div>
-
-        <div id="qHintsWrap" class="content" style="display:none; border-top:1px solid var(--line);">
-          <div style="font-weight:900; margin-bottom:6px;">Hints</div>
-          <ol id="qHints" style="margin:0; padding-left:18px;"></ol>
-        </div>
-
-        <div id="qSolutionWrap" class="content" style="display:none; border-top:1px solid var(--line);">
-          <div style="font-weight:900; margin-bottom:6px;">Solution (Teacher mode)</div>
-          <pre id="qSolution" style="margin:0; padding:12px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.78); overflow:auto; font-family:var(--mono); font-size:13px; line-height:1.5;"></pre>
-        </div>
-      </div>
-
-      <div class="card editor">
-        <div class="card-head">
-          <div class="card-title">Programmer’s Picnic Python Editor</div>
-          <div class="card-actions">
-            <span class="pill" id="editorStatus">iframe</span>
-            <button class="chip" id="btnCopyQuestionLink" disabled>Copy Q link</button>
-          </div>
-        </div>
-
-        <div class="editor-iframe-wrap">
-          <iframe
-            id="ppEditorFrame"
-            class="editor-iframe"
-            title="Programmer's Picnic Python Editor"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-
-        <div class="small muted">
-          Use <b>Copy starter</b> → paste into editor.
-        </div>
-
-        <div class="footer">
-          <div class="muted">Theme: Light Saffron • © Programmer’s Picnic</div>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<div class="toast" id="toast" aria-live="polite"></div>
-
-<!-- ✅ Questions JSON embedded directly -->
-<script id="questions-json" type="application/json">
-{
-  "meta": {
-    "title": "Saturday Questions",
-    "version": 2,
-    "author": "Programmer's Picnic",
-    "updated": "2026-02-21",
-    "notes": "SVG-only targets. Share with ?q=<id>."
-  },
-  "config": {
-    "editor_url": "https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super/?tmode=1"
-  },
-  "questions": [
-    {
-      "id": "Q3-spiral-direct-4x4",
-      "title": "Spiral Grid 4×4 (Direct / Clockwise)",
-      "difficulty": "medium",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 15,
-      "svg_type": "spiral_direct",
-      "n": 4,
-      "hints": [
-        "Use boundaries: top, bottom, left, right.",
-        "Fill: top row → right column → bottom row → left column.",
-        "Shrink boundaries after each side."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO: fill mat in direct spiral order (clockwise)\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for j in range(left, right+1):\n        mat[top][j] = num; num += 1\n    top += 1\n\n    for i in range(top, bottom+1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][left] = num; num += 1\n    left += 1\n\nfor row in mat:\n    print(*row)\n"
-    },
-    {
-      "id": "Q4-spiral-reverse-4x4",
-      "title": "Spiral Grid 4×4 (Reverse / Counter-Clockwise)",
-      "difficulty": "hard",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 20,
-      "svg_type": "spiral_reverse",
-      "n": 4,
-      "hints": [
-        "Use boundaries: top, bottom, left, right.",
-        "Fill: left column → bottom row → right column → top row.",
-        "Shrink boundaries after each side."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO: fill mat in reverse spiral order (counter-clockwise)\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for i in range(top, bottom+1):\n        mat[i][left] = num; num += 1\n    left += 1\n\n    for j in range(left, right+1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[top][j] = num; num += 1\n    top += 1\n\nfor row in mat:\n    print(*row)\n"
-    },
-    {
-      "id": "Q5-spiral-direct-4x4-inverted",
-      "title": "Spiral Grid 4×4 (Direct) — Inverted Series",
-      "difficulty": "medium",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 18,
-      "svg_type": "spiral_direct_inverted",
-      "n": 4,
-      "hints": [
-        "First generate the normal direct spiral values (1..n*n).",
-        "Then transform each cell: new = (n*n + 1) - old.",
-        "Print the final matrix."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO:\n# 1) Fill in direct spiral (clockwise) with 1..n*n\n# 2) Convert values to inverted: v = (n*n + 1) - v\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for j in range(left, right+1):\n        mat[top][j] = num; num += 1\n    top += 1\n\n    for i in range(top, bottom+1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][left] = num; num += 1\n    left += 1\n\nmx = n*n + 1\nfor i in range(n):\n    for j in range(n):\n        mat[i][j] = mx - mat[i][j]\n\nfor row in mat:\n    print(*row)\n"
-    },
-    {
-      "id": "Q6-spiral-reverse-4x4-inverted",
-      "title": "Spiral Grid 4×4 (Reverse) — Inverted Series",
-      "difficulty": "hard",
-      "tags": ["loops", "matrix", "pattern", "spiral"],
-      "estimated_minutes": 22,
-      "svg_type": "spiral_reverse_inverted",
-      "n": 4,
-      "hints": [
-        "First generate the normal reverse spiral (counter-clockwise).",
-        "Then invert values using: new = (n*n + 1) - old.",
-        "Verify that 1 becomes 16 and 16 becomes 1."
-      ],
-      "starter_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\n# TODO:\n# 1) Fill in reverse spiral (counter-clockwise) with 1..n*n\n# 2) Convert values to inverted: v = (n*n + 1) - v\n\nfor row in mat:\n    print(*row)\n",
-      "solution_code": "n = 4\nmat = [[0]*n for _ in range(n)]\n\nnum = 1\ntop, bottom = 0, n-1\nleft, right = 0, n-1\n\nwhile left <= right and top <= bottom:\n    for i in range(top, bottom+1):\n        mat[i][left] = num; num += 1\n    left += 1\n\n    for j in range(left, right+1):\n        mat[bottom][j] = num; num += 1\n    bottom -= 1\n\n    for i in range(bottom, top-1, -1):\n        mat[i][right] = num; num += 1\n    right -= 1\n\n    for j in range(right, left-1, -1):\n        mat[top][j] = num; num += 1\n    top += 1\n\nmx = n*n + 1\nfor i in range(n):\n    for j in range(n):\n        mat[i][j] = mx - mat[i][j]\n\nfor row in mat:\n    print(*row)\n"
+    // Create missing buttons safely (if not present)
+    if (!els.btnHints) {
+      // no-op
+    } else {
+      els.btnHints.addEventListener("click", () => {
+        els.hintsSection.style.display = (els.hintsSection.style.display === "none") ? "block" : "none";
+      });
     }
-  ]
-}
-</script>
 
-<script>
-const $ = (sel) => document.querySelector(sel);
+    // We used IDs btnHints/btnSolution in markup, but they’re inside the card.
+    // Fetch them now that DOM is ready.
+    const btnHints = $("#btnHints");
+    const btnSolution = $("#btnSolution");
 
-const els = {
-  qList: $("#qList"),
-  qSearch: $("#qSearch"),
-  qDifficulty: $("#qDifficulty"),
-  qTag: $("#qTag"),
-  qTitle: $("#qTitle"),
-  qMeta: $("#qMeta"),
-  svgTarget: $("#svgTarget"),
-  qHintsWrap: $("#qHintsWrap"),
-  qHints: $("#qHints"),
-  qSolutionWrap: $("#qSolutionWrap"),
-  qSolution: $("#qSolution"),
-
-  btnReload: $("#btnReload"),
-  btnShare: $("#btnShare"),
-  btnTeacher: $("#btnTeacher"),
-  btnCopyStarter: $("#btnCopyStarter"),
-  btnOpenEditor: $("#btnOpenEditor"),
-  btnCopyQuestionLink: $("#btnCopyQuestionLink"),
-  btnHints: $("#btnHints"),
-  btnSolution: $("#btnSolution"),
-
-  editorFrame: $("#ppEditorFrame"),
-  editorStatus: $("#editorStatus"),
-  toast: $("#toast"),
-};
-
-let DATA = null;
-let QUESTIONS = [];
-let CONFIG = { editor_url: "" };
-let activeId = null;
-let teacherMode = false;
-
-function toast(msg){
-  els.toast.textContent = msg;
-  els.toast.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => els.toast.classList.remove("show"), 1400);
-}
-
-function getQueryParam(name){
-  return new URL(location.href).searchParams.get(name);
-}
-function setQueryParam(name, value){
-  const u = new URL(location.href);
-  if (value == null || value === "") u.searchParams.delete(name);
-  else u.searchParams.set(name, value);
-  history.replaceState({}, "", u.toString());
-}
-function currentShareLink(){
-  const u = new URL(location.href);
-  if(activeId) u.searchParams.set("q", activeId);
-  return u.toString();
-}
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-  }catch{
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try{ document.execCommand("copy"); }catch{}
-    ta.remove();
-  }
-}
-
-function readEmbeddedJSON(){
-  const raw = $("#questions-json")?.textContent?.trim();
-  if(!raw) throw new Error("Missing embedded questions JSON");
-  return JSON.parse(raw);
-}
-
-/* ---------- SVG generator (grid) ---------- */
-function makeGridSVG(matrix, opts = {}){
-  const n = matrix.length;
-  const cell = opts.cell ?? 64;
-  const pad = opts.pad ?? 14;
-  const r = opts.radius ?? 14;
-
-  const w = pad*2 + n*cell;
-  const h = pad*2 + n*cell;
-
-  const maxVal = Math.max(...matrix.flat());
-  const digits = String(maxVal).length;
-  const font = digits <= 2 ? 18 : 16;
-
-  const bg1 = "rgba(255,159,28,0.10)";
-  const bg2 = "rgba(255,255,255,0.75)";
-  const stroke = "rgba(31,35,40,0.18)";
-  const strokeBold = "rgba(255,159,28,0.75)";
-  const text = "#1f2328";
-
-  let cells = "";
-  for(let i=0;i<n;i++){
-    for(let j=0;j<n;j++){
-      const x = pad + j*cell;
-      const y = pad + i*cell;
-      const v = matrix[i][j];
-      cells += `
-        <g>
-          <rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="${r}" ry="${r}"
-                fill="${(i+j)%2===0?bg2:bg1}" stroke="${stroke}" stroke-width="1.2"/>
-          <text x="${x + cell/2}" y="${y + cell/2}"
-                font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial"
-                font-size="${font}" font-weight="800"
-                fill="${text}" text-anchor="middle" dominant-baseline="central">${v}</text>
-        </g>`;
-    }
-  }
-
-  const outer = `
-    <rect x="${pad-6}" y="${pad-6}" width="${n*cell+12}" height="${n*cell+12}"
-          rx="${r+6}" ry="${r+6}" fill="none" stroke="${strokeBold}" stroke-width="2"/>`;
-
-  return `
-  <svg viewBox="0 0 ${w} ${h}" width="100%" height="auto" role="img" aria-label="Target grid">
-    <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="rgba(31,35,40,0.12)"/>
-      </filter>
-    </defs>
-    <rect x="0" y="0" width="${w}" height="${h}" rx="18" ry="18" fill="rgba(255,255,255,0.55)"/>
-    <g filter="url(#shadow)">
-      ${outer}
-      ${cells}
-    </g>
-  </svg>`;
-}
-
-/* ---------- Build target matrices ---------- */
-function buildSpiralDirect(n){
-  const a = Array.from({length:n}, ()=>Array(n).fill(0));
-  let num = 1;
-  let top = 0, bottom = n-1, left = 0, right = n-1;
-
-  while(left <= right && top <= bottom){
-    for(let j=left;j<=right;j++) a[top][j]=num++;
-    top++;
-    for(let i=top;i<=bottom;i++) a[i][right]=num++;
-    right--;
-    for(let j=right;j>=left;j--) a[bottom][j]=num++;
-    bottom--;
-    for(let i=bottom;i>=top;i--) a[i][left]=num++;
-    left++;
-  }
-  return a;
-}
-
-function buildSpiralReverse(n){
-  const a = Array.from({length:n}, ()=>Array(n).fill(0));
-  let num = 1;
-  let top = 0, bottom = n-1, left = 0, right = n-1;
-
-  while(left <= right && top <= bottom){
-    for(let i=top;i<=bottom;i++) a[i][left]=num++;
-    left++;
-    for(let j=left;j<=right;j++) a[bottom][j]=num++;
-    bottom--;
-    for(let i=bottom;i>=top;i--) a[i][right]=num++;
-    right--;
-    for(let j=right;j>=left;j--) a[top][j]=num++;
-    top++;
-  }
-  return a;
-}
-
-function invertMatrix(mat){
-  const n = mat.length;
-  const mx = n*n + 1;
-  return mat.map(row => row.map(v => mx - v));
-}
-
-function getSVGForQuestion(q){
-  const n = q.n || 4;
-  let mat;
-
-  if(q.svg_type === "spiral_direct") mat = buildSpiralDirect(n);
-  else if(q.svg_type === "spiral_reverse") mat = buildSpiralReverse(n);
-  else if(q.svg_type === "spiral_direct_inverted") mat = invertMatrix(buildSpiralDirect(n));
-  else if(q.svg_type === "spiral_reverse_inverted") mat = invertMatrix(buildSpiralReverse(n));
-  else mat = Array.from({length:n}, ()=>Array(n).fill(0));
-
-  return makeGridSVG(mat, { cell: 64, pad: 14, radius: 14 });
-}
-
-/* ---------- UI list ---------- */
-function pill(text){ return `<span class="pill">${escapeHtml(text)}</span>`; }
-function escapeHtml(s){
-  return (s ?? "").toString()
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function buildTagOptions(){
-  const tags = new Set();
-  QUESTIONS.forEach(q => (q.tags || []).forEach(t => tags.add(t)));
-  const all = ["", ...Array.from(tags).sort((a,b)=>a.localeCompare(b))];
-  els.qTag.innerHTML = all.map(t => `<option value="${escapeHtml(t)}">${t ? escapeHtml(t) : "All tags"}</option>`).join("");
-}
-
-function filterQuestions(){
-  const s = (els.qSearch.value || "").trim().toLowerCase();
-  const diff = els.qDifficulty.value;
-  const tag = els.qTag.value;
-
-  return QUESTIONS.filter(q => {
-    if (diff && (q.difficulty || "").toLowerCase() !== diff) return false;
-    if (tag && !(q.tags || []).includes(tag)) return false;
-
-    if (!s) return true;
-    const hay = [q.id, q.title, q.difficulty, (q.tags||[]).join(" ")].join(" ").toLowerCase();
-    return hay.includes(s);
-  });
-}
-
-function renderList(){
-  const list = filterQuestions();
-  if(!list.length){
-    els.qList.innerHTML = "<div class='muted' style='padding:10px'>No questions match.</div>";
-    return;
-  }
-
-  els.qList.innerHTML = list.map(q => {
-    const pills = [
-      pill(q.difficulty || "level"),
-      pill((q.tags || [])[0] || "tag"),
-      pill(q.estimated_minutes ? (q.estimated_minutes + " min") : "time")
-    ].join("");
-    const active = (q.id === activeId) ? "active" : "";
-    return `
-      <div class="q-item ${active}" role="listitem" data-id="${escapeHtml(q.id)}" tabindex="0">
-        <div class="q-title">${escapeHtml(q.title || q.id)}</div>
-        <div class="q-meta">${pills}</div>
-      </div>
-    `;
-  }).join("");
-
-  els.qList.querySelectorAll(".q-item").forEach(item => {
-    item.addEventListener("click", () => selectQuestion(item.dataset.id));
-    item.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" || e.key === " ") selectQuestion(item.dataset.id);
+    btnHints.addEventListener("click", () => {
+      els.hintsSection.style.display = (els.hintsSection.style.display === "none") ? "block" : "none";
     });
-  });
-}
 
-/* ---------- Select question ---------- */
-function selectQuestion(id, opts = { scroll: true }){
-  const q = QUESTIONS.find(x => x.id === id);
-  if(!q) return;
+    btnSolution.addEventListener("click", () => {
+      if(!teacherMode){
+        toast("Turn on Teacher mode to view solution");
+        return;
+      }
+      els.solutionSection.style.display = (els.solutionSection.style.display === "none") ? "block" : "none";
+    });
 
-  activeId = id;
-  setQueryParam("q", id);
-  renderList();
+    $("#btnCopyStarter").addEventListener("click", async () => {
+      const q = QUESTIONS.find(x => x.id === activeId);
+      await copyText(q?.starter_code || "");
+      toast("Starter code copied!");
+    });
 
-  els.qTitle.textContent = q.title || q.id;
-  els.qMeta.textContent = `${(q.difficulty || "level").toUpperCase()} • ${(q.tags || []).join(", ") || "no tags"} • ${q.estimated_minutes ? (q.estimated_minutes + " min") : "time n/a"}`;
+    $("#btnCopyQuestionLink").addEventListener("click", async () => {
+      await copyText(currentShareLink());
+      toast("Question link copied!");
+    });
 
-  els.svgTarget.innerHTML = getSVGForQuestion(q);
+    /* ---------- Boot ---------- */
+    (function boot(){
+      DATA = readEmbeddedJSON();
+      QUESTIONS = Array.isArray(DATA.questions) ? DATA.questions : [];
+      CONFIG = DATA.config || { editor_url: "" };
 
-  els.qHints.innerHTML = "";
-  (q.hints || []).forEach(h => {
-    const li = document.createElement("li");
-    li.textContent = h;
-    els.qHints.appendChild(li);
-  });
+      buildTagOptions();
+      initEditor();
+      renderList();
 
-  els.qSolution.textContent = (q.solution_code || "").trim();
-
-  els.qHintsWrap.style.display = "none";
-  els.qSolutionWrap.style.display = "none";
-
-  els.btnCopyStarter.disabled = false;
-  els.btnCopyQuestionLink.disabled = false;
-  els.btnHints.disabled = !(q.hints && q.hints.length);
-  els.btnSolution.disabled = !(q.solution_code && q.solution_code.trim().length);
-
-  toast("Loaded: " + (q.title || q.id));
-
-  if(opts.scroll){
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-}
-
-/* ---------- Teacher mode ---------- */
-function toggleTeacherMode(){
-  teacherMode = !teacherMode;
-  els.btnTeacher.textContent = teacherMode ? "Teacher: ON" : "Teacher";
-  if(!teacherMode){
-    els.qSolutionWrap.style.display = "none";
-  }
-  toast(teacherMode ? "Teacher mode ON" : "Teacher mode OFF");
-}
-
-/* ---------- Init editor ---------- */
-function initEditor(){
-  const override = getQueryParam("editor");
-  const editorUrl = override || CONFIG.editor_url;
-  els.editorFrame.src = editorUrl;
-  els.btnOpenEditor.href = editorUrl;
-  els.editorStatus.textContent = "iframe: loaded";
-}
-
-/* ---------- Events ---------- */
-els.qSearch.addEventListener("input", renderList);
-els.qDifficulty.addEventListener("change", renderList);
-els.qTag.addEventListener("change", renderList);
-
-els.btnReload.addEventListener("click", () => { boot(); toast("Reloaded"); });
-
-els.btnShare.addEventListener("click", async () => {
-  await copyText(currentShareLink());
-  toast("Share link copied!");
-});
-
-els.btnTeacher.addEventListener("click", toggleTeacherMode);
-
-els.btnHints.addEventListener("click", () => {
-  els.qHintsWrap.style.display = (els.qHintsWrap.style.display === "none") ? "block" : "none";
-});
-
-els.btnSolution.addEventListener("click", () => {
-  if(!teacherMode){
-    toast("Turn on Teacher mode to view solution");
-    return;
-  }
-  els.qSolutionWrap.style.display = (els.qSolutionWrap.style.display === "none") ? "block" : "none";
-});
-
-els.btnCopyStarter.addEventListener("click", async () => {
-  const q = QUESTIONS.find(x => x.id === activeId);
-  await copyText(q?.starter_code || "");
-  toast("Starter code copied!");
-});
-
-els.btnCopyQuestionLink.addEventListener("click", async () => {
-  await copyText(currentShareLink());
-  toast("Question link copied!");
-});
-
-/* ---------- Boot ---------- */
-function boot(){
-  const parsed = readEmbeddedJSON();
-  QUESTIONS = Array.isArray(parsed.questions) ? parsed.questions : [];
-  CONFIG = parsed.config || { editor_url: "" };
-
-  buildTagOptions();
-  initEditor();
-  renderList();
-
-  const fromUrl = getQueryParam("q");
-  if(fromUrl && QUESTIONS.some(q => q.id === fromUrl)){
-    selectQuestion(fromUrl, { scroll:false });
-  }else if(QUESTIONS[0]){
-    selectQuestion(QUESTIONS[0].id, { scroll:false });
-  }
-}
-
-boot();
-</script>
+      const fromUrl = getQueryParam("q");
+      if(fromUrl && QUESTIONS.some(q => q.id === fromUrl)){
+        selectQuestion(fromUrl);
+      }else if(QUESTIONS[0]){
+        selectQuestion(QUESTIONS[0].id);
+      }
+    })();
+  </script>
 </body>
 </html>
