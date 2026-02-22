@@ -69,6 +69,51 @@
     .brand p{ margin:0; font-size:12px; color:var(--muted); }
 
     .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    /* Global search suggest */
+    .gqWrap{ position:relative; }
+    .suggest{
+      position:absolute;
+      top: calc(100% + 8px);
+      left:0;
+      width: min(520px, 78vw);
+      max-height: 320px;
+      overflow:auto;
+      background: rgba(255,255,255,.96);
+      border:1px solid rgba(31,35,40,.14);
+      border-radius: 18px;
+      box-shadow: 0 18px 44px rgba(31,35,40,.18);
+      padding:8px;
+      z-index: 80;
+    }
+    .sItem{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:10px;
+      border-radius: 14px;
+      border:1px solid transparent;
+      cursor:pointer;
+    }
+    .sItem:hover{ background: rgba(255,159,28,.14); }
+    .sItem[aria-selected="true"]{ background: rgba(255,159,28,.18); border-color: rgba(217,119,6,.22); }
+    .sType{
+      font-size:11px;
+      font-weight:900;
+      border:1px solid rgba(31,35,40,.12);
+      background: rgba(255,255,255,.85);
+      border-radius: 999px;
+      padding:4px 8px;
+      white-space:nowrap;
+      flex:0 0 auto;
+      margin-top:2px;
+    }
+    .sMain{ min-width:0; }
+    .sMain b{ display:block; font-size:13px; }
+    .sMain span{ display:block; font-size:12px; color:var(--muted); margin-top:2px; line-height:1.35; }
+    .sFoot{ display:flex; gap:8px; align-items:center; justify-content:space-between; margin-top:6px; }
+    .sHint{ font-size:11px; color:var(--muted); }
+    .kbd{ font-family:var(--mono); font-size:11px; padding:3px 6px; border-radius:10px; border:1px solid rgba(31,35,40,.14); background: rgba(255,255,255,.72); }
     .btn{
       border:1px solid rgba(31,35,40,.12);
       background: rgba(255,255,255,.75);
@@ -346,8 +391,11 @@
         </div>
       </div>
       <div class="actions">
-        <label class="sr" for="gq">Search everywhere</label>
-        <input id="gq" class="input" style="width:min(360px, 55vw); padding:10px 12px;" placeholder="Search everywhere… (places + tours + kathas + rituals)" />
+        <div class="gqWrap" id="gqWrap">
+          <label class="sr" for="gq">Search everywhere</label>
+          <input id="gq" class="input" style="width:min(360px, 55vw); padding:10px 12px;" placeholder="Search everywhere… (places + tours + kathas + rituals)" autocomplete="off" />
+          <div class="suggest" id="gqSuggest" role="listbox" aria-label="Search suggestions" hidden></div>
+        </div>
         <button class="btn" id="btnOpenModules" title="Open modules">✨ Modules</button>
         <button class="btn" id="btnLocate" title="Center map to Varanasi">📍 Center</button>
         <button class="btn" id="btnExport" title="Copy itinerary as text">📋 Copy</button>
@@ -802,10 +850,13 @@
       $("#mMain").addEventListener("click", (e)=>{
         const b = e.target.closest("button");
         if (!b) return;
-        if (b.dataset.act === "open"){
-          closeModal();
-          openTopicModule(b.dataset.id);
-        }
+        if (b.dataset.act !== "open") return;
+
+        const type = b.dataset.type;
+        const id = b.dataset.id;
+        const idx = b.dataset.idx === "" ? null : parseInt(b.dataset.idx, 10);
+
+        openResult({ type, id, idx });
       }, { once:true });
     }
 
@@ -1767,16 +1818,127 @@ https://www.google.com/maps?q=${p.lat},${p.lng}`;
 
     // ---------------- Global search (everywhere) ----------------
     const gq = $("#gq");
+    const gqWrap = $("#gqWrap");
+    const gqSuggest = $("#gqSuggest");
+    let sIdx = -1;
+    let sItems = [];
+    let sT = null;
+
+    function closeSuggest(){
+      if (!gqSuggest) return;
+      gqSuggest.hidden = true;
+      gqSuggest.innerHTML = "";
+      sItems = [];
+      sIdx = -1;
+    }
+
+    function renderSuggest(query){
+      const q = query.trim();
+      if (!q || q.length < 2){
+        closeSuggest();
+        return;
+      }
+      const results = computeGlobalResults(q).slice(0, 10);
+      if (!results.length){
+        gqSuggest.innerHTML = `<div class="sItem" style="cursor:default;"><div class="sMain"><b>No results</b><span>Try a different keyword.</span></div></div>`;
+        gqSuggest.hidden = false;
+        sItems = [];
+        sIdx = -1;
+        return;
+      }
+
+      gqSuggest.innerHTML = `
+        <div class="sFoot">
+          <div class="sHint">Enter: open full results • Click: open item</div>
+          <div class="sHint"><span class="kbd">↑</span> <span class="kbd">↓</span> <span class="kbd">Enter</span> <span class="kbd">Esc</span></div>
+        </div>
+      ` + results.map((r,i)=>`
+        <div class="sItem" role="option" aria-selected="false" data-i="${i}">
+          <div class="sType">${escapeHtml(r.type)}</div>
+          <div class="sMain">
+            <b>${escapeHtml(r.title)}</b>
+            <span>${escapeHtml(r.sub||"")}</span>
+          </div>
+        </div>
+      `).join("");
+
+      gqSuggest.hidden = false;
+      sItems = results;
+      sIdx = -1;
+    }
+
+    function setActiveSuggest(newIdx){
+      const opts = $$(".sItem[role='option']", gqSuggest);
+      opts.forEach(o=>o.setAttribute("aria-selected","false"));
+      if (newIdx >= 0 && newIdx < opts.length){
+        opts[newIdx].setAttribute("aria-selected","true");
+        opts[newIdx].scrollIntoView({ block:"nearest" });
+        sIdx = newIdx;
+      } else {
+        sIdx = -1;
+      }
+    }
+
+    function scheduleSuggest(){
+      if (sT) clearTimeout(sT);
+      sT = setTimeout(()=> renderSuggest(gq.value), 90);
+    }
+
+    gq?.addEventListener("input", ()=> scheduleSuggest());
+
     gq?.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape"){
+        closeSuggest();
+        return;
+      }
+
+      if (!gqSuggest.hidden && (e.key === "ArrowDown" || e.key === "ArrowUp")){
+        e.preventDefault();
+        const max = sItems.length - 1;
+        if (e.key === "ArrowDown") setActiveSuggest(Math.min(max, sIdx + 1));
+        else setActiveSuggest(Math.max(0, sIdx - 1));
+        return;
+      }
+
       if (e.key === "Enter"){
         e.preventDefault();
         const q = gq.value.trim();
         if (!q) return toast("Type something to search");
+
+        // If a suggestion is selected, open it directly.
+        if (!gqSuggest.hidden && sIdx >= 0 && sItems[sIdx]){
+          closeSuggest();
+          openResult(sItems[sIdx]);
+          return;
+        }
+
+        closeSuggest();
         openGlobalSearch(q);
       }
     });
 
-    function openGlobalSearch(query){
+    gqSuggest?.addEventListener("mousedown", (e)=>{
+      const item = e.target.closest(".sItem[role='option']");
+      if (!item) return;
+      const i = parseInt(item.dataset.i, 10);
+      const r = sItems[i];
+      if (!r) return;
+      // prevent input blur closing before click
+      e.preventDefault();
+      closeSuggest();
+      openResult(r);
+    });
+
+    // Close suggestions on outside click / blur (with small delay to allow click)
+    document.addEventListener("mousedown", (e)=>{
+      if (!gqWrap) return;
+      if (gqWrap.contains(e.target)) return;
+      closeSuggest();
+    });
+
+    gq?.addEventListener("blur", ()=> setTimeout(closeSuggest, 120));
+
+    function computeGlobalResults(query){
       const q = query.toLowerCase();
       const results = [];
 
@@ -1829,6 +1991,26 @@ https://www.google.com/maps?q=${p.lat},${p.lng}`;
 
       const scoreType = (t)=>({place:0,tour:1,event:2,ritual:3,katha:4,food:5,shopping:6}[t] ?? 9);
       results.sort((a,b)=> scoreType(a.type)-scoreType(b.type) || a.title.localeCompare(b.title));
+      return results;
+    }
+
+    function openResult(r){
+      if (!r) return;
+      if (r.type === "place"){
+        goMapView();
+        setTimeout(()=> focusPlace(r.id, { openModal:true }), 80);
+        return;
+      }
+      if (r.type === "tour") return (closeModal(), openTopicModule("tour"));
+      if (r.type === "event") return (closeModal(), openTopicModule("festival"));
+      if (r.type === "ritual") return (closeModal(), openTopicModule("ritual"));
+      if (r.type === "food") return (closeModal(), openTopicModule("food"));
+      if (r.type === "shopping") return (closeModal(), openTopicModule("shopping"));
+      if (r.type === "katha") return (closeModal(), openTopicModule("katha", { kathaIndex: r.idx ?? 0 }));
+    }
+
+    function openGlobalSearch(query){
+      const results = computeGlobalResults(query);
 
       const html = `
         <div class="panel">
