@@ -176,7 +176,7 @@
       background: rgba(255,255,255,.45);
     }
     .log{
-      height:220px;
+      height:200px;
       overflow:auto;
       padding:10px 12px;
       border-radius:16px;
@@ -330,6 +330,27 @@
         <div class="k">Distance (approx)</div><div class="v" id="kvDist">0 m</div>
       </div>
 
+      <!-- NEW: Recorded locations select -->
+      <div class="sectionTitle">Recorded locations</div>
+      <div class="two">
+        <div>
+          <label class="k" for="pointSelect">Jump to saved point</label>
+          <select id="pointSelect">
+            <option value="">— No saved points —</option>
+          </select>
+        </div>
+        <div>
+          <label class="k" for="pointRadius">Highlight radius (m)</label>
+          <input id="pointRadius" type="number" min="10" step="10" value="80" />
+        </div>
+      </div>
+      <div class="row">
+        <button id="btnGoPoint" disabled>Go</button>
+        <button id="btnOpenPopup" disabled>Open popup</button>
+        <button id="btnRemovePoint" class="danger" disabled>Remove selected</button>
+      </div>
+      <!-- /NEW -->
+
       <div class="sectionTitle">Log</div>
       <div class="log" id="log" aria-live="polite"></div>
     </section>
@@ -402,6 +423,13 @@
       btnShare: $("#btnShare"),
       btnCopy: $("#btnCopy"),
       btnImport: $("#btnImport"),
+
+      // NEW
+      pointSelect: $("#pointSelect"),
+      pointRadius: $("#pointRadius"),
+      btnGoPoint: $("#btnGoPoint"),
+      btnOpenPopup: $("#btnOpenPopup"),
+      btnRemovePoint: $("#btnRemovePoint"),
     };
 
     const STORAGE_KEY = "pp_route_recorder_v1";
@@ -446,8 +474,10 @@
       const dLon = toRad(b.lng - a.lng);
       const lat1 = toRad(a.lat);
       const lat2 = toRad(b.lat);
-      const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+      const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*cos(lat2)*Math.sin(dLon/2)**2;
       return 2 * R * Math.asin(Math.sqrt(x));
+
+      function cos(x){ return Math.cos(x); }
     }
 
     function routeDistanceM(points){
@@ -520,7 +550,7 @@
      * Map
      ***********************/
     const map = L.map("map", { zoomControl: true });
-    const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
@@ -537,31 +567,114 @@
 
     map.setView([25.3176, 82.9739], 13); // Varanasi-ish default
 
-    function renderRoute(){
-      markersLayer.clearLayers();
+    // NEW: select helpers
+    let highlightCircle = null;
+    let pointMarkers = []; // same index as points
 
+    function buildPointLabel(p, idx){
+      const area = p.area || "—";
+      const ts = p.ts ? new Date(p.ts).toLocaleString() : "";
+      return `${String(idx+1).padStart(2,"0")} • ${area} • ${ts}`;
+    }
+
+    function updatePointSelect(){
       const pts = state.route?.points || [];
-      const latlngs = pts.map(p=>[p.lat, p.lng]);
-      routeLine.setLatLngs(latlngs);
+      const sel = ui.pointSelect;
+
+      const prev = sel.value;
+
+      sel.innerHTML = "";
+      if (!pts.length){
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "— No saved points —";
+        sel.appendChild(opt);
+
+        ui.btnGoPoint.disabled = true;
+        ui.btnOpenPopup.disabled = true;
+        ui.btnRemovePoint.disabled = true;
+        return;
+      }
+
+      const head = document.createElement("option");
+      head.value = "";
+      head.textContent = "Select a saved point…";
+      sel.appendChild(head);
 
       pts.forEach((p, idx)=>{
-        const m = L.marker([p.lat, p.lng]);
-        const ts = new Date(p.ts).toLocaleString();
-        const area = p.area || "—";
-        const acc = isFinite(p.accuracyM) ? `${Math.round(p.accuracyM)} m` : "—";
-        m.bindPopup(
-          `<b>#${idx+1}</b><br/>` +
-          `<span class="mono">${area}</span><br/>` +
-          `${ts}<br/>` +
-          `acc: ${acc}`
-        );
-        markersLayer.addLayer(m);
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = buildPointLabel(p, idx);
+        sel.appendChild(opt);
       });
 
-      ui.kvCount.textContent = String(pts.length);
-      ui.kvDist.textContent = fmtM(routeDistanceM(pts));
-      state.route.updatedAt = nowISO();
-      saveToStorage();
+      if (prev !== "" && Number(prev) < pts.length) sel.value = prev;
+      else sel.value = "";
+
+      const hasSelection = sel.value !== "";
+      ui.btnGoPoint.disabled = !hasSelection;
+      ui.btnOpenPopup.disabled = !hasSelection;
+      ui.btnRemovePoint.disabled = !hasSelection;
+    }
+
+    function ensureHighlight(latlng, radiusM){
+      if (highlightCircle){
+        highlightCircle.setLatLng(latlng);
+        highlightCircle.setRadius(radiusM);
+        return;
+      }
+      highlightCircle = L.circle(latlng, {
+        radius: radiusM,
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.12
+      }).addTo(map);
+    }
+
+    function gotoSelectedPoint(openPopup=false){
+      const idxStr = ui.pointSelect.value;
+      if (!idxStr) return;
+      const idx = Number(idxStr);
+      const p = state.route.points[idx];
+      if (!p) return;
+
+      const latlng = [p.lat, p.lng];
+      map.setView(latlng, Math.max(map.getZoom(), 17), { animate: true });
+
+      const radiusM = Number(ui.pointRadius.value || 80);
+      ensureHighlight(latlng, radiusM);
+
+      if (openPopup && pointMarkers[idx]){
+        pointMarkers[idx].openPopup();
+      }
+    }
+
+    function removeSelectedPoint(){
+      const idxStr = ui.pointSelect.value;
+      if (!idxStr) return;
+      const idx = Number(idxStr);
+
+      state.route.points.splice(idx, 1);
+
+      // Recompute lastSaved from last point
+      const last = state.route.points[state.route.points.length - 1];
+      if (last){
+        state.lastSaved = {
+          ts: Date.parse(last.ts) || Date.now(),
+          lat: last.lat,
+          lng: last.lng,
+          area: last.area
+        };
+        ui.kvArea.textContent = last.area || "—";
+      } else {
+        state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+        ui.kvArea.textContent = "—";
+      }
+
+      renderRoute();
+      updatePointSelect();
+      toast("Removed");
+      log(`Removed point #${idx+1}`);
     }
 
     function fitRoute(){
@@ -581,15 +694,14 @@
       if (!address) return "";
       const parts = [];
       if (mode === "full"){
-        // handled elsewhere using display_name
         return "";
       }
 
       if (mode === "city"){
         const city = address.city || address.town || address.village || address.municipality;
-        const state = address.state || address.region;
+        const stateName = address.state || address.region;
         if (city) parts.push(city);
-        if (state) parts.push(state);
+        if (stateName) parts.push(stateName);
         return parts.filter(Boolean).join(", ");
       }
 
@@ -606,13 +718,11 @@
     }
 
     async function reverseGeocode(lat, lng){
-      // Throttle: avoid spamming. Also avoid geocoding tiny jitter.
       const minGeoIntervalMs = 1500;
       const t = Date.now();
       if (state.geocodeInFlight) return null;
       if (t - state.lastGeo.ts < minGeoIntervalMs) return null;
 
-      // also avoid calling if position hasn't moved much since last geocode
       if (state.lastGeo.lat != null){
         const moved = haversineM({lat: state.lastGeo.lat, lng: state.lastGeo.lng}, {lat, lng});
         if (moved < 20) return null;
@@ -622,7 +732,6 @@
       ui.geocodeState.textContent = "fetching…";
 
       try{
-        // Nominatim usage policy: provide a valid User-Agent + (optionally) email param
         const url = new URL("https://nominatim.openstreetmap.org/reverse");
         url.searchParams.set("format","jsonv2");
         url.searchParams.set("lat", String(lat));
@@ -634,6 +743,7 @@
           method: "GET",
           headers: {
             "Accept": "application/json",
+            // IMPORTANT: put your own contact/email in User-Agent for real deployments
             "User-Agent": "PP-Route-Recorder/1.0 (Educational use; contact: you@example.com)"
           }
         });
@@ -666,14 +776,12 @@
      * Tracking + Save-on-area-change logic
      ***********************/
     function canSavePoint(pos, areaLabel){
-      const pts = state.route.points;
       const minMoveM = Number(ui.minMove.value || 0);
       const minTimeS = Number(ui.minTime.value || 0);
 
       const last = state.lastSaved;
       const nowTs = pos.ts;
 
-      // first ever
       if (last.lat == null || last.lng == null) return true;
 
       const moved = haversineM({lat:last.lat, lng:last.lng}, {lat:pos.lat, lng:pos.lng});
@@ -682,10 +790,9 @@
       if (moved < minMoveM) return false;
       if (dt < minTimeS) return false;
 
-      // only store when area changed
       const prevArea = normalizeArea(last.area);
       const curArea = normalizeArea(areaLabel);
-      if (!curArea) return false;           // no area yet
+      if (!curArea) return false;
       if (curArea === prevArea) return false;
 
       return true;
@@ -702,16 +809,13 @@
       ui.kvAcc.textContent = isFinite(accuracyM) ? `${Math.round(accuracyM)} m` : "—";
       ui.kvSpeed.textContent = fmtSpeed(speedMps);
 
-      // update current marker
       currentMarker.setLatLng([lat,lng]);
 
-      // center gently when first start
       if (!state.lastPosition){
         map.setView([lat,lng], 17);
       }
       state.lastPosition = {lat,lng,ts: Date.now()};
 
-      // reverse geocode (throttled)
       const geo = await reverseGeocode(lat, lng);
       if (geo && geo.area){
         ui.kvArea.textContent = geo.area;
@@ -723,7 +827,6 @@
       const pos = { lat, lng, ts: Date.now(), accuracyM, speedMps };
       if (!area) return;
 
-      // Save point if area changed + min move/time passed
       if (canSavePoint(pos, area)){
         const pt = {
           lat, lng,
@@ -738,6 +841,12 @@
         state.lastSaved = { ts: pos.ts, lat, lng, area };
         log(`Saved point #${state.route.points.length}: ${area}`);
         renderRoute();
+
+        // Optional: auto-select last saved point
+        ui.pointSelect.value = String(state.route.points.length - 1);
+        ui.btnGoPoint.disabled = false;
+        ui.btnOpenPopup.disabled = false;
+        ui.btnRemovePoint.disabled = false;
       }
     }
 
@@ -759,7 +868,6 @@
       }
       if (state.tracking) return;
 
-      // update settings into route
       state.route.settings = {
         minMoveM: Number(ui.minMove.value || 0),
         minTimeS: Number(ui.minTime.value || 0),
@@ -790,15 +898,47 @@
 
     function stopTracking(){
       if (!state.tracking) return;
-      try{
-        navigator.geolocation.clearWatch(state.watchId);
-      }catch(_){}
+      try{ navigator.geolocation.clearWatch(state.watchId); }catch(_){}
       state.watchId = null;
       state.tracking = false;
       setStatus(false, "Idle");
       ui.btnStart.disabled = false;
       ui.btnStop.disabled = true;
       log("Tracking stopped.");
+    }
+
+    /***********************
+     * Render Route (+ select)
+     ***********************/
+    function renderRoute(){
+      markersLayer.clearLayers();
+      pointMarkers = [];
+
+      const pts = state.route?.points || [];
+      const latlngs = pts.map(p=>[p.lat, p.lng]);
+      routeLine.setLatLngs(latlngs);
+
+      pts.forEach((p, idx)=>{
+        const m = L.marker([p.lat, p.lng]);
+        const ts = new Date(p.ts).toLocaleString();
+        const area = p.area || "—";
+        const acc = isFinite(p.accuracyM) ? `${Math.round(p.accuracyM)} m` : "—";
+        m.bindPopup(
+          `<b>#${idx+1}</b><br/>` +
+          `<span class="mono">${area}</span><br/>` +
+          `${ts}<br/>` +
+          `acc: ${acc}`
+        );
+        markersLayer.addLayer(m);
+        pointMarkers[idx] = m;
+      });
+
+      ui.kvCount.textContent = String(pts.length);
+      ui.kvDist.textContent = fmtM(routeDistanceM(pts));
+      state.route.updatedAt = nowISO();
+      saveToStorage();
+
+      updatePointSelect();
     }
 
     /***********************
@@ -837,7 +977,6 @@
         await navigator.clipboard.writeText(text);
         toast("Copied JSON");
       }catch(e){
-        // fallback
         const ta = document.createElement("textarea");
         ta.value = text;
         document.body.appendChild(ta);
@@ -852,7 +991,6 @@
       const data = getExportJSON();
       const jsonText = JSON.stringify(data, null, 2);
 
-      // Prefer native share with a file if supported
       const fileName = `${(data.name || "route").replace(/[^\w\-]+/g, "_").slice(0,60) || "route"}.json`;
       const file = new File([jsonText], fileName, { type: "application/json" });
 
@@ -866,11 +1004,8 @@
           toast("Shared");
           return;
         }
-      }catch(e){
-        // continue to fallback
-      }
+      }catch(e){}
 
-      // Fallback: share text
       try{
         if (navigator.share){
           await navigator.share({
@@ -880,11 +1015,8 @@
           toast("Shared (text)");
           return;
         }
-      }catch(e){
-        // ignore
-      }
+      }catch(e){}
 
-      // Final fallback: copy
       await copyJSON();
       log("Share not available. JSON copied instead.");
     }
@@ -905,12 +1037,12 @@
             return;
           }
           state.route = obj;
+
           ui.routeName.value = obj.name || "";
           ui.minMove.value = obj.settings?.minMoveM ?? ui.minMove.value;
           ui.minTime.value = obj.settings?.minTimeS ?? ui.minTime.value;
           ui.areaMode.value = obj.settings?.areaMode ?? ui.areaMode.value;
 
-          // reset "lastSaved" based on last point
           const last = obj.points[obj.points.length - 1];
           if (last){
             state.lastSaved = {
@@ -922,6 +1054,7 @@
             ui.kvArea.textContent = last.area || "—";
           } else {
             state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+            ui.kvArea.textContent = "—";
           }
 
           saveToStorage();
@@ -948,6 +1081,12 @@
       ui.kvArea.textContent = "—";
       logEl.textContent = "";
       saveToStorage();
+
+      if (highlightCircle){
+        try{ map.removeLayer(highlightCircle); }catch(_){}
+        highlightCircle = null;
+      }
+
       renderRoute();
       toast("Cleared");
       log("Route cleared.");
@@ -965,7 +1104,7 @@
     ui.btnShare.addEventListener("click", shareRoute);
     ui.btnImport.addEventListener("click", importJSON);
 
-    // If settings change, update route metadata (not points)
+    // settings changes -> update route meta
     [ui.routeName, ui.minMove, ui.minTime, ui.areaMode].forEach(el=>{
       el.addEventListener("change", ()=>{
         if (!state.route) return;
@@ -980,7 +1119,20 @@
       });
     });
 
-    // Init
+    // NEW: select events
+    ui.pointSelect.addEventListener("change", ()=>{
+      const has = ui.pointSelect.value !== "";
+      ui.btnGoPoint.disabled = !has;
+      ui.btnOpenPopup.disabled = !has;
+      ui.btnRemovePoint.disabled = !has;
+    });
+    ui.btnGoPoint.addEventListener("click", ()=>gotoSelectedPoint(false));
+    ui.btnOpenPopup.addEventListener("click", ()=>gotoSelectedPoint(true));
+    ui.btnRemovePoint.addEventListener("click", removeSelectedPoint);
+
+    /***********************
+     * Init
+     ***********************/
     (function init(){
       const loaded = loadFromStorage();
       state.route = loaded || newRoute();
@@ -992,7 +1144,6 @@
         ui.areaMode.value = state.route.settings.areaMode ?? ui.areaMode.value;
       }
 
-      // derive lastSaved from last point
       const last = state.route.points[state.route.points.length - 1];
       if (last){
         state.lastSaved = {
@@ -1004,6 +1155,7 @@
         ui.kvArea.textContent = last.area || "—";
       } else {
         state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+        ui.kvArea.textContent = "—";
       }
 
       renderRoute();
@@ -1011,13 +1163,6 @@
       setStatus(false, "Idle");
       log(`Loaded route: ${state.route.points.length} saved point(s).`);
     })();
-
-    // Stop watch if tab is hidden (optional safety)
-    document.addEventListener("visibilitychange", ()=>{
-      if (document.hidden && state.tracking){
-        log("Tab hidden — continuing tracking (browser dependent).");
-      }
-    });
 
     // Expose minimal debug
     window.PPRoute = {
