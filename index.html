@@ -808,69 +808,14 @@
     }
 
     function applyTopics(){
-      // Reset filters
-      state.q = "";
-      state.cat.clear();
-      state.sort = "pop";
-      state.time = "any";
-      $("#q").value = "";
-      $("#sort").value = "pop";
-      $("#time").value = "any";
-
-      const timeVotes = new Set();
-      const addCats = (arr)=> arr.forEach(x=> state.cat.add(x));
-
-      for (const t of state.topics){
-        if (t === "tour"){
-          addCats(["ghat","temple","heritage","museum"]);
-          timeVotes.add("any");
-        }
-        if (t === "festival"){
-          addCats(["ghat","heritage"]);
-          timeVotes.add("evening");
-        }
-        if (t === "ritual"){
-          addCats(["temple","ghat"]);
-          timeVotes.add("evening");
-        }
-        if (t === "katha"){
-          addCats(["heritage","museum","ghat"]);
-          timeVotes.add("any");
-        }
-        if (t === "food"){
-          addCats(["food"]);
-          timeVotes.add("morning");
-        }
-        if (t === "shopping"){
-          addCats(["shopping","heritage"]);
-          timeVotes.add("any");
-        }
-      }
-
-      // Decide time filter: if multiple different (morning+evening), keep 'any'
-      if (timeVotes.size === 1){
-        const only = Array.from(timeVotes)[0];
-        if (only !== "any"){
-          state.time = only;
-          $("#time").value = only;
-        }
-      }
-
-      syncChips();
-      render();
-
-      // Reveal main app + scroll to results
-      $("#start").style.display = "none";
-      $("#mainApp").hidden = false;
-      document.querySelector(".hero").scrollIntoView({ behavior:"smooth", block:"start" });
-
-      const msg = state.topics.size === 1 ? "Applied your choice" : "Applied your choices";
-      toast(msg);
+      // Kept for future: topic-to-filter quick apply
+      // (Now we open modules first.)
     }
 
     btnStartGo?.addEventListener("click", () => {
       if (!state.topics.size) return;
-      applyTopics();
+      const chosen = Array.from(state.topics)[0];
+      openTopicModule(chosen);
     });
 
     btnSkipStart?.addEventListener("click", () => {
