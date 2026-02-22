@@ -1,4 +1,4 @@
-   <!doctype html>
+<!doctype html>
 
 <html lang="en">
 <head>
@@ -396,6 +396,7 @@
           <input id="gq" class="input" style="width:min(360px, 55vw); padding:10px 12px;" placeholder="Search everywhere… (places + tours + kathas + rituals)" autocomplete="off" />
           <div class="suggest" id="gqSuggest" role="listbox" aria-label="Search suggestions" hidden></div>
         </div>
+        <button class="btn" id="btnGlobalSearch" title="Search everywhere (opens full results)">🔎 Search</button>
         <button class="btn" id="btnOpenModules" title="Open modules">✨ Modules</button>
         <button class="btn" id="btnLocate" title="Center map to Varanasi">📍 Center</button>
         <button class="btn" id="btnExport" title="Copy itinerary as text">📋 Copy</button>
@@ -436,6 +437,7 @@
           <button class="btn primary" id="btnOpenItin">🧾 Open Itinerary</button>
           <button class="btn" id="btnRandom">🎲 Surprise me</button>
           <button class="btn" id="btnClearFilters">🧹 Clear Filters</button>
+          <button class="btn" id="btnGlobalSearch2">🔎 Search</button>
           <button class="btn" id="btnOpenModules2">✨ Modules</button>
         </div>
       </div>
@@ -2008,6 +2010,16 @@ https://www.google.com/maps?q=${p.lat},${p.lng}`;
       if (r.type === "shopping") return (closeModal(), openTopicModule("shopping"));
       if (r.type === "katha") return (closeModal(), openTopicModule("katha", { kathaIndex: r.idx ?? 0 }));
     }
+
+    // Quick-open full global search modal (without pressing Enter)
+    $("#btnGlobalSearch")?.addEventListener("click", ()=>{
+      const q = $("#gq")?.value?.trim() || "";
+      openGlobalSearch(q || "aarti");
+    });
+    $("#btnGlobalSearch2")?.addEventListener("click", ()=>{
+      const q = $("#q")?.value?.trim() || $("#gq")?.value?.trim() || "";
+      openGlobalSearch(q || "aarti");
+    });
 
     function openGlobalSearch(query){
       const results = computeGlobalResults(query);
