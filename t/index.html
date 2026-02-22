@@ -1,603 +1,1030 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Programmer’s Picnic — Video Intro</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Route Recorder — Area Change Tracker (JSON)</title>
+  <meta name="description" content="Record live location, store points when area name changes, render route on a map, export/share JSON." />
+  <meta name="theme-color" content="#d97706" />
 
-<meta name="theme-color" content="#d97706">
-<meta name="robots" content="noindex,nofollow">
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
 
-<style>
-:root{
-  --bg:#fff7e6;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --brand:#d97706;
-  --brand2:#f59e0b;
-  --border:#eadcc5;
-  --shadow:0 18px 40px rgba(31,41,55,.14);
-  --r:20px;
-  --dark:#0b1220;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  background:
-    radial-gradient(1000px 500px at 10% 0%, rgba(245,158,11,.25), transparent 60%),
-    radial-gradient(800px 500px at 90% 10%, rgba(217,119,6,.18), transparent 60%),
-    var(--bg);
-  display:grid;
-  place-items:center;
-  color:var(--ink);
-  padding:18px;
-}
+  <style>
+    :root{
+      --bg:#fff7e6;
+      --panel:rgba(255,255,255,.78);
+      --ink:#1f2328;
+      --muted:#5b6570;
+      --line:rgba(31,35,40,.12);
+      --saffron:#ff9f1c;
+      --saffron2:#ffb74d;
+      --shadow:0 14px 40px rgba(31,35,40,.12);
+      --radius:18px;
+      --mono: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(255,159,28,.22), transparent 60%),
+        radial-gradient(900px 500px at 80% 0%, rgba(255,183,77,.20), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+    }
+    a{color:inherit}
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px;
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+    header.card{
+      grid-column:1 / -1;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+      box-shadow: 0 10px 24px rgba(255,159,28,.25);
+    }
+    h1{
+      font-size:16px;
+      margin:0;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:2px 0 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill{
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.6);
+      display:flex; gap:8px; align-items:center;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:#b42318;
+      box-shadow: 0 0 0 4px rgba(180,35,24,.12);
+    }
+    .dot.on{
+      background:#027a48;
+      box-shadow: 0 0 0 4px rgba(2,122,72,.12);
+    }
 
-.card{
-  width:min(980px,94vw);
-  background:rgba(255,255,255,.9);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  box-shadow:var(--shadow);
-  padding:26px 26px 22px;
-}
+    .left{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .sectionTitle{
+      font-size:13px;
+      font-weight:700;
+      margin:2px 0 0;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    button{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.72);
+      color:var(--ink);
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow: 0 8px 18px rgba(31,35,40,.08);
+    }
+    button:hover{transform: translateY(-1px)}
+    button:active{transform: translateY(0px)}
+    button.primary{
+      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+      border-color: rgba(255,159,28,.35);
+    }
+    button.danger{
+      background: rgba(180,35,24,.08);
+      border-color: rgba(180,35,24,.18);
+      color:#7a271a;
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
 
-/* top header */
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:14px;
-}
-.logo{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
-  display:grid;
-  place-items:center;
-  color:#fff;
-  font-weight:900;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
-}
-.brand h1{
-  margin:0;
-  font-size:18px;
-  line-height:1.2;
-}
-.brand .sub{
-  font-size:13px;
-  color:var(--muted);
-}
+    .kv{
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap:8px 10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.55);
+    }
+    .k{color:var(--muted); font-size:12px}
+    .v{font-size:12px; font-family:var(--mono)}
+    .mono{font-family:var(--mono)}
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px dashed rgba(31,35,40,.18);
+      background: rgba(255,255,255,.45);
+    }
+    .log{
+      height:220px;
+      overflow:auto;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.55);
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.45;
+      white-space:pre-wrap;
+    }
 
-.kicker{
-  display:inline-block;
-  margin-bottom:10px;
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:800;
-  background:rgba(245,158,11,.18);
-  border:1px solid rgba(245,158,11,.35);
-}
+    .mapCard{padding:0}
+    #map{height: calc(100vh - 140px); min-height:520px;}
+    @media (max-width: 980px){
+      #map{height: 62vh; min-height:460px;}
+    }
 
-h2{
-  margin:8px 0 6px;
-  font-size:26px;
-  line-height:1.15;
-}
-.desc{
-  color:var(--muted);
-  line-height:1.55;
-  margin-bottom:14px;
-}
-
-.agenda{
-  margin:12px 0 14px;
-  padding:14px 16px;
-  border-radius:16px;
-  border:1px dashed rgba(217,119,6,.45);
-  background:rgba(255,247,230,.8);
-}
-.agenda h3{
-  margin:0 0 8px;
-  font-size:14px;
-}
-.agenda ul{
-  margin:0;
-  padding-left:18px;
-  line-height:1.6;
-  font-size:14px;
-}
-
-.grid2{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:14px;
-  align-items:start;
-  margin-top:14px;
-}
-@media (max-width: 920px){
-  .grid2{grid-template-columns:1fr}
-}
-
-.footer{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:14px;
-}
-
-.cta{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-.btn{
-  padding:10px 14px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  font-weight:800;
-  font-size:14px;
-  cursor:pointer;
-}
-.btn.primary{
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
-  color:#fff;
-  border:0;
-}
-.small{
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* ===== Carousel (buttons only) ===== */
-.carousel{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:rgba(255,255,255,.78);
-  box-shadow:0 12px 26px rgba(31,41,55,.10);
-  overflow:hidden;
-}
-.carouselHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:12px 12px;
-  background:rgba(255,247,230,.8);
-  border-bottom:1px solid var(--border);
-}
-.carouselTitle{
-  font-weight:900;
-  font-size:13px;
-}
-.carouselNav{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.navBtn{
-  width:42px;
-  height:34px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow:0 10px 20px rgba(31,41,55,.08);
-}
-.navBtn:active{transform:translateY(1px)}
-.navBtn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-  box-shadow:none;
-}
-.counter{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:800;
-  min-width:72px;
-  text-align:center;
-}
-
-/* slide area */
-.slide{
-  position:relative;
-  width:100%;
-  aspect-ratio: 16/9;
-  background: radial-gradient(900px 420px at 20% 10%, rgba(245,158,11,.20), transparent 60%), #0b1220;
-}
-.slide img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  user-select:none;
-  pointer-events:none;
-}
-.slideOverlay{
-  position:absolute;
-  left:12px;
-  right:12px;
-  bottom:12px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:12px;
-}
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(0,0,0,.55);
-  color:#fff;
-  font-weight:900;
-  font-size:12px;
-}
-.openLink{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.10);
-  color:#fff;
-  font-weight:900;
-  font-size:12px;
-  text-decoration:none;
-}
-.openLink:hover{background:rgba(255,255,255,.16)}
-
-/* ===== Embeds panel ===== */
-.tools{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:rgba(255,255,255,.78);
-  box-shadow:0 12px 26px rgba(31,41,55,.10);
-  overflow:hidden;
-}
-.toolsHead{
-  padding:12px 12px;
-  background:rgba(255,247,230,.8);
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.toolTabs{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.tab{
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:#fff;
-  font-weight:900;
-  font-size:12px;
-  cursor:pointer;
-}
-.tab.active{
-  border-color: rgba(217,119,6,.55);
-  background: rgba(245,158,11,.18);
-}
-.frameWrap{
-  width:100%;
-  height: 520px;
-  background:#000;
-}
-@media (max-width: 920px){
-  .frameWrap{height: 560px}
-}
-.frameWrap iframe{
-  width:100%;
-  height:100%;
-  border:0;
-  background:#000;
-}
-.note{
-  padding:10px 12px;
-  font-size:12px;
-  color:rgba(31,41,55,.78);
-  border-top:1px solid var(--border);
-  background:rgba(255,246,204,.85);
-}
-
-/* --- reduce motion (optional) --- */
-@media (prefers-reduced-motion: reduce){
-  *{scroll-behavior:auto}
-}
-</style>
+    .footerBar{
+      padding:12px 14px;
+      border-top:1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .small{
+      font-size:12px; color:var(--muted);
+    }
+    input[type="text"], input[type="number"], select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      outline:none;
+      font-size:13px;
+    }
+    .two{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--line); background: rgba(255,255,255,.6);
+      font-size:12px;
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      background: rgba(31,35,40,.92);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      max-width: calc(100vw - 28px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+    .nowrap{white-space:nowrap}
+  </style>
 </head>
 
 <body>
-
-<div class="card">
-
-  <!-- Brand -->
-  <div class="brand">
-    <div class="logo">&lt;/&gt;</div>
-    <div>
-      <h1>Programmer’s Picnic</h1>
-      <div class="sub">Learn • Practice • Build</div>
+  <header class="card">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>Route Recorder — Store on Area Change (JSON)</h1>
+        <div class="sub">Live GPS → reverse geocode area name → save point when the area changes → map route → download/share.</div>
+      </div>
     </div>
-  </div>
+    <div class="pill" title="Tracking status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Idle</span>
+    </div>
+  </header>
 
-  <!-- Video metadata (DUMMY – change per video) -->
-  <div class="kicker">🆕 New Video</div>
+  <main class="wrap">
+    <section class="card left">
+      <div class="sectionTitle">Controls</div>
 
-  <h2>
-    Install Python + VS Code + Print Hello World
-  </h2>
+      <div class="grid">
+        <button class="primary" id="btnStart">Start tracking</button>
+        <button id="btnStop" disabled>Stop</button>
 
-  <div class="desc">
-    A beginner-friendly session to correctly install Python, set up VS Code,
-    and run your first program without confusion.
-  </div>
+        <button id="btnFit" title="Fit route to map">Fit route</button>
+        <button class="danger" id="btnClear" title="Clear saved route">Clear</button>
+      </div>
 
-  <!-- Agenda -->
-  <div class="agenda">
-    <h3>Today’s Agenda</h3>
-    <ul>
-      <li>Install Python properly</li>
-      <li>Set up VS Code and connect it with Python</li>
-      <li>Write and run the first <b>Hello World</b> program</li>
-    </ul>
-  </div>
+      <div class="sectionTitle">Export / Share</div>
+      <div class="grid">
+        <button id="btnDownload">Download JSON</button>
+        <button id="btnShare">Share route</button>
+        <button id="btnCopy">Copy JSON</button>
+        <button id="btnImport">Import JSON</button>
+      </div>
 
-  <!-- Carousel + Embeds -->
-  <div class="grid2">
-
-    <!-- Image Carousel (ONLY <-- and -->) -->
-    <section class="carousel" aria-label="Image carousel">
-      <div class="carouselHead">
-        <div class="carouselTitle">📷 Highlights Carousel</div>
-        <div class="carouselNav">
-          <button class="navBtn" id="prevBtn" aria-label="Previous slide">&lt;--</button>
-          <div class="counter" id="counter">1 / 3</div>
-          <button class="navBtn" id="nextBtn" aria-label="Next slide">--&gt;</button>
+      <div class="sectionTitle">Settings</div>
+      <div class="two">
+        <div>
+          <label class="k" for="routeName">Route name</label>
+          <input id="routeName" type="text" placeholder="e.g., Varanasi Walk (Feb 22)" />
+        </div>
+        <div>
+          <label class="k" for="minMove">Min move (meters)</label>
+          <input id="minMove" type="number" min="0" step="1" value="25" />
         </div>
       </div>
 
-      <div class="slide">
-        <img id="slideImg" alt="Carousel image">
-        <div class="slideOverlay">
-          <div class="badge" id="slideLabel">1) Python Install</div>
-          <a class="openLink" id="slideOpen" href="#" target="_blank" rel="noopener">Open ↗</a>
+      <div class="two">
+        <div>
+          <label class="k" for="minTime">Min time (seconds)</label>
+          <input id="minTime" type="number" min="0" step="1" value="12" />
+        </div>
+        <div>
+          <label class="k" for="areaMode">Area label</label>
+          <select id="areaMode">
+            <option value="neighborhood">Neighborhood/Suburb → City</option>
+            <option value="city">City → State</option>
+            <option value="full">Full display name</option>
+          </select>
         </div>
       </div>
 
-      <div class="note">
-        Navigation is <b>strictly</b> via <b>&lt;--</b> and <b>--&gt;</b> buttons (no swipe / no auto-play).
+      <div class="hint">
+        <b>Note:</b> This uses your browser’s GPS (works best on mobile) and OpenStreetMap’s Nominatim reverse
+        geocoding. For best results, run this page on <b>HTTPS</b> (or localhost). Reverse geocoding is throttled.
       </div>
+
+      <div class="sectionTitle">Live status</div>
+      <div class="kv">
+        <div class="k">Current lat,lng</div><div class="v" id="kvLatLng">—</div>
+        <div class="k">Accuracy</div><div class="v" id="kvAcc">—</div>
+        <div class="k">Speed</div><div class="v" id="kvSpeed">—</div>
+        <div class="k">Area</div><div class="v" id="kvArea">—</div>
+        <div class="k">Saved points</div><div class="v" id="kvCount">0</div>
+        <div class="k">Distance (approx)</div><div class="v" id="kvDist">0 m</div>
+      </div>
+
+      <div class="sectionTitle">Log</div>
+      <div class="log" id="log" aria-live="polite"></div>
     </section>
 
-    <!-- Embedded Tools (3 iframes with tabs) -->
-    <section class="tools" aria-label="Embedded tools">
-      <div class="toolsHead">
-        <div style="font-weight:900">🧰 Practice Tools (Embedded)</div>
-        <div class="toolTabs" id="tabs">
-          <button class="tab active" data-tool="whiteboard">Whiteboard</button>
-          <button class="tab" data-tool="js">JavaScript Editor</button>
-          <button class="tab" data-tool="py">Python Starter (Teacher)</button>
+    <section class="card mapCard">
+      <div id="map" role="application" aria-label="Route map"></div>
+      <div class="footerBar">
+        <div class="small">
+          <span class="badge"><span class="nowrap">Storage:</span> <span id="storageState">local</span></span>
+          <span class="badge"><span class="nowrap">Geocode:</span> <span id="geocodeState">ready</span></span>
+        </div>
+        <div class="small">
+          Tip: points are saved only when <b>area name changes</b> (and you moved enough / enough time passed).
         </div>
       </div>
-
-      <div class="frameWrap">
-        <iframe
-          id="toolFrame"
-          title="Programmer’s Picnic Tool"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allow="fullscreen; clipboard-read; clipboard-write; autoplay"
-        ></iframe>
-      </div>
-
-      <div class="note" id="toolNote">
-        Tip: If an embed refuses to load due to website iframe policy, use the “Open ↗” button on the carousel slide or open the tool in a new tab.
-      </div>
     </section>
+  </main>
 
-  </div>
+  <div class="toast" id="toast"></div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <div class="small">
-      🎯 Level: Beginner &nbsp; | &nbsp; ⏱ Duration: ~9 minutes
-    </div>
+  <!-- Leaflet -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
 
-    <div class="cta">
-      <div class="small">Subscribe for upcoming classes</div>
-      <button class="btn primary" type="button" id="subBtn">Subscribe 🔔</button>
-    </div>
-  </div>
+  <script>
+    /***********************
+     * Route JSON Structure
+     ***********************
+     * {
+     *   "schema": "pp.route.v1",
+     *   "routeId": "uuid",
+     *   "name": "Route name",
+     *   "createdAt": "ISO",
+     *   "updatedAt": "ISO",
+     *   "source": { "app": "Route Recorder", "geocoder": "Nominatim" },
+     *   "settings": { minMoveM, minTimeS, areaMode },
+     *   "points": [
+     *     { lat, lng, ts, accuracyM, speedMps, area, rawAddress, note }
+     *   ]
+     * }
+     */
 
-</div>
+    const $ = (s) => document.querySelector(s);
+    const logEl = $("#log");
+    const toastEl = $("#toast");
 
-<script>
-/* =========================
-   CONFIG: Carousel Slides
-   Replace images if you want.
-   ========================= */
-const SLIDES = [
-  {
-    label: "1) Whiteboard Practice",
-    // light inline SVG as data URL (so no external files needed)
-    img: svgDataUrl("Whiteboard", "Sketch ideas, diagrams, flows"),
-    link: "https://programmer-s-picnic.github.io/lesson-viewer/whiteboard/"
-  },
-  {
-    label: "2) JavaScript Editor",
-    img: svgDataUrl("JavaScript Editor", "Run & test JS in-browser"),
-    link: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-  },
-  {
-    label: "3) Python Starter (Teacher Mode)",
-    img: svgDataUrl("Python Starter", "Teacher mode: tmode=1"),
-    link: "https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1"
-  }
-];
+    const ui = {
+      statusDot: $("#statusDot"),
+      statusText: $("#statusText"),
+      kvLatLng: $("#kvLatLng"),
+      kvAcc: $("#kvAcc"),
+      kvSpeed: $("#kvSpeed"),
+      kvArea: $("#kvArea"),
+      kvCount: $("#kvCount"),
+      kvDist: $("#kvDist"),
+      storageState: $("#storageState"),
+      geocodeState: $("#geocodeState"),
+      routeName: $("#routeName"),
+      minMove: $("#minMove"),
+      minTime: $("#minTime"),
+      areaMode: $("#areaMode"),
+      btnStart: $("#btnStart"),
+      btnStop: $("#btnStop"),
+      btnClear: $("#btnClear"),
+      btnFit: $("#btnFit"),
+      btnDownload: $("#btnDownload"),
+      btnShare: $("#btnShare"),
+      btnCopy: $("#btnCopy"),
+      btnImport: $("#btnImport"),
+    };
 
-/* =========================
-   CONFIG: Embedded Tools
-   ========================= */
-const TOOLS = {
-  whiteboard: {
-    title: "Whiteboard",
-    url: "https://programmer-s-picnic.github.io/lesson-viewer/whiteboard/",
-    note: "Use the whiteboard to explain steps visually: install → VS Code → run Hello World."
-  },
-  js: {
-    title: "JavaScript Editor",
-    url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/",
-    note: "Use JS editor to teach console basics and simple scripting alongside Python learning."
-  },
-  py: {
-    title: "Python Starter (Teacher Mode)",
-    url: "https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=1",
-    note: "Teacher mode enabled (tmode=1). Use this for live demos and guided practice."
-  }
-};
+    const STORAGE_KEY = "pp_route_recorder_v1";
+    const SCHEMA = "pp.route.v1";
 
-/* =========================
-   Carousel Logic (buttons only)
-   ========================= */
-let idx = 0;
-const imgEl = document.getElementById("slideImg");
-const labelEl = document.getElementById("slideLabel");
-const openEl = document.getElementById("slideOpen");
-const counterEl = document.getElementById("counter");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
+    const state = {
+      watchId: null,
+      tracking: false,
+      route: null,
+      lastGeo: { ts: 0, lat: null, lng: null, area: null },
+      lastSaved: { ts: 0, lat: null, lng: null, area: null },
+      geocodeInFlight: false,
+      lastPosition: null
+    };
 
-function renderSlide(){
-  const s = SLIDES[idx];
-  imgEl.src = s.img;
-  imgEl.alt = s.label;
-  labelEl.textContent = s.label;
-  openEl.href = s.link;
-  counterEl.textContent = `${idx+1} / ${SLIDES.length}`;
+    function nowISO(){ return new Date().toISOString(); }
+    function uid(){
+      // simple UUID-ish
+      return "xxxx-xxxx-4xxx-yxxx-xxxxxx".replace(/[xy]/g, c=>{
+        const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15);
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
 
-  // strict nav: buttons only; also disable at ends (optional but strict)
-  prevBtn.disabled = (idx === 0);
-  nextBtn.disabled = (idx === SLIDES.length - 1);
-}
+    function fmtM(m){
+      if (!isFinite(m)) return "—";
+      if (m < 1000) return `${Math.round(m)} m`;
+      return `${(m/1000).toFixed(2)} km`;
+    }
 
-prevBtn.addEventListener("click", () => {
-  if (idx > 0) { idx--; renderSlide(); }
-});
-nextBtn.addEventListener("click", () => {
-  if (idx < SLIDES.length - 1) { idx++; renderSlide(); }
-});
+    function fmtSpeed(mps){
+      if (!isFinite(mps)) return "—";
+      const kmh = mps * 3.6;
+      return `${kmh.toFixed(1)} km/h`;
+    }
 
-/* =========================
-   Embed Tabs Logic
-   ========================= */
-const frame = document.getElementById("toolFrame");
-const tabsWrap = document.getElementById("tabs");
-const toolNote = document.getElementById("toolNote");
+    function haversineM(a, b){
+      const R = 6371000;
+      const toRad = (d) => d * Math.PI / 180;
+      const dLat = toRad(b.lat - a.lat);
+      const dLon = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+      return 2 * R * Math.asin(Math.sqrt(x));
+    }
 
-function setActiveTab(key){
-  const tool = TOOLS[key];
-  if(!tool) return;
+    function routeDistanceM(points){
+      let d = 0;
+      for (let i=1;i<points.length;i++){
+        d += haversineM(points[i-1], points[i]);
+      }
+      return d;
+    }
 
-  // set iframe
-  frame.src = tool.url;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(()=>toastEl.classList.remove("show"), 1800);
+    }
 
-  // note
-  toolNote.textContent = tool.note + "  (If embed is blocked by the site, open it in a new tab.)";
+    function log(msg){
+      const line = `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+      logEl.textContent += line;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
 
-  // active class
-  tabsWrap.querySelectorAll(".tab").forEach(b=>{
-    b.classList.toggle("active", b.dataset.tool === key);
-  });
-}
+    function setStatus(on, text){
+      ui.statusDot.classList.toggle("on", !!on);
+      ui.statusText.textContent = text;
+    }
 
-tabsWrap.addEventListener("click", (e) => {
-  const btn = e.target.closest(".tab");
-  if(!btn) return;
-  setActiveTab(btn.dataset.tool);
-});
+    function saveToStorage(){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.route));
+        ui.storageState.textContent = "localStorage";
+      }catch(e){
+        ui.storageState.textContent = "unavailable";
+        log("Storage error: " + (e?.message || e));
+      }
+    }
 
-/* Subscribe button */
-document.getElementById("subBtn").addEventListener("click", () => {
-  // Change this if you want a different channel URL
-  window.open("https://www.youtube.com/@champaksworld", "_blank", "noopener,noreferrer");
-});
+    function loadFromStorage(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!obj || obj.schema !== SCHEMA || !Array.isArray(obj.points)) return null;
+        ui.storageState.textContent = "localStorage";
+        return obj;
+      }catch(e){
+        ui.storageState.textContent = "unavailable";
+        return null;
+      }
+    }
 
-/* Helpers */
-function svgDataUrl(title, subtitle){
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#d97706" stop-opacity="0.92"/>
-        <stop offset="1" stop-color="#f59e0b" stop-opacity="0.72"/>
-      </linearGradient>
-      <radialGradient id="r" cx="20%" cy="15%" r="85%">
-        <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
-        <stop offset="1" stop-color="#0b1220" stop-opacity="1"/>
-      </radialGradient>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#r)"/>
-    <rect x="64" y="64" width="1152" height="592" rx="36" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.18)"/>
-    <rect x="92" y="92" width="1096" height="90" rx="24" fill="url(#g)" opacity="0.95"/>
-    <text x="130" y="152" font-family="system-ui,Segoe UI,Roboto,Arial" font-size="34" fill="#fff" font-weight="900">${escapeXml(title)}</text>
-    <text x="130" y="220" font-family="system-ui,Segoe UI,Roboto,Arial" font-size="22" fill="rgba(255,255,255,0.88)" font-weight="700">${escapeXml(subtitle)}</text>
+    function newRoute(){
+      return {
+        schema: SCHEMA,
+        routeId: uid(),
+        name: "",
+        createdAt: nowISO(),
+        updatedAt: nowISO(),
+        source: { app: "Route Recorder", geocoder: "Nominatim (OpenStreetMap)" },
+        settings: {
+          minMoveM: Number(ui.minMove.value || 0),
+          minTimeS: Number(ui.minTime.value || 0),
+          areaMode: ui.areaMode.value
+        },
+        points: []
+      };
+    }
 
-    <g opacity="0.95">
-      <circle cx="1140" cy="134" r="18" fill="rgba(255,255,255,0.28)"/>
-      <circle cx="1090" cy="134" r="18" fill="rgba(255,255,255,0.20)"/>
-      <circle cx="1040" cy="134" r="18" fill="rgba(255,255,255,0.16)"/>
-    </g>
+    /***********************
+     * Map
+     ***********************/
+    const map = L.map("map", { zoomControl: true });
+    const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-    <g transform="translate(130,300)" opacity="0.9">
-      <rect width="520" height="48" rx="16" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.18)"/>
-      <text x="18" y="33" font-family="ui-monospace,Consolas,Menlo,monospace" font-size="18" fill="rgba(255,255,255,0.92)">
-        Programmer’s Picnic • Practice Tool
-      </text>
+    const routeLine = L.polyline([], { weight: 5, opacity: 0.9 }).addTo(map);
+    const markersLayer = L.layerGroup().addTo(map);
 
-      <rect y="72" width="820" height="240" rx="22" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
-      <text x="20" y="110" font-family="ui-monospace,Consolas,Menlo,monospace" font-size="18" fill="rgba(255,255,255,0.88)">
-        &gt; Open ↗ to use in a new tab
-      </text>
-      <text x="20" y="144" font-family="ui-monospace,Consolas,Menlo,monospace" font-size="18" fill="rgba(255,255,255,0.88)">
-        &gt; Or use the embedded panel on the right
-      </text>
+    const currentMarker = L.circleMarker([0,0], {
+      radius: 8,
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.35
+    }).addTo(map);
 
-      <rect x="0" y="340" width="320" height="58" rx="18" fill="rgba(245,158,11,0.18)" stroke="rgba(245,158,11,0.35)"/>
-      <text x="18" y="378" font-family="system-ui,Segoe UI,Roboto,Arial" font-size="16" fill="rgba(255,255,255,0.92)" font-weight="900">
-        Use &lt;-- and --&gt; only
-      </text>
-    </g>
-  </svg>`.trim();
-  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-}
+    map.setView([25.3176, 82.9739], 13); // Varanasi-ish default
 
-function escapeXml(s){
-  return String(s).replace(/[<>&'"]/g, c => ({
-    "<":"&lt;", ">":"&gt;", "&":"&amp;", "'":"&apos;", '"':"&quot;"
-  }[c]));
-}
+    function renderRoute(){
+      markersLayer.clearLayers();
 
-/* Init */
-renderSlide();
-setActiveTab("whiteboard");
-</script>
+      const pts = state.route?.points || [];
+      const latlngs = pts.map(p=>[p.lat, p.lng]);
+      routeLine.setLatLngs(latlngs);
 
+      pts.forEach((p, idx)=>{
+        const m = L.marker([p.lat, p.lng]);
+        const ts = new Date(p.ts).toLocaleString();
+        const area = p.area || "—";
+        const acc = isFinite(p.accuracyM) ? `${Math.round(p.accuracyM)} m` : "—";
+        m.bindPopup(
+          `<b>#${idx+1}</b><br/>` +
+          `<span class="mono">${area}</span><br/>` +
+          `${ts}<br/>` +
+          `acc: ${acc}`
+        );
+        markersLayer.addLayer(m);
+      });
+
+      ui.kvCount.textContent = String(pts.length);
+      ui.kvDist.textContent = fmtM(routeDistanceM(pts));
+      state.route.updatedAt = nowISO();
+      saveToStorage();
+    }
+
+    function fitRoute(){
+      const pts = state.route?.points || [];
+      if (!pts.length){
+        toast("No points to fit");
+        return;
+      }
+      const bounds = L.latLngBounds(pts.map(p=>[p.lat, p.lng]));
+      map.fitBounds(bounds.pad(0.2));
+    }
+
+    /***********************
+     * Reverse Geocoding (Nominatim)
+     ***********************/
+    function pickAreaFromAddress(address, mode){
+      if (!address) return "";
+      const parts = [];
+      if (mode === "full"){
+        // handled elsewhere using display_name
+        return "";
+      }
+
+      if (mode === "city"){
+        const city = address.city || address.town || address.village || address.municipality;
+        const state = address.state || address.region;
+        if (city) parts.push(city);
+        if (state) parts.push(state);
+        return parts.filter(Boolean).join(", ");
+      }
+
+      // neighborhood/suburb -> city
+      const n = address.neighbourhood || address.suburb || address.quarter || address.hamlet || address.locality;
+      const city = address.city || address.town || address.village || address.municipality;
+      if (n) parts.push(n);
+      if (city && city !== n) parts.push(city);
+      return parts.filter(Boolean).join(", ");
+    }
+
+    function normalizeArea(s){
+      return (s || "").trim().replace(/\s+/g, " ").toLowerCase();
+    }
+
+    async function reverseGeocode(lat, lng){
+      // Throttle: avoid spamming. Also avoid geocoding tiny jitter.
+      const minGeoIntervalMs = 1500;
+      const t = Date.now();
+      if (state.geocodeInFlight) return null;
+      if (t - state.lastGeo.ts < minGeoIntervalMs) return null;
+
+      // also avoid calling if position hasn't moved much since last geocode
+      if (state.lastGeo.lat != null){
+        const moved = haversineM({lat: state.lastGeo.lat, lng: state.lastGeo.lng}, {lat, lng});
+        if (moved < 20) return null;
+      }
+
+      state.geocodeInFlight = true;
+      ui.geocodeState.textContent = "fetching…";
+
+      try{
+        // Nominatim usage policy: provide a valid User-Agent + (optionally) email param
+        const url = new URL("https://nominatim.openstreetmap.org/reverse");
+        url.searchParams.set("format","jsonv2");
+        url.searchParams.set("lat", String(lat));
+        url.searchParams.set("lon", String(lng));
+        url.searchParams.set("zoom","18");
+        url.searchParams.set("addressdetails","1");
+
+        const res = await fetch(url.toString(), {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+            "User-Agent": "PP-Route-Recorder/1.0 (Educational use; contact: you@example.com)"
+          }
+        });
+
+        if (!res.ok) throw new Error(`Geocode failed: ${res.status}`);
+        const data = await res.json();
+
+        const mode = ui.areaMode.value;
+        let area = "";
+        if (mode === "full"){
+          area = (data.display_name || "").trim();
+        } else {
+          area = pickAreaFromAddress(data.address, mode);
+          if (!area) area = (data.display_name || "").split(",").slice(0,2).join(",").trim();
+        }
+
+        state.lastGeo = { ts: Date.now(), lat, lng, area };
+        ui.geocodeState.textContent = "ready";
+        return { area, raw: data };
+      }catch(e){
+        ui.geocodeState.textContent = "error";
+        log("Geocode error: " + (e?.message || e));
+        return null;
+      }finally{
+        state.geocodeInFlight = false;
+      }
+    }
+
+    /***********************
+     * Tracking + Save-on-area-change logic
+     ***********************/
+    function canSavePoint(pos, areaLabel){
+      const pts = state.route.points;
+      const minMoveM = Number(ui.minMove.value || 0);
+      const minTimeS = Number(ui.minTime.value || 0);
+
+      const last = state.lastSaved;
+      const nowTs = pos.ts;
+
+      // first ever
+      if (last.lat == null || last.lng == null) return true;
+
+      const moved = haversineM({lat:last.lat, lng:last.lng}, {lat:pos.lat, lng:pos.lng});
+      const dt = (nowTs - last.ts) / 1000;
+
+      if (moved < minMoveM) return false;
+      if (dt < minTimeS) return false;
+
+      // only store when area changed
+      const prevArea = normalizeArea(last.area);
+      const curArea = normalizeArea(areaLabel);
+      if (!curArea) return false;           // no area yet
+      if (curArea === prevArea) return false;
+
+      return true;
+    }
+
+    async function handlePosition(geoPos){
+      const c = geoPos.coords;
+      const lat = c.latitude;
+      const lng = c.longitude;
+      const accuracyM = c.accuracy;
+      const speedMps = (typeof c.speed === "number" && isFinite(c.speed)) ? c.speed : NaN;
+
+      ui.kvLatLng.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      ui.kvAcc.textContent = isFinite(accuracyM) ? `${Math.round(accuracyM)} m` : "—";
+      ui.kvSpeed.textContent = fmtSpeed(speedMps);
+
+      // update current marker
+      currentMarker.setLatLng([lat,lng]);
+
+      // center gently when first start
+      if (!state.lastPosition){
+        map.setView([lat,lng], 17);
+      }
+      state.lastPosition = {lat,lng,ts: Date.now()};
+
+      // reverse geocode (throttled)
+      const geo = await reverseGeocode(lat, lng);
+      if (geo && geo.area){
+        ui.kvArea.textContent = geo.area;
+      }
+
+      const area = geo?.area || ui.kvArea.textContent || "";
+      const rawAddress = geo?.raw?.address || null;
+
+      const pos = { lat, lng, ts: Date.now(), accuracyM, speedMps };
+      if (!area) return;
+
+      // Save point if area changed + min move/time passed
+      if (canSavePoint(pos, area)){
+        const pt = {
+          lat, lng,
+          ts: new Date(pos.ts).toISOString(),
+          accuracyM: isFinite(accuracyM) ? accuracyM : null,
+          speedMps: isFinite(speedMps) ? speedMps : null,
+          area,
+          rawAddress,
+          note: "Saved because area changed"
+        };
+        state.route.points.push(pt);
+        state.lastSaved = { ts: pos.ts, lat, lng, area };
+        log(`Saved point #${state.route.points.length}: ${area}`);
+        renderRoute();
+      }
+    }
+
+    function handleError(err){
+      const msg =
+        err?.code === 1 ? "Permission denied for location." :
+        err?.code === 2 ? "Position unavailable." :
+        err?.code === 3 ? "Location timeout." :
+        (err?.message || "Location error.");
+      log("Geo error: " + msg);
+      toast(msg);
+      stopTracking();
+    }
+
+    function startTracking(){
+      if (!("geolocation" in navigator)){
+        toast("Geolocation not supported");
+        return;
+      }
+      if (state.tracking) return;
+
+      // update settings into route
+      state.route.settings = {
+        minMoveM: Number(ui.minMove.value || 0),
+        minTimeS: Number(ui.minTime.value || 0),
+        areaMode: ui.areaMode.value
+      };
+      state.route.name = (ui.routeName.value || "").trim();
+      state.route.updatedAt = nowISO();
+      saveToStorage();
+
+      state.lastPosition = null;
+
+      state.watchId = navigator.geolocation.watchPosition(
+        handlePosition,
+        handleError,
+        {
+          enableHighAccuracy: true,
+          maximumAge: 2000,
+          timeout: 15000
+        }
+      );
+
+      state.tracking = true;
+      setStatus(true, "Tracking…");
+      ui.btnStart.disabled = true;
+      ui.btnStop.disabled = false;
+      log("Tracking started.");
+    }
+
+    function stopTracking(){
+      if (!state.tracking) return;
+      try{
+        navigator.geolocation.clearWatch(state.watchId);
+      }catch(_){}
+      state.watchId = null;
+      state.tracking = false;
+      setStatus(false, "Idle");
+      ui.btnStart.disabled = false;
+      ui.btnStop.disabled = true;
+      log("Tracking stopped.");
+    }
+
+    /***********************
+     * Export / Share / Import
+     ***********************/
+    function getExportJSON(){
+      const clone = structuredClone(state.route);
+      clone.name = (ui.routeName.value || clone.name || "").trim();
+      clone.settings = {
+        minMoveM: Number(ui.minMove.value || 0),
+        minTimeS: Number(ui.minTime.value || 0),
+        areaMode: ui.areaMode.value
+      };
+      clone.updatedAt = nowISO();
+      return clone;
+    }
+
+    function downloadJSON(){
+      const data = getExportJSON();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      const name = (data.name || "route").replace(/[^\w\-]+/g, "_").slice(0,60);
+      a.href = URL.createObjectURL(blob);
+      a.download = `${name || "route"}_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+      toast("Downloaded JSON");
+    }
+
+    async function copyJSON(){
+      const data = getExportJSON();
+      const text = JSON.stringify(data, null, 2);
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Copied JSON");
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Copied JSON (fallback)");
+      }
+    }
+
+    async function shareRoute(){
+      const data = getExportJSON();
+      const jsonText = JSON.stringify(data, null, 2);
+
+      // Prefer native share with a file if supported
+      const fileName = `${(data.name || "route").replace(/[^\w\-]+/g, "_").slice(0,60) || "route"}.json`;
+      const file = new File([jsonText], fileName, { type: "application/json" });
+
+      try{
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share){
+          await navigator.share({
+            title: data.name || "Route",
+            text: "Route JSON export",
+            files: [file]
+          });
+          toast("Shared");
+          return;
+        }
+      }catch(e){
+        // continue to fallback
+      }
+
+      // Fallback: share text
+      try{
+        if (navigator.share){
+          await navigator.share({
+            title: data.name || "Route",
+            text: jsonText.length > 5000 ? (jsonText.slice(0, 5000) + "\n…(truncated)") : jsonText
+          });
+          toast("Shared (text)");
+          return;
+        }
+      }catch(e){
+        // ignore
+      }
+
+      // Final fallback: copy
+      await copyJSON();
+      log("Share not available. JSON copied instead.");
+    }
+
+    function importJSON(){
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/json,.json";
+      input.onchange = async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        try{
+          const text = await file.text();
+          const obj = JSON.parse(text);
+
+          if (!obj || obj.schema !== SCHEMA || !Array.isArray(obj.points)){
+            toast("Invalid route JSON");
+            return;
+          }
+          state.route = obj;
+          ui.routeName.value = obj.name || "";
+          ui.minMove.value = obj.settings?.minMoveM ?? ui.minMove.value;
+          ui.minTime.value = obj.settings?.minTimeS ?? ui.minTime.value;
+          ui.areaMode.value = obj.settings?.areaMode ?? ui.areaMode.value;
+
+          // reset "lastSaved" based on last point
+          const last = obj.points[obj.points.length - 1];
+          if (last){
+            state.lastSaved = {
+              ts: Date.parse(last.ts) || Date.now(),
+              lat: last.lat,
+              lng: last.lng,
+              area: last.area
+            };
+            ui.kvArea.textContent = last.area || "—";
+          } else {
+            state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+          }
+
+          saveToStorage();
+          renderRoute();
+          fitRoute();
+          log(`Imported route with ${obj.points.length} points.`);
+          toast("Imported");
+        }catch(e){
+          toast("Import failed");
+          log("Import error: " + (e?.message || e));
+        }
+      };
+      input.click();
+    }
+
+    function clearRoute(){
+      if (state.tracking){
+        toast("Stop tracking first");
+        return;
+      }
+      state.route = newRoute();
+      state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+      ui.routeName.value = "";
+      ui.kvArea.textContent = "—";
+      logEl.textContent = "";
+      saveToStorage();
+      renderRoute();
+      toast("Cleared");
+      log("Route cleared.");
+    }
+
+    /***********************
+     * Wire up UI
+     ***********************/
+    ui.btnStart.addEventListener("click", startTracking);
+    ui.btnStop.addEventListener("click", stopTracking);
+    ui.btnFit.addEventListener("click", fitRoute);
+    ui.btnClear.addEventListener("click", clearRoute);
+    ui.btnDownload.addEventListener("click", downloadJSON);
+    ui.btnCopy.addEventListener("click", copyJSON);
+    ui.btnShare.addEventListener("click", shareRoute);
+    ui.btnImport.addEventListener("click", importJSON);
+
+    // If settings change, update route metadata (not points)
+    [ui.routeName, ui.minMove, ui.minTime, ui.areaMode].forEach(el=>{
+      el.addEventListener("change", ()=>{
+        if (!state.route) return;
+        state.route.name = (ui.routeName.value || "").trim();
+        state.route.settings = {
+          minMoveM: Number(ui.minMove.value || 0),
+          minTimeS: Number(ui.minTime.value || 0),
+          areaMode: ui.areaMode.value
+        };
+        state.route.updatedAt = nowISO();
+        saveToStorage();
+      });
+    });
+
+    // Init
+    (function init(){
+      const loaded = loadFromStorage();
+      state.route = loaded || newRoute();
+
+      ui.routeName.value = state.route.name || "";
+      if (state.route.settings){
+        ui.minMove.value = state.route.settings.minMoveM ?? ui.minMove.value;
+        ui.minTime.value = state.route.settings.minTimeS ?? ui.minTime.value;
+        ui.areaMode.value = state.route.settings.areaMode ?? ui.areaMode.value;
+      }
+
+      // derive lastSaved from last point
+      const last = state.route.points[state.route.points.length - 1];
+      if (last){
+        state.lastSaved = {
+          ts: Date.parse(last.ts) || Date.now(),
+          lat: last.lat,
+          lng: last.lng,
+          area: last.area
+        };
+        ui.kvArea.textContent = last.area || "—";
+      } else {
+        state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+      }
+
+      renderRoute();
+      if (state.route.points.length) fitRoute();
+      setStatus(false, "Idle");
+      log(`Loaded route: ${state.route.points.length} saved point(s).`);
+    })();
+
+    // Stop watch if tab is hidden (optional safety)
+    document.addEventListener("visibilitychange", ()=>{
+      if (document.hidden && state.tracking){
+        log("Tab hidden — continuing tracking (browser dependent).");
+      }
+    });
+
+    // Expose minimal debug
+    window.PPRoute = {
+      getRoute: () => getExportJSON(),
+      stop: () => stopTracking(),
+      start: () => startTracking()
+    };
+  </script>
 </body>
 </html>
