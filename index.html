@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Punya Yatra — Varanasi Tourist Places</title>
-  <meta name="description" content="Interactive tourist places page for Varanasi — search, filter, map, itinerary, and WhatsApp share." />
+  <title>Punya Yatra — Varanasi Tourist Places (v2)</title>
+  <meta name="description" content="Module-first Varanasi planner: Tour, Festivals, Rituals, Kathas, Food, Shopping — then map, itinerary & WhatsApp share." />
   <meta name="theme-color" content="#d97706" />  <!-- Fonts -->  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">  <!-- Leaflet (map) -->  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>  <style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">  <!-- Leaflet (map) -->  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  <style>
     :root{
       /* Light Saffron theme (your preference) */
       --bg:#fff7e6;
@@ -68,7 +68,7 @@
     .brand h1{ font-size:15px; margin:0; letter-spacing:.2px; }
     .brand p{ margin:0; font-size:12px; color:var(--muted); }
 
-    .actions{ display:flex; gap:10px; align-items:center; }
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .btn{
       border:1px solid rgba(31,35,40,.12);
       background: rgba(255,255,255,.75);
@@ -89,19 +89,20 @@
       color:#1a140c;
     }
     .btn.primary:hover{ filter:saturate(1.03); }
-    .btn.danger{
-      background: rgba(255,255,255,.75);
-      border-color: rgba(220,38,38,.25);
+    .btn.danger{ background: rgba(255,255,255,.75); border-color: rgba(220,38,38,.25); }
+    .btn.small{ padding:9px 10px; border-radius:12px; font-size:12px; box-shadow:none; }
+
+    /* Cards */
+    .card{
+      background: var(--panel);
+      border:1px solid rgba(31,35,40,.10);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
     }
 
-    /* Hero */
-    .hero{ padding:18px 0 10px; }
-
-    /* Guided Start */
-    .start{
-      margin-top:14px;
-      padding:16px;
-    }
+    /* Start */
+    .start{ margin-top:14px; padding:16px; }
     .startHead{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; }
     .startHead h2{ margin:0; font-size:18px; letter-spacing:-.2px; }
     .startHead p{ margin:4px 0 0; color:var(--muted); font-size:13px; }
@@ -121,10 +122,11 @@
       user-select:none;
       transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
       position:relative;
-      min-height: 116px;
+      min-height: 120px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
+      text-align:left;
     }
     .startCard:hover{ transform: translateY(-2px); box-shadow: 0 18px 34px rgba(31,35,40,.14); background: rgba(255,255,255,.92); }
     .startCard[aria-pressed="true"]{
@@ -140,27 +142,15 @@
       display:grid;
       place-items:center;
       font-size:18px;
+      flex:0 0 auto;
     }
     .startCard h3{ margin:0; font-size:14px; letter-spacing:-.2px; }
     .startCard .small{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
-    .startFoot{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-top:12px; }
+    .hint{ font-size:12px; color:var(--muted); }
 
-    @media (max-width: 980px){
-      .startGrid{ grid-template-columns: 1fr; }
-    }
-    .heroGrid{
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap:14px;
-      align-items:stretch;
-    }
-    .card{
-      background: var(--panel);
-      border:1px solid rgba(31,35,40,.10);
-      border-radius: var(--radius2);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
+    /* Hero */
+    .hero{ padding:18px 0 10px; }
+    .heroGrid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:14px; align-items:stretch; }
     .heroMain{ padding:18px; position:relative; }
     .badge{
       display:inline-flex; gap:8px; align-items:center;
@@ -173,27 +163,14 @@
     .badge i{ width:10px; height:10px; border-radius:50%; background: var(--saffron); box-shadow: 0 0 0 4px rgba(255,159,28,.18); }
     .heroTitle{ margin:12px 0 8px; font-size:34px; line-height:1.08; letter-spacing:-.6px; }
     .heroSub{ margin:0; color:var(--muted); font-size:14px; max-width:70ch; }
-
     .heroTools{ margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; }
-
     .heroAside{ padding:16px; display:flex; flex-direction:column; gap:10px; }
-    .mini{
-      background: rgba(255,255,255,.7);
-      border:1px solid rgba(31,35,40,.10);
-      border-radius: var(--radius);
-      padding:12px;
-    }
+    .mini{ background: rgba(255,255,255,.7); border:1px solid rgba(31,35,40,.10); border-radius: var(--radius); padding:12px; }
     .mini h3{ margin:0 0 6px; font-size:13px; }
     .mini p{ margin:0; color:var(--muted); font-size:12px; }
 
     /* Layout */
-    .mainGrid{
-      display:grid;
-      grid-template-columns: 1fr 380px;
-      gap:14px;
-      align-items:start;
-      margin-top:14px;
-    }
+    .mainGrid{ display:grid; grid-template-columns: 1fr 380px; gap:14px; align-items:start; margin-top:14px; }
 
     /* Controls */
     .controls{ padding:14px; }
@@ -222,23 +199,14 @@
       transition: transform .12s ease, background .12s ease;
     }
     .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.9); }
-    .chip[aria-pressed="true"]{
-      background: rgba(255,159,28,.22);
-      border-color: rgba(217,119,6,.28);
-    }
+    .chip[aria-pressed="true"]{ background: rgba(255,159,28,.22); border-color: rgba(217,119,6,.28); }
 
     /* Results */
     .results{ padding:14px; }
     .resultsHead{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
     .resultsHead h2{ margin:0; font-size:15px; }
-    .hint{ font-size:12px; color:var(--muted); }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:12px;
-      margin-top:12px;
-    }
+    .grid{ display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; margin-top:12px; }
 
     .place{
       border-radius: var(--radius2);
@@ -253,11 +221,7 @@
     }
     .place:hover{ transform: translateY(-2px); box-shadow: 0 18px 34px rgba(31,35,40,.14); }
 
-    .thumb{
-      height:118px;
-      background: linear-gradient(135deg, rgba(255,159,28,.55), rgba(255,183,77,.25));
-      position:relative;
-    }
+    .thumb{ height:118px; background: linear-gradient(135deg, rgba(255,159,28,.55), rgba(255,183,77,.25)); position:relative; }
     .thumb svg{ position:absolute; inset:0; width:100%; height:100%; opacity:.9; }
     .pBody{ padding:12px; display:flex; flex-direction:column; gap:8px; }
     .pTitle{ margin:0; font-size:14px; letter-spacing:-.2px; }
@@ -273,8 +237,6 @@
     }
     .pDesc{ margin:0; color:var(--muted); font-size:12px; line-height:1.35; }
     .pBtns{ margin-top:auto; display:flex; gap:8px; }
-    .pBtns .btn{ padding:9px 10px; border-radius:12px; font-size:12px; box-shadow:none; }
-    .btn.small{ padding:9px 10px; }
 
     /* Sidebar */
     .side{ padding:14px; }
@@ -330,32 +292,12 @@
     .toast.show{ opacity:1; transform: translateX(-50%) translateY(-2px); }
 
     /* Modal */
-    .backdrop{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.45);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:60;
-    }
+    .backdrop{ position:fixed; inset:0; background: rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:18px; z-index:60; }
     .backdrop.open{ display:flex; }
-    .modal{
-      width:min(920px, 100%);
-      background: rgba(255,255,255,.92);
-      border:1px solid rgba(255,255,255,.55);
-      border-radius: 26px;
-      box-shadow: 0 24px 60px rgba(0,0,0,.28);
-      overflow:hidden;
-    }
-    .modalTop{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 14px;
-      border-bottom:1px solid rgba(31,35,40,.10);
-      background: linear-gradient(180deg, rgba(255,247,230,.85), rgba(255,247,230,.55));
-    }
+    .modal{ width:min(960px, 100%); background: rgba(255,255,255,.92); border:1px solid rgba(255,255,255,.55); border-radius: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.28); overflow:hidden; }
+    .modalTop{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid rgba(31,35,40,.10); background: linear-gradient(180deg, rgba(255,247,230,.85), rgba(255,247,230,.55)); }
     .modalTop strong{ font-size:13px; }
-    .modalBody{ display:grid; grid-template-columns: 1fr 280px; gap:0; }
+    .modalBody{ display:grid; grid-template-columns: 1fr 300px; gap:0; }
     .modalMain{ padding:14px; }
     .modalAside{ padding:14px; border-left:1px solid rgba(31,35,40,.10); background: rgba(255,247,230,.45); }
     .kvs{ display:grid; grid-template-columns: 1fr; gap:10px; }
@@ -363,17 +305,32 @@
     .kv b{ display:block; font-size:12px; }
     .kv span{ display:block; font-size:12px; color:var(--muted); margin-top:2px; }
 
+    /* Module UI */
+    .moduleHeader{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+    .moduleHeader h3{ margin:0; font-size:16px; letter-spacing:-.2px; }
+    .moduleHeader p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.45; }
+    .panel{ background: rgba(255,255,255,.78); border:1px solid rgba(31,35,40,.10); border-radius: 22px; padding:12px; }
+    .panel h4{ margin:0 0 10px; font-size:14px; }
+    .cols{ display:grid; grid-template-columns: 1.15fr .85fr; gap:12px; align-items:start; margin-top:12px; }
+    .stack{ display:flex; flex-direction:column; gap:10px; }
+    .box{ padding:10px; border-radius:18px; border:1px solid rgba(31,35,40,.10); background: rgba(255,255,255,.75); }
+    .box b{ display:block; font-size:13px; }
+    .box span{ display:block; margin-top:4px; color:var(--muted); font-size:12px; line-height:1.45; }
+    .toolRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+
     .closeX{ border:none; background:transparent; font-size:18px; cursor:pointer; padding:6px 10px; border-radius:12px; }
     .closeX:hover{ background: rgba(255,255,255,.75); }
 
     /* Responsive */
     @media (max-width: 980px){
+      .startGrid{ grid-template-columns: 1fr; }
       .heroGrid{ grid-template-columns: 1fr; }
       .mainGrid{ grid-template-columns: 1fr; }
       .grid{ grid-template-columns: 1fr; }
       .controlsRow{ grid-template-columns: 1fr; }
       .modalBody{ grid-template-columns: 1fr; }
       .modalAside{ border-left:none; border-top:1px solid rgba(31,35,40,.10); }
+      .cols{ grid-template-columns: 1fr; }
     }
 
     /* Accessibility helpers */
@@ -385,143 +342,157 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Punya Yatra — Varanasi</h1>
-          <p>Interactive places • map • itinerary • WhatsApp share</p>
+          <p>Modules → map → itinerary → WhatsApp</p>
         </div>
       </div>
       <div class="actions">
+        <label class="sr" for="gq">Search everywhere</label>
+        <input id="gq" class="input" style="width:min(360px, 55vw); padding:10px 12px;" placeholder="Search everywhere… (places + tours + kathas + rituals)" />
+        <button class="btn" id="btnOpenModules" title="Open modules">✨ Modules</button>
         <button class="btn" id="btnLocate" title="Center map to Varanasi">📍 Center</button>
         <button class="btn" id="btnExport" title="Copy itinerary as text">📋 Copy</button>
         <button class="btn primary" id="btnWhatsApp" title="Share itinerary on WhatsApp">🟢 WhatsApp</button>
       </div>
     </div>
-  </div>  <div class="wrap"><!-- Guided Start: What do you want? (Option 1 — Big Cards Grid) -->
+  </div>  <div class="wrap"><!-- Guided Start: Module-first -->
 <section class="card start" id="start" aria-label="Guided start">
   <div class="startHead">
     <div>
       <h2>What do you want?</h2>
-      <p>Select one — we’ll open a dedicated module (then you can jump to the map view).</p>
+      <p>Select one — we’ll open a dedicated module first (then you can jump to Map View anytime).</p>
     </div>
     <div class="actions" style="gap:8px">
-      <button class="btn" id="btnSkipStart" title="Go to places map">↪ Map View</button>
+      <button class="btn" id="btnSkipStart" title="Go to map view">↪ Map View</button>
       <button class="btn primary" id="btnStartGo" disabled title="Open module">✨ Open</button>
     </div>
   </div>
 
   <div class="startGrid" id="startGrid"></div>
-
   <div class="hint" style="margin-top:10px">Tip: Pick <b>Ritual</b> for evening Aarti flow, <b>Food</b> for breakfast streets, <b>Tour</b> for 1–3 day plans.</div>
 </section>
 
-<div id=\"mainApp\" hidden>
+<!-- Main App (Map + Places) -->
+<div id="mainApp" hidden>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="heroGrid">
-    <div class="card heroMain">
-      <span class="badge"><i></i> Punya Yatra Planner</span>
-      <h2 class="heroTitle">Explore Varanasi — Ghats, Temples, Museums & Food</h2>
-      <p class="heroSub">
-        Search and filter places, open details, add to itinerary, and visualize everything on a live map.
-        Works offline-friendly (data embedded) and saves itinerary in your browser.
-      </p>
-      <div class="heroTools">
-        <button class="btn primary" id="btnOpenItin">🧾 Open Itinerary</button>
-        <button class="btn" id="btnRandom">🎲 Surprise me</button>
-        <button class="btn" id="btnClearFilters">🧹 Clear Filters</button>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="heroGrid">
+      <div class="card heroMain">
+        <span class="badge"><i></i> Punya Yatra Planner</span>
+        <h2 class="heroTitle">Explore Varanasi — Ghats, Temples, Museums & Food</h2>
+        <p class="heroSub">
+          Browse places on the map, open details, add to itinerary, and share.
+          Start with Modules (Tour/Festival/Ritual/Katha/Food/Shopping) for guided planning.
+        </p>
+        <div class="heroTools">
+          <button class="btn primary" id="btnOpenItin">🧾 Open Itinerary</button>
+          <button class="btn" id="btnRandom">🎲 Surprise me</button>
+          <button class="btn" id="btnClearFilters">🧹 Clear Filters</button>
+          <button class="btn" id="btnOpenModules2">✨ Modules</button>
+        </div>
+      </div>
+      <aside class="card heroAside">
+        <div class="mini">
+          <h3>How to use</h3>
+          <p>Pick a module → build mini-plan → jump to map → add more places.</p>
+        </div>
+        <div class="mini">
+          <h3>Planner</h3>
+          <p>Your itinerary is auto-saved (localStorage). Share with one click.</p>
+        </div>
+        <div class="mini">
+          <h3>Offline-friendly</h3>
+          <p>Data embedded. Later you can swap to JSON files: tours.json, kathas.json, events.json.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <section class="mainGrid">
+
+    <!-- Left: search + results -->
+    <div class="card">
+      <div class="controls">
+        <div class="controlsRow">
+          <div class="field">
+            <div class="label">Search</div>
+            <input class="input" id="q" placeholder="Try: Kashi Vishwanath, Ganga aarti, Banaras saree, museum…" />
+          </div>
+          <div class="field">
+            <div class="label">Sort</div>
+            <select class="select" id="sort">
+              <option value="pop">Popularity</option>
+              <option value="alpha">A → Z</option>
+              <option value="near">Near center</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="label">Time</div>
+            <select class="select" id="time">
+              <option value="any">Any</option>
+              <option value="morning">Morning</option>
+              <option value="evening">Evening</option>
+              <option value="night">Night</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="chips" id="chips" aria-label="Category filters"></div>
+      </div>
+
+      <div class="results">
+        <div class="resultsHead">
+          <h2 id="count">Places</h2>
+          <div class="hint" id="hint">Tap a card to focus on map.</div>
+        </div>
+        <div class="grid" id="grid" aria-live="polite"></div>
       </div>
     </div>
-    <aside class="card heroAside">
-      <div class="mini">
-        <h3>Tip</h3>
-        <p>Tap <b>Details</b> for directions + best time + quick facts.</p>
-      </div>
-      <div class="mini">
-        <h3>Quick Filters</h3>
-        <p>Use category chips for Ghats, Temples, Heritage, Food, and Shopping.</p>
-      </div>
-      <div class="mini">
-        <h3>Planner</h3>
-        <p>Your itinerary is auto-saved (localStorage). Share with one click.</p>
+
+    <!-- Right: map + itinerary -->
+    <aside class="card side">
+      <div id="map" role="application" aria-label="Varanasi map"></div>
+
+      <div class="itinerary">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+          <h2>Itinerary</h2>
+          <button class="btn danger small" id="btnClearItin">🗑 Clear</button>
+        </div>
+        <div class="hint">Add places → reorder by drag (mobile: long-press) — share on WhatsApp.</div>
+        <div class="list" id="itin"></div>
       </div>
     </aside>
-  </div>
-</section>
 
-<!-- Main -->
-<section class="mainGrid">
+  </section>
 
-  <!-- Left: search + results -->
-  <div class="card">
-    <div class="controls">
-      <div class="controlsRow">
-        <div class="field">
-          <div class="label">Search</div>
-          <input class="input" id="q" placeholder="Try: Kashi Vishwanath, Ganga aarti, Banaras saree, museum…" />
-        </div>
-        <div class="field">
-          <div class="label">Sort</div>
-          <select class="select" id="sort">
-            <option value="pop">Popularity</option>
-            <option value="alpha">A → Z</option>
-            <option value="near">Near center</option>
-          </select>
-        </div>
-        <div class="field">
-          <div class="label">Time</div>
-          <select class="select" id="time">
-            <option value="any">Any</option>
-            <option value="morning">Morning</option>
-            <option value="evening">Evening</option>
-            <option value="night">Night</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="chips" id="chips" aria-label="Category filters"></div>
+  <footer style="padding:16px 2px; color:var(--muted); font-size:12px;">
+    <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;">
+      <div>© <span id="y"></span> Punya Yatra • Varanasi Planner</div>
+      <div>v2 • Modules-first • Data embedded</div>
     </div>
-
-    <div class="results">
-      <div class="resultsHead">
-        <h2 id="count">Places</h2>
-        <div class="hint" id="hint">Tap a card to focus on map.</div>
-      </div>
-      <div class="grid" id="grid" aria-live="polite"></div>
-    </div>
-  </div>
-
-  <!-- Right: map + itinerary -->
-  <aside class="card side">
-    <div id="map" role="application" aria-label="Varanasi map"></div>
-
-    <div class="itinerary">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        <h2>Itinerary</h2>
-        <button class="btn danger small" id="btnClearItin">🗑 Clear</button>
-      </div>
-      <div class="hint">Add places → reorder by drag (mobile: long-press) — share on WhatsApp.</div>
-      <div class="list" id="itin"></div>
-    </div>
-  </aside>
-
-</section>
-
-<footer style="padding:16px 2px; color:var(--muted); font-size:12px;">
-  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;">
-    <div>© <span id="y"></span> Punya Yatra • Varanasi Planner</div>
-    <div>Data embedded • Works on GitHub Pages • Light Saffron UI</div>
-  </div>
-</footer>
+  </footer>
 </div>
 
-  </div>  <!-- Details Modal -->  <div class="backdrop" id="backdrop" aria-hidden="true">
+  </div>  <!-- Modal (Place details + Modules) -->  <div class="backdrop" id="backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
       <div class="modalTop">
-        <strong id="mTitle">Module</strong>
+        <strong id="mTitle">Panel</strong>
         <button class="closeX" id="mClose" aria-label="Close">✕</button>
       </div>
-      <div class="moduleBody" id="moduleBody"></div>
+      <div class="modalBody">
+        <div class="modalMain" id="mMain"></div>
+        <aside class="modalAside">
+          <div class="kvs" id="mKvs"></div>
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn primary" id="mAdd">🗺️ Go to Map</button>
+            <a class="btn" id="mDir" target="_blank" rel="noopener">🧭 Directions</a>
+            <button class="btn" id="mCopy">📋 Copy</button>
+          </div>
+        </aside>
+      </div>
     </div>
-  </div>  <div class="toast" id="toast" role="status" aria-live="polite"></div>  <!-- Embedded DATA (edit/expand this later or move to places.json) -->  <script id="placesData" type="application/json">
+  </div>  <div class="toast" id="toast" role="status" aria-live="polite"></div>  <!-- Embedded DATA (edit/expand this later or move to JSON files) -->  <script id="placesData" type="application/json">
   {
     "city": "Varanasi",
     "center": {"lat": 25.3176, "lng": 82.9739},
@@ -675,20 +646,58 @@
         "tags":["River","Views"],
         "near":"Assi / Dashashwamedh"
       }
-    ]
+    ],
+
+    "modules": {
+      "tourPlans": [
+        {"id":"day1_classic","title":"Day 1 — Classic Varanasi","subtitle":"Sunrise ghat → Vishwanath → Aarti","steps":["assi","ganga_boat","kashi_vishwanath","dashashwamedh"]},
+        {"id":"day2_sarnath","title":"Day 2 — Sarnath + Culture","subtitle":"Stupa + museum + calm campus","steps":["sarnath","bhu"]},
+        {"id":"day3_heritage","title":"Day 3 — Heritage & River","subtitle":"Fort + sacred ghat + evening vibes","steps":["ramnagar_fort","manikarnika","dashashwamedh"]}
+      ],
+      "events": [
+        {"title":"Evening Ganga Aarti","when":"Daily (evening)","note":"Dashashwamedh Ghat — reach early.","add":["dashashwamedh"]},
+        {"title":"Sunrise Ghat Walk","when":"Daily (morning)","note":"Assi Ghat side — calm start.","add":["assi"]},
+        {"title":"Dev Deepawali vibe","when":"Seasonal","note":"Ghats illuminate — peak crowds.","add":["dashashwamedh","ganga_boat"]},
+        {"title":"Mahashivratri energy","when":"Seasonal","note":"Temple queues — plan with time.","add":["kashi_vishwanath"]}
+      ],
+      "rituals": [
+        {"title":"Attend Ganga Aarti","desc":"Reach early, sit respectfully, keep belongings safe.","add":["dashashwamedh"]},
+        {"title":"Kashi Vishwanath Darshan","desc":"Expect queues; follow entry rules; keep ID handy.","add":["kashi_vishwanath"]},
+        {"title":"Boat ride for ghat darshan","desc":"Confirm price before boarding; carry a light shawl in winter.","add":["ganga_boat","assi"]},
+        {"title":"Respect sacred zones","desc":"Avoid photography where inappropriate; follow local guidance.","add":[]}
+      ],
+      "kathas": [
+        {"title":"Why Kashi feels timeless","text":"Kashi is experienced like a living flow — ghats, bells, and lanes that invite remembrance. Move slowly; the city reveals itself."},
+        {"title":"Ghats: a river-side classroom","text":"From sunrise to evening lamps, the ghats teach impermanence and devotion. Observe quietly, offer respect, and you’ll understand Banaras beyond photos."},
+        {"title":"Sarnath: silence after awakening","text":"Sarnath carries calm continuity — ruins, stupas, and gardens. It’s a perfect balance to the intensity of old Kashi streets."}
+      ],
+      "foods": [
+        {"title":"Kachori Sabzi","when":"Morning","note":"Go early; best with jalebi.","add":["kachori"]},
+        {"title":"Banarasi Chai","when":"Any","note":"Try chai near ghats.","add":["kachori"]},
+        {"title":"Thandai (seasonal)","when":"Day","note":"Prefer reputed shops.","add":[]}
+      ],
+      "shopping": {
+        "checklist": [
+          {"title":"Silk authenticity","desc":"Prefer reputed shops/co-ops; ask for GI tag."},
+          {"title":"Handloom lanes","desc":"Go with guidance if needed; compare quality."},
+          {"title":"Local crafts","desc":"Small souvenirs near heritage lanes."}
+        ],
+        "defaultAdd":["banaras_saree"]
+      }
+    }
   }
   </script>  <script>
-    // -------------------------------
-    // Punya Yatra — Varanasi Places
-    // Single-file demo (GitHub Pages ready)
-    // Swap embedded JSON with places.json fetch later.
-    // -------------------------------
+    // -------------------------------------------------
+    // Punya Yatra — Varanasi Places (v2)
+    // Module-first UX: choose a module → build plan → map
+    // Everything is embedded JSON-first (places + modules)
+    // -------------------------------------------------
 
     const $ = (s, r=document) => r.querySelector(s);
     const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
-    const storeKey = "py_varanasi_itinerary_v1";
-    const startKey = "py_varanasi_start_topics_v1";
+    const storeKey = "py_varanasi_itinerary_v2";
+    const startKey = "py_varanasi_start_topic_v2";
 
     const data = JSON.parse($("#placesData").textContent);
     const center = data.center;
@@ -700,88 +709,42 @@
       cat: new Set(),
       selectedId: null,
       itin: loadItinerary(),
-      topics: loadTopics()
+      topic: loadTopic() // single selected topic
     };
 
     $("#y").textContent = new Date().getFullYear();
 
-    // --- Guided Start (Big Cards Grid) ---
+    // ---------------- Start Topics ----------------
     const TOPICS = [
-      {
-        id: "tour",
-        icon: "🗺️",
-        title: "Tour / Itinerary",
-        desc: "Best highlights — ghats + temples + heritage.",
-        mode: "module",
-        module: "tour"
-      },
-      {
-        id: "festival",
-        icon: "🎉",
-        title: "Festival / Events",
-        desc: "Upcoming events — seasonal + local highlights.",
-        mode: "module",
-        module: "events"
-      },
-      {
-        id: "ritual",
-        icon: "🪔",
-        title: "Ritual / Puja",
-        desc: "Aarti, darshan, sacred flow — respectful guidance.",
-        mode: "module",
-        module: "rituals"
-      },
-      {
-        id: "katha",
-        icon: "📜",
-        title: "Katha / Stories",
-        desc: "Short legends + history snippets — read & share.",
-        mode: "module",
-        module: "kathas"
-      },
-      {
-        id: "food",
-        icon: "🍲",
-        title: "Food",
-        desc: "Breakfast streets, chai, and Banaras flavors.",
-        mode: "module",
-        module: "food"
-      },
-      {
-        id: "shopping",
-        icon: "🧵",
-        title: "Shopping",
-        desc: "Banarasi silk, handloom lanes, local crafts.",
-        mode: "module",
-        module: "shopping"
-      }
+      { id: "tour", icon: "🗺️", title: "Tour / Itinerary", desc: "Ready-made 1–3 day plans." },
+      { id: "festival", icon: "🎉", title: "Festival / Events", desc: "Aarti + seasonal vibes (editable)." },
+      { id: "ritual", icon: "🪔", title: "Ritual / Puja", desc: "Checklist + sacred flow." },
+      { id: "katha", icon: "📜", title: "Katha / Stories", desc: "Short legends + meaning." },
+      { id: "food", icon: "🍲", title: "Food", desc: "Breakfast trail + map filter." },
+      { id: "shopping", icon: "🧵", title: "Shopping", desc: "Checklist + silk lanes." }
     ];
 
     const startGrid = $("#startGrid");
     const btnStartGo = $("#btnStartGo");
     const btnSkipStart = $("#btnSkipStart");
 
-    function loadTopics(){
+    function loadTopic(){
       try{
         const raw = localStorage.getItem(startKey);
-        const arr = raw ? JSON.parse(raw) : [];
-        return new Set(Array.isArray(arr) ? arr : []);
-      }catch{ return new Set(); }
+        return raw || "";
+      }catch{ return ""; }
     }
-
-    function saveTopics(){
-      localStorage.setItem(startKey, JSON.stringify(Array.from(state.topics)));
+    function saveTopic(){
+      try{ localStorage.setItem(startKey, state.topic || ""); }catch{}
     }
 
     function renderStart(){
-      if (!startGrid) return;
       startGrid.innerHTML = "";
       for (const t of TOPICS){
         const c = document.createElement("button");
         c.type = "button";
         c.className = "startCard";
-        c.dataset.topic = t.id;
-        const on = state.topics.has(t.id);
+        const on = state.topic === t.id;
         c.setAttribute("aria-pressed", on ? "true" : "false");
         c.innerHTML = `
           <div class="startTop">
@@ -791,53 +754,85 @@
               <div class="small">${escapeHtml(t.desc)}</div>
             </div>
           </div>
-          <div class="small" style="font-weight:800; color:#3b2a12;">Tap to select</div>
+          <div class="small" style="font-weight:800; color:#3b2a12;">Tap to choose</div>
         `;
-
-        c.addEventListener("click", () => {
-          if (state.topics.has(t.id)) state.topics.delete(t.id);
-          else state.topics.add(t.id);
-          saveTopics();
+        c.addEventListener("click", ()=>{
+          state.topic = t.id;
+          saveTopic();
           renderStart();
         });
-
         startGrid.appendChild(c);
       }
-
-      btnStartGo.disabled = state.topics.size === 0;
+      btnStartGo.disabled = !state.topic;
     }
 
-    function applyTopics(){
-      // Kept for future: topic-to-filter quick apply
-      // (Now we open modules first.)
-    }
-
-    btnStartGo?.addEventListener("click", () => {
-      if (!state.topics.size) return;
-      const chosen = Array.from(state.topics)[0];
-      openTopicModule(chosen);
+    btnStartGo.addEventListener("click", ()=>{
+      if (!state.topic) return;
+      openTopicModule(state.topic);
     });
 
-    btnSkipStart?.addEventListener("click", () => {
-      state.topics.clear();
-      saveTopics();
+    btnSkipStart.addEventListener("click", ()=>{
       $("#start").style.display = "none";
       $("#mainApp").hidden = false;
-      toast("Showing all places");
+      toast("Map view");
       render();
+      document.querySelector(".hero").scrollIntoView({ behavior:"smooth", block:"start" });
     });
 
-    // --- Map ---
-    const map = L.map("map", { zoomControl: true }).setView([center.lat, center.lng], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: "© OpenStreetMap"
-    }).addTo(map);
+    // Open Modules from topbar / hero
+    $("#btnOpenModules").addEventListener("click", ()=> openModulesPicker());
+    $("#btnOpenModules2").addEventListener("click", ()=> openModulesPicker());
 
-    const markerLayer = L.layerGroup().addTo(map);
+    function openModulesPicker(){
+      const html = `
+        <div class="panel">
+          <div class="moduleHeader">
+            <div>
+              <h3>Modules</h3>
+              <p>Pick one to get a guided plan, then jump to map.</p>
+            </div>
+          </div>
+          <div class="toolRow" style="margin-top:12px;">
+            ${TOPICS.map(t=>`<button class="btn" data-act="open" data-id="${escapeHtml(t.id)}">${escapeHtml(t.icon)} ${escapeHtml(t.title)}</button>`).join("")}
+          </div>
+        </div>
+      `;
+      openModule("Modules", "Choose one to start.", html, { primaryLabel:"🗺️ Map View" });
+
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        if (b.dataset.act === "open"){
+          closeModal();
+          openTopicModule(b.dataset.id);
+        }
+      }, { once:true });
+    }
+
+    // ---------------- Map ----------------
+    let map = null;
+    let markerLayer = null;
+
+    function ensureMap(){
+      if (map) return map;
+      if (!window.L) {
+        // If Leaflet fails to load, we still keep the rest of the app working (modules, lists, itinerary)
+        toast("Map library not loaded (offline/network). Modules + itinerary still work.");
+        return null;
+      }
+      map = L.map("map", { zoomControl: true }).setView([center.lat, center.lng], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap"
+      }).addTo(map);
+      markerLayer = L.layerGroup().addTo(map);
+      return map;
+    }
+
+    ensureMap();
     const markersById = new Map();
 
-    // --- UI: Chips ---
+    // ---------------- Chips ----------------
     const chipsEl = $("#chips");
     for (const c of data.categories){
       const b = document.createElement("button");
@@ -846,7 +841,7 @@
       b.textContent = c.label;
       b.dataset.cat = c.id;
       b.setAttribute("aria-pressed", "false");
-      b.addEventListener("click", () => {
+      b.addEventListener("click", ()=>{
         if (state.cat.has(c.id)) state.cat.delete(c.id);
         else state.cat.add(c.id);
         syncChips();
@@ -856,27 +851,18 @@
     }
 
     function syncChips(){
-      $$(".chip").forEach(ch => {
+      $$(".chip").forEach(ch=>{
         const on = state.cat.has(ch.dataset.cat);
         ch.setAttribute("aria-pressed", on ? "true" : "false");
       });
     }
 
-    // --- Controls ---
-    $("#q").addEventListener("input", (e) => {
-      state.q = e.target.value.trim();
-      render();
-    });
-    $("#sort").addEventListener("change", (e) => {
-      state.sort = e.target.value;
-      render();
-    });
-    $("#time").addEventListener("change", (e) => {
-      state.time = e.target.value;
-      render();
-    });
+    // ---------------- Controls ----------------
+    $("#q").addEventListener("input", (e)=>{ state.q = e.target.value.trim(); render(); });
+    $("#sort").addEventListener("change", (e)=>{ state.sort = e.target.value; render(); });
+    $("#time").addEventListener("change", (e)=>{ state.time = e.target.value; render(); });
 
-    $("#btnClearFilters").addEventListener("click", () => {
+    $("#btnClearFilters").addEventListener("click", ()=>{
       state.q = "";
       state.time = "any";
       state.sort = "pop";
@@ -889,59 +875,55 @@
       render();
     });
 
-    $("#btnLocate").addEventListener("click", () => {
+    $("#btnLocate").addEventListener("click", ()=>{
       map.setView([center.lat, center.lng], 13, { animate:true });
       toast("Centered on Varanasi");
     });
 
-    $("#btnRandom").addEventListener("click", () => {
+    $("#btnRandom").addEventListener("click", ()=>{
       const list = getFilteredPlaces();
       if (!list.length) return toast("No places match your filters");
       const p = list[Math.floor(Math.random()*list.length)];
       focusPlace(p.id, { openModal:true });
     });
 
-    $("#btnOpenItin").addEventListener("click", () => {
-      document.getElementById("itin").scrollIntoView({ behavior:"smooth", block:"start" });
+    $("#btnOpenItin").addEventListener("click", ()=>{
+      $("#itin").scrollIntoView({ behavior:"smooth", block:"start" });
     });
 
-    $("#btnClearItin").addEventListener("click", () => {
+    $("#btnClearItin").addEventListener("click", ()=>{
       state.itin = [];
       saveItinerary();
       renderItinerary();
       toast("Itinerary cleared");
     });
 
-    $("#btnExport").addEventListener("click", async () => {
+    $("#btnExport").addEventListener("click", async ()=>{
       const txt = itineraryText();
       await copyText(txt);
       toast("Itinerary copied");
     });
 
-    $("#btnWhatsApp").addEventListener("click", () => {
+    $("#btnWhatsApp").addEventListener("click", ()=>{
       const msg = itineraryText(true);
-      const url = "https://wa.me/?text=" + encodeURIComponent(msg);
-      window.open(url, "_blank", "noopener");
+      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank", "noopener");
     });
 
-    // --- Render pipeline ---
+    // ---------------- Render pipeline ----------------
     function getFilteredPlaces(){
       const q = state.q.toLowerCase();
       const wantsTime = state.time;
       const cats = state.cat;
 
-      let list = data.places.filter(p => {
-        // Category filter (if any selected)
+      let list = data.places.filter(p=>{
         if (cats.size){
-          const ok = p.category?.some(x => cats.has(x));
+          const ok = p.category?.some(x=>cats.has(x));
           if (!ok) return false;
         }
-        // Time filter
         if (wantsTime !== "any"){
-          const bt = (p.bestTime || []).map(x => (x||"").toLowerCase());
+          const bt = (p.bestTime||[]).map(x=>(x||"").toLowerCase());
           if (!bt.includes(wantsTime)) return false;
         }
-        // Search filter
         if (q){
           const hay = [p.name, p.short, p.near, ...(p.tags||[]), ...(p.category||[])].join(" ").toLowerCase();
           if (!hay.includes(q)) return false;
@@ -949,14 +931,9 @@
         return true;
       });
 
-      // Sort
-      if (state.sort === "pop"){
-        list.sort((a,b)=>(b.pop||0)-(a.pop||0));
-      } else if (state.sort === "alpha"){
-        list.sort((a,b)=> (a.name||"").localeCompare(b.name||""));
-      } else if (state.sort === "near"){
-        list.sort((a,b)=> dist2(a, center) - dist2(b, center));
-      }
+      if (state.sort === "pop") list.sort((a,b)=>(b.pop||0)-(a.pop||0));
+      else if (state.sort === "alpha") list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+      else if (state.sort === "near") list.sort((a,b)=> dist2(a, center) - dist2(b, center));
 
       return list;
     }
@@ -965,23 +942,20 @@
       const list = getFilteredPlaces();
       $("#count").textContent = `Places (${list.length})`;
 
-      // Map markers
-      markerLayer.clearLayers();
+      ensureMap();
+      if (markerLayer) markerLayer.clearLayers();
       markersById.clear();
-
       for (const p of list){
+        if (!map || !markerLayer) break;
         const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
         m.bindPopup(`<b>${escapeHtml(p.name)}</b><br><span style='color:#555'>${escapeHtml(p.short||"")}</span>`);
-        m.on("click", () => focusPlace(p.id, { openModal:false }));
+        m.on("click", ()=> focusPlace(p.id, { openModal:false }));
         markersById.set(p.id, m);
       }
 
-      // Cards
       const grid = $("#grid");
       grid.innerHTML = "";
-      for (const p of list){
-        grid.appendChild(placeCard(p));
-      }
+      for (const p of list) grid.appendChild(placeCard(p));
 
       renderItinerary();
     }
@@ -1011,7 +985,7 @@
         </div>
       `;
 
-      el.addEventListener("click", (e) => {
+      el.addEventListener("click", (e)=>{
         const btn = e.target.closest("button");
         if (btn?.dataset.action === "add"){
           e.stopPropagation();
@@ -1026,7 +1000,7 @@
         focusPlace(p.id, { openModal:false });
       });
 
-      el.addEventListener("keydown", (e) => {
+      el.addEventListener("keydown", (e)=>{
         if (e.key === "Enter" || e.key === " "){
           e.preventDefault();
           focusPlace(p.id, { openModal:true });
@@ -1037,23 +1011,18 @@
     }
 
     function focusPlace(id, { openModal }){
-      const p = data.places.find(x => x.id === id);
+      const p = data.places.find(x=>x.id===id);
       if (!p) return;
       state.selectedId = id;
 
-      // Open popup + pan
-      const m = markersById.get(id);
-      if (m){
-        map.setView([p.lat, p.lng], 14, { animate:true });
-        m.openPopup();
-      } else {
-        map.setView([p.lat, p.lng], 14, { animate:true });
-      }
+      ensureMap();
+      if (map) map.setView([p.lat, p.lng], 14, { animate:true });
+      if (m) m.openPopup();
 
       if (openModal) openDetails(p);
     }
 
-    // --- Itinerary ---
+    // ---------------- Itinerary ----------------
     function loadItinerary(){
       try{
         const raw = localStorage.getItem(storeKey);
@@ -1061,9 +1030,8 @@
         return Array.isArray(arr) ? arr : [];
       }catch{ return []; }
     }
-
     function saveItinerary(){
-      localStorage.setItem(storeKey, JSON.stringify(state.itin));
+      try{ localStorage.setItem(storeKey, JSON.stringify(state.itin)); }catch{}
     }
 
     function addToItinerary(id){
@@ -1075,7 +1043,7 @@
     }
 
     function removeFromItinerary(id){
-      state.itin = state.itin.filter(x => x !== id);
+      state.itin = state.itin.filter(x=>x!==id);
       saveItinerary();
       renderItinerary();
       toast("Removed");
@@ -1083,7 +1051,7 @@
 
     function moveItin(from, to){
       const a = state.itin;
-      if (from < 0 || to < 0 || from >= a.length || to >= a.length) return;
+      if (from<0 || to<0 || from>=a.length || to>=a.length) return;
       const [it] = a.splice(from, 1);
       a.splice(to, 0, it);
       saveItinerary();
@@ -1102,8 +1070,8 @@
         return;
       }
 
-      state.itin.forEach((id, idx) => {
-        const p = data.places.find(x => x.id === id);
+      state.itin.forEach((id, idx)=>{
+        const p = data.places.find(x=>x.id===id);
         if (!p) return;
         const row = document.createElement("div");
         row.className = "item";
@@ -1113,7 +1081,7 @@
           <div style="min-width:0;">
             <strong>${escapeHtml(p.name)}</strong>
             <p>${escapeHtml(p.short||"")}</p>
-            <p style="margin-top:6px; font-family:var(--mono); font-size:11px; color:var(--muted);">~${p.durationMin||60} min • ${escapeHtml((p.near||"Varanasi"))}</p>
+            <p style="margin-top:6px; font-family:var(--mono); font-size:11px; color:var(--muted);">~${p.durationMin||60} min • ${escapeHtml(p.near||"Varanasi")}</p>
           </div>
           <div class="miniBtns">
             <button class="iconBtn" title="Focus on map" aria-label="Focus" data-act="focus">📍</button>
@@ -1121,33 +1089,27 @@
           </div>
         `;
 
-        row.addEventListener("click", (e) => {
+        row.addEventListener("click", (e)=>{
           const b = e.target.closest("button");
           const act = b?.dataset.act;
           if (act === "remove") return removeFromItinerary(id);
           if (act === "focus") return focusPlace(id, { openModal:true });
         });
 
-        // Drag reorder
-        row.addEventListener("dragstart", (e) => {
+        row.addEventListener("dragstart", (e)=>{
           e.dataTransfer.setData("text/plain", String(idx));
           e.dataTransfer.effectAllowed = "move";
         });
-        row.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = "move";
-        });
-        row.addEventListener("drop", (e) => {
+        row.addEventListener("dragover", (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect = "move"; });
+        row.addEventListener("drop", (e)=>{
           e.preventDefault();
           const from = parseInt(e.dataTransfer.getData("text/plain"), 10);
-          const to = idx;
-          moveItin(from, to);
+          moveItin(from, idx);
         });
 
-        // Mobile: long-press reorder helpers (simple)
         let pressT = null;
-        row.addEventListener("touchstart", () => { pressT = setTimeout(()=> row.classList.add("drag"), 450); }, {passive:true});
-        row.addEventListener("touchend", () => { if(pressT) clearTimeout(pressT); row.classList.remove("drag"); }, {passive:true});
+        row.addEventListener("touchstart", ()=>{ pressT = setTimeout(()=> row.classList.add("drag"), 450); }, {passive:true});
+        row.addEventListener("touchend", ()=>{ if(pressT) clearTimeout(pressT); row.classList.remove("drag"); }, {passive:true});
 
         el.appendChild(row);
       });
@@ -1156,10 +1118,11 @@
     function itineraryText(forWhatsApp=false){
       const lines = [];
       lines.push(`Punya Yatra — Varanasi Itinerary`);
-      lines.push(`\nPlaces (${state.itin.length}):`);
+      lines.push(`
+Places (${state.itin.length}):`);
 
       let total = 0;
-      state.itin.forEach((id, i) => {
+      state.itin.forEach((id, i)=>{
         const p = data.places.find(x=>x.id===id);
         if (!p) return;
         total += (p.durationMin||60);
@@ -1168,15 +1131,17 @@
         lines.push(`   ${gmap}`);
       });
 
-      lines.push(`\nEstimated visit time: ~${Math.round(total/60)} hrs ${total%60} min`);
-      lines.push(`\nTip: Start with a sunrise ghat walk and end with evening aarti.`);
+      lines.push(`
+Estimated visit time: ~${Math.round(total/60)} hrs ${total%60} min`);
+      lines.push(`
+Tip: Start with a sunrise ghat walk and end with evening aarti.`);
 
-      // Keep WhatsApp message tight
-      const text = lines.join("\n");
+      const text = lines.join("
+");
       return forWhatsApp ? text.slice(0, 3800) : text;
     }
 
-    // --- Modal ---
+    // ---------------- Modal ----------------
     const backdrop = $("#backdrop");
     const mClose = $("#mClose");
 
@@ -1216,31 +1181,76 @@
       kvs.appendChild(kv("Coordinates", `${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}`));
 
       // Buttons
-      $("#mAdd").onclick = () => addToItinerary(p.id);
+      $("#mAdd").textContent = "➕ Add to Itinerary";
+      $("#mAdd").onclick = ()=> addToItinerary(p.id);
       $("#mDir").href = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-      $("#mCopy").onclick = async () => {
-        const txt = `${p.name}\n${p.short||""}\nhttps://www.google.com/maps?q=${p.lat},${p.lng}`;
+      $("#mDir").style.display = "inline-flex";
+      $("#mCopy").textContent = "📋 Copy";
+      $("#mCopy").onclick = async ()=>{
+        const txt = `${p.name}
+${p.short||""}
+https://www.google.com/maps?q=${p.lat},${p.lng}`;
         await copyText(txt);
         toast("Copied place info");
       };
 
-      backdrop.classList.add("open");
-      backdrop.setAttribute("aria-hidden", "false");
-
-      // Focus on map
-      map.setView([p.lat, p.lng], 14, { animate:true });
-      const m = markersById.get(p.id);
-      if (m) m.openPopup();
-
-      // Escape closes
-      document.addEventListener("keydown", onEscClose);
+      openModalShell();
     }
 
-    function kv(k,v){
-      const el = document.createElement("div");
-      el.className = "kv";
-      el.innerHTML = `<b>${escapeHtml(k)}</b><span>${escapeHtml(v)}</span>`;
-      return el;
+    function openModule(title, subtitle, html, { primaryLabel="🗺️ Map View", primaryAction=null }={}){
+      $("#mTitle").textContent = title;
+
+      $("#mMain").innerHTML = `
+        <div class="moduleHeader">
+          <div>
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(subtitle||"")}</p>
+          </div>
+          <div class="toolRow">
+            <button class="btn" id="modCopy">📋 Copy</button>
+            <button class="btn primary" id="modWhats">🟢 WhatsApp</button>
+          </div>
+        </div>
+        <div style="margin-top:12px;">${html}</div>
+      `;
+
+      const kvs = $("#mKvs");
+      kvs.innerHTML = "";
+      kvs.appendChild(kv("Next", "Jump to Map View anytime"));
+      kvs.appendChild(kv("Tip", "Use module buttons to add places to itinerary"));
+
+      // Right-side buttons
+      $("#mAdd").textContent = primaryLabel;
+      $("#mDir").style.display = "none";
+      $("#mCopy").textContent = "🔎 Browse Places";
+
+      $("#mAdd").onclick = ()=>{
+        if (typeof primaryAction === "function") return primaryAction();
+        goMapView();
+      };
+      $("#mCopy").onclick = ()=>{
+        goMapView();
+        setTimeout(()=> document.querySelector(".results")?.scrollIntoView({ behavior:"smooth", block:"start" }), 50);
+      };
+
+      // Module share/copy
+      $("#modCopy").onclick = async ()=>{
+        const txt = $("#mMain").innerText.trim().slice(0, 4500);
+        await copyText(txt);
+        toast("Copied");
+      };
+      $("#modWhats").onclick = ()=>{
+        const txt = $("#mMain").innerText.trim().slice(0, 3800);
+        window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank", "noopener");
+      };
+
+      openModalShell();
+    }
+
+    function openModalShell(){
+      backdrop.classList.add("open");
+      backdrop.setAttribute("aria-hidden", "false");
+      document.addEventListener("keydown", onEscClose);
     }
 
     function closeModal(){
@@ -1254,11 +1264,420 @@
     }
 
     mClose.addEventListener("click", closeModal);
-    backdrop.addEventListener("click", (e) => {
-      if (e.target === backdrop) closeModal();
-    });
+    backdrop.addEventListener("click", (e)=>{ if (e.target === backdrop) closeModal(); });
 
-    // --- Helpers ---
+    function kv(k,v){
+      const el = document.createElement("div");
+      el.className = "kv";
+      el.innerHTML = `<b>${escapeHtml(k)}</b><span>${escapeHtml(v)}</span>`;
+      return el;
+    }
+
+    // ---------------- Modules ----------------
+    function openTopicModule(topicId, opts={}){
+      // Once a module opens, hide start screen; keep main hidden until they choose map
+      $("#start").style.display = "none";
+      $("#mainApp").hidden = true;
+
+      if (topicId === "tour") return openTourModule();
+      if (topicId === "festival") return openEventsModule();
+      if (topicId === "ritual") return openRitualsModule();
+      if (topicId === "katha") return openKathasModule(opts.kathaIndex ?? 0);
+      if (topicId === "food") return openFoodModule();
+      if (topicId === "shopping") return openShoppingModule();
+
+      // fallback
+      goMapView();
+    }
+
+    function goMapView(){
+      closeModal();
+      $("#start").style.display = "none";
+      $("#mainApp").hidden = false;
+
+      ensureMap();
+      if (map) setTimeout(() => map.invalidateSize(true), 60);
+
+      render();
+      toast("Map view");
+      document.querySelector(".hero")?.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+
+    function openTourModule(){
+      const plans = data.modules?.tourPlans || [];
+
+      const html = `
+        <div class="cols">
+          <div class="panel">
+            <h4>Choose a plan</h4>
+            <div class="stack">
+              ${plans.map(p=>`
+                <div class="box">
+                  <b>${escapeHtml(p.title)}</b>
+                  <span>${escapeHtml(p.subtitle||"")}</span>
+                  <div class="toolRow">
+                    <button class="btn small" data-act="view" data-id="${escapeHtml(p.id)}">👀 View</button>
+                    <button class="btn small primary" data-act="load" data-id="${escapeHtml(p.id)}">➕ Add all</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+          <aside class="panel">
+            <h4>Plan preview</h4>
+            <div class="hint" id="planPreview">Tap <b>View</b> to preview steps.</div>
+          </aside>
+        </div>
+      `;
+
+      openModule("Tour / Itinerary", "Ready-made 1–3 day plans. Add all steps to itinerary.", html);
+
+      const preview = $("#mMain").querySelector("#planPreview");
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        const act = b.dataset.act;
+        const id = b.dataset.id;
+        const plan = plans.find(x=>x.id===id);
+        if (!plan) return;
+
+        if (act === "view"){
+          preview.innerHTML = plan.steps.map((sid,i)=>{
+            const p = data.places.find(x=>x.id===sid);
+            if (!p) return "";
+            return `<div class="box" style="margin-top:10px;"><b>${i+1}. ${escapeHtml(p.name)}</b><span>${escapeHtml(p.short||"")}</span></div>`;
+          }).join("") || "<div class='hint'>No steps found.</div>";
+        }
+
+        if (act === "load"){
+          let added = 0;
+          for (const sid of plan.steps){
+            if (!state.itin.includes(sid)) { state.itin.push(sid); added++; }
+          }
+          saveItinerary();
+          renderItinerary();
+          toast(added ? `Added ${added} places` : "Already added");
+        }
+      });
+
+      // Helpful default: set evening when plan contains aarti
+      $("#mAdd").textContent = "🗺️ Map View";
+      $("#mAdd").onclick = ()=> goMapView();
+    }
+
+    function openEventsModule(){
+      const events = data.modules?.events || [];
+
+      const html = `
+        <div class="cols">
+          <div class="panel">
+            <h4>Events timeline (editable)</h4>
+            <div class="stack">
+              ${events.map((ev,i)=>`
+                <div class="box">
+                  <b>${escapeHtml(ev.title)}</b>
+                  <span>When: ${escapeHtml(ev.when||"")} • ${escapeHtml(ev.note||"")}</span>
+                  <div class="toolRow">
+                    <button class="btn small" data-act="map" data-i="${i}">🗺️ Related places</button>
+                    <button class="btn small primary" data-act="add" data-i="${i}">➕ Add</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+          <aside class="panel">
+            <h4>Quick suggestions</h4>
+            <div class="box"><b>Evening plan</b><span>Temple → Aarti → Boat (optional)</span></div>
+            <div class="box"><b>Morning plan</b><span>Sunrise → Breakfast → Heritage</span></div>
+          </aside>
+        </div>
+      `;
+
+      openModule("Festival / Events", "A timeline of experiences (later: add exact dates in events.json).", html);
+
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        const act = b.dataset.act;
+        const i = parseInt(b.dataset.i, 10);
+        const ev = events[i];
+        if (!ev) return;
+
+        if (act === "add"){
+          const ids = (ev.add || []);
+          let added = 0;
+          ids.forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
+          saveItinerary();
+          renderItinerary();
+          toast(added ? `Added ${added} places` : "Already added");
+        }
+
+        if (act === "map"){
+          // Apply a gentle default: evening + ghats
+          state.time = "evening";
+          $("#time").value = "evening";
+          state.cat = new Set(["ghat","heritage"]);
+          syncChips();
+          state.q = "aarti";
+          $("#q").value = "aarti";
+          toast("Event places filtered");
+          goMapView();
+        }
+      });
+    }
+
+    function openRitualsModule(){
+      const rituals = data.modules?.rituals || [];
+
+      const html = `
+        <div class="cols">
+          <div class="panel">
+            <h4>Ritual checklist</h4>
+            <div class="stack">
+              ${rituals.map((r,i)=>`
+                <div class="box" style="display:flex; gap:10px; align-items:flex-start;">
+                  <input type="checkbox" aria-label="Done" />
+                  <div style="min-width:0;">
+                    <b>${escapeHtml(r.title)}</b>
+                    <span>${escapeHtml(r.desc||"")}</span>
+                    <div class="toolRow">
+                      <button class="btn small primary" data-act="add" data-i="${i}">➕ Add places</button>
+                      <button class="btn small" data-act="map" data-i="${i}">🗺️ Show on map</button>
+                    </div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+          <aside class="panel">
+            <h4>Quick flow</h4>
+            <div class="box"><b>Morning</b><span>Sunrise ghat → darshan → breakfast</span></div>
+            <div class="box"><b>Evening</b><span>Temple → aarti → calm walk</span></div>
+            <div class="toolRow">
+              <button class="btn" id="ritFilter">🔎 Filter ritual places</button>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      openModule("Ritual / Puja", "A respectful checklist for sacred experiences.", html);
+
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        const act = b.dataset.act;
+        const i = parseInt(b.dataset.i, 10);
+        const r = rituals[i];
+        if (!r) return;
+
+        if (act === "add"){
+          let added = 0;
+          (r.add||[]).forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
+          saveItinerary();
+          renderItinerary();
+          toast(added ? `Added ${added} places` : "Already added");
+        }
+
+        if (act === "map"){
+          state.time = "evening";
+          $("#time").value = "evening";
+          state.cat = new Set(["temple","ghat"]);
+          syncChips();
+          toast("Ritual places filtered");
+          goMapView();
+        }
+      });
+
+      $("#mMain").querySelector("#ritFilter")?.addEventListener("click", ()=>{
+        state.time = "evening";
+        $("#time").value = "evening";
+        state.cat = new Set(["temple","ghat"]);
+        syncChips();
+        toast("Ritual places filtered");
+        goMapView();
+      });
+    }
+
+    function openKathasModule(initialIndex=0){
+      const kathas = data.modules?.kathas || [];
+      const rel = [
+        { id:"kashi_vishwanath", label:"Shri Kashi Vishwanath" },
+        { id:"dashashwamedh", label:"Dashashwamedh Ghat" },
+        { id:"sarnath", label:"Sarnath" }
+      ];
+
+      const html = `
+        <div class="cols">
+          <div class="panel">
+            <h4>Choose a story</h4>
+            <div class="toolRow">
+              ${kathas.map((k,i)=>`<button class="btn small" data-act="story" data-i="${i}">📜 ${escapeHtml(k.title)}</button>`).join("")}
+            </div>
+            <div class="box" id="storyBox" style="margin-top:12px;">
+              <b>${escapeHtml(kathas[Math.max(0, Math.min(initialIndex, kathas.length-1))]?.title || "Katha")}</b>
+              <span>${escapeHtml(kathas[Math.max(0, Math.min(initialIndex, kathas.length-1))]?.text || "")}</span>
+            </div>
+          </div>
+          <aside class="panel">
+            <h4>Jump to related places</h4>
+            <div class="stack">
+              ${rel.map(x=>`
+                <div class="box">
+                  <b>${escapeHtml(x.label)}</b>
+                  <div class="toolRow">
+                    <button class="btn small primary" data-act="addOne" data-id="${escapeHtml(x.id)}">➕ Add</button>
+                    <button class="btn small" data-act="focus" data-id="${escapeHtml(x.id)}">📍 Focus</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </aside>
+        </div>
+      `;
+
+      openModule("Katha / Stories", "Short legends and meaning — read, copy, and share.", html);
+
+      const box = $("#mMain").querySelector("#storyBox");
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        const act = b.dataset.act;
+
+        if (act === "story"){
+          const i = parseInt(b.dataset.i, 10);
+          const k = kathas[i];
+          if (!k) return;
+          box.innerHTML = `<b>${escapeHtml(k.title)}</b><span>${escapeHtml(k.text||"")}</span>`;
+        }
+
+        if (act === "addOne") addToItinerary(b.dataset.id);
+
+        if (act === "focus"){
+          const id = b.dataset.id;
+          goMapView();
+          setTimeout(()=> focusPlace(id, { openModal:true }), 60);
+        }
+      });
+    }
+
+    function openFoodModule(){
+      const foods = data.modules?.foods || [];
+
+      const html = `
+        <div class="cols">
+          <div class="panel">
+            <h4>Food trail</h4>
+            <div class="stack">
+              ${foods.map((f,i)=>`
+                <div class="box">
+                  <b>${escapeHtml(f.title)}</b>
+                  <span>Best time: ${escapeHtml(f.when||"Any")} • ${escapeHtml(f.note||"")}</span>
+                  <div class="toolRow">
+                    <button class="btn small primary" data-act="add" data-i="${i}">➕ Add spot</button>
+                    <button class="btn small" data-act="map">🗺️ Show food on map</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+          <aside class="panel">
+            <h4>Suggested morning</h4>
+            <div class="box"><b>Sunrise</b><span>Assi ghat walk</span></div>
+            <div class="box"><b>Breakfast</b><span>Kachori + chai</span></div>
+            <div class="box"><b>Next</b><span>Temple / heritage</span></div>
+            <div class="toolRow">
+              <button class="btn" id="foodBuild">✨ Build morning plan</button>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      openModule("Food", "Banaras flavors — build a simple food trail.", html);
+
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        const act = b.dataset.act;
+
+        if (act === "add"){
+          const i = parseInt(b.dataset.i, 10);
+          const f = foods[i];
+          if (!f) return;
+          let added = 0;
+          (f.add||[]).forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
+          saveItinerary();
+          renderItinerary();
+          toast(added ? `Added ${added} place` : "Already added");
+        }
+
+        if (act === "map"){
+          state.cat = new Set(["food"]);
+          syncChips();
+          state.time = "morning";
+          $("#time").value = "morning";
+          toast("Food places filtered");
+          goMapView();
+        }
+      });
+
+      $("#mMain").querySelector("#foodBuild")?.addEventListener("click", ()=>{
+        ["assi","kachori"].forEach(id=>{ if(!state.itin.includes(id)) state.itin.push(id); });
+        saveItinerary();
+        renderItinerary();
+        toast("Morning plan added");
+      });
+    }
+
+    function openShoppingModule(){
+      const s = data.modules?.shopping || { checklist:[], defaultAdd:[] };
+
+      const html = `
+        <div class="cols">
+          <div class="panel">
+            <h4>Shopping checklist</h4>
+            <div class="stack">
+              ${(s.checklist||[]).map(it=>`
+                <div class="box" style="display:flex; gap:10px; align-items:flex-start;">
+                  <input type="checkbox" aria-label="Done" />
+                  <div>
+                    <b>${escapeHtml(it.title)}</b>
+                    <span>${escapeHtml(it.desc||"")}</span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+            <div class="toolRow">
+              <button class="btn small primary" id="shopAdd">➕ Add shopping place</button>
+              <button class="btn small" id="shopMap">🗺️ Show on map</button>
+            </div>
+          </div>
+          <aside class="panel">
+            <h4>Smart tip</h4>
+            <div class="box"><b>Compare 2–3 shops</b><span>Avoid impulse buys near peak crowd zones; check authenticity.</span></div>
+            <div class="box"><b>Pair with heritage</b><span>Shopping after a calm morning heritage visit.</span></div>
+          </aside>
+        </div>
+      `;
+
+      openModule("Shopping", "Banarasi silk + local crafts — a guided checklist.", html);
+
+      $("#mMain").querySelector("#shopAdd")?.addEventListener("click", ()=>{
+        let added = 0;
+        (s.defaultAdd||[]).forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
+        saveItinerary();
+        renderItinerary();
+        toast(added ? `Added ${added} place` : "Already added");
+      });
+
+      $("#mMain").querySelector("#shopMap")?.addEventListener("click", ()=>{
+        state.cat = new Set(["shopping"]);
+        syncChips();
+        toast("Shopping places filtered");
+        goMapView();
+      });
+    }
+
+    // ---------------- Helpers ----------------
     function dist2(p, c){
       const dx = (p.lat - c.lat);
       const dy = (p.lng - c.lng);
@@ -1275,9 +1694,8 @@
     }
 
     async function copyText(text){
-      try{
-        await navigator.clipboard.writeText(text);
-      }catch{
+      try{ await navigator.clipboard.writeText(text); }
+      catch{
         const ta = document.createElement("textarea");
         ta.value = text;
         ta.style.position = "fixed";
@@ -1300,10 +1718,9 @@
 
     // Simple inline SVG "art" generator (no external images)
     function miniSvg(seed){
-      // Deterministic pseudo-random from seed
-      let h = 0;
-      for (let i=0;i<seed.length;i++) h = (h*31 + seed.charCodeAt(i)) >>> 0;
-      const r = (a,b)=> a + (h = (h*1664525 + 1013904223)>>>0) / 4294967296 * (b-a);
+      let hh = 0;
+      for (let i=0;i<seed.length;i++) hh = (hh*31 + seed.charCodeAt(i)) >>> 0;
+      const r = (a,b)=> a + (hh = (hh*1664525 + 1013904223)>>>0) / 4294967296 * (b-a);
 
       const w = 800, hgt = 300;
       const sunX = r(80, 720).toFixed(1);
@@ -1320,29 +1737,23 @@
         }).join(" ") + ` L ${w} ${y} L ${w} ${hgt} L 0 ${hgt} Z`;
         const op = (0.10 + i*0.04).toFixed(2);
         return `<path d="${p}" fill="rgba(255,255,255,${op})"/>`;
-      }).join("\n");
+      }).join("
+");
 
-      // Simple ghat silhouette
       const steps = Array.from({length:7}).map((_,i)=>{
         const x = 40 + i*95;
         const y = 170 + r(-6, 6);
         const ww = 80 + r(-8, 8);
-        const hh = 48 + r(-10, 10);
-        return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${ww.toFixed(1)}" height="${hh.toFixed(1)}" rx="10" fill="rgba(31,35,40,.12)"/>`;
-      }).join("\n");
+        const hh2 = 48 + r(-10, 10);
+        return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${ww.toFixed(1)}" height="${hh2.toFixed(1)}" rx="10" fill="rgba(31,35,40,.12)"/>`;
+      }).join("
+");
 
-      // Temple spire
       const spX = r(520, 720);
       const sp = `M ${spX.toFixed(1)} 150 L ${(spX+18).toFixed(1)} 230 L ${(spX-18).toFixed(1)} 230 Z`;
 
       return `
       <svg viewBox="0 0 ${w} ${hgt}" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="g${Math.floor(r(1,99999))}" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0" stop-color="rgba(255,159,28,.85)"/>
-            <stop offset="1" stop-color="rgba(255,183,77,.25)"/>
-          </linearGradient>
-        </defs>
         <rect width="${w}" height="${hgt}" fill="rgba(255,255,255,.05)"/>
         <circle cx="${sunX}" cy="${sunY}" r="${sunR}" fill="rgba(255,255,255,.75)"/>
         <circle cx="${sunX}" cy="${sunY}" r="${(sunR*1.8).toFixed(1)}" fill="rgba(255,255,255,.18)"/>
@@ -1354,15 +1765,125 @@
       </svg>`;
     }
 
-    // Initial render
+    // ---------------- Global search (everywhere) ----------------
+    const gq = $("#gq");
+    gq?.addEventListener("keydown", (e)=>{
+      if (e.key === "Enter"){
+        e.preventDefault();
+        const q = gq.value.trim();
+        if (!q) return toast("Type something to search");
+        openGlobalSearch(q);
+      }
+    });
+
+    function openGlobalSearch(query){
+      const q = query.toLowerCase();
+      const results = [];
+
+      // Places
+      for (const p of data.places){
+        const hay = [p.name, p.short, p.near, ...(p.tags||[]), ...(p.category||[])].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"place", title:p.name, sub:p.short||"", id:p.id });
+      }
+
+      // Tour plans
+      for (const plan of (data.modules?.tourPlans||[])){
+        const hay = [plan.title, plan.subtitle, ...(plan.steps||[])].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"tour", title:plan.title, sub:plan.subtitle||"", id:plan.id });
+      }
+
+      // Events
+      for (let i=0;i<(data.modules?.events||[]).length;i++){
+        const ev = data.modules.events[i];
+        const hay = [ev.title, ev.when, ev.note].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"event", title:ev.title, sub:`${ev.when||""} • ${ev.note||""}`.trim(), idx:i });
+      }
+
+      // Rituals
+      for (let i=0;i<(data.modules?.rituals||[]).length;i++){
+        const r = data.modules.rituals[i];
+        const hay = [r.title, r.desc].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"ritual", title:r.title, sub:r.desc||"", idx:i });
+      }
+
+      // Kathas
+      for (let i=0;i<(data.modules?.kathas||[]).length;i++){
+        const k = data.modules.kathas[i];
+        const hay = [k.title, k.text].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"katha", title:k.title, sub:(k.text||"").slice(0,120)+((k.text||"").length>120?"…":""), idx:i });
+      }
+
+      // Foods
+      for (let i=0;i<(data.modules?.foods||[]).length;i++){
+        const f = data.modules.foods[i];
+        const hay = [f.title, f.when, f.note].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"food", title:f.title, sub:`${f.when||""} • ${f.note||""}`.trim(), idx:i });
+      }
+
+      // Shopping checklist
+      for (let i=0;i<(data.modules?.shopping?.checklist||[]).length;i++){
+        const s = data.modules.shopping.checklist[i];
+        const hay = [s.title, s.desc].join(" ").toLowerCase();
+        if (hay.includes(q)) results.push({ type:"shopping", title:s.title, sub:s.desc||"", idx:i });
+      }
+
+      const scoreType = (t)=>({place:0,tour:1,event:2,ritual:3,katha:4,food:5,shopping:6}[t] ?? 9);
+      results.sort((a,b)=> scoreType(a.type)-scoreType(b.type) || a.title.localeCompare(b.title));
+
+      const html = `
+        <div class="panel">
+          <h4 style="margin:0 0 8px;">Results for: “${escapeHtml(query)}”</h4>
+          <div class="hint">Click any result to open it (place details or module).</div>
+          <div class="stack" style="margin-top:10px;">
+            ${results.slice(0, 40).map((r)=>`
+              <div class="box">
+                <b>${escapeHtml(r.title)}</b>
+                <span>${escapeHtml(r.sub||"")}</span>
+                <div class="toolRow">
+                  <button class="btn small primary" data-act="open" data-type="${escapeHtml(r.type)}" data-id="${escapeHtml(r.id||"")}" data-idx="${r.idx ?? ""}">Open</button>
+                </div>
+              </div>
+            `).join("") || `<div class="box"><b>No results</b><span>Try a different keyword.</span></div>`}
+          </div>
+        </div>
+      `;
+
+      openModule("Search Everywhere", "Places + tours + festivals + rituals + kathas + food + shopping", html, { primaryLabel:"🗺️ Map View" });
+
+      $("#mMain").addEventListener("click", (e)=>{
+        const b = e.target.closest("button");
+        if (!b) return;
+        if (b.dataset.act !== "open") return;
+
+        const type = b.dataset.type;
+        const id = b.dataset.id;
+        const idx = b.dataset.idx === "" ? null : parseInt(b.dataset.idx, 10);
+
+        if (type === "place"){
+          goMapView();
+          setTimeout(()=> focusPlace(id, { openModal:true }), 80);
+          return;
+        }
+        if (type === "tour") return (closeModal(), openTopicModule("tour"));
+        if (type === "event") return (closeModal(), openTopicModule("festival"));
+        if (type === "ritual") return (closeModal(), openTopicModule("ritual"));
+        if (type === "food") return (closeModal(), openTopicModule("food"));
+        if (type === "shopping") return (closeModal(), openTopicModule("shopping"));
+        if (type === "katha") return (closeModal(), openTopicModule("katha", { kathaIndex: idx ?? 0 }));
+      }, { once:true });
+    }
+
+    // ---------------- Boot ----------------
     renderStart();
 
-    // Start screen first (Option 1). If user already selected topics earlier, keep them selected
-    // but still let them confirm with Continue.
+    // Start screen first; keep main hidden until Map View
     $("#mainApp").hidden = true;
 
-    // Render places immediately in background so map is ready when they continue.
+    // Render map/list in background so map is ready
     render();
+
+    // If user already has a saved topic, pre-enable Open
+    if (state.topic){ btnStartGo.disabled = false; }
 
   </script></body>
 </html>
