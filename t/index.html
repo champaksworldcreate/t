@@ -152,6 +152,22 @@
     }
     .toast.show{opacity: 1;transform: translateX(-50%) translateY(-2px);}
     .nowrap{white-space:nowrap}
+
+    /* ✅ Flicker animation for current marker (Leaflet circleMarker uses SVG path) */
+    .pp-now-flicker{
+      animation: ppFlicker 1.1s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes ppFlicker{
+      0%   { opacity: 0.35; filter: drop-shadow(0 0 0 rgba(255,159,28,0.0)); transform: scale(0.92); }
+      40%  { opacity: 1.00; filter: drop-shadow(0 0 8px rgba(255,159,28,0.55)); transform: scale(1.08); }
+      100% { opacity: 0.45; filter: drop-shadow(0 0 0 rgba(255,159,28,0.0)); transform: scale(0.95); }
+    }
+
+    /* (Optional) Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .pp-now-flicker{ animation: none !important; }
+    }
   </style>
 </head>
 
@@ -325,7 +341,7 @@
       lastSaved: { ts: 0, lat: null, lng: null, area: null },
       geocodeInFlight: false,
       lastPosition: null,            // { lat,lng,ts }
-      currentAreaGuess: "Now"        // shown even before geocode
+      currentAreaGuess: "Now"
     };
 
     function nowISO(){ return new Date().toISOString(); }
@@ -428,10 +444,23 @@
     const routeLine = L.polyline([], { weight: 5, opacity: 0.9 }).addTo(map);
     const markersLayer = L.layerGroup().addTo(map);
 
-    // current location marker (always)
+    // Current marker (animated)
     const currentMarker = L.circleMarker([0,0], {
-      radius: 8, weight: 2, opacity: 1, fillOpacity: 0.35
+      radius: 9,
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.35
     }).addTo(map);
+
+    // ✅ Add flicker class once the SVG path exists
+    function applyNowFlicker(){
+      try{
+        const el = currentMarker.getElement?.();
+        if (el) el.classList.add("pp-now-flicker");
+      }catch(_){}
+    }
+    // Leaflet creates SVG after addTo(map), but safe to re-apply after updates
+    map.whenReady(applyNowFlicker);
 
     map.setView([25.3176, 82.9739], 13);
 
@@ -439,7 +468,7 @@
      * Recorded select + highlight
      ***********************/
     let highlightCircle = null;
-    let pointMarkers = []; // aligns with saved points only
+    let pointMarkers = [];
 
     function buildPointLabel(p, idx){
       const area = p.area || "—";
@@ -454,7 +483,6 @@
 
       sel.innerHTML = "";
 
-      // Add "Now" option when we have a current location fix
       if (state.lastPosition){
         const optNow = document.createElement("option");
         optNow.value = "now";
@@ -469,7 +497,6 @@
           opt.textContent = "— No points —";
           sel.appendChild(opt);
         }
-        // Restore selection if possible
         if (prev === "now" && state.lastPosition) sel.value = "now";
         else sel.value = state.lastPosition ? "now" : "";
         const has = sel.value !== "" && sel.value !== null;
@@ -479,7 +506,6 @@
         return;
       }
 
-      // Head option (only if we already inserted Now; otherwise still fine)
       const head = document.createElement("option");
       head.value = "";
       head.textContent = "Select a saved point…";
@@ -492,7 +518,6 @@
         sel.appendChild(opt);
       });
 
-      // restore
       if (prev === "now" && state.lastPosition) sel.value = "now";
       else if (prev !== "" && prev !== "now" && Number(prev) < pts.length) sel.value = prev;
       else sel.value = state.lastPosition ? "now" : "";
@@ -573,11 +598,7 @@
     function fitRoute(){
       const pts = state.route?.points || [];
       const all = [...pts];
-
-      // include "Now" in fit if available
-      if (state.lastPosition){
-        all.push({ lat: state.lastPosition.lat, lng: state.lastPosition.lng });
-      }
+      if (state.lastPosition) all.push({ lat: state.lastPosition.lat, lng: state.lastPosition.lng });
 
       if (!all.length){
         toast("No points to fit");
@@ -690,8 +711,7 @@
     }
 
     /***********************
-     * Render route:
-     * saved points + current "Now" point (even when no name yet)
+     * Render route: saved points + current "Now" point in polyline
      ***********************/
     function renderRoute(){
       markersLayer.clearLayers();
@@ -700,13 +720,11 @@
       const pts = state.route?.points || [];
       const latlngs = pts.map(p=>[p.lat, p.lng]);
 
-      // add current location to the line so it always connects
       if (state.lastPosition){
         latlngs.push([state.lastPosition.lat, state.lastPosition.lng]);
       }
       routeLine.setLatLngs(latlngs);
 
-      // saved point markers
       pts.forEach((p, idx)=>{
         const m = L.marker([p.lat, p.lng]);
         const ts = new Date(p.ts).toLocaleString();
@@ -744,37 +762,33 @@
       ui.kvAcc.textContent = isFinite(accuracyM) ? `${Math.round(accuracyM)} m` : "—";
       ui.kvSpeed.textContent = fmtSpeed(speedMps);
 
-      // Always consider this as "Now" until geocode arrives
       state.lastPosition = { lat, lng, ts: Date.now() };
       state.currentAreaGuess = "Now";
       ui.kvArea.textContent = "Now";
 
-      // Move current marker + bind popup as Now
       currentMarker.setLatLng([lat,lng]);
+      // make sure flicker class stays applied after updates
+      applyNowFlicker();
+
       currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">Now</span>`);
 
-      // First centering
       if (state.tracking && state.route.points.length === 0){
         map.setView([lat,lng], 17);
       }
 
-      // Draw line immediately (connect to Now)
+      // draw immediately (connect to Now)
       renderRoute();
 
-      // Reverse geocode (throttled)
+      // reverse geocode (throttled)
       const geo = await reverseGeocode(lat, lng);
 
-      // If we got a name, show it in live status (but still keep "Now" for the current point label)
-      // You asked: name should show as "Now" until found, so:
-      // - before found: "Now"
-      // - after found: show the found area in the live status
+      // show name in live status once found
       if (geo && geo.area){
         state.currentAreaGuess = geo.area;
         ui.kvArea.textContent = geo.area;
         currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${geo.area}</span>`);
       }
 
-      // Saving rule uses the found area label; if not found, do NOT save a point yet.
       const areaForSaving = geo?.area || "";
       if (!areaForSaving) return;
 
@@ -794,7 +808,6 @@
         log(`Saved point #${state.route.points.length}: ${areaForSaving}`);
         renderRoute();
 
-        // auto-select last saved point
         ui.pointSelect.value = String(state.route.points.length - 1);
         ui.btnGoPoint.disabled = false;
         ui.btnOpenPopup.disabled = false;
@@ -1062,10 +1075,16 @@
         state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
       }
 
+      // default live area to Now
+      ui.kvArea.textContent = "Now";
+
       renderRoute();
       if (state.route.points.length) fitRoute();
       setStatus(false, "Idle");
       log(`Loaded route: ${state.route.points.length} saved point(s).`);
+
+      // ensure flicker class (in case map init timing)
+      setTimeout(applyNowFlicker, 50);
     })();
 
     window.PPRoute = {
