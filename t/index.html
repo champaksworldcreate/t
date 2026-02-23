@@ -3,9 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Route Recorder — Area Change Tracker (JSON)</title>
-  <meta name="description" content="Record live location, store points when area name changes, render route on a map, export/share JSON." />
+
+  <title>Programmer’s Picnic — Route Recorder (Area Change)</title>
+  <meta name="description" content="Programmer’s Picnic Route Recorder by Champak Roy. Track your live location, save points when the area changes, view your route on a map, and export/share as JSON." />
   <meta name="theme-color" content="#d97706" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Programmer’s Picnic — Route Recorder (Area Change)" />
+  <meta property="og:description" content="Track live location, save points when the area changes, view route, export/share JSON. By Champak Roy." />
+  <meta property="og:type" content="website" />
 
   <!-- Leaflet -->
   <link
@@ -18,7 +24,7 @@
   <style>
     :root{
       --bg:#fff7e6;
-      --panel:rgba(255,255,255,.78);
+      --panel:rgba(255,255,255,.82);
       --ink:#1f2328;
       --muted:#5b6570;
       --line:rgba(31,35,40,.12);
@@ -35,11 +41,12 @@
       font-family:var(--sans);
       color:var(--ink);
       background:
-        radial-gradient(900px 500px at 20% 0%, rgba(255,159,28,.22), transparent 60%),
-        radial-gradient(900px 500px at 80% 0%, rgba(255,183,77,.20), transparent 60%),
+        radial-gradient(900px 520px at 20% 0%, rgba(255,159,28,.22), transparent 60%),
+        radial-gradient(900px 520px at 80% 0%, rgba(255,183,77,.20), transparent 60%),
         var(--bg);
       min-height:100vh;
     }
+
     .wrap{
       max-width:1200px;
       margin:0 auto;
@@ -48,7 +55,10 @@
       grid-template-columns: 420px 1fr;
       gap:14px;
     }
-    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr}
+    }
+
     .card{
       background:var(--panel);
       border:1px solid var(--line);
@@ -57,6 +67,7 @@
       overflow:hidden;
       backdrop-filter: blur(10px);
     }
+
     header.card{
       grid-column:1 / -1;
       padding:14px 16px;
@@ -65,93 +76,258 @@
       justify-content:space-between;
       gap:12px;
     }
-    .brand{display:flex; align-items:center; gap:12px;}
-    .logo{
-      width:40px;height:40px;border-radius:14px;
-      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
-      box-shadow: 0 10px 24px rgba(255,159,28,.25);
-    }
-    h1{font-size:16px;margin:0;line-height:1.1;letter-spacing:.2px;}
-    .sub{margin:2px 0 0 0;font-size:12px;color:var(--muted);}
-    .pill{
-      font-size:12px;padding:8px 10px;border-radius:999px;border:1px solid var(--line);
-      background:rgba(255,255,255,.6);display:flex;gap:8px;align-items:center;
-    }
-    .dot{width:10px;height:10px;border-radius:50%;background:#b42318;box-shadow: 0 0 0 4px rgba(180,35,24,.12);}
-    .dot.on{background:#027a48;box-shadow: 0 0 0 4px rgba(2,122,72,.12);}
 
-    .left{padding:14px;display:flex;flex-direction:column;gap:12px;}
-    .sectionTitle{font-size:13px;font-weight:700;margin:2px 0 0;}
-    .grid{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
-    .row{display:flex;gap:10px;flex-wrap:wrap;}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:16px;
+      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+      box-shadow: 0 12px 28px rgba(255,159,28,.25);
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo:after{
+      content:"PP";
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      font-weight:900;
+      letter-spacing:.4px;
+      color:rgba(31,35,40,.86);
+      font-size:14px;
+    }
+    .titleWrap{min-width:0}
+    h1{
+      font-size:15px;
+      margin:0;
+      line-height:1.15;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .sub{
+      margin:2px 0 0 0;
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .byline{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .byline b{color:var(--ink)}
+    .rightTop{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.65);
+      display:flex; gap:8px; align-items:center;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:#b42318;
+      box-shadow: 0 0 0 4px rgba(180,35,24,.12);
+    }
+    .dot.on{
+      background:#027a48;
+      box-shadow: 0 0 0 4px rgba(2,122,72,.12);
+    }
+    .topActions{
+      display:flex; gap:8px; align-items:center;
+    }
+    .linkBtn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.65);
+      text-decoration:none;
+      font-size:12px;
+      color:var(--ink);
+      font-weight:700;
+    }
+
+    .left{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .sectionTitle{
+      font-size:13px;
+      font-weight:800;
+      margin:2px 0 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
     button{
       border:1px solid var(--line);
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.76);
       color:var(--ink);
       border-radius:14px;
       padding:10px 12px;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
       transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
       box-shadow: 0 8px 18px rgba(31,35,40,.08);
     }
     button:hover{transform: translateY(-1px)}
     button:active{transform: translateY(0px)}
-    button.primary{background: linear-gradient(135deg, var(--saffron), var(--saffron2));border-color: rgba(255,159,28,.35);}
-    button.danger{background: rgba(180,35,24,.08);border-color: rgba(180,35,24,.18);color:#7a271a;}
-    button:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+    button.primary{
+      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+      border-color: rgba(255,159,28,.35);
+    }
+    button.danger{
+      background: rgba(180,35,24,.08);
+      border-color: rgba(180,35,24,.18);
+      color:#7a271a;
+    }
+    button.ghost{
+      background: rgba(255,255,255,.5);
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
 
     .kv{
-      display:grid;grid-template-columns: 140px 1fr;gap:8px 10px;
-      padding:12px;border-radius:16px;border:1px solid var(--line);
-      background: rgba(255,255,255,.55);
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap:8px 10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.58);
     }
     .k{color:var(--muted); font-size:12px}
     .v{font-size:12px; font-family:var(--mono)}
     .mono{font-family:var(--mono)}
-    .hint{
-      font-size:12px;color:var(--muted);line-height:1.4;
-      padding:10px 12px;border-radius:16px;border:1px dashed rgba(31,35,40,.18);
-      background: rgba(255,255,255,.45);
+
+    input[type="text"], input[type="number"], select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      outline:none;
+      font-size:13px;
     }
+    .two{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+
+    .help{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.58);
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .help ul{margin:8px 0 0 18px; padding:0}
+    .help li{margin:6px 0}
+
     .log{
-      height:200px;overflow:auto;padding:10px 12px;border-radius:16px;border:1px solid var(--line);
-      background: rgba(255,255,255,.55);
-      font-family:var(--mono);font-size:12px;line-height:1.45;white-space:pre-wrap;
+      height:190px;
+      overflow:auto;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.58);
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.45;
+      white-space:pre-wrap;
     }
+
     .mapCard{padding:0}
-    #map{height: calc(100vh - 140px); min-height:520px;}
-    @media (max-width: 980px){ #map{height: 62vh; min-height:460px;} }
+    #map{height: calc(100vh - 150px); min-height:520px;}
+    @media (max-width: 980px){
+      #map{height: 62vh; min-height:460px;}
+    }
+
     .footerBar{
-      padding:12px 14px;border-top:1px solid var(--line);background: rgba(255,255,255,.65);
-      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+      padding:12px 14px;
+      border-top:1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
     .small{font-size:12px; color:var(--muted);}
-    input[type="text"], input[type="number"], select{
-      width:100%;padding:10px 12px;border-radius:14px;border:1px solid var(--line);
-      background: rgba(255,255,255,.75);outline:none;font-size:13px;
-    }
-    .two{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
+
     .badge{
       display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border-radius:999px;
-      border:1px solid var(--line); background: rgba(255,255,255,.6);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.72);
       font-size:12px;
+      color:var(--muted);
     }
+
     .toast{
-      position: fixed;left: 50%;bottom: 14px;transform: translateX(-50%);
-      background: rgba(31,35,40,.92);color: white;padding: 10px 12px;border-radius: 999px;
-      font-size: 12px;opacity: 0;pointer-events: none;
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      background: rgba(31,35,40,.92);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity .2s ease, transform .2s ease;
       max-width: calc(100vw - 28px);
-      white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .toast.show{opacity: 1;transform: translateX(-50%) translateY(-2px);}
-    .nowrap{white-space:nowrap}
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
 
-    /* ✅ NEW: Color-only animation for current marker (no size/opacity flicker) */
+    /* ✅ Color-only animation for current location marker */
     .pp-now-colorcycle{
-      animation: ppNowColors 1.25s linear infinite;
+      animation: ppNowColors 1.35s linear infinite;
     }
     @keyframes ppNowColors{
       0%   { fill: #ff9f1c; stroke: #1f2328; }
@@ -159,10 +335,27 @@
       66%  { fill: #3b82f6; stroke: #0f172a; }
       100% { fill: #ff9f1c; stroke: #1f2328; }
     }
-
-    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
       .pp-now-colorcycle{ animation: none !important; }
+    }
+
+    footer.siteFooter{
+      max-width:1200px;
+      margin: 0 auto;
+      padding: 0 18px 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    footer.siteFooter .footCard{
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.62);
+      padding: 12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
   </style>
 </head>
@@ -171,20 +364,30 @@
   <header class="card">
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>Route Recorder — Store on Area Change (JSON)</h1>
-        <div class="sub">Live GPS → reverse geocode area name → save point when the area changes → map route → download/share.</div>
+      <div class="titleWrap">
+        <h1>Programmer’s Picnic — Route Recorder</h1>
+        <div class="sub">Save a point when your <b>area name changes</b> • View route • Export / Share JSON</div>
+        <p class="byline">By <b>Champak Roy</b></p>
       </div>
     </div>
-    <div class="pill" title="Tracking status">
-      <span class="dot" id="statusDot"></span>
-      <span id="statusText">Idle</span>
+
+    <div class="rightTop">
+      <div class="pill" title="Tracking status">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">Idle</span>
+      </div>
+      <div class="topActions">
+        <button class="ghost" id="btnHelpToggle" aria-expanded="false">Help</button>
+      </div>
     </div>
   </header>
 
   <main class="wrap">
     <section class="card left">
-      <div class="sectionTitle">Controls</div>
+      <div class="sectionTitle">
+        <span>Controls</span>
+        <span class="badge" id="runBadge">Ready</span>
+      </div>
 
       <div class="grid">
         <button class="primary" id="btnStart">Start tracking</button>
@@ -206,32 +409,48 @@
       <div class="two">
         <div>
           <label class="k" for="routeName">Route name</label>
-          <input id="routeName" type="text" placeholder="e.g., Varanasi Walk (Feb 22)" />
+          <input id="routeName" type="text" placeholder="e.g., Varanasi Walk" />
         </div>
         <div>
-          <label class="k" for="minMove">Min move (meters)</label>
+          <label class="k" for="minMove">Min move (m)</label>
           <input id="minMove" type="number" min="0" step="1" value="25" />
         </div>
       </div>
 
       <div class="two">
         <div>
-          <label class="k" for="minTime">Min time (seconds)</label>
+          <label class="k" for="minTime">Min time (sec)</label>
           <input id="minTime" type="number" min="0" step="1" value="12" />
         </div>
         <div>
           <label class="k" for="areaMode">Area label</label>
           <select id="areaMode">
-            <option value="neighborhood">Neighborhood/Suburb → City</option>
+            <option value="neighborhood">Neighborhood → City</option>
             <option value="city">City → State</option>
-            <option value="full">Full display name</option>
+            <option value="full">Full name</option>
           </select>
         </div>
       </div>
 
-      <div class="hint">
-        <b>Note:</b> GPS works best on mobile and needs <b>HTTPS</b>. Reverse geocoding is throttled.
-        Until a name is found, the current point shows as <b>Now</b> and the route line still connects.
+      <!-- ✅ Help section (publication-friendly) -->
+      <div class="sectionTitle">Help</div>
+      <div class="help" id="helpBox" hidden>
+        <b>How it works</b>
+        <ul>
+          <li><b>Start tracking</b> to begin recording your live location.</li>
+          <li>Your current position is shown as <b>Now</b> until a place name is found.</li>
+          <li>A point is <b>saved</b> only when the <b>area name changes</b> (and you have moved/time has passed).</li>
+          <li>Use <b>Recorded locations</b> to jump to a saved point or to <b>Now</b>.</li>
+          <li>Use <b>Download JSON</b> to export, or <b>Share route</b> to share from your device.</li>
+          <li><b>Import JSON</b> loads an exported route back into this page.</li>
+        </ul>
+        <div style="margin-top:10px">
+          <b>Privacy</b>
+          <ul>
+            <li>Your route is saved in your browser storage on this device unless you download/share it.</li>
+            <li>Stop tracking anytime. Clear removes locally saved route data.</li>
+          </ul>
+        </div>
       </div>
 
       <div class="sectionTitle">Live status</div>
@@ -241,13 +460,13 @@
         <div class="k">Speed</div><div class="v" id="kvSpeed">—</div>
         <div class="k">Area</div><div class="v" id="kvArea">Now</div>
         <div class="k">Saved points</div><div class="v" id="kvCount">0</div>
-        <div class="k">Distance (approx)</div><div class="v" id="kvDist">0 m</div>
+        <div class="k">Distance</div><div class="v" id="kvDist">0 m</div>
       </div>
 
       <div class="sectionTitle">Recorded locations</div>
       <div class="two">
         <div>
-          <label class="k" for="pointSelect">Jump to point</label>
+          <label class="k" for="pointSelect">Jump to</label>
           <select id="pointSelect">
             <option value="">— No points —</option>
           </select>
@@ -263,7 +482,7 @@
         <button id="btnRemovePoint" class="danger" disabled>Remove selected</button>
       </div>
 
-      <div class="sectionTitle">Log</div>
+      <div class="sectionTitle">Activity</div>
       <div class="log" id="log" aria-live="polite"></div>
     </section>
 
@@ -271,15 +490,22 @@
       <div id="map" role="application" aria-label="Route map"></div>
       <div class="footerBar">
         <div class="small">
-          <span class="badge"><span class="nowrap">Storage:</span> <span id="storageState">local</span></span>
-          <span class="badge"><span class="nowrap">Geocode:</span> <span id="geocodeState">ready</span></span>
+          <span class="badge">Programmer’s Picnic</span>
+          <span class="badge">Route JSON</span>
         </div>
         <div class="small">
-          Tip: points are <b>saved</b> only when <b>area name changes</b>, but the line always connects to <b>Now</b>.
+          Tip: Save points happen when the <b>area changes</b>. The route always connects to <b>Now</b>.
         </div>
       </div>
     </section>
   </main>
+
+  <footer class="siteFooter">
+    <div class="footCard">
+      <div>© <span id="yr"></span> Programmer’s Picnic • Created by Champak Roy</div>
+      <div>Made for learning, travel logs, and personal route journaling.</div>
+    </div>
+  </footer>
 
   <div class="toast" id="toast"></div>
 
@@ -298,18 +524,22 @@
     const ui = {
       statusDot: $("#statusDot"),
       statusText: $("#statusText"),
+      runBadge: $("#runBadge"),
+      helpBox: $("#helpBox"),
+      btnHelpToggle: $("#btnHelpToggle"),
+
       kvLatLng: $("#kvLatLng"),
       kvAcc: $("#kvAcc"),
       kvSpeed: $("#kvSpeed"),
       kvArea: $("#kvArea"),
       kvCount: $("#kvCount"),
       kvDist: $("#kvDist"),
-      storageState: $("#storageState"),
-      geocodeState: $("#geocodeState"),
+
       routeName: $("#routeName"),
       minMove: $("#minMove"),
       minTime: $("#minTime"),
       areaMode: $("#areaMode"),
+
       btnStart: $("#btnStart"),
       btnStop: $("#btnStop"),
       btnClear: $("#btnClear"),
@@ -325,6 +555,8 @@
       btnOpenPopup: $("#btnOpenPopup"),
       btnRemovePoint: $("#btnRemovePoint"),
     };
+
+    $("#yr").textContent = String(new Date().getFullYear());
 
     const STORAGE_KEY = "pp_route_recorder_v1";
     const SCHEMA = "pp.route.v1";
@@ -388,15 +620,13 @@
     function setStatus(on, text){
       ui.statusDot.classList.toggle("on", !!on);
       ui.statusText.textContent = text;
+      ui.runBadge.textContent = on ? "Tracking" : "Ready";
     }
+
     function saveToStorage(){
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.route));
-        ui.storageState.textContent = "localStorage";
-      }catch(e){
-        ui.storageState.textContent = "unavailable";
-        log("Storage error: " + (e?.message || e));
-      }
+      }catch(_){}
     }
     function loadFromStorage(){
       try{
@@ -404,10 +634,8 @@
         if (!raw) return null;
         const obj = JSON.parse(raw);
         if (!obj || obj.schema !== SCHEMA || !Array.isArray(obj.points)) return null;
-        ui.storageState.textContent = "localStorage";
         return obj;
-      }catch(e){
-        ui.storageState.textContent = "unavailable";
+      }catch(_){
         return null;
       }
     }
@@ -418,7 +646,7 @@
         name: "",
         createdAt: nowISO(),
         updatedAt: nowISO(),
-        source: { app: "Route Recorder", geocoder: "Nominatim (OpenStreetMap)" },
+        source: { app: "Programmer’s Picnic Route Recorder", author: "Champak Roy" },
         settings: {
           minMoveM: Number(ui.minMove.value || 0),
           minTimeS: Number(ui.minTime.value || 0),
@@ -440,7 +668,7 @@
     const routeLine = L.polyline([], { weight: 5, opacity: 0.9 }).addTo(map);
     const markersLayer = L.layerGroup().addTo(map);
 
-    // Current marker (animated by color only)
+    // Current marker (color-cycle animation)
     const currentMarker = L.circleMarker([0,0], {
       radius: 9,
       weight: 2,
@@ -450,7 +678,6 @@
       fillColor: "#ff9f1c"
     }).addTo(map);
 
-    // ✅ Attach class to SVG path
     function applyNowColorCycle(){
       try{
         const el = currentMarker.getElement?.();
@@ -487,34 +714,26 @@
         sel.appendChild(optNow);
       }
 
-      if (!pts.length){
-        if (!state.lastPosition){
+      if (pts.length){
+        const head = document.createElement("option");
+        head.value = "";
+        head.textContent = "Select a saved point…";
+        sel.appendChild(head);
+
+        pts.forEach((p, idx)=>{
           const opt = document.createElement("option");
-          opt.value = "";
-          opt.textContent = "— No points —";
+          opt.value = String(idx);
+          opt.textContent = buildPointLabel(p, idx);
           sel.appendChild(opt);
-        }
-        if (prev === "now" && state.lastPosition) sel.value = "now";
-        else sel.value = state.lastPosition ? "now" : "";
-        const has = sel.value !== "" && sel.value !== null;
-        ui.btnGoPoint.disabled = !has;
-        ui.btnOpenPopup.disabled = !has;
-        ui.btnRemovePoint.disabled = !(sel.value !== "" && sel.value !== "now");
-        return;
+        });
+      } else if (!state.lastPosition){
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "— No points —";
+        sel.appendChild(opt);
       }
 
-      const head = document.createElement("option");
-      head.value = "";
-      head.textContent = "Select a saved point…";
-      sel.appendChild(head);
-
-      pts.forEach((p, idx)=>{
-        const opt = document.createElement("option");
-        opt.value = String(idx);
-        opt.textContent = buildPointLabel(p, idx);
-        sel.appendChild(opt);
-      });
-
+      // restore selection
       if (prev === "now" && state.lastPosition) sel.value = "now";
       else if (prev !== "" && prev !== "now" && Number(prev) < pts.length) sel.value = prev;
       else sel.value = state.lastPosition ? "now" : "";
@@ -588,7 +807,7 @@
       renderRoute();
       updatePointSelect();
       toast("Removed");
-      log(`Removed point #${idx+1}`);
+      log(`Removed saved point #${idx+1}.`);
     }
 
     function fitRoute(){
@@ -605,7 +824,7 @@
     }
 
     /***********************
-     * Reverse geocoding
+     * Reverse geocoding (throttled)
      ***********************/
     function pickAreaFromAddress(address, mode){
       if (!address) return "";
@@ -627,6 +846,7 @@
     function normalizeArea(s){
       return (s || "").trim().replace(/\s+/g, " ").toLowerCase();
     }
+
     async function reverseGeocode(lat, lng){
       const minGeoIntervalMs = 1500;
       const t = Date.now();
@@ -639,7 +859,6 @@
       }
 
       state.geocodeInFlight = true;
-      ui.geocodeState.textContent = "fetching…";
 
       try{
         const url = new URL("https://nominatim.openstreetmap.org/reverse");
@@ -651,15 +870,14 @@
 
         const res = await fetch(url.toString(), {
           method: "GET",
-          headers: {
-            "Accept": "application/json",
-            "User-Agent": "PP-Route-Recorder/1.0 (Educational use; contact: you@example.com)"
-          }
+          headers: { "Accept": "application/json" }
         });
-        if (!res.ok) throw new Error(`Geocode failed: ${res.status}`);
-        const data = await res.json();
 
+        if (!res.ok) return null;
+
+        const data = await res.json();
         const mode = ui.areaMode.value;
+
         let area = "";
         if (mode === "full"){
           area = (data.display_name || "").trim();
@@ -669,11 +887,8 @@
         }
 
         state.lastGeo = { ts: Date.now(), lat, lng, area };
-        ui.geocodeState.textContent = "ready";
         return { area, raw: data };
-      }catch(e){
-        ui.geocodeState.textContent = "error";
-        log("Geocode error: " + (e?.message || e));
+      }catch(_){
         return null;
       }finally{
         state.geocodeInFlight = false;
@@ -681,7 +896,7 @@
     }
 
     /***********************
-     * Save-on-area-change logic
+     * Save-on-area-change
      ***********************/
     function canSavePoint(pos, areaLabel){
       const minMoveM = Number(ui.minMove.value || 0);
@@ -707,7 +922,7 @@
     }
 
     /***********************
-     * Render route: saved points + current "Now"
+     * Render route
      ***********************/
     function renderRoute(){
       markersLayer.clearLayers();
@@ -715,6 +930,7 @@
 
       const pts = state.route?.points || [];
       const latlngs = pts.map(p=>[p.lat, p.lng]);
+
       if (state.lastPosition){
         latlngs.push([state.lastPosition.lat, state.lastPosition.lng]);
       }
@@ -729,7 +945,7 @@
           `<b>#${idx+1}</b><br/>` +
           `<span class="mono">${area}</span><br/>` +
           `${ts}<br/>` +
-          `acc: ${acc}`
+          `Accuracy: ${acc}`
         );
         markersLayer.addLayer(m);
         pointMarkers[idx] = m;
@@ -762,9 +978,8 @@
       ui.kvArea.textContent = "Now";
 
       currentMarker.setLatLng([lat,lng]);
-      // keep the class attached
       applyNowColorCycle();
-      currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">Now</span>`);
+      currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.currentAreaGuess}</span>`);
 
       if (state.tracking && state.route.points.length === 0){
         map.setView([lat,lng], 17);
@@ -790,12 +1005,11 @@
           accuracyM: isFinite(accuracyM) ? accuracyM : null,
           speedMps: isFinite(speedMps) ? speedMps : null,
           area: areaForSaving,
-          rawAddress: geo?.raw?.address || null,
-          note: "Saved because area changed"
+          note: "Area changed"
         };
         state.route.points.push(pt);
         state.lastSaved = { ts: pos.ts, lat, lng, area: areaForSaving };
-        log(`Saved point #${state.route.points.length}: ${areaForSaving}`);
+        log(`Saved: ${areaForSaving}`);
         renderRoute();
 
         ui.pointSelect.value = String(state.route.points.length - 1);
@@ -807,18 +1021,18 @@
 
     function handleError(err){
       const msg =
-        err?.code === 1 ? "Permission denied for location." :
-        err?.code === 2 ? "Position unavailable." :
-        err?.code === 3 ? "Location timeout." :
-        (err?.message || "Location error.");
-      log("Geo error: " + msg);
+        err?.code === 1 ? "Location permission denied." :
+        err?.code === 2 ? "Location unavailable." :
+        err?.code === 3 ? "Location request timed out." :
+        "Location error.";
+      log(msg);
       toast(msg);
       stopTracking();
     }
 
     function startTracking(){
       if (!("geolocation" in navigator)){
-        toast("Geolocation not supported");
+        toast("Geolocation is not supported on this device.");
         return;
       }
       if (state.tracking) return;
@@ -843,6 +1057,7 @@
       ui.btnStart.disabled = true;
       ui.btnStop.disabled = false;
       log("Tracking started.");
+      toast("Tracking started");
     }
 
     function stopTracking(){
@@ -854,6 +1069,7 @@
       ui.btnStart.disabled = false;
       ui.btnStop.disabled = true;
       log("Tracking stopped.");
+      toast("Tracking stopped");
     }
 
     /***********************
@@ -891,45 +1107,35 @@
       try{
         await navigator.clipboard.writeText(text);
         toast("Copied JSON");
-      }catch(e){
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-        toast("Copied JSON (fallback)");
+      }catch(_){
+        toast("Copy not available");
       }
     }
 
     async function shareRoute(){
       const data = getExportJSON();
       const jsonText = JSON.stringify(data, null, 2);
-
       const fileName = `${(data.name || "route").replace(/[^\w\-]+/g, "_").slice(0,60) || "route"}.json`;
       const file = new File([jsonText], fileName, { type: "application/json" });
 
       try{
         if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share){
-          await navigator.share({ title: data.name || "Route", text: "Route JSON export", files: [file] });
+          await navigator.share({ title: data.name || "Route", text: "Route JSON", files: [file] });
           toast("Shared");
           return;
         }
-      }catch(e){}
+      }catch(_){}
 
       try{
         if (navigator.share){
-          await navigator.share({
-            title: data.name || "Route",
-            text: jsonText.length > 5000 ? (jsonText.slice(0, 5000) + "\n…(truncated)") : jsonText
-          });
-          toast("Shared (text)");
+          await navigator.share({ title: data.name || "Route", text: jsonText.slice(0, 5000) });
+          toast("Shared");
           return;
         }
-      }catch(e){}
+      }catch(_){}
 
       await copyJSON();
-      log("Share not available. JSON copied instead.");
+      log("Sharing not available. JSON copied instead.");
     }
 
     function importJSON(){
@@ -940,9 +1146,7 @@
         const file = input.files?.[0];
         if (!file) return;
         try{
-          const text = await file.text();
-          const obj = JSON.parse(text);
-
+          const obj = JSON.parse(await file.text());
           if (!obj || obj.schema !== SCHEMA || !Array.isArray(obj.points)){
             toast("Invalid route JSON");
             return;
@@ -971,11 +1175,10 @@
           saveToStorage();
           renderRoute();
           fitRoute();
-          log(`Imported route with ${obj.points.length} points.`);
+          log(`Imported ${obj.points.length} points.`);
           toast("Imported");
-        }catch(e){
+        }catch(_){
           toast("Import failed");
-          log("Import error: " + (e?.message || e));
         }
       };
       input.click();
@@ -1014,6 +1217,14 @@
     ui.btnCopy.addEventListener("click", copyJSON);
     ui.btnShare.addEventListener("click", shareRoute);
     ui.btnImport.addEventListener("click", importJSON);
+
+    ui.btnHelpToggle.addEventListener("click", ()=>{
+      const isHidden = ui.helpBox.hasAttribute("hidden");
+      if (isHidden) ui.helpBox.removeAttribute("hidden");
+      else ui.helpBox.setAttribute("hidden","");
+
+      ui.btnHelpToggle.setAttribute("aria-expanded", String(isHidden));
+    });
 
     [ui.routeName, ui.minMove, ui.minTime, ui.areaMode].forEach(el=>{
       el.addEventListener("change", ()=>{
@@ -1069,10 +1280,10 @@
       renderRoute();
       if (state.route.points.length) fitRoute();
       setStatus(false, "Idle");
-      log(`Loaded route: ${state.route.points.length} saved point(s).`);
+      log(`Loaded ${state.route.points.length} saved point(s).`);
 
-      // ensure class attaches once element exists
-      setTimeout(applyNowColorCycle, 60);
+      // ensure animation class attaches once SVG exists
+      setTimeout(applyNowColorCycle, 80);
     })();
   </script>
 </body>
