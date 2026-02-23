@@ -48,9 +48,7 @@
       grid-template-columns: 420px 1fr;
       gap:14px;
     }
-    @media (max-width: 980px){
-      .wrap{grid-template-columns:1fr}
-    }
+    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
     .card{
       background:var(--panel);
       border:1px solid var(--line);
@@ -123,9 +121,7 @@
     }
     .mapCard{padding:0}
     #map{height: calc(100vh - 140px); min-height:520px;}
-    @media (max-width: 980px){
-      #map{height: 62vh; min-height:460px;}
-    }
+    @media (max-width: 980px){ #map{height: 62vh; min-height:460px;} }
     .footerBar{
       padding:12px 14px;border-top:1px solid var(--line);background: rgba(255,255,255,.65);
       display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
@@ -153,20 +149,20 @@
     .toast.show{opacity: 1;transform: translateX(-50%) translateY(-2px);}
     .nowrap{white-space:nowrap}
 
-    /* ✅ Flicker animation for current marker (Leaflet circleMarker uses SVG path) */
-    .pp-now-flicker{
-      animation: ppFlicker 1.1s ease-in-out infinite;
-      transform-origin: center;
+    /* ✅ NEW: Color-only animation for current marker (no size/opacity flicker) */
+    .pp-now-colorcycle{
+      animation: ppNowColors 1.25s linear infinite;
     }
-    @keyframes ppFlicker{
-      0%   { opacity: 0.35; filter: drop-shadow(0 0 0 rgba(255,159,28,0.0)); transform: scale(0.92); }
-      40%  { opacity: 1.00; filter: drop-shadow(0 0 8px rgba(255,159,28,0.55)); transform: scale(1.08); }
-      100% { opacity: 0.45; filter: drop-shadow(0 0 0 rgba(255,159,28,0.0)); transform: scale(0.95); }
+    @keyframes ppNowColors{
+      0%   { fill: #ff9f1c; stroke: #1f2328; }
+      33%  { fill: #22c55e; stroke: #0f172a; }
+      66%  { fill: #3b82f6; stroke: #0f172a; }
+      100% { fill: #ff9f1c; stroke: #1f2328; }
     }
 
-    /* (Optional) Respect reduced motion */
+    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
-      .pp-now-flicker{ animation: none !important; }
+      .pp-now-colorcycle{ animation: none !important; }
     }
   </style>
 </head>
@@ -340,7 +336,7 @@
       lastGeo: { ts: 0, lat: null, lng: null, area: null },
       lastSaved: { ts: 0, lat: null, lng: null, area: null },
       geocodeInFlight: false,
-      lastPosition: null,            // { lat,lng,ts }
+      lastPosition: null,
       currentAreaGuess: "Now"
     };
 
@@ -444,23 +440,24 @@
     const routeLine = L.polyline([], { weight: 5, opacity: 0.9 }).addTo(map);
     const markersLayer = L.layerGroup().addTo(map);
 
-    // Current marker (animated)
+    // Current marker (animated by color only)
     const currentMarker = L.circleMarker([0,0], {
       radius: 9,
       weight: 2,
       opacity: 1,
-      fillOpacity: 0.35
+      fillOpacity: 0.95,
+      color: "#1f2328",
+      fillColor: "#ff9f1c"
     }).addTo(map);
 
-    // ✅ Add flicker class once the SVG path exists
-    function applyNowFlicker(){
+    // ✅ Attach class to SVG path
+    function applyNowColorCycle(){
       try{
         const el = currentMarker.getElement?.();
-        if (el) el.classList.add("pp-now-flicker");
+        if (el) el.classList.add("pp-now-colorcycle");
       }catch(_){}
     }
-    // Leaflet creates SVG after addTo(map), but safe to re-apply after updates
-    map.whenReady(applyNowFlicker);
+    map.whenReady(applyNowColorCycle);
 
     map.setView([25.3176, 82.9739], 13);
 
@@ -550,7 +547,6 @@
         const latlng = [state.lastPosition.lat, state.lastPosition.lng];
         map.setView(latlng, Math.max(map.getZoom(), 17), { animate: true });
         ensureHighlight(latlng, radiusM);
-
         if (openPopup){
           currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.currentAreaGuess || "Now"}</span>`).openPopup();
         }
@@ -711,7 +707,7 @@
     }
 
     /***********************
-     * Render route: saved points + current "Now" point in polyline
+     * Render route: saved points + current "Now"
      ***********************/
     function renderRoute(){
       markersLayer.clearLayers();
@@ -719,7 +715,6 @@
 
       const pts = state.route?.points || [];
       const latlngs = pts.map(p=>[p.lat, p.lng]);
-
       if (state.lastPosition){
         latlngs.push([state.lastPosition.lat, state.lastPosition.lng]);
       }
@@ -767,22 +762,17 @@
       ui.kvArea.textContent = "Now";
 
       currentMarker.setLatLng([lat,lng]);
-      // make sure flicker class stays applied after updates
-      applyNowFlicker();
-
+      // keep the class attached
+      applyNowColorCycle();
       currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">Now</span>`);
 
       if (state.tracking && state.route.points.length === 0){
         map.setView([lat,lng], 17);
       }
 
-      // draw immediately (connect to Now)
       renderRoute();
 
-      // reverse geocode (throttled)
       const geo = await reverseGeocode(lat, lng);
-
-      // show name in live status once found
       if (geo && geo.area){
         state.currentAreaGuess = geo.area;
         ui.kvArea.textContent = geo.area;
@@ -1075,23 +1065,15 @@
         state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
       }
 
-      // default live area to Now
       ui.kvArea.textContent = "Now";
-
       renderRoute();
       if (state.route.points.length) fitRoute();
       setStatus(false, "Idle");
       log(`Loaded route: ${state.route.points.length} saved point(s).`);
 
-      // ensure flicker class (in case map init timing)
-      setTimeout(applyNowFlicker, 50);
+      // ensure class attaches once element exists
+      setTimeout(applyNowColorCycle, 60);
     })();
-
-    window.PPRoute = {
-      getRoute: () => getExportJSON(),
-      stop: () => stopTracking(),
-      start: () => startTracking()
-    };
   </script>
 </body>
 </html>
