@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<title>Programmer’s Picnic — Tourist Places Nearby (5 km)</title>
+<meta name="description" content="Find tourist attractions within 5 km of your live location. Built by Champak Roy for Programmer’s Picnic."/>
+<meta name="theme-color" content="#d97706"/>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<style>
+:root{
+  --bg:#fff7e6;
+  --panel:rgba(255,255,255,.85);
+  --ink:#1f2328;
+  --muted:#5b6570;
+  --line:rgba(31,35,40,.12);
+  --saffron:#ff9f1c;
+  --saffron2:#ffb74d;
+  --shadow:0 14px 40px rgba(31,35,40,.12);
+  --radius:18px;
+  --mono: ui-monospace,monospace;
+  --sans: system-ui;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:var(--sans);
+  background:
+    radial-gradient(800px 500px at 20% 0%, rgba(255,159,28,.22), transparent 60%),
+    var(--bg);
+  color:var(--ink);
+}
+
+.wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+  display:grid;
+  grid-template-columns:400px 1fr;
+  gap:14px;
+}
+@media(max-width:900px){
+  .wrap{grid-template-columns:1fr}
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+header.card{
+  grid-column:1/-1;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  width:40px;height:40px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--saffron),var(--saffron2));
+  display:grid;place-items:center;
+  font-weight:900;
+}
+
+h1{font-size:16px;margin:0}
+.sub{font-size:12px;color:var(--muted)}
+
+.left{padding:14px;display:flex;flex-direction:column;gap:12px}
+
+button{
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  font-weight:700;
+  cursor:pointer;
+}
+button.primary{
+  background:linear-gradient(135deg,var(--saffron),var(--saffron2));
+}
+button:disabled{opacity:.5}
+
+select,input{
+  padding:8px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  width:100%;
+}
+
+#map{height:70vh;min-height:500px}
+
+.list{
+  max-height:250px;
+  overflow:auto;
+  font-size:13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:8px;
+  background:white;
+}
+
+.place-item{
+  padding:6px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+.place-item:hover{
+  background:#fff3e0;
+}
+
+.footer{
+  padding:10px;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header class="card">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">PP</div>
+    <div>
+      <h1>Tourist Places Nearby (5 km)</h1>
+      <div class="sub">Programmer’s Picnic • Created by Champak Roy</div>
+    </div>
+  </div>
+  <div id="status">Idle</div>
+</header>
+
+<main class="wrap">
+<section class="card left">
+
+<button id="btnLocate" class="primary">Find Nearby Places</button>
+
+<label>Search radius (meters)</label>
+<select id="radius">
+  <option value="3000">3 km</option>
+  <option value="5000" selected>5 km</option>
+  <option value="10000">10 km</option>
+</select>
+
+<div>
+  <b>Places found:</b>
+  <div id="placesList" class="list"></div>
+</div>
+
+</section>
+
+<section class="card">
+<div id="map"></div>
+</section>
+</main>
+
+<div class="footer">
+© 2026 Programmer’s Picnic • Educational Tourism Tool
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const map = L.map("map").setView([25.3176,82.9739],13);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+  maxZoom:19,
+  attribution:"© OpenStreetMap contributors"
+}).addTo(map);
+
+let userMarker = null;
+let placeMarkers = L.layerGroup().addTo(map);
+
+const statusEl = document.getElementById("status");
+const listEl = document.getElementById("placesList");
+
+function haversine(lat1,lng1,lat2,lng2){
+  const R=6371000;
+  const toRad=x=>x*Math.PI/180;
+  const dLat=toRad(lat2-lat1);
+  const dLng=toRad(lng2-lng1);
+  const a=Math.sin(dLat/2)**2+
+    Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+async function fetchTouristPlaces(lat,lng,radius){
+  statusEl.textContent="Searching...";
+  placeMarkers.clearLayers();
+  listEl.innerHTML="";
+
+  const query = `
+    [out:json];
+    (
+      node["tourism"](around:${radius},${lat},${lng});
+      way["tourism"](around:${radius},${lat},${lng});
+      relation["tourism"](around:${radius},${lat},${lng});
+    );
+    out center;
+  `;
+
+  const response = await fetch("https://overpass-api.de/api/interpreter",{
+    method:"POST",
+    body:query
+  });
+
+  const data = await response.json();
+
+  data.elements.forEach(el=>{
+    const latP = el.lat || el.center?.lat;
+    const lngP = el.lon || el.center?.lon;
+    if(!latP || !lngP) return;
+
+    const name = el.tags?.name || "Unnamed Place";
+    const type = el.tags?.tourism || "";
+
+    const distance = haversine(lat,lng,latP,lngP);
+
+    const marker = L.marker([latP,lngP])
+      .bindPopup(`<b>${name}</b><br>${type}<br>${Math.round(distance)} m`)
+      .addTo(placeMarkers);
+
+    const div = document.createElement("div");
+    div.className="place-item";
+    div.innerHTML=`<b>${name}</b><br>${type} • ${Math.round(distance)} m`;
+    div.onclick=()=>{
+      map.setView([latP,lngP],16);
+      marker.openPopup();
+    };
+    listEl.appendChild(div);
+  });
+
+  statusEl.textContent=`${data.elements.length} places found`;
+}
+
+document.getElementById("btnLocate").onclick=()=>{
+  if(!navigator.geolocation){
+    alert("Geolocation not supported.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude;
+    const lng=pos.coords.longitude;
+    const radius=parseInt(document.getElementById("radius").value);
+
+    if(userMarker) userMarker.setLatLng([lat,lng]);
+    else userMarker=L.circleMarker([lat,lng],{
+      radius:9,
+      fillColor:"#ff9f1c",
+      color:"#1f2328",
+      weight:2,
+      fillOpacity:.9
+    }).addTo(map);
+
+    map.setView([lat,lng],14);
+
+    fetchTouristPlaces(lat,lng,radius);
+
+  },()=>alert("Location permission denied."));
+};
+</script>
+
+</body>
+</html>
