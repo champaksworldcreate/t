@@ -176,11 +176,19 @@ select,input{
   line-height:1.45;
 }
 
-.footer{
-  padding:10px;
+/* New: radius input row */
+.radiusRow{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap:10px;
+}
+@media(max-width:520px){
+  .radiusRow{grid-template-columns:1fr}
+}
+.hint{
   font-size:12px;
   color:var(--muted);
-  text-align:center;
+  margin-top:-6px;
 }
 
 /* Modal */
@@ -252,6 +260,13 @@ a.actionLink{
   color:var(--ink);
   font-weight:800;
 }
+
+.footer{
+  padding:10px;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
 </style>
 </head>
 
@@ -280,16 +295,27 @@ a.actionLink{
       <button id="btnFit" title="Fit results on map" disabled>Fit</button>
     </div>
 
-    <div class="row">
+    <!-- ✅ NEW: Select + typed radius (km float) -->
+    <div class="radiusRow">
       <div>
-        <label>Search radius</label>
-        <select id="radius">
-          <option value="3000">3 km</option>
-          <option value="5000" selected>5 km</option>
-          <option value="10000">10 km</option>
-          <option value="100000">100 km</option>
+        <label>Radius preset</label>
+        <select id="radiusPreset">
+          <option value="0.5">0.5 km</option>
+          <option value="1">1 km</option>
+          <option value="3">3 km</option>
+          <option value="5" selected>5 km</option>
+          <option value="10">10 km</option>
+          <option value="100">100 km</option>
         </select>
       </div>
+      <div>
+        <label>Radius (km)</label>
+        <input id="radiusKm" type="number" inputmode="decimal" step="0.1" min="0.1" value="5" placeholder="e.g., 0.5" />
+      </div>
+    </div>
+    <div class="hint">Tip: You can type decimals like <b>0.5</b> (km). The search uses meters internally.</div>
+
+    <div class="row">
       <div>
         <label>Max results</label>
         <select id="limit">
@@ -298,10 +324,17 @@ a.actionLink{
           <option value="200">200</option>
         </select>
       </div>
+      <div>
+        <label>Search tag</label>
+        <select id="tagMode">
+          <option value="tourism" selected>tourism=*</option>
+          <option value="attractions">tourism + historic + amenity</option>
+        </select>
+      </div>
     </div>
 
     <div class="warn" id="warnBox">
-      <b>Large radius selected.</b> 100 km can return many results and may time out.
+      <b>Large radius selected.</b> Very large searches can time out.
       This page caps results and may take longer.
     </div>
 
@@ -313,14 +346,14 @@ a.actionLink{
     </div>
 
     <div class="row">
-      <span class="badge">Tag: tourism=*</span>
+      <span class="badge" id="tagBadge">Tag: tourism=*</span>
       <span class="badge" id="endpointBadge">Overpass</span>
     </div>
 
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
         <b>Places found</b>
-        <span style="font-size:12px;color:var(--muted)" id="hint">Tap a place for details.</span>
+        <span style="font-size:12px;color:var(--muted)" id="hint2">Tap a place for details.</span>
       </div>
       <div id="placesList" class="list" aria-live="polite"></div>
     </div>
@@ -377,8 +410,8 @@ let placeMarkers = L.layerGroup().addTo(map);
 let lastBounds = null;
 
 // Connections
-let connectionsLayer = null; // polyline connecting all results in order
-let spokesLayer = null;      // lines from user to each place
+let connectionsLayer = null;
+let spokesLayer = null;
 let markersByIndex = [];
 
 // Modal refs
@@ -405,6 +438,12 @@ const kvAcc = document.getElementById("kvAcc");
 const kvRadius = document.getElementById("kvRadius");
 const kvCount = document.getElementById("kvCount");
 
+const radiusPreset = document.getElementById("radiusPreset");
+const radiusKm = document.getElementById("radiusKm");
+const limitEl = document.getElementById("limit");
+const tagModeEl = document.getElementById("tagMode");
+const tagBadge = document.getElementById("tagBadge");
+
 const OVERPASS_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
@@ -412,7 +451,7 @@ const OVERPASS_ENDPOINTS = [
 ];
 
 let lastUser = null;
-let lastPlaces = []; // rendered place objects (sorted, limited)
+let lastPlaces = [];
 
 function setBusy(on, msg){
   spin.style.display = on ? "inline-block" : "none";
@@ -439,13 +478,74 @@ function safeText(s){
   }[ch]));
 }
 
-function buildQuery(lat, lng, radius){
+function kmToMeters(km){
+  const n = Number(km);
+  if (!isFinite(n) || n <= 0) return NaN;
+  return Math.round(n * 1000);
+}
+function clampRadiusM(m){
+  // practical clamp: 100 m to 200 km
+  if (!isFinite(m)) return NaN;
+  return Math.max(100, Math.min(200000, m));
+}
+
+function readRadiusMeters(){
+  // prefer typed value; if empty use preset
+  const typed = radiusKm.value.trim();
+  let km = typed ? Number(typed) : Number(radiusPreset.value);
+  if (!isFinite(km) || km <= 0) km = Number(radiusPreset.value);
+  let m = kmToMeters(km);
+  m = clampRadiusM(m);
+  return m;
+}
+
+function updateWarnFromRadiusM(radiusM){
+  warnBox.style.display = (radiusM >= 50000) ? "block" : "none";
+}
+
+function updateRadiusUIFromPreset(){
+  // preset is in km, update typed input too
+  radiusKm.value = String(radiusPreset.value);
+}
+
+radiusPreset.addEventListener("change", () => {
+  updateRadiusUIFromPreset();
+  updateWarnFromRadiusM(readRadiusMeters());
+});
+radiusKm.addEventListener("input", () => {
+  updateWarnFromRadiusM(readRadiusMeters());
+});
+
+function buildQuery(lat, lng, radiusM){
+  const mode = tagModeEl.value;
+  if (mode === "attractions"){
+    // broader but still tourism-ish: tourism OR historic OR leisure OR amenity=viewpoint/museum
+    tagBadge.textContent = "Tag: tourism + historic + viewpoints";
+    return `
+[out:json][timeout:25];
+(
+  node["tourism"](around:${radiusM},${lat},${lng});
+  way["tourism"](around:${radiusM},${lat},${lng});
+  relation["tourism"](around:${radiusM},${lat},${lng});
+
+  node["historic"](around:${radiusM},${lat},${lng});
+  way["historic"](around:${radiusM},${lat},${lng});
+  relation["historic"](around:${radiusM},${lat},${lng});
+
+  node["amenity"~"museum|arts_centre"](around:${radiusM},${lat},${lng});
+  node["tourism"="viewpoint"](around:${radiusM},${lat},${lng});
+  node["leisure"="park"](around:${radiusM},${lat},${lng});
+);
+out center;
+`;
+  }
+  tagBadge.textContent = "Tag: tourism=*";
   return `
 [out:json][timeout:25];
 (
-  node["tourism"](around:${radius},${lat},${lng});
-  way["tourism"](around:${radius},${lat},${lng});
-  relation["tourism"](around:${radius},${lat},${lng});
+  node["tourism"](around:${radiusM},${lat},${lng});
+  way["tourism"](around:${radiusM},${lat},${lng});
+  relation["tourism"](around:${radiusM},${lat},${lng});
 );
 out center;
 `;
@@ -486,13 +586,11 @@ function drawConnections(userLat, userLng, places){
   clearConnections();
   if (!places || places.length === 0) return;
 
-  // 1) Spokes: user -> each place
   const spokeLatLngs = places.map(p => [[userLat,userLng], [p.lat,p.lng]]);
   spokesLayer = L.layerGroup(
     spokeLatLngs.map(seg => L.polyline(seg, { weight: 2, opacity: 0.55, dashArray: "6 8" }))
   ).addTo(map);
 
-  // 2) Route-like connection: user -> place1 -> place2 -> ...
   const routeLatLngs = [[userLat,userLng], ...places.map(p => [p.lat,p.lng])];
   connectionsLayer = L.polyline(routeLatLngs, { weight: 4, opacity: 0.85 }).addTo(map);
 }
@@ -510,7 +608,7 @@ function renderPlaces(userLat, userLng, elements, limit){
     if(latP == null || lngP == null) return null;
 
     const name = el.tags?.name || "Unnamed Place";
-    const type = el.tags?.tourism || "tourism";
+    const type = el.tags?.tourism || el.tags?.historic || el.tags?.amenity || el.tags?.leisure || "place";
     const dist = haversine(userLat, userLng, latP, lngP);
     return { lat: latP, lng: lngP, name, type, dist };
   }).filter(Boolean);
@@ -547,10 +645,8 @@ function renderPlaces(userLat, userLng, elements, limit){
       <div class="meta">${safeText(p.type)} • ${safeText(fmtDist(p.dist))}</div>
     `;
     div.onclick = () => {
-      // zoom map + highlight marker
       map.setView([p.lat, p.lng], 16, { animate:true });
       marker.openPopup();
-      // open modal
       openModalForPlace(idx);
     };
     listEl.appendChild(div);
@@ -559,7 +655,6 @@ function renderPlaces(userLat, userLng, elements, limit){
   lastBounds = bounds;
   btnFit.disabled = false;
 
-  // ✅ draw connections on map
   drawConnections(userLat, userLng, sliced);
 }
 
@@ -567,14 +662,9 @@ function fitToResults(){
   if (!lastBounds) return;
   map.fitBounds(lastBounds.pad(0.2));
 }
-
 document.getElementById("btnFit").onclick = fitToResults;
 
-document.getElementById("radius").addEventListener("change", (e)=>{
-  const r = parseInt(e.target.value, 10);
-  warnBox.style.display = (r >= 50000) ? "block" : "none";
-});
-
+/* Modal */
 function openModalForPlace(idx){
   const p = lastPlaces[idx];
   if (!p || !lastUser) return;
@@ -583,14 +673,11 @@ function openModalForPlace(idx){
 
   mTitle.textContent = p.name || "Place";
   mSub.textContent = `#${idx+1} • ${fmtDist(p.dist)} away`;
-  mType.textContent = p.type || "tourism";
+  mType.textContent = p.type || "place";
   mDist.textContent = fmtDist(p.dist);
   mLatLng.textContent = `${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}`;
 
-  // OpenStreetMap browse view
   mOpenOSM.href = `https://www.openstreetmap.org/?mlat=${encodeURIComponent(p.lat)}&mlon=${encodeURIComponent(p.lng)}#map=18/${encodeURIComponent(p.lat)}/${encodeURIComponent(p.lng)}`;
-
-  // Directions (Google Maps)
   mDirections.href = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(ulat)},${encodeURIComponent(ulng)}&destination=${encodeURIComponent(p.lat)},${encodeURIComponent(p.lng)}&travelmode=walking`;
 
   mCopy.onclick = async (e) => {
@@ -610,18 +697,12 @@ LatLng: ${p.lat}, ${p.lng}`;
 
   modalOverlay.classList.add("show");
 }
-
-function closeModal(){
-  modalOverlay.classList.remove("show");
-}
+function closeModal(){ modalOverlay.classList.remove("show"); }
 modalClose.addEventListener("click", closeModal);
-modalOverlay.addEventListener("click", (e)=>{
-  if (e.target === modalOverlay) closeModal();
-});
-window.addEventListener("keydown", (e)=>{
-  if (e.key === "Escape") closeModal();
-});
+modalOverlay.addEventListener("click", (e)=>{ if (e.target === modalOverlay) closeModal(); });
+window.addEventListener("keydown", (e)=>{ if (e.key === "Escape") closeModal(); });
 
+/* Locate */
 document.getElementById("btnLocate").onclick = () => {
   if(!navigator.geolocation){
     alert("Geolocation not supported.");
@@ -639,14 +720,19 @@ document.getElementById("btnLocate").onclick = () => {
 
     lastUser = { lat, lng };
 
-    const radius = parseInt(document.getElementById("radius").value, 10);
-    const limit = parseInt(document.getElementById("limit").value, 10);
+    const radiusM = readRadiusMeters();
+    if (!isFinite(radiusM)){
+      setBusy(false, "Invalid radius");
+      alert("Please enter a valid radius in km (example: 0.5).");
+      return;
+    }
+    updateWarnFromRadiusM(radiusM);
+
+    const limit = parseInt(limitEl.value, 10);
 
     kvLatLng.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     kvAcc.textContent = `${Math.round(acc)} m`;
-    kvRadius.textContent = radius >= 1000 ? `${(radius/1000).toFixed(0)} km` : `${radius} m`;
-
-    warnBox.style.display = (radius >= 50000) ? "block" : "none";
+    kvRadius.textContent = radiusM >= 1000 ? `${(radiusM/1000).toFixed(2)} km` : `${radiusM} m`;
 
     if(userMarker) userMarker.setLatLng([lat,lng]);
     else userMarker = L.circleMarker([lat,lng],{
@@ -662,7 +748,7 @@ document.getElementById("btnLocate").onclick = () => {
     setBusy(true, "Searching tourist places…");
 
     try{
-      const query = buildQuery(lat, lng, radius);
+      const query = buildQuery(lat, lng, radiusM);
       const data = await postOverpass(query);
 
       // light de-dupe
@@ -679,7 +765,7 @@ document.getElementById("btnLocate").onclick = () => {
 
       renderPlaces(lat, lng, elements, limit);
 
-      if (radius <= 10000) fitToResults();
+      if (radiusM <= 10000) fitToResults();
 
       setBusy(false, `Found ${Math.min(elements.length, limit)} place(s)`);
     }catch(e){
@@ -687,7 +773,7 @@ document.getElementById("btnLocate").onclick = () => {
       listEl.innerHTML = `
         <div style="padding:10px;color:#7a271a;background:rgba(180,35,24,.06);border:1px dashed rgba(180,35,24,.25);border-radius:12px">
           <b>Search failed.</b><br>
-          Overpass may be busy. Try again after a minute, reduce radius, or switch to 5–10 km.
+          Overpass may be busy. Try again after a minute, reduce radius, or use a smaller value like 0.5–10 km.
         </div>
       `;
       clearConnections();
@@ -698,6 +784,9 @@ document.getElementById("btnLocate").onclick = () => {
     alert("Location permission denied.");
   }, { enableHighAccuracy:true, timeout:15000, maximumAge:3000 });
 };
+
+// init warn state
+updateWarnFromRadiusM(readRadiusMeters());
 </script>
 
 </body>
