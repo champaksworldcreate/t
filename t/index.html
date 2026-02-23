@@ -40,7 +40,6 @@
         var(--bg);
       min-height:100vh;
     }
-    a{color:inherit}
     .wrap{
       max-width:1200px;
       margin:0 auto;
@@ -68,64 +67,25 @@
       justify-content:space-between;
       gap:12px;
     }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-    }
+    .brand{display:flex; align-items:center; gap:12px;}
     .logo{
       width:40px;height:40px;border-radius:14px;
       background: linear-gradient(135deg, var(--saffron), var(--saffron2));
       box-shadow: 0 10px 24px rgba(255,159,28,.25);
     }
-    h1{
-      font-size:16px;
-      margin:0;
-      line-height:1.1;
-      letter-spacing:.2px;
-    }
-    .sub{
-      margin:2px 0 0 0;
-      font-size:12px;
-      color:var(--muted);
-    }
+    h1{font-size:16px;margin:0;line-height:1.1;letter-spacing:.2px;}
+    .sub{margin:2px 0 0 0;font-size:12px;color:var(--muted);}
     .pill{
-      font-size:12px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.6);
-      display:flex; gap:8px; align-items:center;
+      font-size:12px;padding:8px 10px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.6);display:flex;gap:8px;align-items:center;
     }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background:#b42318;
-      box-shadow: 0 0 0 4px rgba(180,35,24,.12);
-    }
-    .dot.on{
-      background:#027a48;
-      box-shadow: 0 0 0 4px rgba(2,122,72,.12);
-    }
+    .dot{width:10px;height:10px;border-radius:50%;background:#b42318;box-shadow: 0 0 0 4px rgba(180,35,24,.12);}
+    .dot.on{background:#027a48;box-shadow: 0 0 0 4px rgba(2,122,72,.12);}
 
-    .left{
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .sectionTitle{
-      font-size:13px;
-      font-weight:700;
-      margin:2px 0 0;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
+    .left{padding:14px;display:flex;flex-direction:column;gap:12px;}
+    .sectionTitle{font-size:13px;font-weight:700;margin:2px 0 0;}
+    .grid{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
+    .row{display:flex;gap:10px;flex-wrap:wrap;}
     button{
       border:1px solid var(--line);
       background:rgba(255,255,255,.72);
@@ -139,88 +99,43 @@
     }
     button:hover{transform: translateY(-1px)}
     button:active{transform: translateY(0px)}
-    button.primary{
-      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
-      border-color: rgba(255,159,28,.35);
-    }
-    button.danger{
-      background: rgba(180,35,24,.08);
-      border-color: rgba(180,35,24,.18);
-      color:#7a271a;
-    }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      transform:none;
-    }
+    button.primary{background: linear-gradient(135deg, var(--saffron), var(--saffron2));border-color: rgba(255,159,28,.35);}
+    button.danger{background: rgba(180,35,24,.08);border-color: rgba(180,35,24,.18);color:#7a271a;}
+    button:disabled{opacity:.55;cursor:not-allowed;transform:none;}
 
     .kv{
-      display:grid;
-      grid-template-columns: 140px 1fr;
-      gap:8px 10px;
-      padding:12px;
-      border-radius:16px;
-      border:1px solid var(--line);
+      display:grid;grid-template-columns: 140px 1fr;gap:8px 10px;
+      padding:12px;border-radius:16px;border:1px solid var(--line);
       background: rgba(255,255,255,.55);
     }
     .k{color:var(--muted); font-size:12px}
     .v{font-size:12px; font-family:var(--mono)}
     .mono{font-family:var(--mono)}
     .hint{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.4;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px dashed rgba(31,35,40,.18);
+      font-size:12px;color:var(--muted);line-height:1.4;
+      padding:10px 12px;border-radius:16px;border:1px dashed rgba(31,35,40,.18);
       background: rgba(255,255,255,.45);
     }
     .log{
-      height:200px;
-      overflow:auto;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px solid var(--line);
+      height:200px;overflow:auto;padding:10px 12px;border-radius:16px;border:1px solid var(--line);
       background: rgba(255,255,255,.55);
-      font-family:var(--mono);
-      font-size:12px;
-      line-height:1.45;
-      white-space:pre-wrap;
+      font-family:var(--mono);font-size:12px;line-height:1.45;white-space:pre-wrap;
     }
-
     .mapCard{padding:0}
     #map{height: calc(100vh - 140px); min-height:520px;}
     @media (max-width: 980px){
       #map{height: 62vh; min-height:460px;}
     }
-
     .footerBar{
-      padding:12px 14px;
-      border-top:1px solid var(--line);
-      background: rgba(255,255,255,.65);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
+      padding:12px 14px;border-top:1px solid var(--line);background: rgba(255,255,255,.65);
+      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
     }
-    .small{
-      font-size:12px; color:var(--muted);
-    }
+    .small{font-size:12px; color:var(--muted);}
     input[type="text"], input[type="number"], select{
-      width:100%;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.75);
-      outline:none;
-      font-size:13px;
+      width:100%;padding:10px 12px;border-radius:14px;border:1px solid var(--line);
+      background: rgba(255,255,255,.75);outline:none;font-size:13px;
     }
-    .two{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
+    .two{display:grid;grid-template-columns: 1fr 1fr;gap:10px;}
     .badge{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 10px; border-radius:999px;
@@ -228,27 +143,14 @@
       font-size:12px;
     }
     .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
-      background: rgba(31,35,40,.92);
-      color: white;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      opacity: 0;
-      pointer-events: none;
+      position: fixed;left: 50%;bottom: 14px;transform: translateX(-50%);
+      background: rgba(31,35,40,.92);color: white;padding: 10px 12px;border-radius: 999px;
+      font-size: 12px;opacity: 0;pointer-events: none;
       transition: opacity .2s ease, transform .2s ease;
       max-width: calc(100vw - 28px);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
     }
-    .toast.show{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-2px);
-    }
+    .toast.show{opacity: 1;transform: translateX(-50%) translateY(-2px);}
     .nowrap{white-space:nowrap}
   </style>
 </head>
@@ -316,8 +218,8 @@
       </div>
 
       <div class="hint">
-        <b>Note:</b> This uses your browser’s GPS (works best on mobile) and OpenStreetMap’s Nominatim reverse
-        geocoding. For best results, run this page on <b>HTTPS</b> (or localhost). Reverse geocoding is throttled.
+        <b>Note:</b> GPS works best on mobile and needs <b>HTTPS</b>. Reverse geocoding is throttled.
+        Until a name is found, the current point shows as <b>Now</b> and the route line still connects.
       </div>
 
       <div class="sectionTitle">Live status</div>
@@ -325,18 +227,17 @@
         <div class="k">Current lat,lng</div><div class="v" id="kvLatLng">—</div>
         <div class="k">Accuracy</div><div class="v" id="kvAcc">—</div>
         <div class="k">Speed</div><div class="v" id="kvSpeed">—</div>
-        <div class="k">Area</div><div class="v" id="kvArea">—</div>
+        <div class="k">Area</div><div class="v" id="kvArea">Now</div>
         <div class="k">Saved points</div><div class="v" id="kvCount">0</div>
         <div class="k">Distance (approx)</div><div class="v" id="kvDist">0 m</div>
       </div>
 
-      <!-- NEW: Recorded locations select -->
       <div class="sectionTitle">Recorded locations</div>
       <div class="two">
         <div>
-          <label class="k" for="pointSelect">Jump to saved point</label>
+          <label class="k" for="pointSelect">Jump to point</label>
           <select id="pointSelect">
-            <option value="">— No saved points —</option>
+            <option value="">— No points —</option>
           </select>
         </div>
         <div>
@@ -349,7 +250,6 @@
         <button id="btnOpenPopup" disabled>Open popup</button>
         <button id="btnRemovePoint" class="danger" disabled>Remove selected</button>
       </div>
-      <!-- /NEW -->
 
       <div class="sectionTitle">Log</div>
       <div class="log" id="log" aria-live="polite"></div>
@@ -363,7 +263,7 @@
           <span class="badge"><span class="nowrap">Geocode:</span> <span id="geocodeState">ready</span></span>
         </div>
         <div class="small">
-          Tip: points are saved only when <b>area name changes</b> (and you moved enough / enough time passed).
+          Tip: points are <b>saved</b> only when <b>area name changes</b>, but the line always connects to <b>Now</b>.
         </div>
       </div>
     </section>
@@ -379,23 +279,6 @@
   ></script>
 
   <script>
-    /***********************
-     * Route JSON Structure
-     ***********************
-     * {
-     *   "schema": "pp.route.v1",
-     *   "routeId": "uuid",
-     *   "name": "Route name",
-     *   "createdAt": "ISO",
-     *   "updatedAt": "ISO",
-     *   "source": { "app": "Route Recorder", "geocoder": "Nominatim" },
-     *   "settings": { minMoveM, minTimeS, areaMode },
-     *   "points": [
-     *     { lat, lng, ts, accuracyM, speedMps, area, rawAddress, note }
-     *   ]
-     * }
-     */
-
     const $ = (s) => document.querySelector(s);
     const logEl = $("#log");
     const toastEl = $("#toast");
@@ -424,7 +307,6 @@
       btnCopy: $("#btnCopy"),
       btnImport: $("#btnImport"),
 
-      // NEW
       pointSelect: $("#pointSelect"),
       pointRadius: $("#pointRadius"),
       btnGoPoint: $("#btnGoPoint"),
@@ -442,31 +324,28 @@
       lastGeo: { ts: 0, lat: null, lng: null, area: null },
       lastSaved: { ts: 0, lat: null, lng: null, area: null },
       geocodeInFlight: false,
-      lastPosition: null
+      lastPosition: null,            // { lat,lng,ts }
+      currentAreaGuess: "Now"        // shown even before geocode
     };
 
     function nowISO(){ return new Date().toISOString(); }
     function uid(){
-      // simple UUID-ish
       return "xxxx-xxxx-4xxx-yxxx-xxxxxx".replace(/[xy]/g, c=>{
         const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15);
         const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
     }
-
     function fmtM(m){
       if (!isFinite(m)) return "—";
       if (m < 1000) return `${Math.round(m)} m`;
       return `${(m/1000).toFixed(2)} km`;
     }
-
     function fmtSpeed(mps){
       if (!isFinite(mps)) return "—";
       const kmh = mps * 3.6;
       return `${kmh.toFixed(1)} km/h`;
     }
-
     function haversineM(a, b){
       const R = 6371000;
       const toRad = (d) => d * Math.PI / 180;
@@ -474,12 +353,9 @@
       const dLon = toRad(b.lng - a.lng);
       const lat1 = toRad(a.lat);
       const lat2 = toRad(b.lat);
-      const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*cos(lat2)*Math.sin(dLon/2)**2;
+      const x = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
       return 2 * R * Math.asin(Math.sqrt(x));
-
-      function cos(x){ return Math.cos(x); }
     }
-
     function routeDistanceM(points){
       let d = 0;
       for (let i=1;i<points.length;i++){
@@ -487,24 +363,20 @@
       }
       return d;
     }
-
     function toast(msg){
       toastEl.textContent = msg;
       toastEl.classList.add("show");
       setTimeout(()=>toastEl.classList.remove("show"), 1800);
     }
-
     function log(msg){
       const line = `[${new Date().toLocaleTimeString()}] ${msg}\n`;
       logEl.textContent += line;
       logEl.scrollTop = logEl.scrollHeight;
     }
-
     function setStatus(on, text){
       ui.statusDot.classList.toggle("on", !!on);
       ui.statusText.textContent = text;
     }
-
     function saveToStorage(){
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.route));
@@ -514,7 +386,6 @@
         log("Storage error: " + (e?.message || e));
       }
     }
-
     function loadFromStorage(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -528,7 +399,6 @@
         return null;
       }
     }
-
     function newRoute(){
       return {
         schema: SCHEMA,
@@ -558,18 +428,18 @@
     const routeLine = L.polyline([], { weight: 5, opacity: 0.9 }).addTo(map);
     const markersLayer = L.layerGroup().addTo(map);
 
+    // current location marker (always)
     const currentMarker = L.circleMarker([0,0], {
-      radius: 8,
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.35
+      radius: 8, weight: 2, opacity: 1, fillOpacity: 0.35
     }).addTo(map);
 
-    map.setView([25.3176, 82.9739], 13); // Varanasi-ish default
+    map.setView([25.3176, 82.9739], 13);
 
-    // NEW: select helpers
+    /***********************
+     * Recorded select + highlight
+     ***********************/
     let highlightCircle = null;
-    let pointMarkers = []; // same index as points
+    let pointMarkers = []; // aligns with saved points only
 
     function buildPointLabel(p, idx){
       const area = p.area || "—";
@@ -580,22 +450,36 @@
     function updatePointSelect(){
       const pts = state.route?.points || [];
       const sel = ui.pointSelect;
-
       const prev = sel.value;
 
       sel.innerHTML = "";
-      if (!pts.length){
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "— No saved points —";
-        sel.appendChild(opt);
 
-        ui.btnGoPoint.disabled = true;
-        ui.btnOpenPopup.disabled = true;
-        ui.btnRemovePoint.disabled = true;
+      // Add "Now" option when we have a current location fix
+      if (state.lastPosition){
+        const optNow = document.createElement("option");
+        optNow.value = "now";
+        optNow.textContent = `Now • current location`;
+        sel.appendChild(optNow);
+      }
+
+      if (!pts.length){
+        if (!state.lastPosition){
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = "— No points —";
+          sel.appendChild(opt);
+        }
+        // Restore selection if possible
+        if (prev === "now" && state.lastPosition) sel.value = "now";
+        else sel.value = state.lastPosition ? "now" : "";
+        const has = sel.value !== "" && sel.value !== null;
+        ui.btnGoPoint.disabled = !has;
+        ui.btnOpenPopup.disabled = !has;
+        ui.btnRemovePoint.disabled = !(sel.value !== "" && sel.value !== "now");
         return;
       }
 
+      // Head option (only if we already inserted Now; otherwise still fine)
       const head = document.createElement("option");
       head.value = "";
       head.textContent = "Select a saved point…";
@@ -608,13 +492,15 @@
         sel.appendChild(opt);
       });
 
-      if (prev !== "" && Number(prev) < pts.length) sel.value = prev;
-      else sel.value = "";
+      // restore
+      if (prev === "now" && state.lastPosition) sel.value = "now";
+      else if (prev !== "" && prev !== "now" && Number(prev) < pts.length) sel.value = prev;
+      else sel.value = state.lastPosition ? "now" : "";
 
-      const hasSelection = sel.value !== "";
-      ui.btnGoPoint.disabled = !hasSelection;
-      ui.btnOpenPopup.disabled = !hasSelection;
-      ui.btnRemovePoint.disabled = !hasSelection;
+      const hasSel = sel.value !== "" && sel.value !== null;
+      ui.btnGoPoint.disabled = !hasSel;
+      ui.btnOpenPopup.disabled = !hasSel;
+      ui.btnRemovePoint.disabled = !(sel.value !== "" && sel.value !== "now");
     }
 
     function ensureHighlight(latlng, radiusM){
@@ -624,24 +510,34 @@
         return;
       }
       highlightCircle = L.circle(latlng, {
-        radius: radiusM,
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.12
+        radius: radiusM, weight: 2, opacity: 1, fillOpacity: 0.12
       }).addTo(map);
     }
 
     function gotoSelectedPoint(openPopup=false){
-      const idxStr = ui.pointSelect.value;
-      if (!idxStr) return;
-      const idx = Number(idxStr);
+      const v = ui.pointSelect.value;
+      if (!v) return;
+
+      const radiusM = Number(ui.pointRadius.value || 80);
+
+      if (v === "now"){
+        if (!state.lastPosition) return;
+        const latlng = [state.lastPosition.lat, state.lastPosition.lng];
+        map.setView(latlng, Math.max(map.getZoom(), 17), { animate: true });
+        ensureHighlight(latlng, radiusM);
+
+        if (openPopup){
+          currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.currentAreaGuess || "Now"}</span>`).openPopup();
+        }
+        return;
+      }
+
+      const idx = Number(v);
       const p = state.route.points[idx];
       if (!p) return;
 
       const latlng = [p.lat, p.lng];
       map.setView(latlng, Math.max(map.getZoom(), 17), { animate: true });
-
-      const radiusM = Number(ui.pointRadius.value || 80);
       ensureHighlight(latlng, radiusM);
 
       if (openPopup && pointMarkers[idx]){
@@ -650,13 +546,12 @@
     }
 
     function removeSelectedPoint(){
-      const idxStr = ui.pointSelect.value;
-      if (!idxStr) return;
-      const idx = Number(idxStr);
+      const v = ui.pointSelect.value;
+      if (!v || v === "now") return;
 
+      const idx = Number(v);
       state.route.points.splice(idx, 1);
 
-      // Recompute lastSaved from last point
       const last = state.route.points[state.route.points.length - 1];
       if (last){
         state.lastSaved = {
@@ -665,10 +560,8 @@
           lng: last.lng,
           area: last.area
         };
-        ui.kvArea.textContent = last.area || "—";
       } else {
         state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
-        ui.kvArea.textContent = "—";
       }
 
       renderRoute();
@@ -679,24 +572,28 @@
 
     function fitRoute(){
       const pts = state.route?.points || [];
-      if (!pts.length){
+      const all = [...pts];
+
+      // include "Now" in fit if available
+      if (state.lastPosition){
+        all.push({ lat: state.lastPosition.lat, lng: state.lastPosition.lng });
+      }
+
+      if (!all.length){
         toast("No points to fit");
         return;
       }
-      const bounds = L.latLngBounds(pts.map(p=>[p.lat, p.lng]));
+      const bounds = L.latLngBounds(all.map(p=>[p.lat, p.lng]));
       map.fitBounds(bounds.pad(0.2));
     }
 
     /***********************
-     * Reverse Geocoding (Nominatim)
+     * Reverse geocoding
      ***********************/
     function pickAreaFromAddress(address, mode){
       if (!address) return "";
       const parts = [];
-      if (mode === "full"){
-        return "";
-      }
-
+      if (mode === "full") return "";
       if (mode === "city"){
         const city = address.city || address.town || address.village || address.municipality;
         const stateName = address.state || address.region;
@@ -704,19 +601,15 @@
         if (stateName) parts.push(stateName);
         return parts.filter(Boolean).join(", ");
       }
-
-      // neighborhood/suburb -> city
       const n = address.neighbourhood || address.suburb || address.quarter || address.hamlet || address.locality;
       const city = address.city || address.town || address.village || address.municipality;
       if (n) parts.push(n);
       if (city && city !== n) parts.push(city);
       return parts.filter(Boolean).join(", ");
     }
-
     function normalizeArea(s){
       return (s || "").trim().replace(/\s+/g, " ").toLowerCase();
     }
-
     async function reverseGeocode(lat, lng){
       const minGeoIntervalMs = 1500;
       const t = Date.now();
@@ -743,11 +636,9 @@
           method: "GET",
           headers: {
             "Accept": "application/json",
-            // IMPORTANT: put your own contact/email in User-Agent for real deployments
             "User-Agent": "PP-Route-Recorder/1.0 (Educational use; contact: you@example.com)"
           }
         });
-
         if (!res.ok) throw new Error(`Geocode failed: ${res.status}`);
         const data = await res.json();
 
@@ -773,7 +664,7 @@
     }
 
     /***********************
-     * Tracking + Save-on-area-change logic
+     * Save-on-area-change logic
      ***********************/
     function canSavePoint(pos, areaLabel){
       const minMoveM = Number(ui.minMove.value || 0);
@@ -798,6 +689,50 @@
       return true;
     }
 
+    /***********************
+     * Render route:
+     * saved points + current "Now" point (even when no name yet)
+     ***********************/
+    function renderRoute(){
+      markersLayer.clearLayers();
+      pointMarkers = [];
+
+      const pts = state.route?.points || [];
+      const latlngs = pts.map(p=>[p.lat, p.lng]);
+
+      // add current location to the line so it always connects
+      if (state.lastPosition){
+        latlngs.push([state.lastPosition.lat, state.lastPosition.lng]);
+      }
+      routeLine.setLatLngs(latlngs);
+
+      // saved point markers
+      pts.forEach((p, idx)=>{
+        const m = L.marker([p.lat, p.lng]);
+        const ts = new Date(p.ts).toLocaleString();
+        const area = p.area || "—";
+        const acc = isFinite(p.accuracyM) ? `${Math.round(p.accuracyM)} m` : "—";
+        m.bindPopup(
+          `<b>#${idx+1}</b><br/>` +
+          `<span class="mono">${area}</span><br/>` +
+          `${ts}<br/>` +
+          `acc: ${acc}`
+        );
+        markersLayer.addLayer(m);
+        pointMarkers[idx] = m;
+      });
+
+      ui.kvCount.textContent = String(pts.length);
+      ui.kvDist.textContent = fmtM(routeDistanceM(pts));
+      state.route.updatedAt = nowISO();
+      saveToStorage();
+
+      updatePointSelect();
+    }
+
+    /***********************
+     * Tracking
+     ***********************/
     async function handlePosition(geoPos){
       const c = geoPos.coords;
       const lat = c.latitude;
@@ -809,40 +744,57 @@
       ui.kvAcc.textContent = isFinite(accuracyM) ? `${Math.round(accuracyM)} m` : "—";
       ui.kvSpeed.textContent = fmtSpeed(speedMps);
 
-      currentMarker.setLatLng([lat,lng]);
+      // Always consider this as "Now" until geocode arrives
+      state.lastPosition = { lat, lng, ts: Date.now() };
+      state.currentAreaGuess = "Now";
+      ui.kvArea.textContent = "Now";
 
-      if (!state.lastPosition){
+      // Move current marker + bind popup as Now
+      currentMarker.setLatLng([lat,lng]);
+      currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">Now</span>`);
+
+      // First centering
+      if (state.tracking && state.route.points.length === 0){
         map.setView([lat,lng], 17);
       }
-      state.lastPosition = {lat,lng,ts: Date.now()};
 
+      // Draw line immediately (connect to Now)
+      renderRoute();
+
+      // Reverse geocode (throttled)
       const geo = await reverseGeocode(lat, lng);
+
+      // If we got a name, show it in live status (but still keep "Now" for the current point label)
+      // You asked: name should show as "Now" until found, so:
+      // - before found: "Now"
+      // - after found: show the found area in the live status
       if (geo && geo.area){
+        state.currentAreaGuess = geo.area;
         ui.kvArea.textContent = geo.area;
+        currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${geo.area}</span>`);
       }
 
-      const area = geo?.area || ui.kvArea.textContent || "";
-      const rawAddress = geo?.raw?.address || null;
+      // Saving rule uses the found area label; if not found, do NOT save a point yet.
+      const areaForSaving = geo?.area || "";
+      if (!areaForSaving) return;
 
       const pos = { lat, lng, ts: Date.now(), accuracyM, speedMps };
-      if (!area) return;
-
-      if (canSavePoint(pos, area)){
+      if (canSavePoint(pos, areaForSaving)){
         const pt = {
           lat, lng,
           ts: new Date(pos.ts).toISOString(),
           accuracyM: isFinite(accuracyM) ? accuracyM : null,
           speedMps: isFinite(speedMps) ? speedMps : null,
-          area,
-          rawAddress,
+          area: areaForSaving,
+          rawAddress: geo?.raw?.address || null,
           note: "Saved because area changed"
         };
         state.route.points.push(pt);
-        state.lastSaved = { ts: pos.ts, lat, lng, area };
-        log(`Saved point #${state.route.points.length}: ${area}`);
+        state.lastSaved = { ts: pos.ts, lat, lng, area: areaForSaving };
+        log(`Saved point #${state.route.points.length}: ${areaForSaving}`);
         renderRoute();
 
-        // Optional: auto-select last saved point
+        // auto-select last saved point
         ui.pointSelect.value = String(state.route.points.length - 1);
         ui.btnGoPoint.disabled = false;
         ui.btnOpenPopup.disabled = false;
@@ -877,16 +829,10 @@
       state.route.updatedAt = nowISO();
       saveToStorage();
 
-      state.lastPosition = null;
-
       state.watchId = navigator.geolocation.watchPosition(
         handlePosition,
         handleError,
-        {
-          enableHighAccuracy: true,
-          maximumAge: 2000,
-          timeout: 15000
-        }
+        { enableHighAccuracy: true, maximumAge: 2000, timeout: 15000 }
       );
 
       state.tracking = true;
@@ -905,40 +851,6 @@
       ui.btnStart.disabled = false;
       ui.btnStop.disabled = true;
       log("Tracking stopped.");
-    }
-
-    /***********************
-     * Render Route (+ select)
-     ***********************/
-    function renderRoute(){
-      markersLayer.clearLayers();
-      pointMarkers = [];
-
-      const pts = state.route?.points || [];
-      const latlngs = pts.map(p=>[p.lat, p.lng]);
-      routeLine.setLatLngs(latlngs);
-
-      pts.forEach((p, idx)=>{
-        const m = L.marker([p.lat, p.lng]);
-        const ts = new Date(p.ts).toLocaleString();
-        const area = p.area || "—";
-        const acc = isFinite(p.accuracyM) ? `${Math.round(p.accuracyM)} m` : "—";
-        m.bindPopup(
-          `<b>#${idx+1}</b><br/>` +
-          `<span class="mono">${area}</span><br/>` +
-          `${ts}<br/>` +
-          `acc: ${acc}`
-        );
-        markersLayer.addLayer(m);
-        pointMarkers[idx] = m;
-      });
-
-      ui.kvCount.textContent = String(pts.length);
-      ui.kvDist.textContent = fmtM(routeDistanceM(pts));
-      state.route.updatedAt = nowISO();
-      saveToStorage();
-
-      updatePointSelect();
     }
 
     /***********************
@@ -996,11 +908,7 @@
 
       try{
         if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share){
-          await navigator.share({
-            title: data.name || "Route",
-            text: "Route JSON export",
-            files: [file]
-          });
+          await navigator.share({ title: data.name || "Route", text: "Route JSON export", files: [file] });
           toast("Shared");
           return;
         }
@@ -1051,10 +959,10 @@
               lng: last.lng,
               area: last.area
             };
-            ui.kvArea.textContent = last.area || "—";
+            ui.kvArea.textContent = last.area || "Now";
           } else {
             state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
-            ui.kvArea.textContent = "—";
+            ui.kvArea.textContent = "Now";
           }
 
           saveToStorage();
@@ -1078,7 +986,7 @@
       state.route = newRoute();
       state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
       ui.routeName.value = "";
-      ui.kvArea.textContent = "—";
+      ui.kvArea.textContent = "Now";
       logEl.textContent = "";
       saveToStorage();
 
@@ -1093,7 +1001,7 @@
     }
 
     /***********************
-     * Wire up UI
+     * UI wiring
      ***********************/
     ui.btnStart.addEventListener("click", startTracking);
     ui.btnStop.addEventListener("click", stopTracking);
@@ -1104,7 +1012,6 @@
     ui.btnShare.addEventListener("click", shareRoute);
     ui.btnImport.addEventListener("click", importJSON);
 
-    // settings changes -> update route meta
     [ui.routeName, ui.minMove, ui.minTime, ui.areaMode].forEach(el=>{
       el.addEventListener("change", ()=>{
         if (!state.route) return;
@@ -1119,12 +1026,11 @@
       });
     });
 
-    // NEW: select events
     ui.pointSelect.addEventListener("change", ()=>{
       const has = ui.pointSelect.value !== "";
       ui.btnGoPoint.disabled = !has;
       ui.btnOpenPopup.disabled = !has;
-      ui.btnRemovePoint.disabled = !has;
+      ui.btnRemovePoint.disabled = !(ui.pointSelect.value !== "" && ui.pointSelect.value !== "now");
     });
     ui.btnGoPoint.addEventListener("click", ()=>gotoSelectedPoint(false));
     ui.btnOpenPopup.addEventListener("click", ()=>gotoSelectedPoint(true));
@@ -1152,10 +1058,8 @@
           lng: last.lng,
           area: last.area
         };
-        ui.kvArea.textContent = last.area || "—";
       } else {
         state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
-        ui.kvArea.textContent = "—";
       }
 
       renderRoute();
@@ -1164,7 +1068,6 @@
       log(`Loaded route: ${state.route.points.length} saved point(s).`);
     })();
 
-    // Expose minimal debug
     window.PPRoute = {
       getRoute: () => getExportJSON(),
       stop: () => stopTracking(),
