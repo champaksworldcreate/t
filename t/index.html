@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <title>Programmer’s Picnic — Route Recorder (Area Change)</title>
-  <meta name="description" content="Programmer’s Picnic Route Recorder by Champak Roy. Track your live location, save points when the area changes, view your route on a map, and export/share as JSON." />
+  <meta name="description" content="Programmer’s Picnic Route Recorder by Champak Roy. Track live location, save points when the area changes, view route on a map, and export/share as JSON." />
   <meta name="theme-color" content="#d97706" />
 
-  <!-- Open Graph -->
   <meta property="og:title" content="Programmer’s Picnic — Route Recorder (Area Change)" />
   <meta property="og:description" content="Track live location, save points when the area changes, view route, export/share JSON. By Champak Roy." />
   <meta property="og:type" content="website" />
@@ -150,17 +149,6 @@
     .topActions{
       display:flex; gap:8px; align-items:center;
     }
-    .linkBtn{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.65);
-      text-decoration:none;
-      font-size:12px;
-      color:var(--ink);
-      font-weight:700;
-    }
 
     .left{
       padding:14px;
@@ -213,7 +201,7 @@
       color:#7a271a;
     }
     button.ghost{
-      background: rgba(255,255,255,.5);
+      background: rgba(255,255,255,.56);
     }
     button:disabled{
       opacity:.55;
@@ -325,7 +313,7 @@
       transform: translateX(-50%) translateY(-2px);
     }
 
-    /* ✅ Color-only animation for current location marker */
+    /* Color-only animation for current location marker */
     .pp-now-colorcycle{
       animation: ppNowColors 1.35s linear infinite;
     }
@@ -432,22 +420,21 @@
         </div>
       </div>
 
-      <!-- ✅ Help section (publication-friendly) -->
       <div class="sectionTitle">Help</div>
       <div class="help" id="helpBox" hidden>
         <b>How it works</b>
         <ul>
-          <li><b>Start tracking</b> to begin recording your live location.</li>
-          <li>Your current position is shown as <b>Now</b> until a place name is found.</li>
-          <li>A point is <b>saved</b> only when the <b>area name changes</b> (and you have moved/time has passed).</li>
+          <li>Tap <b>Start tracking</b> to begin.</li>
+          <li>Your live position is shown as <b>Now</b> until a place name is found.</li>
+          <li>A point is saved only when the <b>area name changes</b> (with move/time limits).</li>
           <li>Use <b>Recorded locations</b> to jump to a saved point or to <b>Now</b>.</li>
-          <li>Use <b>Download JSON</b> to export, or <b>Share route</b> to share from your device.</li>
+          <li>Use <b>Download JSON</b> to export or <b>Share route</b> to share from your device.</li>
           <li><b>Import JSON</b> loads an exported route back into this page.</li>
         </ul>
         <div style="margin-top:10px">
           <b>Privacy</b>
           <ul>
-            <li>Your route is saved in your browser storage on this device unless you download/share it.</li>
+            <li>Your route stays on this device (browser storage) unless you download/share it.</li>
             <li>Stop tracking anytime. Clear removes locally saved route data.</li>
           </ul>
         </div>
@@ -494,7 +481,7 @@
           <span class="badge">Route JSON</span>
         </div>
         <div class="small">
-          Tip: Save points happen when the <b>area changes</b>. The route always connects to <b>Now</b>.
+          Save points happen when the <b>area changes</b>. The route always connects to <b>Now</b>.
         </div>
       </div>
     </section>
@@ -569,7 +556,12 @@
       lastSaved: { ts: 0, lat: null, lng: null, area: null },
       geocodeInFlight: false,
       lastPosition: null,
-      currentAreaGuess: "Now"
+      currentAreaGuess: "Now",
+
+      // ✅ NEW: keep last known area so saving never stalls
+      lastKnownArea: "",
+      // ✅ NEW: update the seeded “Now” point once a name is found
+      seededNowPointId: null
     };
 
     function nowISO(){ return new Date().toISOString(); }
@@ -656,9 +648,7 @@
       };
     }
 
-    /***********************
-     * Map
-     ***********************/
+    /* Map */
     const map = L.map("map", { zoomControl: true });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -668,7 +658,6 @@
     const routeLine = L.polyline([], { weight: 5, opacity: 0.9 }).addTo(map);
     const markersLayer = L.layerGroup().addTo(map);
 
-    // Current marker (color-cycle animation)
     const currentMarker = L.circleMarker([0,0], {
       radius: 9,
       weight: 2,
@@ -688,9 +677,7 @@
 
     map.setView([25.3176, 82.9739], 13);
 
-    /***********************
-     * Recorded select + highlight
-     ***********************/
+    /* Select + highlight */
     let highlightCircle = null;
     let pointMarkers = [];
 
@@ -733,7 +720,6 @@
         sel.appendChild(opt);
       }
 
-      // restore selection
       if (prev === "now" && state.lastPosition) sel.value = "now";
       else if (prev !== "" && prev !== "now" && Number(prev) < pts.length) sel.value = prev;
       else sel.value = state.lastPosition ? "now" : "";
@@ -767,7 +753,7 @@
         map.setView(latlng, Math.max(map.getZoom(), 17), { animate: true });
         ensureHighlight(latlng, radiusM);
         if (openPopup){
-          currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.currentAreaGuess || "Now"}</span>`).openPopup();
+          currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.lastKnownArea || "Now"}</span>`).openPopup();
         }
         return;
       }
@@ -790,7 +776,11 @@
       if (!v || v === "now") return;
 
       const idx = Number(v);
-      state.route.points.splice(idx, 1);
+      const removed = state.route.points.splice(idx, 1)[0];
+
+      if (removed?.id && removed.id === state.seededNowPointId){
+        state.seededNowPointId = null;
+      }
 
       const last = state.route.points[state.route.points.length - 1];
       if (last){
@@ -823,9 +813,7 @@
       map.fitBounds(bounds.pad(0.2));
     }
 
-    /***********************
-     * Reverse geocoding (throttled)
-     ***********************/
+    /* Geocoding helpers */
     function pickAreaFromAddress(address, mode){
       if (!address) return "";
       const parts = [];
@@ -847,6 +835,7 @@
       return (s || "").trim().replace(/\s+/g, " ").toLowerCase();
     }
 
+    /* ✅ Improved reverse geocode: stores lastKnownArea so saving never stalls */
     async function reverseGeocode(lat, lng){
       const minGeoIntervalMs = 1500;
       const t = Date.now();
@@ -868,11 +857,11 @@
         url.searchParams.set("zoom","18");
         url.searchParams.set("addressdetails","1");
 
-        const res = await fetch(url.toString(), {
-          method: "GET",
-          headers: { "Accept": "application/json" }
-        });
+        // Optional (recommended): a contact email improves reliability with Nominatim
+        // Change to your public email or remove the next line if you prefer.
+        url.searchParams.set("email", "champak.roy@example.com");
 
+        const res = await fetch(url.toString(), { method: "GET", headers: { "Accept": "application/json" } });
         if (!res.ok) return null;
 
         const data = await res.json();
@@ -886,7 +875,11 @@
           if (!area) area = (data.display_name || "").split(",").slice(0,2).join(",").trim();
         }
 
+        area = (area || "").trim();
         state.lastGeo = { ts: Date.now(), lat, lng, area };
+
+        if (area) state.lastKnownArea = area;
+
         return { area, raw: data };
       }catch(_){
         return null;
@@ -895,9 +888,7 @@
       }
     }
 
-    /***********************
-     * Save-on-area-change
-     ***********************/
+    /* Save-on-area-change logic */
     function canSavePoint(pos, areaLabel){
       const minMoveM = Number(ui.minMove.value || 0);
       const minTimeS = Number(ui.minTime.value || 0);
@@ -921,9 +912,7 @@
       return true;
     }
 
-    /***********************
-     * Render route
-     ***********************/
+    /* Render route (saved points + current Now point in the polyline) */
     function renderRoute(){
       markersLayer.clearLayers();
       pointMarkers = [];
@@ -938,7 +927,7 @@
 
       pts.forEach((p, idx)=>{
         const m = L.marker([p.lat, p.lng]);
-        const ts = new Date(p.ts).toLocaleString();
+        const ts = p.ts ? new Date(p.ts).toLocaleString() : "";
         const area = p.area || "—";
         const acc = isFinite(p.accuracyM) ? `${Math.round(p.accuracyM)} m` : "—";
         m.bindPopup(
@@ -959,9 +948,7 @@
       updatePointSelect();
     }
 
-    /***********************
-     * Tracking
-     ***********************/
+    /* ✅ Tracking: seed “Now” point + update it when name arrives + never-stall saving */
     async function handlePosition(geoPos){
       const c = geoPos.coords;
       const lat = c.latitude;
@@ -974,32 +961,100 @@
       ui.kvSpeed.textContent = fmtSpeed(speedMps);
 
       state.lastPosition = { lat, lng, ts: Date.now() };
-      state.currentAreaGuess = "Now";
+
+      // show Now until place name appears
       ui.kvArea.textContent = "Now";
 
       currentMarker.setLatLng([lat,lng]);
       applyNowColorCycle();
-      currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.currentAreaGuess}</span>`);
+      currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${state.lastKnownArea || "Now"}</span>`);
 
       if (state.tracking && state.route.points.length === 0){
         map.setView([lat,lng], 17);
       }
 
+      // draw line immediately
       renderRoute();
 
-      const geo = await reverseGeocode(lat, lng);
-      if (geo && geo.area){
-        state.currentAreaGuess = geo.area;
-        ui.kvArea.textContent = geo.area;
-        currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${geo.area}</span>`);
+      // ✅ seed a single “Now” point (so recording doesn’t feel stuck at start)
+      if (state.route.points.length === 0 && !state.seededNowPointId){
+        const posTs = Date.now();
+        const seed = {
+          id: uid(),
+          lat, lng,
+          ts: new Date(posTs).toISOString(),
+          accuracyM: isFinite(accuracyM) ? accuracyM : null,
+          speedMps: isFinite(speedMps) ? speedMps : null,
+          area: "Now",
+          note: "Seed point (name pending)"
+        };
+        state.route.points.push(seed);
+        state.seededNowPointId = seed.id;
+        state.lastSaved = { ts: posTs, lat, lng, area: "Now" };
+        log("Saved initial point: Now");
+        renderRoute();
       }
 
-      const areaForSaving = geo?.area || "";
+      // try reverse geocode (may fail; that's ok)
+      const geo = await reverseGeocode(lat, lng);
+
+      if (geo && geo.area){
+        ui.kvArea.textContent = geo.area;
+        currentMarker.bindPopup(`<b>Now</b><br/><span class="mono">${geo.area}</span>`);
+
+        // ✅ update seeded point to real name (avoid duplicate)
+        const last = state.route.points[state.route.points.length - 1];
+        if (last && last.id === state.seededNowPointId && normalizeArea(last.area) === "now"){
+          last.area = geo.area;
+          last.note = "Seed point updated with place name";
+          state.lastSaved.area = geo.area;
+          state.seededNowPointId = null;
+          log(`Updated initial point name: ${geo.area}`);
+          renderRoute();
+          return;
+        }
+      }
+
+      // ✅ use lastKnownArea if geo failed this time
+      const areaForSaving = (geo?.area || state.lastKnownArea || "").trim();
       if (!areaForSaving) return;
 
       const pos = { lat, lng, ts: Date.now(), accuracyM, speedMps };
+
+      // Special case: last was “Now” and now we have real area
+      const prevArea = normalizeArea(state.lastSaved.area);
+      const curArea = normalizeArea(areaForSaving);
+
+      if (prevArea === "now" && curArea && curArea !== "now"){
+        const moved = state.lastSaved.lat != null
+          ? haversineM({lat: state.lastSaved.lat, lng: state.lastSaved.lng}, {lat, lng})
+          : Infinity;
+        const dt = (pos.ts - state.lastSaved.ts) / 1000;
+        const minMoveM = Number(ui.minMove.value || 0);
+        const minTimeS = Number(ui.minTime.value || 0);
+
+        if (moved >= minMoveM && dt >= minTimeS){
+          const pt = {
+            id: uid(),
+            lat, lng,
+            ts: new Date(pos.ts).toISOString(),
+            accuracyM: isFinite(accuracyM) ? accuracyM : null,
+            speedMps: isFinite(speedMps) ? speedMps : null,
+            area: areaForSaving,
+            note: "Area resolved after Now"
+          };
+          state.route.points.push(pt);
+          state.lastSaved = { ts: pos.ts, lat, lng, area: areaForSaving };
+          log(`Saved: ${areaForSaving}`);
+          renderRoute();
+        }
+        return;
+      }
+
+      // Normal rule: save when area changes
       if (canSavePoint(pos, areaForSaving)){
         const pt = {
+          id: uid(),
           lat, lng,
           ts: new Date(pos.ts).toISOString(),
           accuracyM: isFinite(accuracyM) ? accuracyM : null,
@@ -1072,9 +1127,7 @@
       toast("Tracking stopped");
     }
 
-    /***********************
-     * Export / Share / Import
-     ***********************/
+    /* Export / Share / Import */
     function getExportJSON(){
       const clone = structuredClone(state.route);
       clone.name = (ui.routeName.value || clone.name || "").trim();
@@ -1151,12 +1204,18 @@
             toast("Invalid route JSON");
             return;
           }
+
+          // ensure ids exist for older exports
+          obj.points = obj.points.map(p => p.id ? p : ({ ...p, id: uid() }));
+
           state.route = obj;
 
           ui.routeName.value = obj.name || "";
           ui.minMove.value = obj.settings?.minMoveM ?? ui.minMove.value;
           ui.minTime.value = obj.settings?.minTimeS ?? ui.minTime.value;
           ui.areaMode.value = obj.settings?.areaMode ?? ui.areaMode.value;
+
+          state.seededNowPointId = null;
 
           const last = obj.points[obj.points.length - 1];
           if (last){
@@ -1167,9 +1226,11 @@
               area: last.area
             };
             ui.kvArea.textContent = last.area || "Now";
+            if (last.area && normalizeArea(last.area) !== "now") state.lastKnownArea = last.area;
           } else {
             state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
             ui.kvArea.textContent = "Now";
+            state.lastKnownArea = "";
           }
 
           saveToStorage();
@@ -1191,6 +1252,9 @@
       }
       state.route = newRoute();
       state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
+      state.lastKnownArea = "";
+      state.seededNowPointId = null;
+
       ui.routeName.value = "";
       ui.kvArea.textContent = "Now";
       logEl.textContent = "";
@@ -1206,9 +1270,7 @@
       log("Route cleared.");
     }
 
-    /***********************
-     * UI wiring
-     ***********************/
+    /* UI wiring */
     ui.btnStart.addEventListener("click", startTracking);
     ui.btnStop.addEventListener("click", stopTracking);
     ui.btnFit.addEventListener("click", fitRoute);
@@ -1222,7 +1284,6 @@
       const isHidden = ui.helpBox.hasAttribute("hidden");
       if (isHidden) ui.helpBox.removeAttribute("hidden");
       else ui.helpBox.setAttribute("hidden","");
-
       ui.btnHelpToggle.setAttribute("aria-expanded", String(isHidden));
     });
 
@@ -1250,12 +1311,13 @@
     ui.btnOpenPopup.addEventListener("click", ()=>gotoSelectedPoint(true));
     ui.btnRemovePoint.addEventListener("click", removeSelectedPoint);
 
-    /***********************
-     * Init
-     ***********************/
+    /* Init */
     (function init(){
       const loaded = loadFromStorage();
       state.route = loaded || newRoute();
+
+      // ensure ids exist for older saved data
+      state.route.points = (state.route.points || []).map(p => p.id ? p : ({ ...p, id: uid() }));
 
       ui.routeName.value = state.route.name || "";
       if (state.route.settings){
@@ -1272,6 +1334,9 @@
           lng: last.lng,
           area: last.area
         };
+        if (last.area && normalizeArea(last.area) !== "now"){
+          state.lastKnownArea = last.area;
+        }
       } else {
         state.lastSaved = { ts: 0, lat: null, lng: null, area: null };
       }
@@ -1282,7 +1347,6 @@
       setStatus(false, "Idle");
       log(`Loaded ${state.route.points.length} saved point(s).`);
 
-      // ensure animation class attaches once SVG exists
       setTimeout(applyNowColorCycle, 80);
     })();
   </script>
