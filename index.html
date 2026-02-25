@@ -1,2083 +1,2730 @@
 <!doctype html>
-
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Punya Yatra — Varanasi Tourist Places (v2)</title>
-  <meta name="description" content="Module-first Varanasi planner: Tour, Festivals, Rituals, Kathas, Food, Shopping — then map, itinerary & WhatsApp share." />
-  <meta name="theme-color" content="#d97706" />  <!-- Fonts -->  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">  <!-- Leaflet (map) -->  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  <style>
-    :root{
-      /* Light Saffron theme (your preference) */
-      --bg:#fff7e6;
-      --panel:rgba(255,255,255,.82);
-      --ink:#1f2328;
-      --muted:#5b6570;
-      --line:rgba(31,35,40,.12);
-      --saffron:#ff9f1c;
-      --saffron2:#ffb74d;
-      --green:#2f7d4a;
-      --shadow:0 14px 36px rgba(31,35,40,.14);
-      --shadow2:0 10px 26px rgba(31,35,40,.12);
-      --radius:18px;
-      --radius2:24px;
-      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      --sans:"DM Sans", Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family:var(--sans);
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 10% 0%, rgba(255,159,28,.18), transparent 60%),
-        radial-gradient(900px 520px at 90% 10%, rgba(255,183,77,.20), transparent 55%),
-        linear-gradient(180deg, #fffaf0, var(--bg));
-    }
-
-    a{ color:inherit; text-decoration:none; }
-    .wrap{ max-width:1200px; margin:0 auto; padding:18px; }
-
-    /* Topbar */
-    .topbar{
-      position:sticky; top:0; z-index:30;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(180deg, rgba(255,247,230,.88), rgba(255,247,230,.62));
-      border-bottom:1px solid var(--line);
-    }
-    .topbar .row{ display:flex; gap:12px; align-items:center; justify-content:space-between; padding:10px 18px; }
-    .brand{ display:flex; gap:10px; align-items:center; }
-    .logo{
-      width:38px; height:38px; border-radius:12px;
-      background: conic-gradient(from 210deg, var(--saffron), var(--saffron2));
-      box-shadow: var(--shadow2);
-      position:relative;
-    }
-    .logo:after{
-      content:"";
-      position:absolute; inset:10px;
-      border-radius:10px;
-      background: rgba(255,255,255,.65);
-      border:1px solid rgba(31,35,40,.08);
-    }
-    .brand h1{ font-size:15px; margin:0; letter-spacing:.2px; }
-    .brand p{ margin:0; font-size:12px; color:var(--muted); }
-
-    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-
-    /* Global search suggest */
-    .gqWrap{ position:relative; }
-    .suggest{
-      position:absolute;
-      top: calc(100% + 8px);
-      left:0;
-      width: min(520px, 78vw);
-      max-height: 320px;
-      overflow:auto;
-      background: rgba(255,255,255,.96);
-      border:1px solid rgba(31,35,40,.14);
-      border-radius: 18px;
-      box-shadow: 0 18px 44px rgba(31,35,40,.18);
-      padding:8px;
-      z-index: 80;
-    }
-    .sItem{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      padding:10px;
-      border-radius: 14px;
-      border:1px solid transparent;
-      cursor:pointer;
-    }
-    .sItem:hover{ background: rgba(255,159,28,.14); }
-    .sItem[aria-selected="true"]{ background: rgba(255,159,28,.18); border-color: rgba(217,119,6,.22); }
-    .sType{
-      font-size:11px;
-      font-weight:900;
-      border:1px solid rgba(31,35,40,.12);
-      background: rgba(255,255,255,.85);
-      border-radius: 999px;
-      padding:4px 8px;
-      white-space:nowrap;
-      flex:0 0 auto;
-      margin-top:2px;
-    }
-    .sMain{ min-width:0; }
-    .sMain b{ display:block; font-size:13px; }
-    .sMain span{ display:block; font-size:12px; color:var(--muted); margin-top:2px; line-height:1.35; }
-    .sFoot{ display:flex; gap:8px; align-items:center; justify-content:space-between; margin-top:6px; }
-    .sHint{ font-size:11px; color:var(--muted); }
-    .kbd{ font-family:var(--mono); font-size:11px; padding:3px 6px; border-radius:10px; border:1px solid rgba(31,35,40,.14); background: rgba(255,255,255,.72); }
-    .btn{
-      border:1px solid rgba(31,35,40,.12);
-      background: rgba(255,255,255,.75);
-      color:var(--ink);
-      border-radius:14px;
-      padding:10px 12px;
-      font-weight:700;
-      font-size:13px;
-      display:inline-flex; gap:8px; align-items:center;
-      cursor:pointer;
-      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-      box-shadow: 0 8px 18px rgba(31,35,40,.08);
-    }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px rgba(31,35,40,.12); background: rgba(255,255,255,.9); }
-    .btn.primary{
-      background: linear-gradient(180deg, rgba(255,159,28,.98), rgba(255,183,77,.98));
-      border-color: rgba(217,119,6,.35);
-      color:#1a140c;
-    }
-    .btn.primary:hover{ filter:saturate(1.03); }
-    .btn.danger{ background: rgba(255,255,255,.75); border-color: rgba(220,38,38,.25); }
-    .btn.small{ padding:9px 10px; border-radius:12px; font-size:12px; box-shadow:none; }
-
-    /* Cards */
-    .card{
-      background: var(--panel);
-      border:1px solid rgba(31,35,40,.10);
-      border-radius: var(--radius2);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-
-    /* Start */
-    .start{ margin-top:14px; padding:16px; }
-    .startHead{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; }
-    .startHead h2{ margin:0; font-size:18px; letter-spacing:-.2px; }
-    .startHead p{ margin:4px 0 0; color:var(--muted); font-size:13px; }
-    .startGrid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:12px;
-      margin-top:12px;
-    }
-    .startCard{
-      border-radius: var(--radius2);
-      border:1px solid rgba(31,35,40,.10);
-      background: rgba(255,255,255,.78);
-      box-shadow: 0 10px 22px rgba(31,35,40,.10);
-      padding:14px;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-      position:relative;
-      min-height: 120px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      text-align:left;
-    }
-    .startCard:hover{ transform: translateY(-2px); box-shadow: 0 18px 34px rgba(31,35,40,.14); background: rgba(255,255,255,.92); }
-    .startCard[aria-pressed="true"]{
-      background: rgba(255,159,28,.20);
-      border-color: rgba(217,119,6,.30);
-    }
-    .startTop{ display:flex; gap:10px; align-items:flex-start; }
-    .startIcon{
-      width:38px; height:38px;
-      border-radius:14px;
-      background: linear-gradient(180deg, rgba(255,159,28,.95), rgba(255,183,77,.75));
-      box-shadow: 0 12px 22px rgba(31,35,40,.10);
-      display:grid;
-      place-items:center;
-      font-size:18px;
-      flex:0 0 auto;
-    }
-    .startCard h3{ margin:0; font-size:14px; letter-spacing:-.2px; }
-    .startCard .small{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
-    .hint{ font-size:12px; color:var(--muted); }
-
-    /* Hero */
-    .hero{ padding:18px 0 10px; }
-    .heroGrid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:14px; align-items:stretch; }
-    .heroMain{ padding:18px; position:relative; }
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      font-size:12px; font-weight:800;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(31,35,40,.10);
-      background: rgba(255,255,255,.75);
-    }
-    .badge i{ width:10px; height:10px; border-radius:50%; background: var(--saffron); box-shadow: 0 0 0 4px rgba(255,159,28,.18); }
-    .heroTitle{ margin:12px 0 8px; font-size:34px; line-height:1.08; letter-spacing:-.6px; }
-    .heroSub{ margin:0; color:var(--muted); font-size:14px; max-width:70ch; }
-    .heroTools{ margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; }
-    .heroAside{ padding:16px; display:flex; flex-direction:column; gap:10px; }
-    .mini{ background: rgba(255,255,255,.7); border:1px solid rgba(31,35,40,.10); border-radius: var(--radius); padding:12px; }
-    .mini h3{ margin:0 0 6px; font-size:13px; }
-    .mini p{ margin:0; color:var(--muted); font-size:12px; }
-
-    /* Layout */
-    .mainGrid{ display:grid; grid-template-columns: 1fr 380px; gap:14px; align-items:start; margin-top:14px; }
-
-    /* Controls */
-    .controls{ padding:14px; }
-    .controlsRow{ display:grid; grid-template-columns: 1fr 160px 170px; gap:10px; }
-    .field{ display:flex; flex-direction:column; gap:6px; }
-    .label{ font-size:12px; color:var(--muted); font-weight:700; }
-    .input, .select{
-      width:100%;
-      padding:11px 12px;
-      border-radius:14px;
-      border:1px solid rgba(31,35,40,.14);
-      background: rgba(255,255,255,.82);
-      outline:none;
-      font-weight:600;
-    }
-    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-    .chip{
-      border:1px solid rgba(31,35,40,.12);
-      background: rgba(255,255,255,.75);
-      border-radius:999px;
-      padding:8px 10px;
-      font-size:12px;
-      font-weight:800;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s ease, background .12s ease;
-    }
-    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.9); }
-    .chip[aria-pressed="true"]{ background: rgba(255,159,28,.22); border-color: rgba(217,119,6,.28); }
-
-    /* Results */
-    .results{ padding:14px; }
-    .resultsHead{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
-    .resultsHead h2{ margin:0; font-size:15px; }
-
-    .grid{ display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; margin-top:12px; }
-
-    .place{
-      border-radius: var(--radius2);
-      border:1px solid rgba(31,35,40,.10);
-      background: rgba(255,255,255,.78);
-      overflow:hidden;
-      box-shadow: 0 10px 22px rgba(31,35,40,.10);
-      transition: transform .15s ease, box-shadow .15s ease;
-      display:flex;
-      flex-direction:column;
-      min-height: 232px;
-    }
-    .place:hover{ transform: translateY(-2px); box-shadow: 0 18px 34px rgba(31,35,40,.14); }
-
-    .thumb{ height:118px; background: linear-gradient(135deg, rgba(255,159,28,.55), rgba(255,183,77,.25)); position:relative; }
-    .thumb svg{ position:absolute; inset:0; width:100%; height:100%; opacity:.9; }
-    .pBody{ padding:12px; display:flex; flex-direction:column; gap:8px; }
-    .pTitle{ margin:0; font-size:14px; letter-spacing:-.2px; }
-    .meta{ display:flex; gap:8px; flex-wrap:wrap; }
-    .tag{
-      font-size:11px;
-      font-weight:800;
-      border:1px solid rgba(31,35,40,.12);
-      background: rgba(255,255,255,.75);
-      border-radius:999px;
-      padding:5px 8px;
-      color: #2b2b2b;
-    }
-    .pDesc{ margin:0; color:var(--muted); font-size:12px; line-height:1.35; }
-    .pBtns{ margin-top:auto; display:flex; gap:8px; }
-
-    /* Sidebar */
-    .side{ padding:14px; }
-    #map{
-      height: 300px;
-      border-radius: var(--radius2);
-      border:1px solid rgba(31,35,40,.10);
-      overflow:hidden;
-      box-shadow: 0 12px 26px rgba(31,35,40,.12);
-    }
-    .itinerary{ margin-top:12px; }
-    .itinerary h2{ margin:0 0 8px; font-size:15px; }
-    .list{ display:flex; flex-direction:column; gap:10px; }
-    .item{
-      background: rgba(255,255,255,.78);
-      border:1px solid rgba(31,35,40,.10);
-      border-radius: var(--radius2);
-      padding:10px;
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .item strong{ font-size:13px; }
-    .item p{ margin:2px 0 0; color:var(--muted); font-size:12px; }
-    .item .miniBtns{ margin-left:auto; display:flex; gap:8px; }
-    .iconBtn{
-      width:34px; height:34px;
-      border-radius:12px;
-      border:1px solid rgba(31,35,40,.12);
-      background: rgba(255,255,255,.78);
-      cursor:pointer;
-      display:grid;
-      place-items:center;
-    }
-    .iconBtn:hover{ background: rgba(255,255,255,.92); }
-
-    .toast{
-      position:fixed;
-      bottom:18px;
-      left:50%;
-      transform:translateX(-50%);
-      background: rgba(31,35,40,.92);
-      color:#fff;
-      border-radius:999px;
-      padding:10px 14px;
-      font-size:12px;
-      box-shadow: 0 16px 30px rgba(0,0,0,.24);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
-      z-index:50;
-    }
-    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-2px); }
-
-    /* Modal */
-    .backdrop{ position:fixed; inset:0; background: rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:18px; z-index:60; }
-    .backdrop.open{ display:flex; }
-    .modal{ width:min(960px, 100%); background: rgba(255,255,255,.92); border:1px solid rgba(255,255,255,.55); border-radius: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.28); overflow:hidden; }
-    .modalTop{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid rgba(31,35,40,.10); background: linear-gradient(180deg, rgba(255,247,230,.85), rgba(255,247,230,.55)); }
-    .modalTop strong{ font-size:13px; }
-    .modalBody{ display:grid; grid-template-columns: 1fr 300px; gap:0; }
-    .modalMain{ padding:14px; }
-    .modalAside{ padding:14px; border-left:1px solid rgba(31,35,40,.10); background: rgba(255,247,230,.45); }
-    .kvs{ display:grid; grid-template-columns: 1fr; gap:10px; }
-    .kv{ padding:10px; background: rgba(255,255,255,.75); border:1px solid rgba(31,35,40,.10); border-radius: 18px; }
-    .kv b{ display:block; font-size:12px; }
-    .kv span{ display:block; font-size:12px; color:var(--muted); margin-top:2px; }
-
-    /* Module UI */
-    .moduleHeader{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; }
-    .moduleHeader h3{ margin:0; font-size:16px; letter-spacing:-.2px; }
-    .moduleHeader p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.45; }
-    .panel{ background: rgba(255,255,255,.78); border:1px solid rgba(31,35,40,.10); border-radius: 22px; padding:12px; }
-    .panel h4{ margin:0 0 10px; font-size:14px; }
-    .cols{ display:grid; grid-template-columns: 1.15fr .85fr; gap:12px; align-items:start; margin-top:12px; }
-    .stack{ display:flex; flex-direction:column; gap:10px; }
-    .box{ padding:10px; border-radius:18px; border:1px solid rgba(31,35,40,.10); background: rgba(255,255,255,.75); }
-    .box b{ display:block; font-size:13px; }
-    .box span{ display:block; margin-top:4px; color:var(--muted); font-size:12px; line-height:1.45; }
-    .toolRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-
-    .closeX{ border:none; background:transparent; font-size:18px; cursor:pointer; padding:6px 10px; border-radius:12px; }
-    .closeX:hover{ background: rgba(255,255,255,.75); }
-
-    /* Responsive */
-    @media (max-width: 980px){
-      .startGrid{ grid-template-columns: 1fr; }
-      .heroGrid{ grid-template-columns: 1fr; }
-      .mainGrid{ grid-template-columns: 1fr; }
-      .grid{ grid-template-columns: 1fr; }
-      .controlsRow{ grid-template-columns: 1fr; }
-      .modalBody{ grid-template-columns: 1fr; }
-      .modalAside{ border-left:none; border-top:1px solid rgba(31,35,40,.10); }
-      .cols{ grid-template-columns: 1fr; }
-    }
-
-    /* Accessibility helpers */
-    .sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-  </style></head>
-<body>  <!-- Sticky Topbar -->  <div class="topbar">
-    <div class="row wrap">
-      <div class="brand" role="banner">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Punya Yatra — Varanasi</h1>
-          <p>Modules → map → itinerary → WhatsApp</p>
-        </div>
-      </div>
-      <div class="actions">
-        <div class="gqWrap" id="gqWrap">
-          <label class="sr" for="gq">Search everywhere</label>
-          <input id="gq" class="input" style="width:min(360px, 55vw); padding:10px 12px;" placeholder="Search everywhere… (places + tours + kathas + rituals)" autocomplete="off" />
-          <div class="suggest" id="gqSuggest" role="listbox" aria-label="Search suggestions" hidden></div>
-        </div>
-        <button class="btn" id="btnGlobalSearch" title="Search everywhere (opens full results)">🔎 Search</button>
-        <button class="btn" id="btnOpenModules" title="Open modules">✨ Modules</button>
-        <button class="btn" id="btnLocate" title="Center map to Varanasi">📍 Center</button>
-        <button class="btn" id="btnExport" title="Copy itinerary as text">📋 Copy</button>
-        <button class="btn primary" id="btnWhatsApp" title="Share itinerary on WhatsApp">🟢 WhatsApp</button>
-      </div>
-    </div>
-  </div>  <div class="wrap"><!-- Guided Start: Module-first -->
-<section class="card start" id="start" aria-label="Guided start">
-  <div class="startHead">
-    <div>
-      <h2>What do you want?</h2>
-      <p>Select one — we’ll open a dedicated module first (then you can jump to Map View anytime).</p>
-    </div>
-    <div class="actions" style="gap:8px">
-      <button class="btn" id="btnSkipStart" title="Go to map view">↪ Map View</button>
-      <button class="btn primary" id="btnStartGo" disabled title="Open module">✨ Open</button>
-    </div>
-  </div>
-
-  <div class="startGrid" id="startGrid"></div>
-  <div class="hint" style="margin-top:10px">Tip: Pick <b>Ritual</b> for evening Aarti flow, <b>Food</b> for breakfast streets, <b>Tour</b> for 1–3 day plans.</div>
-</section>
-
-<!-- Main App (Map + Places) -->
-<div id="mainApp" hidden>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="heroGrid">
-      <div class="card heroMain">
-        <span class="badge"><i></i> Punya Yatra Planner</span>
-        <h2 class="heroTitle">Explore Varanasi — Ghats, Temples, Museums & Food</h2>
-        <p class="heroSub">
-          Browse places on the map, open details, add to itinerary, and share.
-          Start with Modules (Tour/Festival/Ritual/Katha/Food/Shopping) for guided planning.
-        </p>
-        <div class="heroTools">
-          <button class="btn primary" id="btnOpenItin">🧾 Open Itinerary</button>
-          <button class="btn" id="btnRandom">🎲 Surprise me</button>
-          <button class="btn" id="btnClearFilters">🧹 Clear Filters</button>
-          <button class="btn" id="btnGlobalSearch2">🔎 Search</button>
-          <button class="btn" id="btnOpenModules2">✨ Modules</button>
-        </div>
-      </div>
-      <aside class="card heroAside">
-        <div class="mini">
-          <h3>How to use</h3>
-          <p>Pick a module → build mini-plan → jump to map → add more places.</p>
-        </div>
-        <div class="mini">
-          <h3>Planner</h3>
-          <p>Your itinerary is auto-saved (localStorage). Share with one click.</p>
-        </div>
-        <div class="mini">
-          <h3>Offline-friendly</h3>
-          <p>Data embedded. Later you can swap to JSON files: tours.json, kathas.json, events.json.</p>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- Main -->
-  <section class="mainGrid">
-
-    <!-- Left: search + results -->
-    <div class="card">
-      <div class="controls">
-        <div class="controlsRow">
-          <div class="field">
-            <div class="label">Search</div>
-            <input class="input" id="q" placeholder="Try: Kashi Vishwanath, Ganga aarti, Banaras saree, museum…" />
-          </div>
-          <div class="field">
-            <div class="label">Sort</div>
-            <select class="select" id="sort">
-              <option value="pop">Popularity</option>
-              <option value="alpha">A → Z</option>
-              <option value="near">Near center</option>
-            </select>
-          </div>
-          <div class="field">
-            <div class="label">Time</div>
-            <select class="select" id="time">
-              <option value="any">Any</option>
-              <option value="morning">Morning</option>
-              <option value="evening">Evening</option>
-              <option value="night">Night</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="chips" id="chips" aria-label="Category filters"></div>
-      </div>
-
-      <div class="results">
-        <div class="resultsHead">
-          <h2 id="count">Places</h2>
-          <div class="hint" id="hint">Tap a card to focus on map.</div>
-        </div>
-        <div class="grid" id="grid" aria-live="polite"></div>
-      </div>
-    </div>
-
-    <!-- Right: map + itinerary -->
-    <aside class="card side">
-      <div id="map" role="application" aria-label="Varanasi map"></div>
-
-      <div class="itinerary">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-          <h2>Itinerary</h2>
-          <button class="btn danger small" id="btnClearItin">🗑 Clear</button>
-        </div>
-        <div class="hint">Add places → reorder by drag (mobile: long-press) — share on WhatsApp.</div>
-        <div class="list" id="itin"></div>
-      </div>
-    </aside>
-
-  </section>
-
-  <footer style="padding:16px 2px; color:var(--muted); font-size:12px;">
-    <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;">
-      <div>© <span id="y"></span> Punya Yatra • Varanasi Planner</div>
-      <div>v2 • Modules-first • Data embedded</div>
-    </div>
-  </footer>
-</div>
-
-  </div>  <!-- Modal (Place details + Modules) -->  <div class="backdrop" id="backdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-      <div class="modalTop">
-        <strong id="mTitle">Panel</strong>
-        <button class="closeX" id="mClose" aria-label="Close">✕</button>
-      </div>
-      <div class="modalBody">
-        <div class="modalMain" id="mMain"></div>
-        <aside class="modalAside">
-          <div class="kvs" id="mKvs"></div>
-          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn primary" id="mAdd">🗺️ Go to Map</button>
-            <a class="btn" id="mDir" target="_blank" rel="noopener">🧭 Directions</a>
-            <button class="btn" id="mCopy">📋 Copy</button>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </div>  <div class="toast" id="toast" role="status" aria-live="polite"></div>  <!-- Embedded DATA (edit/expand this later or move to JSON files) -->  <script id="placesData" type="application/json">
-  {
-    "city": "Varanasi",
-    "center": {"lat": 25.3176, "lng": 82.9739},
-    "categories": [
-      {"id":"ghat","label":"Ghats"},
-      {"id":"temple","label":"Temples"},
-      {"id":"heritage","label":"Heritage"},
-      {"id":"museum","label":"Museums"},
-      {"id":"food","label":"Food"},
-      {"id":"shopping","label":"Shopping"},
-      {"id":"nature","label":"Nature"}
-    ],
-    "places": [
-      {
-        "id":"kashi_vishwanath",
-        "name":"Shri Kashi Vishwanath Temple",
-        "category":["temple"],
-        "short":"One of the holiest Shiva temples — spiritual heart of Kashi.",
-        "bestTime":["morning","evening"],
-        "durationMin": 90,
-        "pop": 100,
-        "lat": 25.3109,
-        "lng": 83.0107,
-        "tips":["Carry valid ID for entry rules (may vary).","Expect queues during festivals and Mondays."],
-        "tags":["Darshan","Spiritual"],
-        "near":"Vishwanath Corridor"
-      },
-      {
-        "id":"dashashwamedh",
-        "name":"Dashashwamedh Ghat",
-        "category":["ghat","heritage"],
-        "short":"Famous for the grand Ganga Aarti — iconic Banaras experience.",
-        "bestTime":["evening"],
-        "durationMin": 75,
-        "pop": 98,
-        "lat": 25.3069,
-        "lng": 83.0101,
-        "tips":["Reach early to get a good view.","Keep belongings secure in crowds."],
-        "tags":["Aarti","Boat"],
-        "near":"Godowlia"
-      },
-      {
-        "id":"assi",
-        "name":"Assi Ghat",
-        "category":["ghat"],
-        "short":"Relaxed vibe, sunrise walks and cafés nearby.",
-        "bestTime":["morning","evening"],
-        "durationMin": 60,
-        "pop": 85,
-        "lat": 25.2884,
-        "lng": 83.0060,
-        "tips":["Try sunrise boat ride from nearby points.","Great spot for photos at dawn."],
-        "tags":["Sunrise","Cafés"],
-        "near":"BHU side"
-      },
-      {
-        "id":"manikarnika",
-        "name":"Manikarnika Ghat",
-        "category":["ghat","heritage"],
-        "short":"Sacred cremation ghat — deeply spiritual, observe respectfully.",
-        "bestTime":["any"],
-        "durationMin": 35,
-        "pop": 92,
-        "lat": 25.3112,
-        "lng": 83.0186,
-        "tips":["Maintain respect; avoid photography where inappropriate.","Go with a local guide if unsure."],
-        "tags":["Sacred","History"],
-        "near":"Old city"
-      },
-      {
-        "id":"sarnath",
-        "name":"Sarnath",
-        "category":["heritage","museum"],
-        "short":"Buddhist pilgrimage site — Dhamek Stupa, ruins, calm gardens.",
-        "bestTime":["morning"],
-        "durationMin": 180,
-        "pop": 90,
-        "lat": 25.3713,
-        "lng": 83.0210,
-        "tips":["Combine with Sarnath Museum.","Carry water; walkable campus."],
-        "tags":["Buddhism","Stupa"],
-        "near":"Sarnath"
-      },
-      {
-        "id":"ramnagar_fort",
-        "name":"Ramnagar Fort",
-        "category":["heritage","museum"],
-        "short":"Historic fort-palace with a museum — across the river.",
-        "bestTime":["morning","evening"],
-        "durationMin": 120,
-        "pop": 76,
-        "lat": 25.2750,
-        "lng": 83.0269,
-        "tips":["Check museum timings before you go.","A good add-on after a boat ride."],
-        "tags":["Fort","Museum"],
-        "near":"Ramnagar"
-      },
-      {
-        "id":"bhu",
-        "name":"BHU Campus & Bharat Kala Bhavan",
-        "category":["museum","heritage"],
-        "short":"Arts, culture, and a serene university campus.",
-        "bestTime":["morning"],
-        "durationMin": 150,
-        "pop": 74,
-        "lat": 25.2677,
-        "lng": 82.9913,
-        "tips":["Plan museum visit with open hours.","Campus is great for calm walks."],
-        "tags":["Art","Culture"],
-        "near":"BHU"
-      },
-      {
-        "id":"banaras_saree",
-        "name":"Banarasi Silk Weaving Lanes",
-        "category":["shopping","heritage"],
-        "short":"See silk weaving and shop authentic Banarasi sarees.",
-        "bestTime":["day"],
-        "durationMin": 120,
-        "pop": 72,
-        "lat": 25.3219,
-        "lng": 83.0100,
-        "tips":["Prefer reputed shops / cooperatives.","Ask for GI tag and authenticity."],
-        "tags":["Silk","Handloom"],
-        "near":"Madanpura"
-      },
-      {
-        "id":"kachori",
-        "name":"Kachori Sabzi & Banarasi Chai Spots",
-        "category":["food"],
-        "short":"Classic Banaras breakfast — kachori, jalebi, chai.",
-        "bestTime":["morning"],
-        "durationMin": 50,
-        "pop": 70,
-        "lat": 25.3170,
-        "lng": 83.0065,
-        "tips":["Go early for fresher options.","Ask locals for the best nearby stall."],
-        "tags":["Street Food","Breakfast"],
-        "near":"Godowlia area"
-      },
-      {
-        "id":"ganga_boat",
-        "name":"Ganga Boat Ride (Sunrise/Sunset)",
-        "category":["nature","ghat"],
-        "short":"Boat ride views of ghats — peaceful and photogenic.",
-        "bestTime":["morning","evening"],
-        "durationMin": 60,
-        "pop": 88,
-        "lat": 25.3060,
-        "lng": 83.0120,
-        "tips":["Confirm price before boarding.","Carry a light shawl in winter mornings."],
-        "tags":["River","Views"],
-        "near":"Assi / Dashashwamedh"
-      }
-    ],
-
-    "modules": {
-      "tourPlans": [
-        {"id":"day1_classic","title":"Day 1 — Classic Varanasi","subtitle":"Sunrise ghat → Vishwanath → Aarti","steps":["assi","ganga_boat","kashi_vishwanath","dashashwamedh"]},
-        {"id":"day2_sarnath","title":"Day 2 — Sarnath + Culture","subtitle":"Stupa + museum + calm campus","steps":["sarnath","bhu"]},
-        {"id":"day3_heritage","title":"Day 3 — Heritage & River","subtitle":"Fort + sacred ghat + evening vibes","steps":["ramnagar_fort","manikarnika","dashashwamedh"]}
-      ],
-      "events": [
-        {"title":"Evening Ganga Aarti","when":"Daily (evening)","note":"Dashashwamedh Ghat — reach early.","add":["dashashwamedh"]},
-        {"title":"Sunrise Ghat Walk","when":"Daily (morning)","note":"Assi Ghat side — calm start.","add":["assi"]},
-        {"title":"Dev Deepawali vibe","when":"Seasonal","note":"Ghats illuminate — peak crowds.","add":["dashashwamedh","ganga_boat"]},
-        {"title":"Mahashivratri energy","when":"Seasonal","note":"Temple queues — plan with time.","add":["kashi_vishwanath"]}
-      ],
-      "rituals": [
-        {"title":"Attend Ganga Aarti","desc":"Reach early, sit respectfully, keep belongings safe.","add":["dashashwamedh"]},
-        {"title":"Kashi Vishwanath Darshan","desc":"Expect queues; follow entry rules; keep ID handy.","add":["kashi_vishwanath"]},
-        {"title":"Boat ride for ghat darshan","desc":"Confirm price before boarding; carry a light shawl in winter.","add":["ganga_boat","assi"]},
-        {"title":"Respect sacred zones","desc":"Avoid photography where inappropriate; follow local guidance.","add":[]}
-      ],
-      "kathas": [
-        {"title":"Why Kashi feels timeless","text":"Kashi is experienced like a living flow — ghats, bells, and lanes that invite remembrance. Move slowly; the city reveals itself."},
-        {"title":"Ghats: a river-side classroom","text":"From sunrise to evening lamps, the ghats teach impermanence and devotion. Observe quietly, offer respect, and you’ll understand Banaras beyond photos."},
-        {"title":"Sarnath: silence after awakening","text":"Sarnath carries calm continuity — ruins, stupas, and gardens. It’s a perfect balance to the intensity of old Kashi streets."}
-      ],
-      "foods": [
-        {"title":"Kachori Sabzi","when":"Morning","note":"Go early; best with jalebi.","add":["kachori"]},
-        {"title":"Banarasi Chai","when":"Any","note":"Try chai near ghats.","add":["kachori"]},
-        {"title":"Thandai (seasonal)","when":"Day","note":"Prefer reputed shops.","add":[]}
-      ],
-      "shopping": {
-        "checklist": [
-          {"title":"Silk authenticity","desc":"Prefer reputed shops/co-ops; ask for GI tag."},
-          {"title":"Handloom lanes","desc":"Go with guidance if needed; compare quality."},
-          {"title":"Local crafts","desc":"Small souvenirs near heritage lanes."}
-        ],
-        "defaultAdd":["banaras_saree"]
-      }
-    }
-  }
-  </script>  <script>
-    // -------------------------------------------------
-    // Punya Yatra — Varanasi Places (v2)
-    // Module-first UX: choose a module → build plan → map
-    // Everything is embedded JSON-first (places + modules)
-    // -------------------------------------------------
-
-    const $ = (s, r=document) => r.querySelector(s);
-    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-
-    const storeKey = "py_varanasi_itinerary_v2";
-    const startKey = "py_varanasi_start_topic_v2";
-
-    const data = JSON.parse($("#placesData").textContent);
-    const center = data.center;
-
-    const state = {
-      q: "",
-      time: "any",
-      sort: "pop",
-      cat: new Set(),
-      selectedId: null,
-      itin: loadItinerary(),
-      topic: loadTopic() // single selected topic
-    };
-
-    $("#y").textContent = new Date().getFullYear();
-
-    // ---------------- Start Topics ----------------
-    const TOPICS = [
-      { id: "tour", icon: "🗺️", title: "Tour / Itinerary", desc: "Ready-made 1–3 day plans." },
-      { id: "festival", icon: "🎉", title: "Festival / Events", desc: "Aarti + seasonal vibes (editable)." },
-      { id: "ritual", icon: "🪔", title: "Ritual / Puja", desc: "Checklist + sacred flow." },
-      { id: "katha", icon: "📜", title: "Katha / Stories", desc: "Short legends + meaning." },
-      { id: "food", icon: "🍲", title: "Food", desc: "Breakfast trail + map filter." },
-      { id: "shopping", icon: "🧵", title: "Shopping", desc: "Checklist + silk lanes." }
-    ];
-
-    const startGrid = $("#startGrid");
-    const btnStartGo = $("#btnStartGo");
-    const btnSkipStart = $("#btnSkipStart");
-
-    function loadTopic(){
-      try{
-        const raw = localStorage.getItem(startKey);
-        return raw || "";
-      }catch{ return ""; }
-    }
-    function saveTopic(){
-      try{ localStorage.setItem(startKey, state.topic || ""); }catch{}
-    }
-
-    function renderStart(){
-      startGrid.innerHTML = "";
-      for (const t of TOPICS){
-        const c = document.createElement("button");
-        c.type = "button";
-        c.className = "startCard";
-        const on = state.topic === t.id;
-        c.setAttribute("aria-pressed", on ? "true" : "false");
-        c.innerHTML = `
-          <div class="startTop">
-            <div class="startIcon" aria-hidden="true">${t.icon}</div>
-            <div style="min-width:0;">
-              <h3>${escapeHtml(t.title)}</h3>
-              <div class="small">${escapeHtml(t.desc)}</div>
-            </div>
-          </div>
-          <div class="small" style="font-weight:800; color:#3b2a12;">Tap to choose</div>
-        `;
-        c.addEventListener("click", ()=>{
-          state.topic = t.id;
-          saveTopic();
-          renderStart();
-        });
-        startGrid.appendChild(c);
-      }
-      btnStartGo.disabled = !state.topic;
-    }
-
-    btnStartGo.addEventListener("click", ()=>{
-      if (!state.topic) return;
-      openTopicModule(state.topic);
-    });
-
-    btnSkipStart.addEventListener("click", ()=>{
-      $("#start").style.display = "none";
-      $("#mainApp").hidden = false;
-      toast("Map view");
-      render();
-      document.querySelector(".hero").scrollIntoView({ behavior:"smooth", block:"start" });
-    });
-
-    // Open Modules from topbar / hero
-    $("#btnOpenModules").addEventListener("click", ()=> openModulesPicker());
-    $("#btnOpenModules2").addEventListener("click", ()=> openModulesPicker());
-
-    function openModulesPicker(){
-      const html = `
-        <div class="panel">
-          <div class="moduleHeader">
-            <div>
-              <h3>Modules</h3>
-              <p>Pick one to get a guided plan, then jump to map.</p>
-            </div>
-          </div>
-          <div class="toolRow" style="margin-top:12px;">
-            ${TOPICS.map(t=>`<button class="btn" data-act="open" data-id="${escapeHtml(t.id)}">${escapeHtml(t.icon)} ${escapeHtml(t.title)}</button>`).join("")}
-          </div>
-        </div>
-      `;
-      openModule("Modules", "Choose one to start.", html, { primaryLabel:"🗺️ Map View" });
-
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        if (b.dataset.act !== "open") return;
-
-        const type = b.dataset.type;
-        const id = b.dataset.id;
-        const idx = b.dataset.idx === "" ? null : parseInt(b.dataset.idx, 10);
-
-        openResult({ type, id, idx });
-      }, { once:true });
-    }
-
-    // ---------------- Map ----------------
-    let map = null;
-    let markerLayer = null;
-
-    function ensureMap(){
-      if (map) return map;
-      if (!window.L) {
-        // If Leaflet fails to load, we still keep the rest of the app working (modules, lists, itinerary)
-        toast("Map library not loaded (offline/network). Modules + itinerary still work.");
-        return null;
-      }
-      map = L.map("map", { zoomControl: true }).setView([center.lat, center.lng], 13);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap"
-      }).addTo(map);
-      markerLayer = L.layerGroup().addTo(map);
-      return map;
-    }
-
-    ensureMap();
-    const markersById = new Map();
-
-    // ---------------- Chips ----------------
-    const chipsEl = $("#chips");
-    for (const c of data.categories){
-      const b = document.createElement("button");
-      b.className = "chip";
-      b.type = "button";
-      b.textContent = c.label;
-      b.dataset.cat = c.id;
-      b.setAttribute("aria-pressed", "false");
-      b.addEventListener("click", ()=>{
-        if (state.cat.has(c.id)) state.cat.delete(c.id);
-        else state.cat.add(c.id);
-        syncChips();
-        render();
-      });
-      chipsEl.appendChild(b);
-    }
-
-    function syncChips(){
-      $$(".chip").forEach(ch=>{
-        const on = state.cat.has(ch.dataset.cat);
-        ch.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-    }
-
-    // ---------------- Controls ----------------
-    $("#q").addEventListener("input", (e)=>{ state.q = e.target.value.trim(); render(); });
-    $("#sort").addEventListener("change", (e)=>{ state.sort = e.target.value; render(); });
-    $("#time").addEventListener("change", (e)=>{ state.time = e.target.value; render(); });
-
-    $("#btnClearFilters").addEventListener("click", ()=>{
-      state.q = "";
-      state.time = "any";
-      state.sort = "pop";
-      state.cat.clear();
-      $("#q").value = "";
-      $("#time").value = "any";
-      $("#sort").value = "pop";
-      syncChips();
-      toast("Filters cleared");
-      render();
-    });
-
-    $("#btnLocate").addEventListener("click", ()=>{
-      map.setView([center.lat, center.lng], 13, { animate:true });
-      toast("Centered on Varanasi");
-    });
-
-    $("#btnRandom").addEventListener("click", ()=>{
-      const list = getFilteredPlaces();
-      if (!list.length) return toast("No places match your filters");
-      const p = list[Math.floor(Math.random()*list.length)];
-      focusPlace(p.id, { openModal:true });
-    });
-
-    $("#btnOpenItin").addEventListener("click", ()=>{
-      $("#itin").scrollIntoView({ behavior:"smooth", block:"start" });
-    });
-
-    $("#btnClearItin").addEventListener("click", ()=>{
-      state.itin = [];
-      saveItinerary();
-      renderItinerary();
-      toast("Itinerary cleared");
-    });
-
-    $("#btnExport").addEventListener("click", async ()=>{
-      const txt = itineraryText();
-      await copyText(txt);
-      toast("Itinerary copied");
-    });
-
-    $("#btnWhatsApp").addEventListener("click", ()=>{
-      const msg = itineraryText(true);
-      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank", "noopener");
-    });
-
-    // ---------------- Render pipeline ----------------
-    function getFilteredPlaces(){
-      const q = state.q.toLowerCase();
-      const wantsTime = state.time;
-      const cats = state.cat;
-
-      let list = data.places.filter(p=>{
-        if (cats.size){
-          const ok = p.category?.some(x=>cats.has(x));
-          if (!ok) return false;
-        }
-        if (wantsTime !== "any"){
-          const bt = (p.bestTime||[]).map(x=>(x||"").toLowerCase());
-          if (!bt.includes(wantsTime)) return false;
-        }
-        if (q){
-          const hay = [p.name, p.short, p.near, ...(p.tags||[]), ...(p.category||[])].join(" ").toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
-        return true;
-      });
-
-      if (state.sort === "pop") list.sort((a,b)=>(b.pop||0)-(a.pop||0));
-      else if (state.sort === "alpha") list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
-      else if (state.sort === "near") list.sort((a,b)=> dist2(a, center) - dist2(b, center));
-
-      return list;
-    }
-
-    function render(){
-      const list = getFilteredPlaces();
-      $("#count").textContent = `Places (${list.length})`;
-
-      ensureMap();
-      if (markerLayer) markerLayer.clearLayers();
-      markersById.clear();
-      for (const p of list){
-        if (!map || !markerLayer) break;
-        const m = L.marker([p.lat, p.lng]).addTo(markerLayer);
-        m.bindPopup(`<b>${escapeHtml(p.name)}</b><br><span style='color:#555'>${escapeHtml(p.short||"")}</span>`);
-        m.on("click", ()=> focusPlace(p.id, { openModal:false }));
-        markersById.set(p.id, m);
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Learning Sutras — Knowledge Search</title>
+    <meta
+      name="description"
+      content="Search your Learning Sutras knowledge library using a public JSON feed. Built for Programmer’s Picnic by Champak Roy."
+    />
+    <meta name="theme-color" content="#d97706" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #fff7e6;
+        --panel: rgba(255, 255, 255, 0.82);
+        --ink: #1f2328;
+        --muted: #5b6570;
+        --line: rgba(31, 35, 40, 0.12);
+        --saffron: #ff9f1c;
+        --saffron2: #ffb74d;
+        --green: #2f7d4a;
+        --shadow: 0 14px 36px rgba(31, 35, 40, 0.14);
+        --shadow2: 0 10px 26px rgba(31, 35, 40, 0.12);
+        --radius: 18px;
+        --radius2: 24px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        --sans: "DM Sans", Inter, system-ui, -apple-system, Segoe UI, Roboto,
+          Arial, sans-serif;
       }
 
-      const grid = $("#grid");
-      grid.innerHTML = "";
-      for (const p of list) grid.appendChild(placeCard(p));
-
-      renderItinerary();
-    }
-
-    function placeCard(p){
-      const el = document.createElement("article");
-      el.className = "place";
-      el.tabIndex = 0;
-      el.setAttribute("role", "button");
-      el.setAttribute("aria-label", `Open ${p.name}`);
-
-      const cats = (p.category||[]).map(id => (data.categories.find(c=>c.id===id)?.label || id));
-
-      el.innerHTML = `
-        <div class="thumb">${miniSvg(p.id)}</div>
-        <div class="pBody">
-          <h3 class="pTitle">${escapeHtml(p.name)}</h3>
-          <div class="meta">
-            ${cats.slice(0,3).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join("")}
-            ${(p.tags||[]).slice(0,2).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join("")}
-          </div>
-          <p class="pDesc">${escapeHtml(p.short||"")}</p>
-          <div class="pBtns">
-            <button class="btn small" data-action="details">🔎 Details</button>
-            <button class="btn small primary" data-action="add">➕ Add</button>
-          </div>
-        </div>
-      `;
-
-      el.addEventListener("click", (e)=>{
-        const btn = e.target.closest("button");
-        if (btn?.dataset.action === "add"){
-          e.stopPropagation();
-          addToItinerary(p.id);
-          return;
-        }
-        if (btn?.dataset.action === "details"){
-          e.stopPropagation();
-          focusPlace(p.id, { openModal:true });
-          return;
-        }
-        focusPlace(p.id, { openModal:false });
-      });
-
-      el.addEventListener("keydown", (e)=>{
-        if (e.key === "Enter" || e.key === " "){
-          e.preventDefault();
-          focusPlace(p.id, { openModal:true });
-        }
-      });
-
-      return el;
-    }
-
-    function focusPlace(id, { openModal }){
-      const p = data.places.find(x=>x.id===id);
-      if (!p) return;
-      state.selectedId = id;
-
-      ensureMap();
-      if (map) map.setView([p.lat, p.lng], 14, { animate:true });
-      if (m) m.openPopup();
-
-      if (openModal) openDetails(p);
-    }
-
-    // ---------------- Itinerary ----------------
-    function loadItinerary(){
-      try{
-        const raw = localStorage.getItem(storeKey);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      }catch{ return []; }
-    }
-    function saveItinerary(){
-      try{ localStorage.setItem(storeKey, JSON.stringify(state.itin)); }catch{}
-    }
-
-    function addToItinerary(id){
-      if (state.itin.includes(id)) return toast("Already in itinerary");
-      state.itin.push(id);
-      saveItinerary();
-      renderItinerary();
-      toast("Added to itinerary");
-    }
-
-    function removeFromItinerary(id){
-      state.itin = state.itin.filter(x=>x!==id);
-      saveItinerary();
-      renderItinerary();
-      toast("Removed");
-    }
-
-    function moveItin(from, to){
-      const a = state.itin;
-      if (from<0 || to<0 || from>=a.length || to>=a.length) return;
-      const [it] = a.splice(from, 1);
-      a.splice(to, 0, it);
-      saveItinerary();
-      renderItinerary();
-    }
-
-    function renderItinerary(){
-      const el = $("#itin");
-      el.innerHTML = "";
-
-      if (!state.itin.length){
-        const empty = document.createElement("div");
-        empty.className = "mini";
-        empty.innerHTML = "<h3 style='margin:0 0 6px;font-size:13px'>No items yet</h3><p style='margin:0;color:var(--muted);font-size:12px'>Tap <b>Add</b> on any place to build your plan.</p>";
-        el.appendChild(empty);
-        return;
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        color: var(--ink);
+        background:
+          radial-gradient(
+            1200px 600px at 10% 0%,
+            rgba(255, 159, 28, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 520px at 90% 10%,
+            rgba(255, 183, 77, 0.2),
+            transparent 55%
+          ),
+          linear-gradient(180deg, #fffaf0, var(--bg));
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 18px;
       }
 
-      state.itin.forEach((id, idx)=>{
-        const p = data.places.find(x=>x.id===id);
-        if (!p) return;
-        const row = document.createElement("div");
-        row.className = "item";
-        row.draggable = true;
-        row.dataset.idx = String(idx);
-        row.innerHTML = `
-          <div style="min-width:0;">
-            <strong>${escapeHtml(p.name)}</strong>
-            <p>${escapeHtml(p.short||"")}</p>
-            <p style="margin-top:6px; font-family:var(--mono); font-size:11px; color:var(--muted);">~${p.durationMin||60} min • ${escapeHtml(p.near||"Varanasi")}</p>
-          </div>
-          <div class="miniBtns">
-            <button class="iconBtn" title="Focus on map" aria-label="Focus" data-act="focus">📍</button>
-            <button class="iconBtn" title="Remove" aria-label="Remove" data-act="remove">🗑</button>
-          </div>
-        `;
+      /* Topbar */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        backdrop-filter: blur(10px);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 247, 230, 0.88),
+          rgba(255, 247, 230, 0.62)
+        );
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar .row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 18px;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        min-width: 240px;
+      }
+      .logo {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: conic-gradient(
+          from 210deg,
+          var(--saffron),
+          var(--saffron2)
+        );
+        box-shadow: var(--shadow2);
+        position: relative;
+        flex: 0 0 auto;
+      }
+      .logo:after {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(31, 35, 40, 0.08);
+      }
+      .brand h1 {
+        font-size: 15px;
+        margin: 0;
+        letter-spacing: 0.2px;
+      }
+      .brand p {
+        margin: 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-        row.addEventListener("click", (e)=>{
-          const b = e.target.closest("button");
-          const act = b?.dataset.act;
-          if (act === "remove") return removeFromItinerary(id);
-          if (act === "focus") return focusPlace(id, { openModal:true });
-        });
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
 
-        row.addEventListener("dragstart", (e)=>{
-          e.dataTransfer.setData("text/plain", String(idx));
-          e.dataTransfer.effectAllowed = "move";
-        });
-        row.addEventListener("dragover", (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect = "move"; });
-        row.addEventListener("drop", (e)=>{
-          e.preventDefault();
-          const from = parseInt(e.dataTransfer.getData("text/plain"), 10);
-          moveItin(from, idx);
-        });
+      .btn {
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.75);
+        color: var(--ink);
+        border-radius: 14px;
+        padding: 10px 12px;
+        font-weight: 900;
+        font-size: 13px;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease,
+          background 0.15s ease;
+        box-shadow: 0 8px 18px rgba(31, 35, 40, 0.08);
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 26px rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      .btn:active {
+        transform: translateY(0px) scale(0.99);
+      }
+      .btn.primary {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 159, 28, 0.98),
+          rgba(255, 183, 77, 0.98)
+        );
+        border-color: rgba(217, 119, 6, 0.35);
+        color: #1a140c;
+      }
+      .btn.green {
+        background: rgba(47, 125, 74, 0.12);
+        border-color: rgba(47, 125, 74, 0.28);
+      }
 
-        let pressT = null;
-        row.addEventListener("touchstart", ()=>{ pressT = setTimeout(()=> row.classList.add("drag"), 450); }, {passive:true});
-        row.addEventListener("touchend", ()=>{ if(pressT) clearTimeout(pressT); row.classList.remove("drag"); }, {passive:true});
+      .input,
+      .select {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(31, 35, 40, 0.14);
+        background: rgba(255, 255, 255, 0.82);
+        outline: none;
+        font-weight: 800;
+      }
+      .input:focus,
+      .select:focus {
+        box-shadow: 0 0 0 4px rgba(255, 159, 28, 0.16);
+        border-color: rgba(217, 119, 6, 0.35);
+      }
 
-        el.appendChild(row);
-      });
-    }
+      .card {
+        background: var(--panel);
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        border-radius: var(--radius2);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
 
-    function itineraryText(forWhatsApp=false){
-      const lines = [];
-      lines.push(`Punya Yatra — Varanasi Itinerary`);
-      lines.push(`
-Places (${state.itin.length}):`);
+      .hero {
+        padding: 18px;
+        margin-top: 14px;
+      }
+      .heroGrid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+        align-items: stretch;
+      }
+      .badge {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.75);
+      }
+      .badge i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--saffron);
+        box-shadow: 0 0 0 4px rgba(255, 159, 28, 0.18);
+      }
+      .heroTitle {
+        margin: 12px 0 8px;
+        font-size: 30px;
+        line-height: 1.08;
+        letter-spacing: -0.6px;
+      }
+      .heroSub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        max-width: 75ch;
+        line-height: 1.5;
+      }
 
-      let total = 0;
-      state.itin.forEach((id, i)=>{
-        const p = data.places.find(x=>x.id===id);
-        if (!p) return;
-        total += (p.durationMin||60);
-        const gmap = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-        lines.push(`${i+1}. ${p.name} — ~${p.durationMin||60} min`);
-        lines.push(`   ${gmap}`);
-      });
+      .mini {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        border-radius: var(--radius);
+        padding: 12px;
+      }
+      .mini h3 {
+        margin: 0 0 6px;
+        font-size: 13px;
+      }
+      .mini p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
 
-      lines.push(`
-Estimated visit time: ~${Math.round(total/60)} hrs ${total%60} min`);
-      lines.push(`
-Tip: Start with a sunrise ghat walk and end with evening aarti.`);
+      .mainGrid {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 14px;
+        align-items: start;
+        margin-top: 14px;
+      }
+      .controls {
+        padding: 14px;
+      }
 
-      const text = lines.join("
-");
-      return forWhatsApp ? text.slice(0, 3800) : text;
-    }
+      .row2 {
+        display: grid;
+        grid-template-columns: 1fr 180px;
+        gap: 10px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 900;
+      }
 
-    // ---------------- Modal ----------------
-    const backdrop = $("#backdrop");
-    const mClose = $("#mClose");
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .chip {
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 999px;
+        padding: 8px 10px;
+        font-size: 12px;
+        font-weight: 900;
+        cursor: pointer;
+        user-select: none;
+        transition:
+          transform 0.12s ease,
+          background 0.12s ease;
+      }
+      .chip:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      .chip[aria-pressed="true"] {
+        background: rgba(255, 159, 28, 0.22);
+        border-color: rgba(217, 119, 6, 0.28);
+      }
 
-    function openDetails(p){
-      $("#mTitle").textContent = p.name;
+      .results {
+        padding: 14px;
+      }
+      .resultsHead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .resultsHead h2 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-      const cats = (p.category||[]).map(id => (data.categories.find(c=>c.id===id)?.label || id));
-      const bt = (p.bestTime||[]).join(", ") || "Any";
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
 
-      $("#mMain").innerHTML = `
-        <div style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap;">
-          <div style="flex:1; min-width:260px;">
-            <div style="height:180px; border-radius:22px; overflow:hidden; border:1px solid rgba(31,35,40,.10); background:linear-gradient(135deg, rgba(255,159,28,.55), rgba(255,183,77,.25)); position:relative;">
-              ${miniSvg("modal_"+p.id)}
-            </div>
-            <p style="margin:12px 0 0; color:var(--muted); line-height:1.5; font-size:13px;">${escapeHtml(p.short||"")}</p>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-              ${cats.map(x=>`<span class=tag>${escapeHtml(x)}</span>`).join("")}
-              ${(p.tags||[]).map(x=>`<span class=tag>${escapeHtml(x)}</span>`).join("")}
-            </div>
+      .item {
+        border-radius: var(--radius2);
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.78);
+        overflow: hidden;
+        box-shadow: 0 10px 22px rgba(31, 35, 40, 0.1);
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+        display: flex;
+        flex-direction: column;
+        min-height: 220px;
+      }
+      .item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 34px rgba(31, 35, 40, 0.14);
+      }
 
-            <div style="margin-top:12px;">
-              <div class="label">Local tips</div>
-              <ul style="margin:6px 0 0; padding-left:18px; color:var(--muted); font-size:13px; line-height:1.5;">
-                ${(p.tips||["Go early and keep water handy.","Respect local customs, especially at sacred sites."]).slice(0,5).map(t=>`<li>${escapeHtml(t)}</li>`).join("")}
-              </ul>
-            </div>
-          </div>
-        </div>
-      `;
+      .thumb {
+        height: 96px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 159, 28, 0.55),
+          rgba(255, 183, 77, 0.25)
+        );
+        position: relative;
+      }
 
-      const kvs = $("#mKvs");
-      kvs.innerHTML = "";
-      kvs.appendChild(kv("Best time", bt));
-      kvs.appendChild(kv("Suggested duration", `~${p.durationMin||60} minutes`));
-      kvs.appendChild(kv("Near", p.near || "Varanasi"));
-      kvs.appendChild(kv("Coordinates", `${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}`));
+      .pBody {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .pTitle {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: -0.2px;
+        line-height: 1.2;
+      }
+      .meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .tag {
+        font-size: 11px;
+        font-weight: 900;
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 999px;
+        padding: 5px 8px;
+        color: #2b2b2b;
+      }
+      .pDesc {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      .pBtns {
+        margin-top: auto;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
 
-      // Buttons
-      $("#mAdd").textContent = "➕ Add to Itinerary";
-      $("#mAdd").onclick = ()=> addToItinerary(p.id);
-      $("#mDir").href = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
-      $("#mDir").style.display = "inline-flex";
-      $("#mCopy").textContent = "📋 Copy";
-      $("#mCopy").onclick = async ()=>{
-        const txt = `${p.name}
-${p.short||""}
-https://www.google.com/maps?q=${p.lat},${p.lng}`;
-        await copyText(txt);
-        toast("Copied place info");
-      };
+      /* Sidebar */
+      .side {
+        padding: 14px;
+      }
+      .stat {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 18px;
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.75);
+      }
+      .stat b {
+        font-size: 13px;
+      }
+      .stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
 
-      openModalShell();
-    }
+      /* Directory list */
+      .labList {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .labRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 18px;
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+        transition:
+          transform 0.12s ease,
+          background 0.12s ease;
+        user-select: none;
+      }
+      .labRow:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      .labRow b {
+        font-size: 13px;
+      }
+      .labRow span {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 900;
+      }
 
-    function openModule(title, subtitle, html, { primaryLabel="🗺️ Map View", primaryAction=null }={}){
-      $("#mTitle").textContent = title;
+      /* Typeahead */
+      .gqWrap {
+        position: relative;
+      }
+      .suggest {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        width: min(580px, 90vw);
+        max-height: 340px;
+        overflow: auto;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(31, 35, 40, 0.14);
+        border-radius: 18px;
+        box-shadow: 0 18px 44px rgba(31, 35, 40, 0.18);
+        padding: 8px;
+        z-index: 80;
+      }
+      .sItem {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .sItem:hover {
+        background: rgba(255, 159, 28, 0.14);
+      }
+      .sItem[aria-selected="true"] {
+        background: rgba(255, 159, 28, 0.18);
+        border-color: rgba(217, 119, 6, 0.22);
+      }
+      .sType {
+        font-size: 11px;
+        font-weight: 900;
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 999px;
+        padding: 4px 8px;
+        white-space: nowrap;
+        flex: 0 0 auto;
+        margin-top: 2px;
+      }
+      .sMain {
+        min-width: 0;
+      }
+      .sMain b {
+        display: block;
+        font-size: 13px;
+      }
+      .sMain span {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+        line-height: 1.35;
+      }
+      .sFoot {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 6px;
+      }
+      .sHint {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .kbd {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 3px 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(31, 35, 40, 0.14);
+        background: rgba(255, 255, 255, 0.72);
+      }
 
-      $("#mMain").innerHTML = `
-        <div class="moduleHeader">
+      /* Modal */
+      .backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        z-index: 60;
+      }
+      .backdrop.open {
+        display: flex;
+      }
+      .modal {
+        width: min(980px, 100%);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: 26px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+      }
+      .modalTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(31, 35, 40, 0.1);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 247, 230, 0.85),
+          rgba(255, 247, 230, 0.55)
+        );
+      }
+      .modalTop strong {
+        font-size: 13px;
+      }
+      .closeX {
+        border: none;
+        background: transparent;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 12px;
+      }
+      .closeX:hover {
+        background: rgba(255, 255, 255, 0.75);
+      }
+      .modalBody {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 0;
+      }
+      .modalMain {
+        padding: 14px;
+      }
+      .modalAside {
+        padding: 14px;
+        border-left: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 247, 230, 0.45);
+      }
+      .kv {
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        border-radius: 18px;
+      }
+      .kv b {
+        display: block;
+        font-size: 12px;
+      }
+      .kv span {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .kvs {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      mark {
+        background: rgba(255, 159, 28, 0.32);
+        border: 1px solid rgba(217, 119, 6, 0.16);
+        padding: 0 2px;
+        border-radius: 6px;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(31, 35, 40, 0.92);
+        color: #fff;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 12px;
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.2s ease,
+          transform 0.2s ease;
+        z-index: 90;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-2px);
+      }
+
+      @media (max-width: 980px) {
+        .heroGrid {
+          grid-template-columns: 1fr;
+        }
+        .mainGrid {
+          grid-template-columns: 1fr;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .row2 {
+          grid-template-columns: 1fr;
+        }
+        .modalBody {
+          grid-template-columns: 1fr;
+        }
+        .modalAside {
+          border-left: none;
+          border-top: 1px solid rgba(31, 35, 40, 0.1);
+        }
+        .brand {
+          min-width: unset;
+        }
+      }
+
+      .sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Tiny progress bar */
+      .bar {
+        height: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.7);
+        overflow: hidden;
+      }
+      .bar > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 159, 28, 0.95),
+          rgba(255, 183, 77, 0.95)
+        );
+        transition: width 0.2s ease;
+      }
+
+      /* =========================================================
+         FEATURED POSTS STRIP
+         ========================================================= */
+      .featuredBox {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 22px;
+        border: 1px solid rgba(217, 119, 6, 0.22);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 159, 28, 0.14),
+          rgba(255, 255, 255, 0.65)
+        );
+        box-shadow: 0 14px 30px rgba(255, 159, 28, 0.1);
+      }
+      .featuredHead {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .featuredHead h3 {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: -0.2px;
+      }
+      .featuredHead .hint {
+        margin: 0;
+      }
+      .featuredGrid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .fCard {
+        border-radius: 18px;
+        border: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.78);
+        padding: 10px;
+        box-shadow: 0 10px 22px rgba(31, 35, 40, 0.08);
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+        cursor: pointer;
+        user-select: none;
+      }
+      .fCard:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 34px rgba(31, 35, 40, 0.12);
+      }
+      .fTitle {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.25;
+        font-weight: 1000;
+      }
+      .fMeta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .fMeta .tag {
+        padding: 4px 8px;
+      }
+      .fDesc {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      @media (max-width: 980px) {
+        .featuredGrid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* =========================================================
+         PRACTICE LAB (Embedded Editors)
+         ========================================================= */
+      .labSection {
+        margin-top: 14px;
+      }
+      .labHead {
+        padding: 14px;
+        border-bottom: 1px solid rgba(31, 35, 40, 0.1);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .labHead h2 {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: -0.2px;
+      }
+      .labHead p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+        max-width: 90ch;
+      }
+
+      .embedWrap {
+        border-top: 1px solid rgba(31, 35, 40, 0.08);
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .embedTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 12px 12px;
+        border-bottom: 1px solid rgba(31, 35, 40, 0.1);
+        background: rgba(255, 255, 255, 0.66);
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .tabBtn {
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 1000;
+        font-size: 12px;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .tabBtn.on {
+        background: rgba(255, 159, 28, 0.22);
+        border-color: rgba(217, 119, 6, 0.28);
+        box-shadow: 0 10px 24px rgba(255, 159, 28, 0.14);
+      }
+      .embedActions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .embedFrame {
+        width: 100%;
+        height: 680px;
+        border: 0;
+        display: none;
+        background: transparent;
+      }
+      .embedFrame.show {
+        display: block;
+      }
+      @media (max-width: 980px) {
+        .embedFrame {
+          height: 740px;
+        }
+      }
+
+      /* Floating Open Lab Button */
+      .fabLab {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 120;
+        border: 1px solid rgba(31, 35, 40, 0.14);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 159, 28, 0.98),
+          rgba(255, 183, 77, 0.98)
+        );
+        color: #1a140c;
+        font-weight: 1000;
+        border-radius: 999px;
+        padding: 12px 14px;
+        box-shadow: 0 18px 36px rgba(31, 35, 40, 0.18);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .fabLab:active {
+        transform: translateY(1px) scale(0.99);
+      }
+      .fabLab small {
+        font-weight: 900;
+        opacity: 0.85;
+        font-size: 12px;
+      }
+      @keyframes fabPulse {
+        0%,
+        100% {
+          box-shadow: 0 18px 36px rgba(31, 35, 40, 0.18);
+        }
+        50% {
+          box-shadow: 0 18px 46px rgba(255, 159, 28, 0.26);
+        }
+      }
+      .fabLab.pulse {
+        animation: fabPulse 1.4s ease-in-out infinite;
+      }
+      @keyframes labGlow {
+        0% {
+          box-shadow: 0 0 0 rgba(255, 159, 28, 0);
+        }
+        40% {
+          box-shadow: 0 0 0 10px rgba(255, 159, 28, 0.16);
+        }
+        100% {
+          box-shadow: 0 0 0 rgba(255, 159, 28, 0);
+        }
+      }
+      #ppLab.labGlow {
+        animation: labGlow 900ms ease-out;
+        border-color: rgba(217, 119, 6, 0.35);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="topbar">
+      <div class="row wrap">
+        <div class="brand" role="banner">
+          <div class="logo" aria-hidden="true"></div>
           <div>
-            <h3>${escapeHtml(title)}</h3>
-            <p>${escapeHtml(subtitle||"")}</p>
-          </div>
-          <div class="toolRow">
-            <button class="btn" id="modCopy">📋 Copy</button>
-            <button class="btn primary" id="modWhats">🟢 WhatsApp</button>
+            <h1>Learning Sutras — Knowledge Search</h1>
+            <p>Programmer’s Picnic • Champak Roy</p>
           </div>
         </div>
-        <div style="margin-top:12px;">${html}</div>
-      `;
 
-      const kvs = $("#mKvs");
-      kvs.innerHTML = "";
-      kvs.appendChild(kv("Next", "Jump to Map View anytime"));
-      kvs.appendChild(kv("Tip", "Use module buttons to add places to itinerary"));
-
-      // Right-side buttons
-      $("#mAdd").textContent = primaryLabel;
-      $("#mDir").style.display = "none";
-      $("#mCopy").textContent = "🔎 Browse Places";
-
-      $("#mAdd").onclick = ()=>{
-        if (typeof primaryAction === "function") return primaryAction();
-        goMapView();
-      };
-      $("#mCopy").onclick = ()=>{
-        goMapView();
-        setTimeout(()=> document.querySelector(".results")?.scrollIntoView({ behavior:"smooth", block:"start" }), 50);
-      };
-
-      // Module share/copy
-      $("#modCopy").onclick = async ()=>{
-        const txt = $("#mMain").innerText.trim().slice(0, 4500);
-        await copyText(txt);
-        toast("Copied");
-      };
-      $("#modWhats").onclick = ()=>{
-        const txt = $("#mMain").innerText.trim().slice(0, 3800);
-        window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank", "noopener");
-      };
-
-      openModalShell();
-    }
-
-    function openModalShell(){
-      backdrop.classList.add("open");
-      backdrop.setAttribute("aria-hidden", "false");
-      document.addEventListener("keydown", onEscClose);
-    }
-
-    function closeModal(){
-      backdrop.classList.remove("open");
-      backdrop.setAttribute("aria-hidden", "true");
-      document.removeEventListener("keydown", onEscClose);
-    }
-
-    function onEscClose(e){
-      if (e.key === "Escape") closeModal();
-    }
-
-    mClose.addEventListener("click", closeModal);
-    backdrop.addEventListener("click", (e)=>{ if (e.target === backdrop) closeModal(); });
-
-    function kv(k,v){
-      const el = document.createElement("div");
-      el.className = "kv";
-      el.innerHTML = `<b>${escapeHtml(k)}</b><span>${escapeHtml(v)}</span>`;
-      return el;
-    }
-
-    // ---------------- Modules ----------------
-    function openTopicModule(topicId, opts={}){
-      // Once a module opens, hide start screen; keep main hidden until they choose map
-      $("#start").style.display = "none";
-      $("#mainApp").hidden = true;
-
-      if (topicId === "tour") return openTourModule();
-      if (topicId === "festival") return openEventsModule();
-      if (topicId === "ritual") return openRitualsModule();
-      if (topicId === "katha") return openKathasModule(opts.kathaIndex ?? 0);
-      if (topicId === "food") return openFoodModule();
-      if (topicId === "shopping") return openShoppingModule();
-
-      // fallback
-      goMapView();
-    }
-
-    function goMapView(){
-      closeModal();
-      $("#start").style.display = "none";
-      $("#mainApp").hidden = false;
-
-      ensureMap();
-      if (map) setTimeout(() => map.invalidateSize(true), 60);
-
-      render();
-      toast("Map view");
-      document.querySelector(".hero")?.scrollIntoView({ behavior:"smooth", block:"start" });
-    }
-
-    function openTourModule(){
-      const plans = data.modules?.tourPlans || [];
-
-      const html = `
-        <div class="cols">
-          <div class="panel">
-            <h4>Choose a plan</h4>
-            <div class="stack">
-              ${plans.map(p=>`
-                <div class="box">
-                  <b>${escapeHtml(p.title)}</b>
-                  <span>${escapeHtml(p.subtitle||"")}</span>
-                  <div class="toolRow">
-                    <button class="btn small" data-act="view" data-id="${escapeHtml(p.id)}">👀 View</button>
-                    <button class="btn small primary" data-act="load" data-id="${escapeHtml(p.id)}">➕ Add all</button>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
+        <div class="actions">
+          <div class="gqWrap" id="gqWrap" style="width: min(520px, 70vw)">
+            <label class="sr" for="gq">Search</label>
+            <input
+              id="gq"
+              class="input"
+              placeholder="Search: Python, DSA, VS Code, projects, interview…"
+              autocomplete="off"
+            />
+            <div
+              class="suggest"
+              id="gqSuggest"
+              role="listbox"
+              aria-label="Search suggestions"
+              hidden
+            ></div>
           </div>
-          <aside class="panel">
-            <h4>Plan preview</h4>
-            <div class="hint" id="planPreview">Tap <b>View</b> to preview steps.</div>
-          </aside>
+
+          <a
+            class="btn green"
+            id="btnWhatsApp"
+            target="_blank"
+            rel="noopener"
+            title="WhatsApp"
+          >
+            🟢 WhatsApp
+          </a>
+
+          <button class="btn" id="btnRefresh" title="Reload">🔄 Refresh</button>
+          <button class="btn primary" id="btnLoadMore" title="Load more">
+            ➕ Load more
+          </button>
         </div>
-      `;
+      </div>
+    </div>
 
-      openModule("Tour / Itinerary", "Ready-made 1–3 day plans. Add all steps to itinerary.", html);
+    <div class="wrap">
+      <section class="card hero">
+        <div class="heroGrid">
+          <div>
+            <span class="badge"><i></i> Quick Search</span>
+            <h2 class="heroTitle">Find anything fast — Programmer's Picnic</h2>
+            <p class="heroSub">Programmer's Picnic Database.</p>
 
-      const preview = $("#mMain").querySelector("#planPreview");
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        const act = b.dataset.act;
-        const id = b.dataset.id;
-        const plan = plans.find(x=>x.id===id);
-        if (!plan) return;
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 14px;
+              "
+            >
+              <button class="btn primary" id="btnOpenAll">
+                🔎 Jump to results
+              </button>
+              <button class="btn" id="btnClear">🧹 Clear</button>
+              <button class="btn" id="btnSettings">⚙️ Source</button>
+              <button class="btn" id="btnStop" title="Stop loading" disabled>
+                ⛔ Stop
+              </button>
+              <button class="btn" id="btnJumpLab" title="Open practice lab">
+                🧪 Practice Lab
+              </button>
+            </div>
 
-        if (act === "view"){
-          preview.innerHTML = plan.steps.map((sid,i)=>{
-            const p = data.places.find(x=>x.id===sid);
-            if (!p) return "";
-            return `<div class="box" style="margin-top:10px;"><b>${i+1}. ${escapeHtml(p.name)}</b><span>${escapeHtml(p.short||"")}</span></div>`;
-          }).join("") || "<div class='hint'>No steps found.</div>";
-        }
-
-        if (act === "load"){
-          let added = 0;
-          for (const sid of plan.steps){
-            if (!state.itin.includes(sid)) { state.itin.push(sid); added++; }
-          }
-          saveItinerary();
-          renderItinerary();
-          toast(added ? `Added ${added} places` : "Already added");
-        }
-      });
-
-      // Helpful default: set evening when plan contains aarti
-      $("#mAdd").textContent = "🗺️ Map View";
-      $("#mAdd").onclick = ()=> goMapView();
-    }
-
-    function openEventsModule(){
-      const events = data.modules?.events || [];
-
-      const html = `
-        <div class="cols">
-          <div class="panel">
-            <h4>Events timeline (editable)</h4>
-            <div class="stack">
-              ${events.map((ev,i)=>`
-                <div class="box">
-                  <b>${escapeHtml(ev.title)}</b>
-                  <span>When: ${escapeHtml(ev.when||"")} • ${escapeHtml(ev.note||"")}</span>
-                  <div class="toolRow">
-                    <button class="btn small" data-act="map" data-i="${i}">🗺️ Related places</button>
-                    <button class="btn small primary" data-act="add" data-i="${i}">➕ Add</button>
-                  </div>
-                </div>
-              `).join("")}
+            <div style="margin-top: 12px">
+              <div class="hint" id="crawlMsg">—</div>
+              <div class="bar" style="margin-top: 8px">
+                <i id="crawlBar"></i>
+              </div>
             </div>
           </div>
-          <aside class="panel">
-            <h4>Quick suggestions</h4>
-            <div class="box"><b>Evening plan</b><span>Temple → Aarti → Boat (optional)</span></div>
-            <div class="box"><b>Morning plan</b><span>Sunrise → Breakfast → Heritage</span></div>
-          </aside>
-        </div>
-      `;
 
-      openModule("Festival / Events", "A timeline of experiences (later: add exact dates in events.json).", html);
-
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        const act = b.dataset.act;
-        const i = parseInt(b.dataset.i, 10);
-        const ev = events[i];
-        if (!ev) return;
-
-        if (act === "add"){
-          const ids = (ev.add || []);
-          let added = 0;
-          ids.forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
-          saveItinerary();
-          renderItinerary();
-          toast(added ? `Added ${added} places` : "Already added");
-        }
-
-        if (act === "map"){
-          // Apply a gentle default: evening + ghats
-          state.time = "evening";
-          $("#time").value = "evening";
-          state.cat = new Set(["ghat","heritage"]);
-          syncChips();
-          state.q = "aarti";
-          $("#q").value = "aarti";
-          toast("Event places filtered");
-          goMapView();
-        }
-      });
-    }
-
-    function openRitualsModule(){
-      const rituals = data.modules?.rituals || [];
-
-      const html = `
-        <div class="cols">
-          <div class="panel">
-            <h4>Ritual checklist</h4>
-            <div class="stack">
-              ${rituals.map((r,i)=>`
-                <div class="box" style="display:flex; gap:10px; align-items:flex-start;">
-                  <input type="checkbox" aria-label="Done" />
-                  <div style="min-width:0;">
-                    <b>${escapeHtml(r.title)}</b>
-                    <span>${escapeHtml(r.desc||"")}</span>
-                    <div class="toolRow">
-                      <button class="btn small primary" data-act="add" data-i="${i}">➕ Add places</button>
-                      <button class="btn small" data-act="map" data-i="${i}">🗺️ Show on map</button>
-                    </div>
-                  </div>
-                </div>
-              `).join("")}
+          <aside style="display: flex; flex-direction: column; gap: 10px">
+            <div class="mini">
+              <h3>Programmer’s Picnic</h3>
+              <p>
+                Need help in software coaching, projects, interviews, or
+                development? Tap WhatsApp and message <b>+91 93358 74326</b>.
+              </p>
             </div>
-          </div>
-          <aside class="panel">
-            <h4>Quick flow</h4>
-            <div class="box"><b>Morning</b><span>Sunrise ghat → darshan → breakfast</span></div>
-            <div class="box"><b>Evening</b><span>Temple → aarti → calm walk</span></div>
-            <div class="toolRow">
-              <button class="btn" id="ritFilter">🔎 Filter ritual places</button>
+            <div class="mini">
+              <h3>Tip</h3>
+              <p>
+                Use labels like <b>Python</b>, <b>DSA</b>, <b>Projects</b>.
+                Label filtering is the fastest way to narrow down.
+              </p>
+            </div>
+            <div class="mini">
+              <h3>Offline cache</h3>
+              <p>
+                Results are stored
+                <span style="font-family: var(--mono)">locally</span> so repeat
+                visits are fast.
+              </p>
             </div>
           </aside>
         </div>
-      `;
+      </section>
 
-      openModule("Ritual / Puja", "A respectful checklist for sacred experiences.", html);
-
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        const act = b.dataset.act;
-        const i = parseInt(b.dataset.i, 10);
-        const r = rituals[i];
-        if (!r) return;
-
-        if (act === "add"){
-          let added = 0;
-          (r.add||[]).forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
-          saveItinerary();
-          renderItinerary();
-          toast(added ? `Added ${added} places` : "Already added");
-        }
-
-        if (act === "map"){
-          state.time = "evening";
-          $("#time").value = "evening";
-          state.cat = new Set(["temple","ghat"]);
-          syncChips();
-          toast("Ritual places filtered");
-          goMapView();
-        }
-      });
-
-      $("#mMain").querySelector("#ritFilter")?.addEventListener("click", ()=>{
-        state.time = "evening";
-        $("#time").value = "evening";
-        state.cat = new Set(["temple","ghat"]);
-        syncChips();
-        toast("Ritual places filtered");
-        goMapView();
-      });
-    }
-
-    function openKathasModule(initialIndex=0){
-      const kathas = data.modules?.kathas || [];
-      const rel = [
-        { id:"kashi_vishwanath", label:"Shri Kashi Vishwanath" },
-        { id:"dashashwamedh", label:"Dashashwamedh Ghat" },
-        { id:"sarnath", label:"Sarnath" }
-      ];
-
-      const html = `
-        <div class="cols">
-          <div class="panel">
-            <h4>Choose a story</h4>
-            <div class="toolRow">
-              ${kathas.map((k,i)=>`<button class="btn small" data-act="story" data-i="${i}">📜 ${escapeHtml(k.title)}</button>`).join("")}
+      <section class="mainGrid">
+        <div class="card">
+          <div class="controls">
+            <div class="row2">
+              <div class="field">
+                <div class="label">Search</div>
+                <input
+                  class="input"
+                  id="q"
+                  placeholder="Filter by title + summary + labels…"
+                />
+              </div>
+              <div class="field">
+                <div class="label">Sort</div>
+                <select class="select" id="sort">
+                  <option value="new">Newest</option>
+                  <option value="old">Oldest</option>
+                  <option value="alpha">A → Z</option>
+                </select>
+              </div>
             </div>
-            <div class="box" id="storyBox" style="margin-top:12px;">
-              <b>${escapeHtml(kathas[Math.max(0, Math.min(initialIndex, kathas.length-1))]?.title || "Katha")}</b>
-              <span>${escapeHtml(kathas[Math.max(0, Math.min(initialIndex, kathas.length-1))]?.text || "")}</span>
+
+            <div class="chips" id="chips" aria-label="Label filters"></div>
+
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 10px;
+                align-items: center;
+              "
+            >
+              <div class="hint" id="status">Loading…</div>
+              <div class="hint" id="loaded">—</div>
             </div>
           </div>
-          <aside class="panel">
-            <h4>Jump to related places</h4>
-            <div class="stack">
-              ${rel.map(x=>`
-                <div class="box">
-                  <b>${escapeHtml(x.label)}</b>
-                  <div class="toolRow">
-                    <button class="btn small primary" data-act="addOne" data-id="${escapeHtml(x.id)}">➕ Add</button>
-                    <button class="btn small" data-act="focus" data-id="${escapeHtml(x.id)}">📍 Focus</button>
-                  </div>
+
+          <div class="results">
+            <div class="resultsHead">
+              <h2 id="count">Results</h2>
+              <div class="hint">
+                Click a card to preview • “Open” goes to the source page
+              </div>
+            </div>
+
+            <!-- Featured -->
+            <div id="featuredBox" class="featuredBox" hidden>
+              <div class="featuredHead">
+                <div>
+                  <h3>⭐ Featured Posts</h3>
+                  <p
+                    class="hint"
+                    id="featuredHint"
+                    style="margin-top: 6px"
+                  >
+                    Posts marked with featured labels.
+                  </p>
                 </div>
-              `).join("")}
-            </div>
-          </aside>
-        </div>
-      `;
-
-      openModule("Katha / Stories", "Short legends and meaning — read, copy, and share.", html);
-
-      const box = $("#mMain").querySelector("#storyBox");
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        const act = b.dataset.act;
-
-        if (act === "story"){
-          const i = parseInt(b.dataset.i, 10);
-          const k = kathas[i];
-          if (!k) return;
-          box.innerHTML = `<b>${escapeHtml(k.title)}</b><span>${escapeHtml(k.text||"")}</span>`;
-        }
-
-        if (act === "addOne") addToItinerary(b.dataset.id);
-
-        if (act === "focus"){
-          const id = b.dataset.id;
-          goMapView();
-          setTimeout(()=> focusPlace(id, { openModal:true }), 60);
-        }
-      });
-    }
-
-    function openFoodModule(){
-      const foods = data.modules?.foods || [];
-
-      const html = `
-        <div class="cols">
-          <div class="panel">
-            <h4>Food trail</h4>
-            <div class="stack">
-              ${foods.map((f,i)=>`
-                <div class="box">
-                  <b>${escapeHtml(f.title)}</b>
-                  <span>Best time: ${escapeHtml(f.when||"Any")} • ${escapeHtml(f.note||"")}</span>
-                  <div class="toolRow">
-                    <button class="btn small primary" data-act="add" data-i="${i}">➕ Add spot</button>
-                    <button class="btn small" data-act="map">🗺️ Show food on map</button>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-          <aside class="panel">
-            <h4>Suggested morning</h4>
-            <div class="box"><b>Sunrise</b><span>Assi ghat walk</span></div>
-            <div class="box"><b>Breakfast</b><span>Kachori + chai</span></div>
-            <div class="box"><b>Next</b><span>Temple / heritage</span></div>
-            <div class="toolRow">
-              <button class="btn" id="foodBuild">✨ Build morning plan</button>
-            </div>
-          </aside>
-        </div>
-      `;
-
-      openModule("Food", "Banaras flavors — build a simple food trail.", html);
-
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        const act = b.dataset.act;
-
-        if (act === "add"){
-          const i = parseInt(b.dataset.i, 10);
-          const f = foods[i];
-          if (!f) return;
-          let added = 0;
-          (f.add||[]).forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
-          saveItinerary();
-          renderItinerary();
-          toast(added ? `Added ${added} place` : "Already added");
-        }
-
-        if (act === "map"){
-          state.cat = new Set(["food"]);
-          syncChips();
-          state.time = "morning";
-          $("#time").value = "morning";
-          toast("Food places filtered");
-          goMapView();
-        }
-      });
-
-      $("#mMain").querySelector("#foodBuild")?.addEventListener("click", ()=>{
-        ["assi","kachori"].forEach(id=>{ if(!state.itin.includes(id)) state.itin.push(id); });
-        saveItinerary();
-        renderItinerary();
-        toast("Morning plan added");
-      });
-    }
-
-    function openShoppingModule(){
-      const s = data.modules?.shopping || { checklist:[], defaultAdd:[] };
-
-      const html = `
-        <div class="cols">
-          <div class="panel">
-            <h4>Shopping checklist</h4>
-            <div class="stack">
-              ${(s.checklist||[]).map(it=>`
-                <div class="box" style="display:flex; gap:10px; align-items:flex-start;">
-                  <input type="checkbox" aria-label="Done" />
-                  <div>
-                    <b>${escapeHtml(it.title)}</b>
-                    <span>${escapeHtml(it.desc||"")}</span>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-            <div class="toolRow">
-              <button class="btn small primary" id="shopAdd">➕ Add shopping place</button>
-              <button class="btn small" id="shopMap">🗺️ Show on map</button>
-            </div>
-          </div>
-          <aside class="panel">
-            <h4>Smart tip</h4>
-            <div class="box"><b>Compare 2–3 shops</b><span>Avoid impulse buys near peak crowd zones; check authenticity.</span></div>
-            <div class="box"><b>Pair with heritage</b><span>Shopping after a calm morning heritage visit.</span></div>
-          </aside>
-        </div>
-      `;
-
-      openModule("Shopping", "Banarasi silk + local crafts — a guided checklist.", html);
-
-      $("#mMain").querySelector("#shopAdd")?.addEventListener("click", ()=>{
-        let added = 0;
-        (s.defaultAdd||[]).forEach(id=>{ if(!state.itin.includes(id)) { state.itin.push(id); added++; } });
-        saveItinerary();
-        renderItinerary();
-        toast(added ? `Added ${added} place` : "Already added");
-      });
-
-      $("#mMain").querySelector("#shopMap")?.addEventListener("click", ()=>{
-        state.cat = new Set(["shopping"]);
-        syncChips();
-        toast("Shopping places filtered");
-        goMapView();
-      });
-    }
-
-    // ---------------- Helpers ----------------
-    function dist2(p, c){
-      const dx = (p.lat - c.lat);
-      const dy = (p.lng - c.lng);
-      return dx*dx + dy*dy;
-    }
-
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    async function copyText(text){
-      try{ await navigator.clipboard.writeText(text); }
-      catch{
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-      }
-    }
-
-    const toastEl = $("#toast");
-    let toastT = null;
-    function toast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      if (toastT) clearTimeout(toastT);
-      toastT = setTimeout(()=> toastEl.classList.remove("show"), 1400);
-    }
-
-    // Simple inline SVG "art" generator (no external images)
-    function miniSvg(seed){
-      let hh = 0;
-      for (let i=0;i<seed.length;i++) hh = (hh*31 + seed.charCodeAt(i)) >>> 0;
-      const r = (a,b)=> a + (hh = (hh*1664525 + 1013904223)>>>0) / 4294967296 * (b-a);
-
-      const w = 800, hgt = 300;
-      const sunX = r(80, 720).toFixed(1);
-      const sunY = r(40, 120).toFixed(1);
-      const sunR = r(26, 46).toFixed(1);
-
-      const waves = Array.from({length:5}).map((_,i)=>{
-        const y = 200 + i*18;
-        const amp = r(6, 14);
-        const p = `M 0 ${y} ` + Array.from({length:12}).map((__,k)=>{
-          const x = k*(w/11);
-          const yy = y + Math.sin((k+i)*0.85)*amp;
-          return `L ${x.toFixed(1)} ${yy.toFixed(1)}`;
-        }).join(" ") + ` L ${w} ${y} L ${w} ${hgt} L 0 ${hgt} Z`;
-        const op = (0.10 + i*0.04).toFixed(2);
-        return `<path d="${p}" fill="rgba(255,255,255,${op})"/>`;
-      }).join("
-");
-
-      const steps = Array.from({length:7}).map((_,i)=>{
-        const x = 40 + i*95;
-        const y = 170 + r(-6, 6);
-        const ww = 80 + r(-8, 8);
-        const hh2 = 48 + r(-10, 10);
-        return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${ww.toFixed(1)}" height="${hh2.toFixed(1)}" rx="10" fill="rgba(31,35,40,.12)"/>`;
-      }).join("
-");
-
-      const spX = r(520, 720);
-      const sp = `M ${spX.toFixed(1)} 150 L ${(spX+18).toFixed(1)} 230 L ${(spX-18).toFixed(1)} 230 Z`;
-
-      return `
-      <svg viewBox="0 0 ${w} ${hgt}" preserveAspectRatio="none" aria-hidden="true">
-        <rect width="${w}" height="${hgt}" fill="rgba(255,255,255,.05)"/>
-        <circle cx="${sunX}" cy="${sunY}" r="${sunR}" fill="rgba(255,255,255,.75)"/>
-        <circle cx="${sunX}" cy="${sunY}" r="${(sunR*1.8).toFixed(1)}" fill="rgba(255,255,255,.18)"/>
-        ${waves}
-        <g>
-          ${steps}
-          <path d="${sp}" fill="rgba(31,35,40,.18)"/>
-        </g>
-      </svg>`;
-    }
-
-    // ---------------- Global search (everywhere) ----------------
-    const gq = $("#gq");
-    const gqWrap = $("#gqWrap");
-    const gqSuggest = $("#gqSuggest");
-    let sIdx = -1;
-    let sItems = [];
-    let sT = null;
-
-    function closeSuggest(){
-      if (!gqSuggest) return;
-      gqSuggest.hidden = true;
-      gqSuggest.innerHTML = "";
-      sItems = [];
-      sIdx = -1;
-    }
-
-    function renderSuggest(query){
-      const q = query.trim();
-      if (!q || q.length < 2){
-        closeSuggest();
-        return;
-      }
-      const results = computeGlobalResults(q).slice(0, 10);
-      if (!results.length){
-        gqSuggest.innerHTML = `<div class="sItem" style="cursor:default;"><div class="sMain"><b>No results</b><span>Try a different keyword.</span></div></div>`;
-        gqSuggest.hidden = false;
-        sItems = [];
-        sIdx = -1;
-        return;
-      }
-
-      gqSuggest.innerHTML = `
-        <div class="sFoot">
-          <div class="sHint">Enter: open full results • Click: open item</div>
-          <div class="sHint"><span class="kbd">↑</span> <span class="kbd">↓</span> <span class="kbd">Enter</span> <span class="kbd">Esc</span></div>
-        </div>
-      ` + results.map((r,i)=>`
-        <div class="sItem" role="option" aria-selected="false" data-i="${i}">
-          <div class="sType">${escapeHtml(r.type)}</div>
-          <div class="sMain">
-            <b>${escapeHtml(r.title)}</b>
-            <span>${escapeHtml(r.sub||"")}</span>
-          </div>
-        </div>
-      `).join("");
-
-      gqSuggest.hidden = false;
-      sItems = results;
-      sIdx = -1;
-    }
-
-    function setActiveSuggest(newIdx){
-      const opts = $$(".sItem[role='option']", gqSuggest);
-      opts.forEach(o=>o.setAttribute("aria-selected","false"));
-      if (newIdx >= 0 && newIdx < opts.length){
-        opts[newIdx].setAttribute("aria-selected","true");
-        opts[newIdx].scrollIntoView({ block:"nearest" });
-        sIdx = newIdx;
-      } else {
-        sIdx = -1;
-      }
-    }
-
-    function scheduleSuggest(){
-      if (sT) clearTimeout(sT);
-      sT = setTimeout(()=> renderSuggest(gq.value), 90);
-    }
-
-    gq?.addEventListener("input", ()=> scheduleSuggest());
-
-    gq?.addEventListener("keydown", (e)=>{
-      if (e.key === "Escape"){
-        closeSuggest();
-        return;
-      }
-
-      if (!gqSuggest.hidden && (e.key === "ArrowDown" || e.key === "ArrowUp")){
-        e.preventDefault();
-        const max = sItems.length - 1;
-        if (e.key === "ArrowDown") setActiveSuggest(Math.min(max, sIdx + 1));
-        else setActiveSuggest(Math.max(0, sIdx - 1));
-        return;
-      }
-
-      if (e.key === "Enter"){
-        e.preventDefault();
-        const q = gq.value.trim();
-        if (!q) return toast("Type something to search");
-
-        // If a suggestion is selected, open it directly.
-        if (!gqSuggest.hidden && sIdx >= 0 && sItems[sIdx]){
-          closeSuggest();
-          openResult(sItems[sIdx]);
-          return;
-        }
-
-        closeSuggest();
-        openGlobalSearch(q);
-      }
-    });
-
-    gqSuggest?.addEventListener("mousedown", (e)=>{
-      const item = e.target.closest(".sItem[role='option']");
-      if (!item) return;
-      const i = parseInt(item.dataset.i, 10);
-      const r = sItems[i];
-      if (!r) return;
-      // prevent input blur closing before click
-      e.preventDefault();
-      closeSuggest();
-      openResult(r);
-    });
-
-    // Close suggestions on outside click / blur (with small delay to allow click)
-    document.addEventListener("mousedown", (e)=>{
-      if (!gqWrap) return;
-      if (gqWrap.contains(e.target)) return;
-      closeSuggest();
-    });
-
-    gq?.addEventListener("blur", ()=> setTimeout(closeSuggest, 120));
-
-    function computeGlobalResults(query){
-      const q = query.toLowerCase();
-      const results = [];
-
-      // Places
-      for (const p of data.places){
-        const hay = [p.name, p.short, p.near, ...(p.tags||[]), ...(p.category||[])].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"place", title:p.name, sub:p.short||"", id:p.id });
-      }
-
-      // Tour plans
-      for (const plan of (data.modules?.tourPlans||[])){
-        const hay = [plan.title, plan.subtitle, ...(plan.steps||[])].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"tour", title:plan.title, sub:plan.subtitle||"", id:plan.id });
-      }
-
-      // Events
-      for (let i=0;i<(data.modules?.events||[]).length;i++){
-        const ev = data.modules.events[i];
-        const hay = [ev.title, ev.when, ev.note].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"event", title:ev.title, sub:`${ev.when||""} • ${ev.note||""}`.trim(), idx:i });
-      }
-
-      // Rituals
-      for (let i=0;i<(data.modules?.rituals||[]).length;i++){
-        const r = data.modules.rituals[i];
-        const hay = [r.title, r.desc].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"ritual", title:r.title, sub:r.desc||"", idx:i });
-      }
-
-      // Kathas
-      for (let i=0;i<(data.modules?.kathas||[]).length;i++){
-        const k = data.modules.kathas[i];
-        const hay = [k.title, k.text].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"katha", title:k.title, sub:(k.text||"").slice(0,120)+((k.text||"").length>120?"…":""), idx:i });
-      }
-
-      // Foods
-      for (let i=0;i<(data.modules?.foods||[]).length;i++){
-        const f = data.modules.foods[i];
-        const hay = [f.title, f.when, f.note].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"food", title:f.title, sub:`${f.when||""} • ${f.note||""}`.trim(), idx:i });
-      }
-
-      // Shopping checklist
-      for (let i=0;i<(data.modules?.shopping?.checklist||[]).length;i++){
-        const s = data.modules.shopping.checklist[i];
-        const hay = [s.title, s.desc].join(" ").toLowerCase();
-        if (hay.includes(q)) results.push({ type:"shopping", title:s.title, sub:s.desc||"", idx:i });
-      }
-
-      const scoreType = (t)=>({place:0,tour:1,event:2,ritual:3,katha:4,food:5,shopping:6}[t] ?? 9);
-      results.sort((a,b)=> scoreType(a.type)-scoreType(b.type) || a.title.localeCompare(b.title));
-      return results;
-    }
-
-    function openResult(r){
-      if (!r) return;
-      if (r.type === "place"){
-        goMapView();
-        setTimeout(()=> focusPlace(r.id, { openModal:true }), 80);
-        return;
-      }
-      if (r.type === "tour") return (closeModal(), openTopicModule("tour"));
-      if (r.type === "event") return (closeModal(), openTopicModule("festival"));
-      if (r.type === "ritual") return (closeModal(), openTopicModule("ritual"));
-      if (r.type === "food") return (closeModal(), openTopicModule("food"));
-      if (r.type === "shopping") return (closeModal(), openTopicModule("shopping"));
-      if (r.type === "katha") return (closeModal(), openTopicModule("katha", { kathaIndex: r.idx ?? 0 }));
-    }
-
-    // Quick-open full global search modal (without pressing Enter)
-    $("#btnGlobalSearch")?.addEventListener("click", ()=>{
-      const q = $("#gq")?.value?.trim() || "";
-      openGlobalSearch(q || "aarti");
-    });
-    $("#btnGlobalSearch2")?.addEventListener("click", ()=>{
-      const q = $("#q")?.value?.trim() || $("#gq")?.value?.trim() || "";
-      openGlobalSearch(q || "aarti");
-    });
-
-    function openGlobalSearch(query){
-      const results = computeGlobalResults(query);
-
-      const html = `
-        <div class="panel">
-          <h4 style="margin:0 0 8px;">Results for: “${escapeHtml(query)}”</h4>
-          <div class="hint">Click any result to open it (place details or module).</div>
-          <div class="stack" style="margin-top:10px;">
-            ${results.slice(0, 40).map((r)=>`
-              <div class="box">
-                <b>${escapeHtml(r.title)}</b>
-                <span>${escapeHtml(r.sub||"")}</span>
-                <div class="toolRow">
-                  <button class="btn small primary" data-act="open" data-type="${escapeHtml(r.type)}" data-id="${escapeHtml(r.id||"")}" data-idx="${r.idx ?? ""}">Open</button>
+                <div class="hint">
+                  Tip: add label <b>Featured</b> to any Blogger post
                 </div>
               </div>
-            `).join("") || `<div class="box"><b>No results</b><span>Try a different keyword.</span></div>`}
+              <div id="featuredGrid" class="featuredGrid"></div>
+            </div>
+
+            <div class="grid" id="grid" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <aside class="card side">
+          <div class="stat">
+            <div>
+              <b>Total indexed</b>
+              <span id="stTotal">0</span>
+            </div>
+            <div>
+              <b>Labels</b>
+              <span id="stLabels">0</span>
+            </div>
+          </div>
+
+          <div class="stat" style="margin-top: 10px">
+            <div>
+              <b>Loaded so far</b>
+              <span id="stLoaded">0</span>
+            </div>
+            <div>
+              <b>Start index</b>
+              <span id="stStart">1</span>
+            </div>
+          </div>
+
+          <div class="mini" style="margin-top: 12px">
+            <h3>Quick filters</h3>
+            <p
+              style="margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap"
+            >
+              <button class="btn" id="btnOnlyPython">🐍 Python</button>
+              <button class="btn" id="btnOnlyDSA">🧠 DSA</button>
+              <button class="btn" id="btnOnlyProjects">🧩 Projects</button>
+            </p>
+            <p style="margin-top: 10px" class="hint">Toggle the labels.</p>
+          </div>
+
+          <div class="mini" style="margin-top: 12px">
+            <h3>Label directory</h3>
+            <p class="hint" style="margin-top: 6px">
+              Click any label below to view matching results.
+            </p>
+            <div class="labList" id="labDir"></div>
+          </div>
+
+          <div class="mini" style="margin-top: 12px">
+            <h3>Need help?</h3>
+            <p>
+              Coaching • Projects • Interview prep • Development support —
+              message Champak Roy on WhatsApp:
+              <b>+91 93358 74326</b>
+            </p>
+            <p style="margin-top: 8px">
+              <a
+                class="btn green"
+                target="_blank"
+                rel="noopener"
+                href="#"
+                id="btnWhatsApp2"
+                >🟢 WhatsApp now</a
+              >
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- =========================================================
+           PRACTICE LAB: Embedded Editors
+           ========================================================= -->
+      <section class="card labSection" id="ppLab">
+        <div class="labHead">
+          <div>
+            <h2>🧪 Practice Lab — Embedded Editors</h2>
+            <p>
+              Switch tabs for Python, JavaScript, SQL, HTML Preview and MongoDB.
+              Use “Open Fullscreen” any time.
+            </p>
+          </div>
+          <div class="hint">
+            Tip: Search something → open a result → come back and practice here.
+          </div>
+        </div>
+
+        <div class="embedWrap">
+          <div class="embedTop">
+            <div class="tabs" role="tablist" aria-label="Practice Lab Tabs">
+              <button
+                class="tabBtn on"
+                type="button"
+                data-labtab="py"
+                role="tab"
+                aria-selected="true"
+              >
+                🐍 Python
+              </button>
+              <button
+                class="tabBtn"
+                type="button"
+                data-labtab="js"
+                role="tab"
+                aria-selected="false"
+              >
+                🟨 JavaScript
+              </button>
+              <button
+                class="tabBtn"
+                type="button"
+                data-labtab="sql"
+                role="tab"
+                aria-selected="false"
+              >
+                🧱 SQL
+              </button>
+              <button
+                class="tabBtn"
+                type="button"
+                data-labtab="html"
+                role="tab"
+                aria-selected="false"
+              >
+                🧾 HTML Preview
+              </button>
+              <button
+                class="tabBtn"
+                type="button"
+                data-labtab="mongo"
+                role="tab"
+                aria-selected="false"
+              >
+                🍃 MongoDB
+              </button>
+            </div>
+
+            <div class="embedActions">
+              <button class="btn" id="labReload" type="button">🔄 Reload</button>
+              <a
+                class="btn primary"
+                id="labOpenFull"
+                target="_blank"
+                rel="noopener"
+                href="#"
+                >⛶ Open Fullscreen</a
+              >
+            </div>
+          </div>
+
+          <iframe
+            id="labPy"
+            class="embedFrame show"
+            title="Python Editor"
+            loading="lazy"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+            src="https://programmer-s-picnic.github.io/lesson-viewer/python-starter/editor/super?tmode=0"
+          ></iframe>
+
+          <iframe
+            id="labJs"
+            class="embedFrame"
+            title="JavaScript Editor"
+            loading="lazy"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+            src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+          ></iframe>
+
+          <iframe
+            id="labSql"
+            class="embedFrame"
+            title="SQL Editor"
+            loading="lazy"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+            src="https://programmer-s-picnic.github.io/lesson-viewer/sql/premium/"
+          ></iframe>
+
+          <iframe
+            id="labHtml"
+            class="embedFrame"
+            title="HTML Preview Editor"
+            loading="lazy"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+            src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+          ></iframe>
+
+          <iframe
+            id="labMongo"
+            class="embedFrame"
+            title="MongoDB Queries Editor"
+            loading="lazy"
+            allow="clipboard-read; clipboard-write; fullscreen"
+            allowfullscreen
+            src="https://www.learnwithchampak.live/2026/02/programmers-picnic-mongodb-queries.html"
+          ></iframe>
+        </div>
+      </section>
+
+      <footer style="padding: 16px 2px; color: var(--muted); font-size: 12px">
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+          "
+        >
+          <div>© <span id="y"></span> Programmer’s Picnic • Champak Roy</div>
+          <div>Knowledge Search</div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="backdrop" id="backdrop" aria-hidden="true">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mTitle"
+      >
+        <div class="modalTop">
+          <strong id="mTitle">Preview</strong>
+          <button class="closeX" id="mClose" aria-label="Close">✕</button>
+        </div>
+        <div class="modalBody">
+          <div class="modalMain" id="mMain"></div>
+          <aside class="modalAside">
+            <div class="kvs" id="mKvs"></div>
+            <div
+              style="
+                margin-top: 12px;
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+              "
+            >
+              <a class="btn primary" id="mOpen" target="_blank" rel="noopener"
+                >🔗 Open</a
+              >
+              <button class="btn" id="mCopy">📋 Copy</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Floating Open Lab -->
+    <button
+      class="fabLab pulse"
+      id="btnOpenLab"
+      type="button"
+      title="Open Practice Lab"
+    >
+      🧪 <span>Open Lab</span> <small>Editors</small>
+    </button>
+
+    <script>
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+      const CFG_KEY = "pp_lwc_feed_cfg_v3";
+      const CACHE_KEY = "pp_lwc_feed_cache_v3";
+
+      const DEFAULT_CFG = {
+        base: "https://www.learnwithchampak.live",
+        mode: "default", // default or summary
+        maxResults: 50, // 1..150
+        autoCrawl: true,
+        maxTotalItems: 800, // safety cap
+        maxAutoPages: 40, // safety cap
+        crawlDelayMs: 450, // polite delay between pages
+
+        // Featured labels (case-insensitive).
+        // Any post carrying one of these labels will appear in Featured.
+        featuredLabels: ["featured", "pp-featured", "star", "recommended"],
+        featuredLimit: 9,
+      };
+
+      const state = {
+        cfg: loadCfg(),
+        startIndex: 1,
+        items: [],
+        labels: new Map(),
+        q: "",
+        sort: "new",
+        activeLabels: new Set(),
+        suggest: { items: [], idx: -1, t: null },
+        crawl: { running: false, stop: false, pages: 0 },
+        loading: false,
+      };
+
+      $("#y").textContent = new Date().getFullYear();
+
+      // WhatsApp CTA
+      const WA_NUMBER = "919335874326";
+      const WA_TEXT = encodeURIComponent(
+        "Hi Champak Roy! I found you via Programmer’s Picnic. I need help with coaching/projects/interviews."
+      );
+      const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${WA_TEXT}`;
+      $("#btnWhatsApp").href = WA_LINK;
+      $("#btnWhatsApp2").href = WA_LINK;
+
+      // ------------------------- JSONP loader -------------------------
+      function jsonp(url, cbName) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = url;
+          s.async = true;
+
+          const timer = setTimeout(() => {
+            cleanup();
+            reject(new Error("JSONP timeout"));
+          }, 12000);
+
+          function cleanup() {
+            clearTimeout(timer);
+            s.remove();
+            try {
+              delete window[cbName];
+            } catch {}
+          }
+
+          window[cbName] = (data) => {
+            cleanup();
+            resolve(data);
+          };
+
+          s.onerror = () => {
+            cleanup();
+            reject(new Error("JSONP load failed"));
+          };
+
+          document.head.appendChild(s);
+        });
+      }
+
+      function buildFeedUrl({ startIndex }) {
+        const cfg = state.cfg;
+        const base = cfg.base.replace(/\/$/, "");
+        const kind = cfg.mode === "summary" ? "summary" : "default";
+        const endpoint = `${base}/feeds/posts/${kind}`;
+        const max = clampInt(cfg.maxResults, 1, 150);
+        const alt = "json-in-script";
+        const cb = "pp_cb_" + Math.random().toString(16).slice(2);
+
+        const url = new URL(endpoint);
+        url.searchParams.set("alt", alt);
+        url.searchParams.set("callback", cb);
+        url.searchParams.set("max-results", String(max));
+        url.searchParams.set("start-index", String(startIndex));
+        return { url: url.toString(), cb };
+      }
+
+      // ------------------------- Feed parsing -------------------------
+      function parseFeed(json) {
+        const entries = json?.feed?.entry || [];
+        const out = [];
+
+        for (const e of entries) {
+          const title = e?.title?.$t || "(untitled)";
+          const id = e?.id?.$t || title;
+
+          const links = e?.link || [];
+          const alt = links.find((x) => x.rel === "alternate")?.href || "";
+
+          const published = e?.published?.$t || "";
+          const updated = e?.updated?.$t || "";
+          const author = e?.author?.[0]?.name?.$t || "";
+
+          const labels = (e?.category || []).map((c) => c.term).filter(Boolean);
+
+          const contentHtml = e?.content?.$t || e?.summary?.$t || "";
+          const text = contentHtml;
+          const snippet = smartSnippet(text, 240);
+
+          out.push({
+            id,
+            title,
+            url: alt,
+            published,
+            updated,
+            author,
+            labels,
+            snippet,
+            text,
+          });
+        }
+        return out;
+      }
+
+      function smartSnippet(text, n) {
+        const t = (text || "").trim();
+        if (t.length <= n) return t;
+        return t.slice(0, n).replace(/\s+\S*$/, "") + "…";
+      }
+
+      function addToIndex(items) {
+        let added = 0;
+        const seen = new Set(state.items.map((p) => p.id));
+
+        for (const p of items) {
+          if (seen.has(p.id)) continue;
+          state.items.push(p);
+          seen.add(p.id);
+          added++;
+
+          for (const lab of p.labels || []) {
+            state.labels.set(lab, (state.labels.get(lab) || 0) + 1);
+          }
+        }
+        updateStats();
+        return added;
+      }
+
+      function rebuildLabels() {
+        state.labels = new Map();
+        for (const p of state.items) {
+          for (const lab of p.labels || []) {
+            state.labels.set(lab, (state.labels.get(lab) || 0) + 1);
+          }
+        }
+      }
+
+      // ------------------------- Tokens (AND search) -------------------------
+      function tokens(str) {
+        return String(str || "")
+          .toLowerCase()
+          .split(/\s+/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+
+      // ------------------------- UI: chips -------------------------
+      function renderChips() {
+        const chips = $("#chips");
+        chips.innerHTML = "";
+
+        const labs = Array.from(state.labels.entries())
+          .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+          .slice(0, 30);
+
+        for (const [lab, count] of labs) {
+          const b = document.createElement("button");
+          b.className = "chip";
+          b.type = "button";
+          const on = state.activeLabels.has(lab);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+          b.textContent = `${lab} (${count})`;
+          b.addEventListener("click", () => {
+            if (state.activeLabels.has(lab)) state.activeLabels.delete(lab);
+            else state.activeLabels.add(lab);
+            renderChips();
+            render();
+          });
+          chips.appendChild(b);
+        }
+        $("#stLabels").textContent = String(state.labels.size);
+      }
+
+      // ------------------------- UI: label directory -------------------------
+      function renderLabelDirectory() {
+        const box = $("#labDir");
+        box.innerHTML = "";
+
+        const labs = Array.from(state.labels.entries())
+          .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+          .slice(0, 20);
+
+        if (!labs.length) {
+          box.innerHTML = `<div class="hint">No labels yet. Load more to index more items.</div>`;
+          return;
+        }
+
+        for (const [lab, count] of labs) {
+          const row = document.createElement("div");
+          row.className = "labRow";
+          row.innerHTML = `<b>${escapeHtml(lab)}</b><span>${count}</span>`;
+          row.addEventListener("click", () => openLabelDirectory(lab));
+          box.appendChild(row);
+        }
+      }
+
+      function openLabelDirectory(label) {
+        const list = state.items
+          .filter((p) => (p.labels || []).includes(label))
+          .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+
+        const q = state.q.trim();
+        const html = `
+        <div class="mini" style="margin-bottom:12px;">
+          <h3 style="margin:0 0 6px; font-size:14px;">Label: ${escapeHtml(label)}</h3>
+          <p class="hint" style="margin:0;">${list.length} results</p>
+        </div>
+        <div class="mini">
+          ${list
+            .slice(0, 80)
+            .map(
+              (p) => `
+            <div style="padding:10px; border:1px solid rgba(31,35,40,.10); border-radius:16px; background:rgba(255,255,255,.78); margin-bottom:10px;">
+              <b style="display:block; font-size:13px;">${highlight(
+                p.title,
+                q
+              )}</b>
+              <span class="hint" style="display:block; margin-top:4px;">🗓 ${escapeHtml(
+                niceDate(p.published || p.updated) || ""
+              )}</span>
+              <div style="margin-top:6px; color:var(--muted); font-size:12px; line-height:1.4;">${highlight(
+                p.snippet || "",
+                q
+              )}</div>
+              <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn" style="padding:8px 10px; border-radius:12px; font-size:12px; box-shadow:none;"
+                  data-act="preview" data-id="${escapeAttr(p.id)}">👀 Preview</button>
+                <a class="btn primary" style="padding:8px 10px; border-radius:12px; font-size:12px; box-shadow:none;"
+                  href="${escapeAttr(
+                    p.url
+                  )}" target="_blank" rel="noopener">🔗 Open</a>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+          ${
+            list.length > 80
+              ? `<div class="hint">Showing 80 only. Use search to narrow down.</div>`
+              : ``
+          }
+        </div>
+      `;
+
+        openModal("Labels: ", `All results under “${label}”`, html, {
+          kvs: [
+            ["Label", label],
+            ["Count", String(list.length)],
+            ["Tip", "Use search to highlight matches"],
+          ],
+          openHref: null,
+          copyText: `Label: ${label}\nCount: ${list.length}`,
+        });
+
+        bindModalDelegatesOnce();
+      }
+
+      // ------------------------- Featured -------------------------
+      function isFeaturedPost(p) {
+        const labs = (p.labels || [])
+          .map((x) => String(x || "").trim())
+          .filter(Boolean);
+        if (!labs.length) return false;
+
+        const wanted = (state.cfg.featuredLabels ||
+          DEFAULT_CFG.featuredLabels ||
+          [])
+          .map((x) => String(x || "").trim().toLowerCase())
+          .filter(Boolean);
+
+        return labs.some((l) => {
+          const lc = l.toLowerCase();
+          if (lc === "featured") return true;
+          return wanted.includes(lc);
+        });
+      }
+
+      function renderFeatured() {
+        const box = document.getElementById("featuredBox");
+        const grid = document.getElementById("featuredGrid");
+        const hint = document.getElementById("featuredHint");
+        if (!box || !grid || !hint) return;
+
+        const q = state.q.trim();
+
+        let list = state.items.filter(isFeaturedPost);
+
+        // Respect active label filters (if user has filtered)
+        if (state.activeLabels.size) {
+          list = list.filter((p) =>
+            (p.labels || []).some((l) => state.activeLabels.has(l))
+          );
+        }
+
+        list.sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+
+        const limit = clampInt(state.cfg.featuredLimit || 9, 1, 30);
+        const show = list.slice(0, limit);
+
+        if (!show.length) {
+          box.hidden = true;
+          grid.innerHTML = "";
+          return;
+        }
+
+        box.hidden = false;
+        hint.textContent = `${show.length} featured post${
+          show.length === 1 ? "" : "s"
+        } (labelled in Blogger)`;
+
+        grid.innerHTML = show
+          .map((p) => {
+            const date = niceDate(p.published || p.updated) || "";
+            const labs = (p.labels || []).slice(0, 2);
+            return `
+            <div class="fCard" role="button" tabindex="0" data-id="${escapeAttr(
+              p.id
+            )}">
+              <p class="fTitle">${highlight(p.title, q)}</p>
+              <div class="fMeta">
+                ${date ? `<span class="tag">🗓 ${escapeHtml(date)}</span>` : ""}
+                ${labs
+                  .map((l) => `<span class="tag">${highlight(l, q)}</span>`)
+                  .join("")}
+              </div>
+              <p class="fDesc">${highlight(p.snippet || "", q)}</p>
+            </div>
+          `;
+          })
+          .join("");
+
+        grid.querySelectorAll(".fCard").forEach((card) => {
+          const id = card.getAttribute("data-id");
+          const openIt = () => {
+            const p = state.items.find((x) => x.id === id);
+            if (p) openPreview(p);
+          };
+          card.addEventListener("click", openIt);
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openIt();
+            }
+          });
+        });
+      }
+
+      // ------------------------- UI: results -------------------------
+      function getFiltered() {
+        const qRaw = state.q.trim();
+        const tks = tokens(qRaw);
+        const labs = state.activeLabels;
+
+        let list = state.items.filter((p) => {
+          if (labs.size) {
+            const ok = (p.labels || []).some((l) => labs.has(l));
+            if (!ok) return false;
+          }
+          if (tks.length) {
+            const hay = [p.title, p.snippet, ...(p.labels || [])]
+              .join(" ")
+              .toLowerCase();
+            const ok = tks.every((t) => hay.includes(t));
+            if (!ok) return false;
+          }
+          return true;
+        });
+
+        if (state.sort === "new")
+          list.sort((a, b) =>
+            (b.published || "").localeCompare(a.published || "")
+          );
+        else if (state.sort === "old")
+          list.sort((a, b) =>
+            (a.published || "").localeCompare(a.published || "")
+          );
+        else if (state.sort === "alpha")
+          list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+
+        return list;
+      }
+
+      function render() {
+        const list = getFiltered();
+        $("#count").textContent = `Results (${list.length})`;
+
+        // ⭐ Featured section
+        renderFeatured();
+
+        const grid = $("#grid");
+        grid.innerHTML = "";
+
+        list.slice(0, 40).forEach((p) => grid.appendChild(itemCard(p)));
+
+        const more = Math.max(0, list.length - 40);
+        $("#loaded").textContent = more
+          ? `Showing 40 • +${more} more match`
+          : "Showing all matches";
+
+        renderLabelDirectory();
+      }
+
+      function itemCard(p) {
+        const el = document.createElement("article");
+        el.className = "item";
+        el.tabIndex = 0;
+        el.setAttribute("role", "button");
+        el.setAttribute("aria-label", `Open preview for ${p.title}`);
+
+        const date = niceDate(p.published || p.updated);
+        const labs = (p.labels || []).slice(0, 3);
+        const q = state.q.trim();
+
+        el.innerHTML = `
+        <div class="thumb"><img class="thumb" src="https://blogger.googleusercontent.com/img/a/AVvXsEhlfwIqq3YYxj6LMFr4E7IKN2bYIor-bFpbUXBT3Jthp8PKmRdWozV3hEk2xcj3kPrJ9WBIkXCr4lw5MTAz0AE5b0lPhQ2ReNbCmMOumP4zLTEOb7GY6s4YWcgcCfzltJVmQcgCObeQNRvn_SWPa_2c6cROZUOBHhRJB20PaV-peuA3GTSafM8JxgaYu5M=s257"/></div>
+        <div class="pBody">
+          <h3 class="pTitle">${highlight(p.title, q)}</h3>
+          <div class="meta">
+            <span class="tag">🗓 ${escapeHtml(date || "")}</span>
+            ${labs
+              .map((l) => `<span class="tag">${highlight(l, q)}</span>`)
+              .join("")}
+          </div>
+          <p class="pDesc">${highlight(p.snippet || "", q)}</p>
+          <div class="pBtns">
+            <button class="btn" style="padding:9px 10px; border-radius:12px; font-size:12px; box-shadow:none;" data-act="preview">👀 Preview</button>
+            <a class="btn primary" style="padding:9px 10px; border-radius:12px; font-size:12px; box-shadow:none;" href="${escapeAttr(
+              p.url
+            )}" target="_blank" rel="noopener" data-act="open">🔗 Open</a>
           </div>
         </div>
       `;
 
-      openModule("Search Everywhere", "Places + tours + festivals + rituals + kathas + food + shopping", html, { primaryLabel:"🗺️ Map View" });
+        el.addEventListener("click", (e) => {
+          const btn = e.target.closest("button");
+          if (btn?.dataset.act === "preview") {
+            e.stopPropagation();
+            openPreview(p);
+            return;
+          }
+          if (!e.target.closest("a")) openPreview(p);
+        });
 
-      $("#mMain").addEventListener("click", (e)=>{
-        const b = e.target.closest("button");
-        if (!b) return;
-        if (b.dataset.act !== "open") return;
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openPreview(p);
+          }
+        });
 
-        const type = b.dataset.type;
-        const id = b.dataset.id;
-        const idx = b.dataset.idx === "" ? null : parseInt(b.dataset.idx, 10);
+        return el;
+      }
 
-        if (type === "place"){
-          goMapView();
-          setTimeout(()=> focusPlace(id, { openModal:true }), 80);
+      // ------------------------- Modal -------------------------
+      const backdrop = $("#backdrop");
+      let lastFocusEl = null;
+      let modalDelegateBound = false;
+
+      function openModal(title, subtitle, mainHtml, opts = {}) {
+        $("#mTitle").textContent = title;
+
+        const main = $("#mMain");
+        main.innerHTML = `
+        ${
+          subtitle
+            ? `<div class="hint" style="margin-bottom:10px;">${escapeHtml(
+                subtitle
+              )}</div>`
+            : ``
+        }
+        ${mainHtml}
+      `;
+
+        const kvs = $("#mKvs");
+        kvs.innerHTML = "";
+        (opts.kvs || []).forEach(([k, v]) => kvs.appendChild(kv(k, v)));
+
+        const mOpen = $("#mOpen");
+        if (opts.openHref) {
+          mOpen.style.display = "";
+          mOpen.href = opts.openHref;
+        } else {
+          mOpen.style.display = "none";
+          mOpen.removeAttribute("href");
+        }
+
+        $("#mCopy").textContent = opts.copyLabel || "📋 Copy";
+        $("#mCopy").onclick = async () => {
+          const txt = opts.copyText || title;
+          await copyText(txt);
+          toast("Copied");
+        };
+
+        lastFocusEl = document.activeElement;
+
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+        document.addEventListener("keydown", onEsc);
+        document.addEventListener("keydown", trapTab);
+        setTimeout(focusFirstInModal, 0);
+      }
+
+      function openPreview(p) {
+        const q = state.q.trim();
+
+        openModal(
+          p.title,
+          "",
+          `
+        <div class="mini" style="margin-bottom:12px;">
+          <h3 style="margin:0 0 6px; font-size:14px;">Summary</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px; line-height:1.55;">${highlight(
+            p.snippet || "",
+            q
+          )}</p>
+        </div>
+
+        <div class="mini">
+          <h3 style="margin:0 0 6px; font-size:14px;">Text</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px; line-height:1.55; white-space:pre-wrap;">
+            ${highlight(smartSnippet(p.text || "", 1400), q)}
+          </p>
+        </div>
+      `,
+          {
+            kvs: [
+              ["Published", niceDate(p.published) || "—"],
+              ["Updated", niceDate(p.updated) || "—"],
+              ["Author", p.author || "—"],
+              ["Labels", (p.labels || []).join(", ") || "—"],
+            ],
+            openHref: p.url,
+            copyText: `${p.title}\n${p.snippet}\n${p.url}`,
+          }
+        );
+
+        bindModalDelegatesOnce();
+      }
+
+      function closeModal() {
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+        document.removeEventListener("keydown", onEsc);
+        document.removeEventListener("keydown", trapTab);
+        if (lastFocusEl && lastFocusEl.focus) lastFocusEl.focus();
+        lastFocusEl = null;
+      }
+
+      function onEsc(e) {
+        if (e.key === "Escape") closeModal();
+      }
+
+      $("#mClose").addEventListener("click", closeModal);
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      function kv(k, v) {
+        const el = document.createElement("div");
+        el.className = "kv";
+        el.innerHTML = `<b>${escapeHtml(k)}</b><span>${escapeHtml(v)}</span>`;
+        return el;
+      }
+
+      function focusFirstInModal() {
+        const focusables = $$(".modal a, .modal button, .modal input, .modal select, .modal textarea", backdrop).filter(
+          (el) => !el.disabled && el.offsetParent !== null
+        );
+        (focusables[0] || $("#mClose")).focus();
+      }
+
+      function trapTab(e) {
+        if (!backdrop.classList.contains("open")) return;
+        if (e.key !== "Tab") return;
+
+        const focusables = $$(".modal a, .modal button, .modal input, .modal select, .modal textarea", backdrop).filter(
+          (el) => !el.disabled && el.offsetParent !== null
+        );
+
+        if (!focusables.length) return;
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+
+        if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+
+      function bindModalDelegatesOnce() {
+        if (modalDelegateBound) return;
+        modalDelegateBound = true;
+
+        $("#mMain").addEventListener("click", (e) => {
+          const b = e.target.closest("button[data-act]");
+          if (!b) return;
+
+          if (b.dataset.act === "preview") {
+            const id = b.dataset.id;
+            const p = state.items.find((x) => x.id === id);
+            if (p) openPreview(p);
+          }
+        });
+      }
+
+      // ------------------------- Global search typeahead -------------------------
+      const gq = $("#gq");
+      const gqWrap = $("#gqWrap");
+      const gqSuggest = $("#gqSuggest");
+
+      function closeSuggest() {
+        gqSuggest.hidden = true;
+        gqSuggest.innerHTML = "";
+        state.suggest.items = [];
+        state.suggest.idx = -1;
+      }
+
+      function scheduleSuggest() {
+        if (state.suggest.t) clearTimeout(state.suggest.t);
+        state.suggest.t = setTimeout(() => renderSuggest(gq.value), 90);
+      }
+
+      function renderSuggest(query) {
+        const q = query.trim();
+        if (!q || q.length < 2) {
+          closeSuggest();
           return;
         }
-        if (type === "tour") return (closeModal(), openTopicModule("tour"));
-        if (type === "event") return (closeModal(), openTopicModule("festival"));
-        if (type === "ritual") return (closeModal(), openTopicModule("ritual"));
-        if (type === "food") return (closeModal(), openTopicModule("food"));
-        if (type === "shopping") return (closeModal(), openTopicModule("shopping"));
-        if (type === "katha") return (closeModal(), openTopicModule("katha", { kathaIndex: idx ?? 0 }));
-      }, { once:true });
-    }
 
-    // ---------------- Boot ----------------
-    renderStart();
+        const list = getFilteredSuggest(q).slice(0, 10);
+        if (!list.length) {
+          gqSuggest.innerHTML = `<div class="sItem" style="cursor:default;"><div class="sMain"><b>No results</b><span>Try a different keyword.</span></div></div>`;
+          gqSuggest.hidden = false;
+          state.suggest.items = [];
+          state.suggest.idx = -1;
+          return;
+        }
 
-    // Start screen first; keep main hidden until Map View
-    $("#mainApp").hidden = true;
+        gqSuggest.innerHTML =
+          `
+        <div class="sFoot">
+          <div class="sHint">Enter: open results • Click: preview</div>
+          <div class="sHint"><span class="kbd">↑</span> <span class="kbd">↓</span> <span class="kbd">Enter</span> <span class="kbd">Esc</span></div>
+        </div>
+      ` +
+          list
+            .map(
+              (p, i) => `
+        <div class="sItem" role="option" aria-selected="false" data-i="${i}">
+          <div class="sType">item</div>
+          <div class="sMain">
+            <b>${highlight(p.title, q)}</b>
+            <span>${highlight(p.snippet || "", q)}</span>
+          </div>
+        </div>
+      `
+            )
+            .join("");
 
-    // Render map/list in background so map is ready
-    render();
+        gqSuggest.hidden = false;
+        state.suggest.items = list;
+        state.suggest.idx = -1;
+      }
 
-    // If user already has a saved topic, pre-enable Open
-    if (state.topic){ btnStartGo.disabled = false; }
+      function setActiveSuggest(newIdx) {
+        const opts = $$(".sItem[role='option']", gqSuggest);
+        opts.forEach((o) => o.setAttribute("aria-selected", "false"));
+        if (newIdx >= 0 && newIdx < opts.length) {
+          opts[newIdx].setAttribute("aria-selected", "true");
+          opts[newIdx].scrollIntoView({ block: "nearest" });
+          state.suggest.idx = newIdx;
+        } else {
+          state.suggest.idx = -1;
+        }
+      }
 
-  </script></body>
+      function getFilteredSuggest(query) {
+        const tks = tokens(query);
+        return state.items
+          .filter((p) => {
+            const hay = [p.title, p.snippet, ...(p.labels || [])]
+              .join(" ")
+              .toLowerCase();
+            return tks.every((t) => hay.includes(t));
+          })
+          .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+      }
+
+      gq.addEventListener("input", () => scheduleSuggest());
+
+      gq.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") return closeSuggest();
+
+        if (!gqSuggest.hidden && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+          e.preventDefault();
+          const max = state.suggest.items.length - 1;
+          if (e.key === "ArrowDown") setActiveSuggest(Math.min(max, state.suggest.idx + 1));
+          else setActiveSuggest(Math.max(0, state.suggest.idx - 1));
+          return;
+        }
+
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const q = gq.value.trim();
+          if (!q) return toast("Type to search");
+
+          if (!gqSuggest.hidden && state.suggest.idx >= 0 && state.suggest.items[state.suggest.idx]) {
+            const p = state.suggest.items[state.suggest.idx];
+            closeSuggest();
+            openPreview(p);
+            return;
+          }
+
+          closeSuggest();
+          $("#q").value = q;
+          state.q = q;
+          render();
+          document.querySelector(".results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+
+      gqSuggest.addEventListener("mousedown", (e) => {
+        const item = e.target.closest(".sItem[role='option']");
+        if (!item) return;
+        const i = parseInt(item.dataset.i, 10);
+        const p = state.suggest.items[i];
+        if (!p) return;
+        e.preventDefault();
+        closeSuggest();
+        openPreview(p);
+      });
+
+      document.addEventListener("mousedown", (e) => {
+        if (gqWrap.contains(e.target)) return;
+        closeSuggest();
+      });
+
+      gq.addEventListener("blur", () => setTimeout(closeSuggest, 120));
+
+      // ------------------------- Controls -------------------------
+      $("#q").addEventListener("input", (e) => {
+        state.q = e.target.value.trim();
+        render();
+      });
+      $("#sort").addEventListener("change", (e) => {
+        state.sort = e.target.value;
+        render();
+      });
+
+      $("#btnClear").addEventListener("click", () => {
+        state.q = "";
+        state.activeLabels.clear();
+        $("#q").value = "";
+        gq.value = "";
+        renderChips();
+        render();
+        toast("Cleared");
+      });
+
+      $("#btnOpenAll").addEventListener("click", () => {
+        document.querySelector(".results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        toast("Results");
+      });
+
+      $("#btnOnlyPython").addEventListener("click", () => quickLabel("Python"));
+      $("#btnOnlyDSA").addEventListener("click", () => quickLabel("DSA"));
+      $("#btnOnlyProjects").addEventListener("click", () => quickLabel("Projects"));
+
+      function quickLabel(label) {
+        const exact = Array.from(state.labels.keys()).find(
+          (x) => x.toLowerCase() === label.toLowerCase()
+        );
+        const lab = exact || label;
+        if (state.activeLabels.has(lab)) state.activeLabels.delete(lab);
+        else state.activeLabels.add(lab);
+        renderChips();
+        render();
+      }
+
+      $("#btnRefresh").addEventListener("click", async () => {
+        await refreshFeed(true);
+      });
+      $("#btnLoadMore").addEventListener("click", async () => {
+        await loadMore();
+      });
+      $("#btnStop").addEventListener("click", () => {
+        stopCrawl();
+        toast("Stopped");
+      });
+      $("#btnSettings").addEventListener("click", () => openSettings());
+
+      // Jump to lab buttons
+      $("#btnJumpLab").addEventListener("click", () => jumpToLab());
+      $("#btnOpenLab").addEventListener("click", () => jumpToLab(true));
+
+      function jumpToLab(fromFab = false) {
+        const lab = document.getElementById("ppLab");
+        if (!lab) return;
+        lab.scrollIntoView({ behavior: "smooth", block: "start" });
+        lab.classList.remove("labGlow");
+        void lab.offsetWidth;
+        lab.classList.add("labGlow");
+        if (fromFab) document.getElementById("btnOpenLab")?.classList.remove("pulse");
+        toast("Practice Lab");
+      }
+
+      // ------------------------- Settings modal -------------------------
+      function openSettings() {
+        const cfg = state.cfg;
+
+        const html = `
+        <div class="mini">
+          <h3 style="margin:0 0 6px; font-size:14px;">Search settings</h3>
+          <p class="hint" style="margin:0 0 10px;">Defaults should work for your domain. Loading is capped for safety.</p>
+
+          <div class="field">
+            <div class="label">Base URL</div>
+            <input class="input" id="cfgBase" value="${escapeAttr(cfg.base)}" placeholder="https://www.learnwithchampak.live" />
+          </div>
+
+          <div class="row2" style="margin-top:10px;">
+            <div class="field">
+              <div class="label">Max results per fetch (1–150)</div>
+              <input class="input" id="cfgMax" value="${cfg.maxResults}" />
+            </div>
+            <div class="field">
+              <div class="label">Mode</div>
+              <select class="select" id="cfgMode">
+                <option value="default" ${cfg.mode === "default" ? "selected" : ""}>default</option>
+                <option value="summary" ${cfg.mode === "summary" ? "selected" : ""}>summary</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row2" style="margin-top:10px;">
+            <div class="field">
+              <div class="label">Auto-load all</div>
+              <select class="select" id="cfgAuto">
+                <option value="yes" ${cfg.autoCrawl ? "selected" : ""}>Yes</option>
+                <option value="no"  ${!cfg.autoCrawl ? "selected" : ""}>No</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="label">Max total items (cap)</div>
+              <input class="input" id="cfgCap" value="${escapeAttr(String(cfg.maxTotalItems))}" />
+            </div>
+          </div>
+
+          <div class="row2" style="margin-top:10px;">
+            <div class="field">
+              <div class="label">Featured labels (comma-separated)</div>
+              <input class="input" id="cfgFeat" value="${escapeAttr((cfg.featuredLabels || DEFAULT_CFG.featuredLabels).join(", "))}" />
+            </div>
+            <div class="field">
+              <div class="label">Featured limit</div>
+              <input class="input" id="cfgFeatLim" value="${escapeAttr(String(cfg.featuredLimit || 9))}" />
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+            <button class="btn primary" id="cfgSave">💾 Save</button>
+            <button class="btn" id="cfgReset">↩ Reset</button>
+          </div>
+        </div>
+      `;
+
+        openModal("Source settings", "", html, {
+          kvs: [
+            ["Current start-index", String(state.startIndex)],
+            ["Cached items", String(loadCache()?.items?.length || 0)],
+            ["Auto pages this run", String(state.crawl.pages)],
+          ],
+          openHref: null,
+          copyText: JSON.stringify(cfg, null, 2),
+          copyLabel: "📋 Copy settings",
+        });
+
+        const root = $("#mMain");
+        root.querySelector("#cfgSave").addEventListener("click", async () => {
+          const base = root.querySelector("#cfgBase").value.trim() || DEFAULT_CFG.base;
+          const maxResults = clampInt(root.querySelector("#cfgMax").value, 1, 150);
+          const mode = root.querySelector("#cfgMode").value;
+          const autoCrawl = root.querySelector("#cfgAuto").value === "yes";
+          const maxTotalItems = clampInt(root.querySelector("#cfgCap").value, 50, 5000);
+
+          const featuredLabelsRaw = root.querySelector("#cfgFeat").value || "";
+          const featuredLabels = featuredLabelsRaw
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+          const featuredLimit = clampInt(root.querySelector("#cfgFeatLim").value, 1, 30);
+
+          state.cfg = {
+            ...state.cfg,
+            base,
+            maxResults,
+            mode,
+            autoCrawl,
+            maxTotalItems,
+            featuredLabels: featuredLabels.length ? featuredLabels : DEFAULT_CFG.featuredLabels,
+            featuredLimit,
+          };
+          saveCfg();
+
+          toast("Saved. Refreshing…");
+          closeModal();
+          await refreshFeed(true);
+        });
+
+        root.querySelector("#cfgReset").addEventListener("click", () => {
+          state.cfg = { ...DEFAULT_CFG };
+          saveCfg();
+          toast("Reset to defaults");
+        });
+      }
+
+      // ------------------------- Feed load -------------------------
+      async function refreshFeed(force = false) {
+        $("#status").textContent = "Loading…";
+        stopCrawl(true);
+
+        if (!force) {
+          const cache = loadCache();
+          if (cache?.items?.length) {
+            state.items = cache.items;
+            rebuildLabels();
+            updateStats();
+            renderChips();
+            render();
+            $("#status").textContent = `Loaded from cache • ${state.items.length} items`;
+            $("#crawlMsg").textContent = "Cache loaded. Auto-load may continue if enabled.";
+            maybeAutoCrawl();
+            return;
+          }
+        }
+
+        state.items = [];
+        state.labels = new Map();
+        state.startIndex = 1;
+        state.activeLabels.clear();
+        updateStats();
+        renderChips();
+        render();
+
+        try {
+          await loadMore();
+          $("#status").textContent = `Loaded • ${state.items.length} items`;
+          maybeAutoCrawl();
+        } catch (err) {
+          console.error(err);
+          $("#status").textContent = "Could not load. Check settings or network.";
+          toast("Load failed");
+        }
+      }
+
+      async function loadMore() {
+        if (state.loading) {
+          toast("Already fetching…");
+          return { items: 0, added: 0, skipped: true };
+        }
+
+        state.loading = true;
+        $("#btnLoadMore").disabled = true;
+
+        try {
+          $("#status").textContent = "Fetching…";
+          const { url, cb } = buildFeedUrl({ startIndex: state.startIndex });
+          const json = await jsonp(url, cb);
+          const items = parseFeed(json);
+
+          if (!items.length) {
+            $("#status").textContent = "No more items (or empty response).";
+            toast("No more items");
+            return { items: 0, added: 0 };
+          }
+
+          const added = addToIndex(items);
+          state.startIndex += items.length;
+
+          renderChips();
+          render();
+          saveCache();
+
+          $("#status").textContent = `Fetched ${items.length} • added ${added}`;
+          $("#stStart").textContent = String(state.startIndex);
+          $("#stLoaded").textContent = String(state.items.length);
+          $("#loaded").textContent = `Index: ${state.items.length} items`;
+          return { items: items.length, added };
+        } catch (err) {
+          console.error(err);
+          $("#status").textContent = "Fetch failed. Check network/settings.";
+          toast("Fetch failed");
+          return { items: 0, added: 0, error: true };
+        } finally {
+          state.loading = false;
+          $("#btnLoadMore").disabled = false;
+        }
+      }
+
+      // ------------------------- Auto-load -------------------------
+      function maybeAutoCrawl() {
+        if (!state.cfg.autoCrawl) {
+          $("#crawlMsg").textContent = "Auto-load is OFF (enable in settings).";
+          $("#crawlBar").style.width = "0%";
+          $("#btnStop").disabled = true;
+          return;
+        }
+
+        if (state.items.length >= state.cfg.maxTotalItems) {
+          $("#crawlMsg").textContent = `Auto-load reached cap: ${state.cfg.maxTotalItems} items.`;
+          $("#crawlBar").style.width = "100%";
+          $("#btnStop").disabled = true;
+          return;
+        }
+
+        startCrawl();
+      }
+
+      async function startCrawl() {
+        if (state.crawl.running) return;
+        state.crawl.running = true;
+        state.crawl.stop = false;
+        state.crawl.pages = 0;
+        $("#btnStop").disabled = false;
+
+        toast("Auto-load started");
+        await crawlLoop();
+      }
+
+      function stopCrawl(silent = false) {
+        state.crawl.stop = true;
+        state.crawl.running = false;
+        $("#btnStop").disabled = true;
+        if (!silent) $("#crawlMsg").textContent = "Auto-load stopped.";
+      }
+
+      async function crawlLoop() {
+        try {
+          while (!state.crawl.stop) {
+            const cfg = state.cfg;
+
+            if (state.items.length >= cfg.maxTotalItems) {
+              $("#crawlMsg").textContent = `Auto-load reached cap: ${cfg.maxTotalItems} items.`;
+              $("#crawlBar").style.width = "100%";
+              break;
+            }
+            if (state.crawl.pages >= cfg.maxAutoPages) {
+              $("#crawlMsg").textContent = `Auto-load stopped at page cap (${cfg.maxAutoPages}).`;
+              break;
+            }
+
+            state.crawl.pages++;
+            const percent = Math.min(
+              99,
+              Math.round((state.items.length / cfg.maxTotalItems) * 100)
+            );
+            $("#crawlBar").style.width = `${percent}%`;
+            $("#crawlMsg").textContent = `Auto-loading… page ${state.crawl.pages} • indexed ${state.items.length}/${cfg.maxTotalItems}`;
+
+            const { items } = await loadMore();
+            if (state.crawl.stop) break;
+
+            if (!items) {
+              $("#crawlMsg").textContent = `Auto-load finished • total ${state.items.length} items`;
+              $("#crawlBar").style.width = "100%";
+              break;
+            }
+
+            await sleep(cfg.crawlDelayMs);
+          }
+        } catch (err) {
+          console.error(err);
+          $("#crawlMsg").textContent = "Auto-load hit an error. You can Refresh.";
+        } finally {
+          state.crawl.running = false;
+          $("#btnStop").disabled = true;
+        }
+      }
+
+      // ------------------------- Cache/config -------------------------
+      function loadCfg() {
+        try {
+          const raw = localStorage.getItem(CFG_KEY);
+          const cfg = raw ? JSON.parse(raw) : null;
+          return { ...DEFAULT_CFG, ...(cfg || {}) };
+        } catch {
+          return { ...DEFAULT_CFG };
+        }
+      }
+      function saveCfg() {
+        try {
+          localStorage.setItem(CFG_KEY, JSON.stringify(state.cfg));
+        } catch {}
+      }
+      function loadCache() {
+        try {
+          const raw = localStorage.getItem(CACHE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+      function saveCache() {
+        try {
+          const payload = {
+            ts: Date.now(),
+            items: state.items.slice(0, state.cfg.maxTotalItems),
+          };
+          localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+        } catch {}
+      }
+
+      // ------------------------- Helpers -------------------------
+      function escapeHtml(s) {
+        return String(s ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+      function escapeAttr(s) {
+        return escapeHtml(s).replaceAll("`", "&#096;");
+      }
+      function escapeRegExp(s) {
+        return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      function highlight(text, query) {
+        const t = String(text ?? "");
+        const q = String(query ?? "").trim();
+        if (!q) return escapeHtml(t);
+
+        const safe = escapeHtml(t);
+        const qSafe = escapeHtml(q);
+        if (!qSafe) return safe;
+
+        const re = new RegExp(escapeRegExp(qSafe), "ig");
+        return safe.replace(re, (m) => `<mark>${m}</mark>`);
+      }
+
+      function clampInt(v, min, max) {
+        const n = parseInt(v, 10);
+        if (Number.isNaN(n)) return min;
+        return Math.max(min, Math.min(max, n));
+      }
+      function niceDate(iso) {
+        if (!iso) return "";
+        try {
+          const d = new Date(iso);
+          return d.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+          });
+        } catch {
+          return "";
+        }
+      }
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+        }
+      }
+      function sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+
+      const toastEl = $("#toast");
+      let toastT = null;
+      function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        if (toastT) clearTimeout(toastT);
+        toastT = setTimeout(() => toastEl.classList.remove("show"), 1400);
+      }
+
+      function updateStats() {
+        $("#stTotal").textContent = String(state.items.length);
+        $("#stLoaded").textContent = String(state.items.length);
+        $("#stStart").textContent = String(state.startIndex);
+      }
+
+      // ------------------------- Practice Lab: tabs + reload + open full
+      function initPracticeLab() {
+        const root = document.getElementById("ppLab");
+        if (!root) return;
+
+        const tabBtns = root.querySelectorAll(".tabBtn");
+        const framePy = document.getElementById("labPy");
+        const frameJs = document.getElementById("labJs");
+        const frameSql = document.getElementById("labSql");
+        const frameHtml = document.getElementById("labHtml");
+        const frameMongo = document.getElementById("labMongo");
+
+        const btnReload = document.getElementById("labReload");
+        const btnOpenFull = document.getElementById("labOpenFull");
+
+        const URLS = {
+          py: framePy.getAttribute("src"),
+          js: frameJs.getAttribute("src"),
+          sql: frameSql.getAttribute("src"),
+          html: frameHtml.getAttribute("src"),
+          mongo: frameMongo.getAttribute("src"),
+        };
+
+        let current = "py";
+
+        function setTab(t) {
+          current = t;
+
+          tabBtns.forEach((b) => {
+            const on = b.dataset.labtab === t;
+            b.classList.toggle("on", on);
+            b.setAttribute("aria-selected", String(on));
+          });
+
+          framePy.classList.toggle("show", t === "py");
+          frameJs.classList.toggle("show", t === "js");
+          frameSql.classList.toggle("show", t === "sql");
+          frameHtml.classList.toggle("show", t === "html");
+          frameMongo.classList.toggle("show", t === "mongo");
+
+          btnOpenFull.href = URLS[t] || "#";
+
+          toast(
+            t === "py"
+              ? "Python editor"
+              : t === "js"
+              ? "JavaScript editor"
+              : t === "sql"
+              ? "SQL editor"
+              : t === "html"
+              ? "HTML preview"
+              : "MongoDB editor"
+          );
+        }
+
+        tabBtns.forEach((b) => {
+          b.addEventListener("click", () => setTab(b.dataset.labtab));
+        });
+
+        btnReload.addEventListener("click", () => {
+          const f =
+            current === "py"
+              ? framePy
+              : current === "js"
+              ? frameJs
+              : current === "sql"
+              ? frameSql
+              : current === "html"
+              ? frameHtml
+              : frameMongo;
+
+          const src = f.getAttribute("src");
+          f.setAttribute("src", src);
+          toast("Reloaded");
+        });
+
+        btnOpenFull.href = URLS[current];
+      }
+
+      // ------------------------- Boot -------------------------
+      (async function boot() {
+        initPracticeLab();
+
+        const cache = loadCache();
+        if (cache?.items?.length) {
+          state.items = cache.items;
+          rebuildLabels();
+          renderChips();
+          render();
+          updateStats();
+          $("#status").textContent = `Loaded from cache • ${state.items.length} items`;
+          $("#crawlMsg").textContent = "Cache loaded. Auto-load may continue if enabled.";
+        } else {
+          $("#status").textContent = "No cache. Loading…";
+        }
+
+        try {
+          if (!cache?.items?.length) await refreshFeed(true);
+          else {
+            setTimeout(async () => {
+              try {
+                await loadMore();
+                maybeAutoCrawl();
+              } catch {}
+            }, 500);
+          }
+        } catch {
+          $("#status").textContent = "Could not load. Check settings or network.";
+        }
+
+        renderChips();
+        render();
+      })();
+    </script>
+  </body>
 </html>
