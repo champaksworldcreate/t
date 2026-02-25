@@ -661,6 +661,22 @@
         transform: translateX(-50%) translateY(-2px);
       }
 
+      /* IFRAME RENDER PREVIEW */
+      .renderBox {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 18px;
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        background: rgba(255, 255, 255, 0.78);
+      }
+      .renderFrame {
+        width: 100%;
+        height: 440px;
+        border: 1px solid rgba(31, 35, 40, 0.12);
+        border-radius: 14px;
+        background: #fff;
+      }
+
       @media (max-width: 980px) {
         .heroGrid {
           grid-template-columns: 1fr;
@@ -683,6 +699,9 @@
         }
         .brand {
           min-width: unset;
+        }
+        .renderFrame {
+          height: 520px;
         }
       }
 
@@ -1108,11 +1127,7 @@
               <div class="featuredHead">
                 <div>
                   <h3>⭐ Featured Posts</h3>
-                  <p
-                    class="hint"
-                    id="featuredHint"
-                    style="margin-top: 6px"
-                  >
+                  <p class="hint" id="featuredHint" style="margin-top: 6px">
                     Posts marked with featured labels.
                   </p>
                 </div>
@@ -1365,7 +1380,11 @@
               <a class="btn primary" id="mOpen" target="_blank" rel="noopener"
                 >🔗 Open</a
               >
-              <button class="btn" id="mCopy">📋 Copy</button>
+              <button class="btn" id="mRender" type="button">🧾 Render</button>
+              <button class="btn" id="mCopy" type="button">📋 Copy</button>
+            </div>
+            <div class="hint" style="margin-top:10px;">
+              Render uses a <b>sandboxed iframe</b> (scripts blocked).
             </div>
           </aside>
         </div>
@@ -1417,6 +1436,7 @@
         suggest: { items: [], idx: -1, t: null },
         crawl: { running: false, stop: false, pages: 0 },
         loading: false,
+        preview: { mode: "plain", last: null }, // "plain" | "render"
       };
 
       $("#y").textContent = new Date().getFullYear();
@@ -1501,7 +1521,7 @@
 
           const contentHtml = e?.content?.$t || e?.summary?.$t || "";
           const text = contentHtml;
-          const snippet = smartSnippet(text, 240);
+          const snippet = smartSnippet(htmlToText(text), 240);
 
           out.push({
             id,
@@ -1512,10 +1532,21 @@
             author,
             labels,
             snippet,
-            text,
+            text, // HTML from Blogger feed
           });
         }
         return out;
+      }
+
+      function htmlToText(html) {
+        const s = String(html || "");
+        // quick strip for snippet
+        return s
+          .replace(/<script[\s\S]*?<\/script>/gi, " ")
+          .replace(/<style[\s\S]*?<\/style>/gi, " ")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
       }
 
       function smartSnippet(text, n) {
@@ -1788,7 +1819,7 @@
           );
         else if (state.sort === "old")
           list.sort((a, b) =>
-            (a.published || "").localeCompare(a.published || "")
+            (a.published || "").localeCompare(b.published || "")
           );
         else if (state.sort === "alpha")
           list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
@@ -1867,6 +1898,51 @@
         return el;
       }
 
+      // ------------------------- IFRAME SAFE RENDER -------------------------
+      function sanitizeForIframe(html) {
+        // Sandbox blocks scripts anyway, but we still strip a few noisy things.
+        const doc = new DOMParser().parseFromString(String(html || ""), "text/html");
+        doc.querySelectorAll("script, iframe, object, embed, link, meta").forEach(n => n.remove());
+
+        // remove inline event handlers + javascript: urls
+        doc.querySelectorAll("*").forEach(el => {
+          Array.from(el.attributes).forEach(a => {
+            const name = a.name.toLowerCase();
+            const val = String(a.value || "");
+            if (name.startsWith("on")) el.removeAttribute(a.name);
+            if ((name === "href" || name === "src") && val.trim().toLowerCase().startsWith("javascript:")){
+              el.removeAttribute(a.name);
+            }
+          });
+        });
+
+        // make links safe (sandbox already isolates)
+        doc.querySelectorAll("a").forEach(a => {
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener");
+        });
+
+        const body = doc.body ? doc.body.innerHTML : "";
+        // Add minimal styling so it looks nice inside iframe
+        const frameDoc = `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 14px; color:#1f2328; line-height:1.55; }
+  img{ max-width:100%; height:auto; border-radius:12px; }
+  pre, code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  pre{ background:#fff7e6; border:1px solid rgba(31,35,40,.12); padding:12px; border-radius:14px; overflow:auto; }
+  blockquote{ margin:12px 0; padding:10px 12px; border-left:4px solid #ff9f1c; background:rgba(255,159,28,.10); border-radius:12px; }
+  a{ color:#0b57d0; }
+  hr{ border:none; border-top:1px solid rgba(31,35,40,.12); margin:14px 0; }
+</style>
+</head>
+<body>${body}</body></html>`;
+        return frameDoc;
+      }
+
       // ------------------------- Modal -------------------------
       const backdrop = $("#backdrop");
       let lastFocusEl = null;
@@ -1917,7 +1993,11 @@
       }
 
       function openPreview(p) {
+        state.preview.last = p;
         const q = state.q.trim();
+
+        const plain = smartSnippet(htmlToText(p.text || ""), 1400);
+        const frameDoc = sanitizeForIframe(p.text || "");
 
         openModal(
           p.title,
@@ -1931,11 +2011,25 @@
           )}</p>
         </div>
 
-        <div class="mini">
-          <h3 style="margin:0 0 6px; font-size:14px;">Text</h3>
+        <div class="mini" id="plainBox">
+          <h3 style="margin:0 0 6px; font-size:14px;">Text (plain)</h3>
           <p style="margin:0; color:var(--muted); font-size:13px; line-height:1.55; white-space:pre-wrap;">
-            ${highlight(smartSnippet(p.text || "", 1400), q)}
+            ${highlight(escapeHtml(plain), q)}
           </p>
+        </div>
+
+        <div class="renderBox" id="renderBox" style="display:none;">
+          <h3 style="margin:0 0 6px; font-size:14px;">Rendered HTML (sandboxed)</h3>
+          <iframe
+            id="renderFrame"
+            class="renderFrame"
+            sandbox="allow-popups allow-popups-to-escape-sandbox"
+            referrerpolicy="no-referrer"
+            title="Rendered HTML preview"
+          ></iframe>
+          <div class="hint" style="margin-top:8px;">
+            Note: scripts are blocked in this preview.
+          </div>
         </div>
       `,
           {
@@ -1950,7 +2044,43 @@
           }
         );
 
+        // restore preferred mode
+        setPreviewMode(state.preview.mode, frameDoc);
+
+        // Wire render toggle
+        const btn = document.getElementById("mRender");
+        if (btn) {
+          btn.onclick = () => {
+            const next = state.preview.mode === "plain" ? "render" : "plain";
+            state.preview.mode = next;
+            setPreviewMode(next, frameDoc);
+            toast(next === "render" ? "Rendered" : "Plain");
+          };
+        }
+
         bindModalDelegatesOnce();
+      }
+
+      function setPreviewMode(mode, frameDoc) {
+        const rb = document.getElementById("renderBox");
+        const pb = document.getElementById("plainBox");
+        const rf = document.getElementById("renderFrame");
+        if (!rb || !pb) return;
+
+        if (mode === "render") {
+          pb.style.display = "none";
+          rb.style.display = "";
+          // set srcdoc only when showing to avoid unnecessary work
+          if (rf && rf.getAttribute("data-loaded") !== "1") {
+            rf.srcdoc = frameDoc;
+            rf.setAttribute("data-loaded", "1");
+          }
+          $("#mRender").textContent = "📝 Plain";
+        } else {
+          rb.style.display = "none";
+          pb.style.display = "";
+          $("#mRender").textContent = "🧾 Render";
+        }
       }
 
       function closeModal() {
@@ -2112,10 +2242,14 @@
       gq.addEventListener("keydown", (e) => {
         if (e.key === "Escape") return closeSuggest();
 
-        if (!gqSuggest.hidden && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+        if (
+          !gqSuggest.hidden &&
+          (e.key === "ArrowDown" || e.key === "ArrowUp")
+        ) {
           e.preventDefault();
           const max = state.suggest.items.length - 1;
-          if (e.key === "ArrowDown") setActiveSuggest(Math.min(max, state.suggest.idx + 1));
+          if (e.key === "ArrowDown")
+            setActiveSuggest(Math.min(max, state.suggest.idx + 1));
           else setActiveSuggest(Math.max(0, state.suggest.idx - 1));
           return;
         }
@@ -2125,7 +2259,11 @@
           const q = gq.value.trim();
           if (!q) return toast("Type to search");
 
-          if (!gqSuggest.hidden && state.suggest.idx >= 0 && state.suggest.items[state.suggest.idx]) {
+          if (
+            !gqSuggest.hidden &&
+            state.suggest.idx >= 0 &&
+            state.suggest.items[state.suggest.idx]
+          ) {
             const p = state.suggest.items[state.suggest.idx];
             closeSuggest();
             openPreview(p);
@@ -2136,7 +2274,9 @@
           $("#q").value = q;
           state.q = q;
           render();
-          document.querySelector(".results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          document
+            .querySelector(".results")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       });
 
@@ -2179,13 +2319,17 @@
       });
 
       $("#btnOpenAll").addEventListener("click", () => {
-        document.querySelector(".results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document
+          .querySelector(".results")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
         toast("Results");
       });
 
       $("#btnOnlyPython").addEventListener("click", () => quickLabel("Python"));
       $("#btnOnlyDSA").addEventListener("click", () => quickLabel("DSA"));
-      $("#btnOnlyProjects").addEventListener("click", () => quickLabel("Projects"));
+      $("#btnOnlyProjects").addEventListener("click", () =>
+        quickLabel("Projects")
+      );
 
       function quickLabel(label) {
         const exact = Array.from(state.labels.keys()).find(
@@ -2298,11 +2442,16 @@
 
         const root = $("#mMain");
         root.querySelector("#cfgSave").addEventListener("click", async () => {
-          const base = root.querySelector("#cfgBase").value.trim() || DEFAULT_CFG.base;
+          const base =
+            root.querySelector("#cfgBase").value.trim() || DEFAULT_CFG.base;
           const maxResults = clampInt(root.querySelector("#cfgMax").value, 1, 150);
           const mode = root.querySelector("#cfgMode").value;
           const autoCrawl = root.querySelector("#cfgAuto").value === "yes";
-          const maxTotalItems = clampInt(root.querySelector("#cfgCap").value, 50, 5000);
+          const maxTotalItems = clampInt(
+            root.querySelector("#cfgCap").value,
+            50,
+            5000
+          );
 
           const featuredLabelsRaw = root.querySelector("#cfgFeat").value || "";
           const featuredLabels = featuredLabelsRaw
@@ -2310,7 +2459,11 @@
             .map((s) => s.trim())
             .filter(Boolean);
 
-          const featuredLimit = clampInt(root.querySelector("#cfgFeatLim").value, 1, 30);
+          const featuredLimit = clampInt(
+            root.querySelector("#cfgFeatLim").value,
+            1,
+            30
+          );
 
           state.cfg = {
             ...state.cfg,
@@ -2319,7 +2472,9 @@
             mode,
             autoCrawl,
             maxTotalItems,
-            featuredLabels: featuredLabels.length ? featuredLabels : DEFAULT_CFG.featuredLabels,
+            featuredLabels: featuredLabels.length
+              ? featuredLabels
+              : DEFAULT_CFG.featuredLabels,
             featuredLimit,
           };
           saveCfg();
@@ -2350,7 +2505,8 @@
             renderChips();
             render();
             $("#status").textContent = `Loaded from cache • ${state.items.length} items`;
-            $("#crawlMsg").textContent = "Cache loaded. Auto-load may continue if enabled.";
+            $("#crawlMsg").textContent =
+              "Cache loaded. Auto-load may continue if enabled.";
             maybeAutoCrawl();
             return;
           }
@@ -2703,7 +2859,8 @@
           render();
           updateStats();
           $("#status").textContent = `Loaded from cache • ${state.items.length} items`;
-          $("#crawlMsg").textContent = "Cache loaded. Auto-load may continue if enabled.";
+          $("#crawlMsg").textContent =
+            "Cache loaded. Auto-load may continue if enabled.";
         } else {
           $("#status").textContent = "No cache. Loading…";
         }
