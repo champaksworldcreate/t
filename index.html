@@ -1,327 +1,993 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Python Starter Course — Syllabus (Student Share)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Programmer’s Picnic — Chat Search (Voice + Semantic)</title>
+  <meta name="description" content="Chatbot-style knowledge search with English/Hindi voice input and semantic search. Built for Programmer’s Picnic." />
+  <meta name="theme-color" content="#d97706" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
-<meta name="description" content="Python Starter Course syllabus for students (7 PM batch). Programmer’s Picnic." />
-<meta name="theme-color" content="#d97706" />
-<meta name="author" content="Programmer’s Picnic" />
+  <style>
+    :root{
+      --bg:#fff7e6;
+      --panel:rgba(255,255,255,.84);
+      --panel2:rgba(255,255,255,.72);
+      --ink:#1f2328;
+      --muted:#5b6570;
+      --line:rgba(31,35,40,.12);
+      --saffron:#ff9f1c;
+      --saffron2:#ffb74d;
+      --shadow:0 14px 34px rgba(31,35,40,.12);
+      --shadow2:0 10px 26px rgba(31,35,40,.10);
+      --radius:18px;
+      --radius2:24px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:"DM Sans",Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(255,159,28,.20), transparent 60%),
+        radial-gradient(900px 520px at 90% 10%, rgba(255,183,77,.22), transparent 55%),
+        linear-gradient(180deg,#fffaf0,var(--bg));
+      overflow:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      padding:14px;
+      gap:12px;
+    }
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    /* Top bar */
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      background:linear-gradient(180deg, rgba(255,247,230,.92), rgba(255,247,230,.70));
+      border:1px solid var(--line);
+      border-radius:var(--radius2);
+      box-shadow:var(--shadow2);
+      padding:10px 12px;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; min-width:240px;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background:conic-gradient(from 210deg, var(--saffron), var(--saffron2));
+      box-shadow:var(--shadow2);
+      position:relative; flex:0 0 auto;
+    }
+    .logo:after{
+      content:"PP";
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:900; letter-spacing:.5px;
+      color:#1a140c;
+      text-shadow: 0 1px 0 rgba(255,255,255,.35);
+      font-size:14px;
+    }
+    .brand h1{margin:0;font-size:14px;line-height:1.1}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+    .right{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.78);
+      font-weight:900; font-size:12px;
+      box-shadow:0 8px 18px rgba(31,35,40,.06);
+      user-select:none;
+    }
+    .pill input{accent-color:#d97706}
+    .chipbtn{
+      border:1px solid rgba(31,35,40,.12);
+      background:rgba(255,255,255,.78);
+      border-radius:999px;
+      padding:9px 12px;
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow:0 8px 18px rgba(31,35,40,.06);
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .chipbtn:hover{transform:translateY(-1px); box-shadow:0 14px 24px rgba(31,35,40,.10); background:rgba(255,255,255,.92)}
+    .chipbtn:active{transform:translateY(0) scale(.99)}
+    .chipbtn.primary{
+      background:linear-gradient(180deg, rgba(255,159,28,.98), rgba(255,183,77,.98));
+      border-color:rgba(217,119,6,.35);
+      color:#1a140c;
+    }
 
-<style>
-:root{
-  --bg:#fff7e6;
-  --card:#ffffff;
-  --ink:#1f2937;
-  --muted:#6b7280;
-  --brand:#d97706;
-  --brand2:#f59e0b;
-  --border:#eadcc5;
-  --shadow:0 18px 40px rgba(31,41,55,.14);
-  --r:18px;
-  --max:1100px;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:"DM Sans", sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 700px at 18% -5%, rgba(245,158,11,.22), transparent 60%),
-    radial-gradient(900px 550px at 95% 5%, rgba(217,119,6,.16), transparent 55%),
-    var(--bg);
-  line-height:1.6;
-}
-.topbar{
-  position:sticky; top:0;
-  backdrop-filter:blur(10px);
-  background:rgba(255,247,230,.9);
-  border-bottom:1px solid var(--border);
-  z-index:10;
-}
-.inner{
-  max-width:var(--max);
-  margin:auto;
-  padding:12px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.logo{
-  width:42px;height:42px;border-radius:14px;
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
-  display:grid;place-items:center;color:#fff;font-weight:900;
-  box-shadow:0 10px 22px rgba(217,119,6,.25);
-}
-.wrap{max-width:var(--max);margin:auto;padding:20px}
-.card{
-  background:rgba(255,255,255,.9);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:18px;
-  margin-bottom:16px;
-  box-shadow:var(--shadow);
-}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap}
-button{
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
-  border:none;
-  color:#fff;
-  padding:10px 16px;
-  border-radius:999px;
-  font-weight:800;
-  cursor:pointer;
-}
-button.secondary{
-  background:#fff;
-  color:var(--ink);
-  border:1px solid var(--border);
-}
-input,textarea,select{
-  width:100%;
-  padding:10px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  margin-top:6px;
-  font:inherit;
-}
-small{color:var(--muted);font-weight:700}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-.qrwrap{
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-.qrbox{
-  width:200px;
-  height:200px;
-  border-radius:16px;
-  border:1px solid var(--border);
-  background:#fff;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-}
-.qrmeta{
-  flex:1;
-  min-width:240px;
-}
-.kbd{
-  display:inline-block;
-  padding:4px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.8);
-  font-weight:900;
-  font-size:12px;
-}
-hr{
-  border:none;
-  border-top:1px solid var(--border);
-  margin:14px 0;
-}
-@media print{
-  .topbar, .no-print{display:none !important}
-  body{background:#fff}
-  .card{box-shadow:none}
-}
-</style>
+    /* Chat shell */
+    .shell{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height:0;
+    }
+    .chat{
+      flex:1;
+      background:var(--panel);
+      border:1px solid rgba(31,35,40,.10);
+      border-radius:var(--radius2);
+      box-shadow:var(--shadow);
+      overflow:auto;
+      padding:14px;
+      min-height:0;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      margin:10px 0;
+      align-items:flex-end;
+    }
+    .row.user{justify-content:flex-end}
+    .row.bot{justify-content:flex-start}
+    .bubble{
+      max-width:min(760px, 92%);
+      padding:12px 12px;
+      border-radius:18px;
+      border:1px solid rgba(31,35,40,.10);
+      box-shadow:0 10px 22px rgba(31,35,40,.07);
+      line-height:1.35;
+      background:rgba(255,255,255,.86);
+    }
+    .user .bubble{
+      background:linear-gradient(180deg, rgba(255,159,28,.22), rgba(255,183,77,.18));
+      border-color:rgba(217,119,6,.25);
+    }
+    .meta{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:6px;
+      font-weight:800;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .card{
+      border:1px solid rgba(31,35,40,.10);
+      background:rgba(255,255,255,.82);
+      border-radius:16px;
+      padding:10px 10px;
+      box-shadow:0 10px 22px rgba(31,35,40,.07);
+    }
+    .card .t{
+      font-weight:900;
+      font-size:13px;
+      margin:0 0 6px 0;
+    }
+    .card .s{
+      font-size:12px;
+      color:var(--muted);
+      margin:0 0 8px 0;
+    }
+    .tags{
+      display:flex; gap:6px; flex-wrap:wrap;
+    }
+    .tag{
+      font-size:11px; font-weight:900;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(31,35,40,.10);
+      background:rgba(255,255,255,.70);
+    }
+    .actions{
+      display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;
+    }
+    .mini{
+      border:1px solid rgba(31,35,40,.12);
+      background:rgba(255,255,255,.80);
+      border-radius:12px;
+      padding:8px 10px;
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+    }
+
+    /* Composer */
+    .composer{
+      background:var(--panel2);
+      border:1px solid rgba(31,35,40,.10);
+      border-radius:var(--radius2);
+      box-shadow:var(--shadow2);
+      padding:10px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .input{
+      flex:1;
+      width:100%;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(31,35,40,.14);
+      background:rgba(255,255,255,.88);
+      outline:none;
+      font-weight:900;
+      font-size:14px;
+    }
+    .input:focus{
+      box-shadow:0 0 0 4px rgba(255,159,28,.16);
+      border-color:rgba(217,119,6,.35);
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      margin:0 2px;
+    }
+    .kbd{
+      font-family:var(--mono);
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid rgba(31,35,40,.12);
+      background:rgba(255,255,255,.70);
+      font-weight:900;
+      font-size:11px;
+    }
+
+    /* Small screens */
+    @media (max-width:640px){
+      .brand{min-width:auto}
+      .brand p{display:none}
+      .topbar{gap:8px}
+      .right{gap:8px}
+    }
+  </style>
 </head>
+
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Programmer’s Picnic — Chat Search</h1>
+          <p>Voice (English/Hindi) + Semantic Search • Champak Roy</p>
+        </div>
+      </div>
 
-<header class="topbar">
-  <div class="inner">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="logo">PP</div>
-      <div>
-        <strong>Python Starter Course</strong><br>
-        <small>7 PM Batch • Programmer’s Picnic</small>
+      <div class="right">
+        <span class="pill" title="Language for voice input">
+          <span>🎙</span>
+          <label style="display:inline-flex;gap:6px;align-items:center;cursor:pointer;">
+            <input type="radio" name="lang" value="en-IN" checked />
+            <span>EN</span>
+          </label>
+          <label style="display:inline-flex;gap:6px;align-items:center;cursor:pointer;">
+            <input type="radio" name="lang" value="hi-IN" />
+            <span>HI</span>
+          </label>
+        </span>
+
+        <span class="pill" title="Semantic uses embeddings in your browser (no API keys). First run may take time.">
+          <label style="display:inline-flex;gap:8px;align-items:center;cursor:pointer;">
+            <input id="semToggle" type="checkbox" />
+            <span>Semantic</span>
+          </label>
+        </span>
+
+        <button class="chipbtn" id="btnVoice">🎙️ Voice</button>
+        <button class="chipbtn" id="btnLoad">🔄 Load Posts</button>
+        <button class="chipbtn primary" id="btnHelp">❓ Help</button>
       </div>
     </div>
-    <div class="btnrow no-print">
-      <button class="secondary" onclick="window.print()">Print / Save PDF</button>
-      <button id="openWA">Open WhatsApp</button>
-    </div>
-  </div>
-</header>
 
-<main class="wrap">
+    <div class="shell">
+      <div class="chat" id="chat" aria-live="polite"></div>
 
-<div class="card">
-  <h2>What You Will Learn</h2>
-  <ul>
-    <li>Python Basics</li>
-    <li>Input / Output</li>
-    <li>Variables & Data Types</li>
-    <li>Conditionals & Loops</li>
-    <li>Lists, Dictionaries</li>
-    <li>Functions</li>
-    <li>File Handling + JSON</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h2>Projects You Will Build</h2>
-  <ul>
-    <li>🎯 Guess Game</li>
-    <li>📚 StudentDB (CRUD + JSON)</li>
-    <li>✅ To-Do App (Filter + Search + JSON)</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h2>30-Day Plan (Overview)</h2>
-  <table>
-    <tr><th>Phase</th><th>Focus</th></tr>
-    <tr><td>Days 1–7</td><td>Basics + Logic</td></tr>
-    <tr><td>Days 8–14</td><td>Strings + Lists</td></tr>
-    <tr><td>Days 15–21</td><td>Dictionaries + Functions</td></tr>
-    <tr><td>Days 22–30</td><td>Projects + JSON + Submission</td></tr>
-  </table>
-</div>
-
-<!-- ✅ QR Code Card -->
-<div class="card">
-  <h2>Join on WhatsApp (QR Code)</h2>
-  <p><small>Scan this QR to open WhatsApp chat directly.</small></p>
-
-  <div class="qrwrap">
-    <div class="qrbox" id="qr"></div>
-
-    <div class="qrmeta">
-      <div style="font-weight:900;margin-bottom:6px">WhatsApp Number</div>
-      <div class="kbd" id="waNum"></div>
-
-      <hr />
-
-      <div style="font-weight:900;margin-bottom:6px">QR opens this message</div>
-      <div style="color:var(--muted);font-weight:700" id="qrMsgPreview"></div>
-
-      <div class="btnrow no-print" style="margin-top:12px">
-        <button class="secondary" id="copyLink">Copy WhatsApp Link</button>
-        <button class="secondary" id="downloadQR">Download QR PNG</button>
+      <div class="composer">
+        <input id="q" class="input" placeholder="Ask anything… (e.g., 'pandas dataframe', 'calendar printing', 'leaflet route tracker')" />
+        <button class="chipbtn primary" id="btnSend">Send ➤</button>
+      </div>
+      <div class="hint">
+        Tips: Press <span class="kbd">Enter</span> to send • Use Voice for English/Hindi • Turn on <b>Semantic</b> for meaning-based matches.
+        <span id="status" style="margin-left:10px;"></span>
       </div>
     </div>
   </div>
-</div>
 
-<div class="card">
-  <h2>Enroll in 7 PM Batch</h2>
+  <script>
+    /* ===========================
+       Programmer’s Picnic — Chat Search
+       - Simple keyword search + Semantic search (optional)
+       - Voice input (Web Speech API) English / Hindi
+       - Blogger JSON feed via JSONP (no CORS hassle)
+       =========================== */
 
-  <form id="enrollForm" class="no-print">
-    <label>Name</label>
-    <input id="name" required>
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
-    <label>WhatsApp Number</label>
-    <input id="phone" required>
+    // ---- Config ----
+    const CFG = {
+      base: "https://www.learnwithchampak.live",
+      maxResults: 80,
+      maxPages: 18,
+      crawlDelayMs: 350,
+      // You can optionally target a specific label feed if you want:
+      // label: "python"
+    };
 
-    <label>City</label>
-    <input id="city">
+    const K_CACHE = "pp_chat_search_cache_v1";
+    const K_CFG = "pp_chat_search_cfg_v1";
+    const K_SEM_META = "pp_chat_sem_meta_v1";
 
-    <br><br>
-    <button type="submit">Join via WhatsApp</button>
-  </form>
+    const state = {
+      items: [],
+      loading: false,
+      sem: { ready:false, loading:false, extractor:null, id2vec:new Map() },
+      voice: { rec:null, listening:false },
+    };
 
-  <p><small>If form doesn’t work, just WhatsApp: <span class="kbd">Name + City + 7 PM Batch</span></small></p>
-</div>
+    const elChat = $("#chat");
+    const elQ = $("#q");
+    const elStatus = $("#status");
+    const elSem = $("#semToggle");
 
-</main>
+    // ---- UI helpers ----
+    function setStatus(t){ elStatus.textContent = t ? ("• " + t) : ""; }
+    function scrollChat(){ elChat.scrollTop = elChat.scrollHeight; }
 
-<!-- QR library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    function bubble(role, html){
+      const row = document.createElement("div");
+      row.className = "row " + role;
+      const b = document.createElement("div");
+      b.className = "bubble";
+      b.innerHTML = html;
+      row.appendChild(b);
+      elChat.appendChild(row);
+      scrollChat();
+      return b;
+    }
 
-<script>
-const WHATSAPP_NUMBER = "919335874326";
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
 
-// Default QR message (safe for QR)
-const QR_MESSAGE =
-`Hi Champak Sir, I want to join Python Starter Course (7 PM Batch).
-Please share details: fees, start date, and WhatsApp group link.`;
+    // ---- Blogger JSONP ----
+    function jsonp(url){
+      return new Promise((resolve, reject) => {
+        const cb = "pp_cb_" + Math.random().toString(36).slice(2);
+        const s = document.createElement("script");
+        const t = setTimeout(() => {
+          cleanup();
+          reject(new Error("JSONP timeout"));
+        }, 20000);
 
-// Build WhatsApp link
-function buildWaLink(text){
-  return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
-}
+        function cleanup(){
+          clearTimeout(t);
+          try { delete window[cb]; } catch {}
+          s.remove();
+        }
 
-const qrLink = buildWaLink(QR_MESSAGE);
+        window[cb] = (data) => {
+          cleanup();
+          resolve(data);
+        };
 
-// Top bar open button
-document.getElementById("openWA").addEventListener("click", () => {
-  window.open(qrLink, "_blank", "noopener");
-});
+        const sep = url.includes("?") ? "&" : "?";
+        s.src = url + sep + "callback=" + cb;
+        s.onerror = () => { cleanup(); reject(new Error("JSONP failed")); };
+        document.head.appendChild(s);
+      });
+    }
 
-// Show number + message preview
-document.getElementById("waNum").textContent = WHATSAPP_NUMBER;
-document.getElementById("qrMsgPreview").textContent = QR_MESSAGE;
+    function feedUrl(startIndex){
+      // Blogger JSON feed
+      // /feeds/posts/summary?alt=json-in-script&max-results=...&start-index=...
+      const u = new URL(CFG.base.replace(/\/$/,"") + "/feeds/posts/summary");
+      u.searchParams.set("alt","json-in-script");
+      u.searchParams.set("max-results", String(CFG.maxResults));
+      u.searchParams.set("start-index", String(startIndex));
+      if (CFG.label) u.pathname += "/-/" + encodeURIComponent(CFG.label);
+      return u.toString();
+    }
 
-// Render QR
-const qrEl = document.getElementById("qr");
-qrEl.innerHTML = ""; // clear
-const qr = new QRCode(qrEl, {
-  text: qrLink,
-  width: 180,
-  height: 180,
-  correctLevel: QRCode.CorrectLevel.M
-});
+    function pick(entry, path, def=""){
+      try{
+        const parts = path.split(".");
+        let cur = entry;
+        for (const p of parts) cur = cur[p];
+        return cur ?? def;
+      }catch{ return def; }
+    }
 
-// Copy link
-document.getElementById("copyLink").addEventListener("click", async () => {
-  try{
-    await navigator.clipboard.writeText(qrLink);
-    alert("WhatsApp link copied ✅");
-  }catch(e){
-    alert("Copy failed. Long-press the link instead.");
-  }
-});
+    function parseFeed(json){
+      const feed = json?.feed;
+      const entries = feed?.entry || [];
+      const out = [];
 
-// Download QR PNG
-document.getElementById("downloadQR").addEventListener("click", () => {
-  // qrcodejs may render as img or canvas depending on browser
-  const img = qrEl.querySelector("img");
-  const canvas = qrEl.querySelector("canvas");
+      for (const e of entries){
+        const title = pick(e,"title.$t","");
+        const published = pick(e,"published.$t","");
+        const updated = pick(e,"updated.$t","");
+        const author = pick(e,"author.0.name.$t","");
 
-  let dataUrl = "";
-  if (img && img.src) dataUrl = img.src;
-  else if (canvas) dataUrl = canvas.toDataURL("image/png");
-  else {
-    alert("QR not ready yet.");
-    return;
-  }
+        let link = "";
+        const links = e.link || [];
+        for (const l of links){
+          if (l.rel === "alternate"){ link = l.href; break; }
+        }
 
-  const a = document.createElement("a");
-  a.href = dataUrl;
-  a.download = "whatsapp_qr.png";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-});
+        const cats = (e.category || []).map(c => c.term).filter(Boolean);
+        const summary = pick(e,"summary.$t","");
 
-// Enrollment form (personalized WhatsApp message)
-document.getElementById("enrollForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const city = document.getElementById("city").value.trim();
+        // A stable-ish id
+        const id = pick(e,"id.$t", link || title) || (link || title);
 
-  const message =
-`Hi Champak Sir, I want to join Python Starter Course (7 PM Batch).
+        out.push({
+          id,
+          title,
+          link,
+          author,
+          published,
+          updated,
+          labels: cats,
+          text: stripHtml(summary),
+          snippet: smartSnippet(stripHtml(summary), 220),
+        });
+      }
+      return out;
+    }
 
-Name: ${name}
-WhatsApp: ${phone}
-City: ${city || "-"}`;
+    function stripHtml(s){
+      const div = document.createElement("div");
+      div.innerHTML = s || "";
+      return (div.textContent || div.innerText || "").replace(/\s+/g," ").trim();
+    }
 
-  window.open(buildWaLink(message), "_blank", "noopener");
-});
-</script>
+    function smartSnippet(s, n){
+      s = (s || "").replace(/\s+/g," ").trim();
+      if (s.length <= n) return s;
+      const cut = s.slice(0, n);
+      const k = Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"), cut.lastIndexOf(" "));
+      return cut.slice(0, Math.max(60, k)) + "…";
+    }
 
+    // ---- Caching ----
+    function loadCache(){
+      try{
+        const raw = localStorage.getItem(K_CACHE);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!Array.isArray(obj.items)) return null;
+        return obj;
+      }catch{ return null; }
+    }
+    function saveCache(items){
+      try{
+        localStorage.setItem(K_CACHE, JSON.stringify({ at: Date.now(), items }));
+      }catch{}
+    }
+
+    // ---- Keyword search (fast baseline) ----
+    function tokens(s){
+      return (s || "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim().split(/\s+/).filter(Boolean);
+    }
+    function keywordRank(query, items){
+      const q = tokens(query);
+      if (!q.length) return [];
+      const scored = [];
+
+      for (const it of items){
+        const hay = (it.title + " " + (it.labels||[]).join(" ") + " " + (it.text||"")).toLowerCase();
+        let score = 0;
+        for (const t of q){
+          const idx = hay.indexOf(t);
+          if (idx >= 0){
+            // simple boost: title matches > label matches > body matches
+            const titleHit = (it.title || "").toLowerCase().includes(t);
+            const labelHit = (it.labels || []).some(x => String(x).toLowerCase() === t);
+            score += titleHit ? 6 : (labelHit ? 4 : 2);
+          }
+        }
+        if (score > 0) scored.push({ it, score });
+      }
+      scored.sort((a,b)=> b.score - a.score);
+      return scored.map(x => x.it);
+    }
+
+    // ---- Semantic search (Transformers.js embeddings) ----
+    const SEM = {
+      MODEL_ID: "Xenova/all-MiniLM-L6-v2",
+      DB_NAME: "pp_chat_sem_db_v1",
+      STORE: "emb",
+      BUILD_BATCH: 18,
+      MAX_TEXT_CHARS: 900
+    };
+
+    function semMetaGet(){
+      try{ return JSON.parse(localStorage.getItem(K_SEM_META) || "{}"); } catch { return {}; }
+    }
+    function semMetaSet(m){
+      try{ localStorage.setItem(K_SEM_META, JSON.stringify(m||{})); } catch {}
+    }
+
+    function openDB(){
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(SEM.DB_NAME, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(SEM.STORE)) db.createObjectStore(SEM.STORE, { keyPath:"id" });
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function dbGetMany(ids){
+      const db = await openDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction(SEM.STORE, "readonly");
+        const st = tx.objectStore(SEM.STORE);
+        const out = new Map();
+        let pending = ids.length;
+        if (!pending) return resolve(out);
+
+        ids.forEach(id => {
+          const r = st.get(id);
+          r.onsuccess = () => {
+            if (r.result?.vec) out.set(id, new Float32Array(r.result.vec));
+            pending--;
+            if (!pending) resolve(out);
+          };
+          r.onerror = () => {
+            pending--;
+            if (!pending) resolve(out);
+          };
+        });
+      });
+    }
+
+    async function dbPutBatch(rows){
+      const db = await openDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction(SEM.STORE, "readwrite");
+        const st = tx.objectStore(SEM.STORE);
+        rows.forEach(r => st.put(r));
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => resolve(false);
+      });
+    }
+
+    function toDocText(p){
+      const title = (p.title || "").trim();
+      const labels = Array.isArray(p.labels) ? p.labels.join(", ") : "";
+      const snippet = (p.text || p.snippet || "").replace(/\s+/g," ").trim();
+      const text = (title + "\nlabels: " + labels + "\n" + snippet).slice(0, SEM.MAX_TEXT_CHARS);
+      return text;
+    }
+
+    function cosine(a,b){
+      let s=0;
+      const n=Math.min(a.length,b.length);
+      for (let i=0;i<n;i++) s += a[i]*b[i];
+      return s;
+    }
+
+    async function ensureSemanticModel(){
+      if (state.sem.ready) return true;
+      if (state.sem.loading){
+        while(!state.sem.ready) await new Promise(r=>setTimeout(r,120));
+        return true;
+      }
+      state.sem.loading = true;
+      setStatus("Loading semantic model… (first time only)");
+
+      const { pipeline, env } = await import("https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js");
+      env.allowLocalModels = false;
+      state.sem.extractor = await pipeline("feature-extraction", SEM.MODEL_ID);
+      state.sem.ready = true;
+      state.sem.loading = false;
+
+      setStatus("Semantic model ready ✅");
+      return true;
+    }
+
+    async function embedText(text){
+      const out = await state.sem.extractor([text], { pooling:"mean", normalize:true });
+      const vec = out && out[0] ? out[0] : out.data?.[0];
+      return new Float32Array(vec);
+    }
+
+    async function ensureEmbeddings(items){
+      await ensureSemanticModel();
+
+      const ids = items.map(p => String(p.id || p.link || p.title));
+      const cached = await dbGetMany(ids);
+
+      const toBuild = [];
+      for (let i=0;i<items.length;i++){
+        const id = ids[i];
+        if (!cached.has(id)) toBuild.push({ id, p: items[i] });
+      }
+
+      if (!toBuild.length){
+        return { ids, vecs: cached };
+      }
+
+      let built=0;
+      for (let i=0;i<toBuild.length;i+=SEM.BUILD_BATCH){
+        const chunk = toBuild.slice(i, i+SEM.BUILD_BATCH);
+        const rows = [];
+
+        for (const row of chunk){
+          const vec = await embedText(toDocText(row.p));
+          cached.set(row.id, vec);
+          rows.push({ id: row.id, vec: Array.from(vec) });
+          built++;
+          setStatus(`Building semantic index… ${built}/${toBuild.length}`);
+        }
+        await dbPutBatch(rows);
+      }
+
+      const m = semMetaGet();
+      m.lastBuiltAt = Date.now();
+      m.total = items.length;
+      semMetaSet(m);
+
+      setStatus("Semantic index built ✅");
+      return { ids, vecs: cached };
+    }
+
+    async function semanticRank(query, items, topK=12){
+      const q = (query || "").trim();
+      if (!q) return [];
+      setStatus("Semantic: embedding query…");
+      const qv = await embedText(q.slice(0, 240));
+
+      const { ids, vecs } = await ensureEmbeddings(items);
+
+      const scored = [];
+      for (let i=0;i<items.length;i++){
+        const dv = vecs.get(ids[i]);
+        if (!dv) continue;
+        const score = cosine(qv, dv);
+        scored.push({ i, score });
+      }
+      scored.sort((a,b)=>b.score-a.score);
+
+      const picked = scored.slice(0, Math.min(topK, scored.length)).map(s => {
+        const it = items[s.i];
+        return Object.assign({}, it, { _semScore: s.score });
+      });
+
+      setStatus(`Semantic results ✅ (${picked.length})`);
+      return picked;
+    }
+
+    // ---- Voice (EN/HI) ----
+    function currentVoiceLang(){
+      const sel = $$('input[name="lang"]');
+      const on = sel.find(r => r.checked);
+      return on ? on.value : "en-IN";
+    }
+
+    function voiceSupported(){
+      return ("SpeechRecognition" in window) || ("webkitSpeechRecognition" in window);
+    }
+
+    function startVoice(){
+      if (!voiceSupported()){
+        bubble("bot", "Your browser doesn't support voice input here. Try Chrome on Android/desktop.");
+        return;
+      }
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!state.voice.rec){
+        const rec = new SR();
+        rec.interimResults = true;
+        rec.continuous = false;
+        rec.maxAlternatives = 3;
+
+        rec.onstart = () => { state.voice.listening = true; $("#btnVoice").textContent = "⏹ Stop"; setStatus("Listening…"); };
+        rec.onerror = (e) => { setStatus("Voice error: " + (e.error || "unknown")); };
+        rec.onend = () => { state.voice.listening = false; $("#btnVoice").textContent = "🎙️ Voice"; setStatus(""); };
+
+        let finalText = "";
+        rec.onresult = (evt) => {
+          let interim = "";
+          for (let i = evt.resultIndex; i < evt.results.length; i++) {
+            const txt = evt.results[i][0].transcript || "";
+            if (evt.results[i].isFinal) finalText += txt;
+            else interim += txt;
+          }
+          // show live in input
+          elQ.value = (finalText || interim).trim();
+        };
+
+        state.voice.rec = rec;
+      }
+
+      const rec = state.voice.rec;
+      if (state.voice.listening){
+        try{ rec.stop(); }catch{}
+        return;
+      }
+
+      rec.lang = currentVoiceLang();
+      try{ rec.start(); }catch{}
+    }
+
+    // ---- Chatbot search flow ----
+    function resultCards(items, mode){
+      if (!items.length){
+        return `<div class="meta">No results. Try different keywords or turn on Semantic.</div>`;
+      }
+      const cards = items.map((it, idx) => {
+        const tags = (it.labels || []).slice(0, 6).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+        const score = (mode === "semantic" && typeof it._semScore === "number")
+          ? `<span class="tag">sem: ${it._semScore.toFixed(3)}</span>` : "";
+
+        const safeLink = it.link ? escapeHtml(it.link) : "";
+        const safeTitle = escapeHtml(it.title || "Untitled");
+        const safeSnip = escapeHtml(it.snippet || it.text || "");
+
+        return `
+          <div class="card">
+            <p class="t">${idx+1}. ${safeTitle}</p>
+            <p class="s">${safeSnip}</p>
+            <div class="tags">${score}${tags}</div>
+            <div class="actions">
+              ${safeLink ? `<a class="mini" href="${safeLink}" target="_blank" rel="noopener">Open ↗</a>` : ""}
+              <button class="mini" data-copy="${escapeHtml(it.title || "")} — ${safeLink}">Copy</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `<div class="cards">${cards}</div>`;
+    }
+
+    async function runSearch(query){
+      const q = (query || "").trim();
+      if (!q) return;
+
+      bubble("user", escapeHtml(q));
+
+      if (!state.items.length){
+        bubble("bot", `I don’t have posts loaded yet. Tap <b>Load Posts</b> first.`);
+        return;
+      }
+
+      // baseline keyword results
+      setStatus("Searching…");
+      let base = keywordRank(q, state.items);
+
+      // semantic optional
+      const semOn = !!elSem.checked;
+      let mode = "keyword";
+      let out = base.slice(0, 12);
+
+      if (semOn){
+        try{
+          // run semantic on narrowed set if keyword already found many
+          // (hybrid: if keyword finds too few, semantic runs on full list)
+          const pool = base.length >= 60 ? base.slice(0, 240) : state.items;
+          out = await semanticRank(q, pool, 12);
+          mode = "semantic";
+        }catch(e){
+          console.error(e);
+          bubble("bot", `Semantic search failed on this device/browser. I’ll use normal search instead.`);
+          out = base.slice(0, 12);
+          mode = "keyword";
+          elSem.checked = false;
+        }
+      }
+
+      const note = mode === "semantic"
+        ? "Here are the best matches by meaning (semantic search)."
+        : "Here are the best matches by keywords.";
+
+      const meta = `
+        <div class="meta">
+          <span>Mode: <b>${mode}</b></span>
+          <span>Indexed: <b>${state.items.length}</b></span>
+          <span>Query: <b>${escapeHtml(q)}</b></span>
+        </div>
+      `;
+
+      bubble("bot", `${escapeHtml(note)}${meta}${resultCards(out, mode)}`);
+
+      // bind copy buttons (only for the newest bot bubble)
+      bindCopyButtons();
+      setStatus("");
+    }
+
+    function bindCopyButtons(){
+      const btns = $$('button[data-copy]', elChat);
+      btns.forEach(btn => {
+        if (btn.__bound) return;
+        btn.__bound = true;
+        btn.addEventListener("click", async () => {
+          const text = btn.getAttribute("data-copy") || "";
+          try{
+            await navigator.clipboard.writeText(text);
+            setStatus("Copied ✅");
+            setTimeout(()=>setStatus(""), 900);
+          }catch{
+            // fallback
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try{ document.execCommand("copy"); }catch{}
+            ta.remove();
+            setStatus("Copied ✅");
+            setTimeout(()=>setStatus(""), 900);
+          }
+        });
+      });
+    }
+
+    // ---- Load posts ----
+    async function loadPosts(){
+      if (state.loading) return;
+      state.loading = true;
+
+      bubble("bot", `Loading posts from <b>${escapeHtml(CFG.base)}</b>…`);
+
+      try{
+        const all = [];
+        let start = 1;
+
+        for (let page = 0; page < CFG.maxPages; page++){
+          setStatus(`Fetching feed page ${page+1}/${CFG.maxPages}…`);
+          const data = await jsonp(feedUrl(start));
+          const items = parseFeed(data);
+          if (!items.length) break;
+
+          all.push(...items);
+          start += CFG.maxResults;
+
+          // polite delay
+          await new Promise(r => setTimeout(r, CFG.crawlDelayMs));
+        }
+
+        // de-dup by id
+        const seen = new Set();
+        const uniq = [];
+        for (const it of all){
+          const k = String(it.id || it.link || it.title);
+          if (seen.has(k)) continue;
+          seen.add(k);
+          uniq.push(it);
+        }
+
+        state.items = uniq;
+        saveCache(uniq);
+
+        const m = semMetaGet();
+        const semInfo = m?.lastBuiltAt ? `Semantic index last built: <b>${new Date(m.lastBuiltAt).toLocaleString()}</b>` : "Semantic index not built yet.";
+
+        bubble("bot", `✅ Loaded <b>${uniq.length}</b> posts. ${semInfo}<div class="meta">Now ask your question below.</div>`);
+      }catch(e){
+        console.error(e);
+        bubble("bot", `❌ Could not load posts. Check your base URL and internet. Error: <span class="tag">${escapeHtml(e.message||"unknown")}</span>`);
+      }finally{
+        setStatus("");
+        state.loading = false;
+      }
+    }
+
+    // ---- Help ----
+    function showHelp(){
+      const voiceLine = voiceSupported()
+        ? "Voice works on supported browsers. Choose EN/HI then tap Voice."
+        : "Voice may not work in this browser. Chrome is recommended.";
+
+      bubble("bot", `
+        <b>Help</b>
+        <div class="meta">
+          <span>✅ Keyword search: fast, exact matches</span>
+          <span>🧠 Semantic search: meaning-based matches (first run downloads a model)</span>
+          <span>🎙️ Voice: English (en-IN) / Hindi (hi-IN)</span>
+        </div>
+        <div style="margin-top:10px">
+          <div class="tag">How to use</div>
+          <div style="margin-top:8px;color:var(--muted);font-weight:800;line-height:1.5">
+            1) Tap <b>Load Posts</b><br/>
+            2) Type or speak your query<br/>
+            3) Turn on <b>Semantic</b> if you want meaning-based search<br/><br/>
+            ${escapeHtml(voiceLine)}
+          </div>
+        </div>
+        <div style="margin-top:10px" class="meta">
+          <span>Brand: Programmer’s Picnic • Champak Roy</span>
+        </div>
+      `);
+    }
+
+    // ---- Events ----
+    $("#btnSend").addEventListener("click", () => {
+      const q = elQ.value;
+      elQ.value = "";
+      runSearch(q);
+    });
+
+    elQ.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        $("#btnSend").click();
+      }
+    });
+
+    $("#btnVoice").addEventListener("click", startVoice);
+    $("#btnLoad").addEventListener("click", loadPosts);
+    $("#btnHelp").addEventListener("click", showHelp);
+
+    elSem.addEventListener("change", async () => {
+      if (!elSem.checked){
+        setStatus("Semantic off");
+        setTimeout(()=>setStatus(""), 900);
+        return;
+      }
+      bubble("bot", `🧠 Semantic is ON. First time may take a bit (model download + indexing).`);
+      try{
+        await ensureSemanticModel();
+        if (state.items.length){
+          setStatus("Preparing semantic index…");
+          await ensureEmbeddings(state.items);
+        }else{
+          setStatus("Load posts to build semantic index.");
+        }
+      }catch(e){
+        console.error(e);
+        bubble("bot", `Semantic failed on this device/browser. Using normal search.`);
+        elSem.checked = false;
+      }finally{
+        setTimeout(()=>setStatus(""), 1200);
+      }
+    });
+
+    // ---- Boot ----
+    (function boot(){
+      bubble("bot", `
+        <b>Namaste! 👋</b><br/>
+        I’m your <b>Programmer’s Picnic</b> chat search assistant.<br/><br/>
+        Tap <b>Load Posts</b> to index your knowledge library, then ask anything.
+        <div class="meta">
+          <span>Voice: English/Hindi</span>
+          <span>Semantic: optional</span>
+          <span>Style: chatbot UI</span>
+        </div>
+      `);
+
+      // Try cache
+      const c = loadCache();
+      if (c?.items?.length){
+        state.items = c.items;
+        bubble("bot", `Loaded <b>${state.items.length}</b> cached posts for quick start. (Tap <b>Load Posts</b> to refresh.)`);
+      }
+    })();
+  </script>
 </body>
 </html>
