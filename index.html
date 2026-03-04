@@ -1,1592 +1,379 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Programmer’s Picnic — Lesson 1: Git + GitHub (Interactive Handout)</title>
-  <meta name="description" content="A saffron-themed interactive Lesson 1 handout for Git and GitHub: commands, copy buttons, terminal simulator, quiz, and homework. Programmer’s Picnic by Champak Roy." />
-  <meta name="theme-color" content="#d97706" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Programmer's Picnic — Trading Dashboard</title>
 
-  <!-- OG Tags -->
-  <meta property="og:title" content="Programmer’s Picnic — Lesson 1: Git + GitHub" />
-  <meta property="og:description" content="Interactive lesson handout with command copy buttons, terminal simulator, branching demo, quiz, and homework." />
-  <meta property="og:type" content="website" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
 
-  <style>
-    :root{
-      --bg:#fff7e6;
-      --panel:rgba(255,255,255,.86);
-      --panel2:rgba(255,255,255,.72);
-      --ink:#1f2328;
-      --muted:#5b6570;
-      --line:rgba(31,35,40,.12);
+:root{
+--bg:#fff7e6;
+--panel:white;
+--ink:#1f2328;
+--saffron:#d97706;
+--line:#eee;
+--good:#0f9d58;
+--bad:#d93025;
+}
 
-      --saffron:#d97706;
-      --saffron2:#f59e0b;
-      --saffron3:#fde68a;
+body{
+margin:0;
+font-family:Inter,system-ui;
+background:var(--bg);
+color:var(--ink);
+}
 
-      --ok:#16a34a;
-      --warn:#b45309;
-      --bad:#b91c1c;
+.wrapper{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
 
-      --shadow:0 10px 30px rgba(31,35,40,.10);
-      --shadow2:0 16px 40px rgba(31,35,40,.12);
-      --r16:16px;
-      --r20:20px;
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
 
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
+h1{
+margin:0;
+font-size:22px;
+}
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: "DM Sans", Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(245,158,11,.28), transparent 60%),
-        radial-gradient(900px 500px at 90% 10%, rgba(217,119,6,.22), transparent 55%),
-        linear-gradient(180deg, #fff3d6 0%, var(--bg) 55%, #fff9ee 100%);
-    }
+.card{
+background:var(--panel);
+border-radius:14px;
+padding:16px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+margin-bottom:20px;
+}
 
-    a{color:inherit}
-    .wrap{max-width:1100px; margin:0 auto; padding:18px 14px 60px;}
-    .topbar{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(10px);
-      background: rgba(255,247,230,.75);
-      border-bottom:1px solid var(--line);
-      padding:10px 14px;
-    }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      min-width: 240px;
-    }
-    .logo{
-      width:38px; height:38px; border-radius:12px;
-      background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron2) 55%, var(--saffron3) 100%);
-      box-shadow: var(--shadow);
-      position:relative;
-    }
-    .logo:after{
-      content:"</>";
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      font-family:var(--mono);
-      font-weight:800;
-      color:#1f2328;
-      opacity:.9;
-      font-size:12px;
-    }
-    .brand h1{
-      margin:0;
-      font-size:14px;
-      line-height:1.1;
-      letter-spacing:.2px;
-    }
-    .brand p{
-      margin:2px 0 0;
-      font-size:12px;
-      color:var(--muted);
-    }
+.summary{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+}
 
-    .nav{
-      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
-      align-items:center;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.65);
-      padding:8px 10px;
-      border-radius: 999px;
-      box-shadow: 0 6px 16px rgba(31,35,40,.06);
-      cursor:pointer;
-      font-weight:700;
-      font-size:12px;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-      user-select:none;
-      text-decoration:none;
-    }
-    .pill:hover{transform: translateY(-1px); border-color: rgba(217,119,6,.35); background: rgba(255,255,255,.82);}
-    .pill:active{transform: translateY(0);}
+.metric{
+padding:12px;
+background:#fafafa;
+border-radius:10px;
+}
 
-    .hero{
-      margin-top:18px;
-      border:1px solid var(--line);
-      background: linear-gradient(135deg, rgba(255,255,255,.86) 0%, rgba(255,255,255,.68) 70%);
-      border-radius: var(--r20);
-      box-shadow: var(--shadow2);
-      padding:16px;
-      overflow:hidden;
-      position:relative;
-    }
-    .heroGrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      align-items:stretch;
-    }
-    @media (max-width: 880px){
-      .heroGrid{grid-template-columns:1fr}
-      .brand{min-width:auto}
-    }
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      border-radius: 999px;
-      padding:6px 10px;
-      font-size:12px;
-      font-weight:800;
-      background: rgba(245,158,11,.18);
-      border:1px solid rgba(217,119,6,.22);
-      width: fit-content;
-    }
-    .hero h2{
-      margin:10px 0 6px;
-      font-size:22px;
-      letter-spacing:.2px;
-    }
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.55;
-    }
-    .hero .kpis{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:10px;
-      margin-top:12px;
-    }
-    .kpi{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.72);
-      border-radius: 16px;
-      padding:10px;
-    }
-    .kpi .big{font-size:14px; font-weight:900;}
-    .kpi .small{font-size:12px; color:var(--muted); margin-top:3px; line-height:1.35}
+.metric b{
+display:block;
+font-size:18px;
+}
 
-    .sideCard{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.72);
-      border-radius: 18px;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .sideCard h3{margin:0; font-size:14px}
-    .quick{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-    }
-    .quick .item{
-      display:flex; gap:10px; align-items:flex-start;
-      padding:10px;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.66);
-    }
-    .dot{
-      width:10px; height:10px; border-radius:999px;
-      margin-top:4px;
-      background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron2) 100%);
-      box-shadow: 0 6px 14px rgba(217,119,6,.20);
-      flex:0 0 auto;
-    }
-    .item b{display:block; font-size:12px}
-    .item span{display:block; font-size:12px; color:var(--muted); margin-top:2px; line-height:1.35}
+table{
+width:100%;
+border-collapse:collapse;
+}
 
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:14px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
+th,td{
+padding:10px;
+border-bottom:1px solid var(--line);
+font-size:14px;
+}
 
-    .card{
-      border:1px solid var(--line);
-      background: var(--panel);
-      border-radius: var(--r20);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .cardHeader{
-      padding:12px 14px;
-      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
-      border-bottom:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(245,158,11,.10) 0%, rgba(255,255,255,.00) 100%);
-    }
-    .cardHeader h3{margin:0; font-size:14px}
-    .cardHeader p{margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.45}
-    .cardBody{padding:12px 14px;}
-    .sectionTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin:0 0 10px;
-    }
-    .sectionTitle h4{
-      margin:0; font-size:12px; letter-spacing:.35px;
-      text-transform:uppercase;
-      color: rgba(31,35,40,.84);
-    }
+th{
+text-align:left;
+color:#666;
+}
 
-    .cmd{
-      border:1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(255,255,255,.72);
-      padding:10px;
-      margin-bottom:10px;
-    }
-    .cmdTop{
-      display:flex; justify-content:space-between; align-items:center; gap:8px;
-      margin-bottom:8px;
-    }
-    .cmdTop .label{
-      font-weight:900; font-size:12px;
-      display:flex; gap:8px; align-items:center;
-    }
-    .tag{
-      font-size:11px; font-weight:900;
-      padding:4px 8px;
-      border-radius: 999px;
-      background: rgba(217,119,6,.14);
-      border: 1px solid rgba(217,119,6,.18);
-      color: rgba(31,35,40,.9);
-    }
-    pre{
-      margin:0;
-      padding:10px;
-      border-radius: 14px;
-      background: rgba(17,24,39,.95);
-      color: rgba(255,255,255,.92);
-      font-family: var(--mono);
-      font-size: 12px;
-      overflow:auto;
-      border:1px solid rgba(255,255,255,.08);
-    }
-    code{font-family: var(--mono)}
-    .btnRow{display:flex; gap:8px; flex-wrap:wrap;}
-    .btn{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.78);
-      border-radius: 999px;
-      padding:8px 10px;
-      font-weight:900;
-      font-size:12px;
-      cursor:pointer;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-      user-select:none;
-    }
-    .btn:hover{transform: translateY(-1px); border-color: rgba(217,119,6,.35);}
-    .btn:active{transform: translateY(0);}
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(217,119,6,.18), rgba(245,158,11,.22));
-      border-color: rgba(217,119,6,.35);
-    }
-    .btn.ghost{
-      background: rgba(255,255,255,.55);
-    }
-    .hint{
-      margin-top:8px;
-      font-size:12px;
-      color: var(--muted);
-      line-height:1.45;
-    }
+.right{
+text-align:right;
+}
 
-    /* Terminal simulator */
-    .terminal{
-      border:1px solid rgba(31,35,40,.15);
-      border-radius: 18px;
-      overflow:hidden;
-      background: rgba(17,24,39,.96);
-      box-shadow: 0 12px 30px rgba(17,24,39,.15);
-    }
-    .termTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      background: rgba(17,24,39,.92);
-    }
-    .dots{display:flex; gap:6px; align-items:center;}
-    .d{width:10px; height:10px; border-radius:999px; background: rgba(255,255,255,.18)}
-    .termTitle{
-      color: rgba(255,255,255,.88);
-      font-weight:900;
-      font-size:12px;
-      display:flex; align-items:center; gap:8px;
-      min-width: 0;
-    }
-    .termTitle span{
-      color: rgba(255,255,255,.60);
-      font-weight:700;
-      font-size:11px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .termBody{
-      padding:10px 12px 12px;
-    }
-    .termOut{
-      font-family: var(--mono);
-      color: rgba(255,255,255,.88);
-      font-size:12px;
-      line-height:1.5;
-      white-space:pre-wrap;
-      word-break:break-word;
-      min-height: 210px;
-    }
-    .termInRow{
-      display:flex; gap:8px; align-items:center;
-      margin-top:10px;
-    }
-    .prompt{
-      font-family: var(--mono);
-      color: rgba(255,255,255,.72);
-      font-size:12px;
-      flex:0 0 auto;
-    }
-    .termIn{
-      width:100%;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.88);
-      border-radius: 12px;
-      padding:10px 10px;
-      font-family: var(--mono);
-      font-size:12px;
-      outline:none;
-    }
-    .termIn:focus{border-color: rgba(245,158,11,.45); box-shadow: 0 0 0 4px rgba(245,158,11,.14);}
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(17,24,39,.95);
-      color: rgba(255,255,255,.92);
-      border:1px solid rgba(255,255,255,.12);
-      padding:10px 12px;
-      border-radius: 999px;
-      box-shadow: 0 14px 40px rgba(17,24,39,.22);
-      font-weight:800;
-      font-size:12px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-      display:flex; gap:8px; align-items:center;
-    }
-    .toast.show{opacity:1; transform: translateX(-50%) translateY(-2px);}
-    .check{
-      width:10px; height:10px; border-radius: 999px;
-      background: linear-gradient(135deg, var(--ok), #22c55e);
-      box-shadow: 0 6px 16px rgba(34,197,94,.18);
-      flex:0 0 auto;
-    }
+.good{color:var(--good)}
+.bad{color:var(--bad)}
 
-    /* Quiz */
-    .quizQ{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.72);
-      border-radius: 16px;
-      padding:10px;
-      margin-bottom:10px;
-    }
-    .quizQ .q{
-      font-weight:900;
-      font-size:12px;
-      margin-bottom:8px;
-    }
-    .choices{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-    }
-    .choice{
-      display:flex; gap:10px; align-items:flex-start;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding:10px;
-      background: rgba(255,255,255,.66);
-      cursor:pointer;
-      user-select:none;
-      transition: transform .08s ease, border-color .2s ease, background .2s ease;
-    }
-    .choice:hover{transform: translateY(-1px); border-color: rgba(217,119,6,.35);}
-    .radio{
-      width:16px; height:16px; border-radius:999px;
-      border:2px solid rgba(31,35,40,.28);
-      margin-top:1px;
-      flex:0 0 auto;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.75);
-    }
-    .radio::after{
-      content:"";
-      width:8px; height:8px; border-radius:999px;
-      background: transparent;
-    }
-    .choice.selected .radio{border-color: rgba(217,119,6,.62);}
-    .choice.selected .radio::after{background: linear-gradient(135deg, var(--saffron), var(--saffron2));}
-    .choice .txt{
-      font-size:12px;
-      line-height:1.35;
-    }
-    .result{
-      margin-top:10px;
-      border:1px solid var(--line);
-      border-radius: 16px;
-      padding:10px;
-      background: rgba(245,158,11,.10);
-      display:none;
-    }
-    .result.show{display:block}
-    .result b{display:block; font-size:12px}
-    .result span{display:block; font-size:12px; color:var(--muted); margin-top:4px; line-height:1.45}
+input{
+width:80px;
+padding:4px;
+}
 
-    /* Footer */
-    .footer{
-      margin-top:16px;
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius: var(--r20);
-      background: rgba(255,255,255,.72);
-      box-shadow: var(--shadow);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .footer small{color: var(--muted)}
-    .kbd{
-      font-family: var(--mono);
-      font-size:11px;
-      padding:2px 6px;
-      border-radius: 8px;
-      border:1px solid rgba(31,35,40,.16);
-      background: rgba(255,255,255,.80);
-    }
-  </style>
+button{
+background:var(--saffron);
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+textarea{
+width:100%;
+height:220px;
+font-family:monospace;
+}
+
+</style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>Programmer’s Picnic</h1>
-        <p>Lesson 1 • Git + GitHub • Interactive Handout</p>
-      </div>
-    </div>
-
-    <div class="nav" aria-label="Lesson navigation">
-      <a class="pill" href="#concepts">Concepts</a>
-      <a class="pill" href="#commands">Commands</a>
-      <a class="pill" href="#terminal">Terminal Lab</a>
-      <a class="pill" href="#branching">Branching</a>
-      <a class="pill" href="#quiz">Quiz</a>
-      <a class="pill" href="#homework">Homework</a>
-    </div>
-  </div>
-
-  <div class="wrap">
-    <section class="hero" id="top">
-      <div class="heroGrid">
-        <div>
-          <div class="badge">🧺 Programmer’s Picnic • Git & GitHub • Lesson 1</div>
-          <h2>Learn Git + GitHub by doing: commits, push/pull, branches, and a mini terminal lab.</h2>
-          <p>
-            This page is designed for classroom teaching: students can copy commands, simulate a workflow,
-            and take a quick quiz. Use it as a handout for GitHub Pages or Blogger.
-          </p>
-
-          <div class="kpis" role="list">
-            <div class="kpi" role="listitem">
-              <div class="big">45–60 min</div>
-              <div class="small">Ideal class duration with hands-on practice.</div>
-            </div>
-            <div class="kpi" role="listitem">
-              <div class="big">Beginner</div>
-              <div class="small">No prior Git knowledge required.</div>
-            </div>
-            <div class="kpi" role="listitem">
-              <div class="big">Outcome</div>
-              <div class="small">A repo pushed to GitHub with commits & a merged branch.</div>
-            </div>
-          </div>
-        </div>
-
-        <aside class="sideCard">
-          <h3>Quick Teacher Script</h3>
-          <div class="quick">
-            <div class="item">
-              <div class="dot"></div>
-              <div>
-                <b>2 min</b>
-                <span>Git tracks history locally. GitHub hosts repos online.</span>
-              </div>
-            </div>
-            <div class="item">
-              <div class="dot"></div>
-              <div>
-                <b>15 min</b>
-                <span>Init → add → commit → log. Explain “snapshot” and messages.</span>
-              </div>
-            </div>
-            <div class="item">
-              <div class="dot"></div>
-              <div>
-                <b>15 min</b>
-                <span>Create GitHub repo → remote → push → verify on website.</span>
-              </div>
-            </div>
-            <div class="item">
-              <div class="dot"></div>
-              <div>
-                <b>10 min</b>
-                <span>Branch → commit → merge → push. Explain safe parallel work.</span>
-              </div>
-            </div>
-            <div class="item">
-              <div class="dot"></div>
-              <div>
-                <b>5 min</b>
-                <span>Quiz + homework assignment.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="btnRow" style="margin-top:2px;">
-            <button class="btn primary" id="btnPrint">🖨️ Print</button>
-            <button class="btn" id="btnScrollCommands">⬇️ Jump to commands</button>
-          </div>
-          <div class="hint">Tip: Use <span class="kbd">Ctrl</span> + <span class="kbd">F</span> to search inside the lesson.</div>
-        </aside>
-      </div>
-    </section>
-
-    <div class="grid">
-      <!-- Left column: lesson content -->
-      <main>
-        <section class="card" id="concepts">
-          <div class="cardHeader">
-            <div>
-              <h3>Part A • Concepts</h3>
-              <p>Clear definitions and a mental model students can repeat.</p>
-            </div>
-            <div class="btnRow">
-              <button class="btn" data-copy="Git tracks code changes locally. GitHub hosts Git repositories online for collaboration." aria-label="Copy summary sentence">Copy 1-line summary</button>
-            </div>
-          </div>
-
-          <div class="cardBody">
-            <div class="sectionTitle">
-              <h4>Git vs GitHub</h4>
-            </div>
-
-            <div class="cmd">
-              <div class="cmdTop">
-                <div class="label">Git <span class="tag">local tool</span></div>
-              </div>
-              <div class="hint">
-                Git is a version control system. It keeps a history of your project on your computer:
-                commits, branches, and merges.
-              </div>
-            </div>
-
-            <div class="cmd">
-              <div class="cmdTop">
-                <div class="label">GitHub <span class="tag">online platform</span></div>
-              </div>
-              <div class="hint">
-                GitHub hosts Git repositories on the internet. It adds collaboration features like Pull Requests, Issues, and Reviews.
-              </div>
-            </div>
-
-            <div class="cmd">
-              <div class="cmdTop">
-                <div class="label">Mental model <span class="tag">easy to remember</span></div>
-              </div>
-              <div class="hint">
-                <b>Commit</b> = snapshot of your project.<br/>
-                <b>Branch</b> = alternate timeline for a feature.<br/>
-                <b>Remote</b> = online copy (GitHub).<br/>
-                <b>Push</b> = send commits to remote.<br/>
-                <b>Pull</b> = bring commits from remote.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" id="commands" style="margin-top:14px;">
-          <div class="cardHeader">
-            <div>
-              <h3>Part B • Core Commands (Copy + Practice)</h3>
-              <p>Each block has copy + “Run in terminal lab” buttons.</p>
-            </div>
-            <div class="btnRow">
-              <button class="btn primary" id="btnRunAll">▶ Run mini workflow</button>
-              <button class="btn ghost" id="btnResetLab">↺ Reset lab</button>
-            </div>
-          </div>
-
-          <div class="cardBody">
-            <div class="cmd" data-run="git --version">
-              <div class="cmdTop">
-                <div class="label">Check Git installation <span class="tag">setup</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git --version">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git --version</code></pre>
-              <div class="hint">Shows your installed Git version.</div>
-            </div>
-
-            <div class="cmd" data-run="git config --global user.name &quot;Your Name&quot;&#10;git config --global user.email &quot;you@example.com&quot;">
-              <div class="cmdTop">
-                <div class="label">Set identity <span class="tag">one time</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy='git config --global user.name "Your Name"
-git config --global user.email "you@example.com"'>Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git config --global user.name "Your Name"
-git config --global user.email "you@example.com"</code></pre>
-              <div class="hint">Git uses this name and email for commits.</div>
-            </div>
-
-            <div class="cmd" data-run="mkdir pp-git-lesson1&#10;cd pp-git-lesson1">
-              <div class="cmdTop">
-                <div class="label">Create project folder <span class="tag">practice</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="mkdir pp-git-lesson1
-cd pp-git-lesson1">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>mkdir pp-git-lesson1
-cd pp-git-lesson1</code></pre>
-              <div class="hint">Creates a folder and enters it.</div>
-            </div>
-
-            <div class="cmd" data-run="git init">
-              <div class="cmdTop">
-                <div class="label">Initialize repo <span class="tag">git init</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git init">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git init</code></pre>
-              <div class="hint">Starts tracking this folder with Git.</div>
-            </div>
-
-            <div class="cmd" data-run="git status">
-              <div class="cmdTop">
-                <div class="label">Check status <span class="tag">daily</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git status">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git status</code></pre>
-              <div class="hint">Shows modified/untracked files and what is staged.</div>
-            </div>
-
-            <div class="cmd" data-run="git add .&#10;git commit -m &quot;Initial commit&quot;">
-              <div class="cmdTop">
-                <div class="label">Stage + commit <span class="tag">snapshot</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy='git add .
-git commit -m "Initial commit"'>Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git add .
-git commit -m "Initial commit"</code></pre>
-              <div class="hint"><b>add</b> chooses changes; <b>commit</b> saves a snapshot with a message.</div>
-            </div>
-
-            <div class="cmd" data-run="git log --oneline">
-              <div class="cmdTop">
-                <div class="label">View history <span class="tag">timeline</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git log --oneline">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git log --oneline</code></pre>
-              <div class="hint">Shows a compact list of commits.</div>
-            </div>
-
-            <div class="cmd" data-run="git remote add origin https://github.com/YOUR_USERNAME/pp-git-lesson1.git&#10;git remote -v">
-              <div class="cmdTop">
-                <div class="label">Connect to GitHub <span class="tag">remote</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git remote add origin https://github.com/YOUR_USERNAME/pp-git-lesson1.git
-git remote -v">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git remote add origin https://github.com/YOUR_USERNAME/pp-git-lesson1.git
-git remote -v</code></pre>
-              <div class="hint">Adds a remote named <b>origin</b> (your GitHub repo).</div>
-            </div>
-
-            <div class="cmd" data-run="git push -u origin main">
-              <div class="cmdTop">
-                <div class="label">Push commits <span class="tag">publish</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git push -u origin main">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git push -u origin main</code></pre>
-              <div class="hint">Sends your local commits to GitHub. <b>-u</b> sets tracking for next pushes.</div>
-            </div>
-
-            <div class="cmd" data-run="git pull">
-              <div class="cmdTop">
-                <div class="label">Pull updates <span class="tag">sync</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git pull">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git pull</code></pre>
-              <div class="hint">Fetches and merges remote changes into your current branch.</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" id="branching" style="margin-top:14px;">
-          <div class="cardHeader">
-            <div>
-              <h3>Part C • Branching (Safe Feature Work)</h3>
-              <p>Create a branch, commit a feature, merge into main.</p>
-            </div>
-            <div class="btnRow">
-              <button class="btn primary" id="btnBranchDemo">▶ Run branch demo</button>
-            </div>
-          </div>
-
-          <div class="cardBody">
-            <div class="cmd" data-run="git checkout -b feature-about">
-              <div class="cmdTop">
-                <div class="label">Create branch <span class="tag">feature</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git checkout -b feature-about">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git checkout -b feature-about</code></pre>
-              <div class="hint">Creates and switches to a new branch.</div>
-            </div>
-
-            <div class="cmd" data-run="git add .&#10;git commit -m &quot;Add about section&quot;">
-              <div class="cmdTop">
-                <div class="label">Commit feature work <span class="tag">commit</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy='git add .
-git commit -m "Add about section"'>Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git add .
-git commit -m "Add about section"</code></pre>
-              <div class="hint">In a real repo, you would edit files before this commit.</div>
-            </div>
-
-            <div class="cmd" data-run="git checkout main&#10;git merge feature-about">
-              <div class="cmdTop">
-                <div class="label">Merge into main <span class="tag">merge</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git checkout main
-git merge feature-about">Copy</button>
-                  <button class="btn primary" data-run-btn>Run in lab</button>
-                </div>
-              </div>
-              <pre><code>git checkout main
-git merge feature-about</code></pre>
-              <div class="hint">Brings branch changes back into main.</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" id="homework" style="margin-top:14px;">
-          <div class="cardHeader">
-            <div>
-              <h3>Part D • Homework</h3>
-              <p>Simple tasks that build real Git muscle memory.</p>
-            </div>
-            <div class="btnRow">
-              <button class="btn" data-copy="Homework:
-1) Create repo: pp-profile
-2) Add index.html with name + skills
-3) Make 3 commits (small changes)
-4) Push to GitHub
-Optional: create branch feature-contact, commit, merge, push">Copy homework</button>
-            </div>
-          </div>
-          <div class="cardBody">
-            <div class="cmd">
-              <div class="cmdTop">
-                <div class="label">Homework 1 <span class="tag">required</span></div>
-              </div>
-              <div class="hint">
-                Create a repo named <b>pp-profile</b> with an <code>index.html</code>.
-                Make <b>three commits</b> (small improvements each time) and push to GitHub.
-              </div>
-            </div>
-
-            <div class="cmd">
-              <div class="cmdTop">
-                <div class="label">Homework 2 <span class="tag">optional</span></div>
-              </div>
-              <div class="hint">
-                Create a branch <b>feature-contact</b>, add a contact section, commit, merge into <b>main</b>, and push.
-              </div>
-            </div>
-
-            <div class="cmd">
-              <div class="cmdTop">
-                <div class="label">Daily workflow <span class="tag">habit</span></div>
-                <div class="btnRow">
-                  <button class="btn" data-copy="git status
-git add .
-git commit -m &quot;Describe your change&quot;
-git push">Copy</button>
-                </div>
-              </div>
-              <pre><code>git status
-git add .
-git commit -m "Describe your change"
-git push</code></pre>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <!-- Right column: terminal + quiz -->
-      <aside>
-        <section class="card" id="terminal">
-          <div class="cardHeader">
-            <div>
-              <h3>Terminal Lab (Simulator)</h3>
-              <p>Safe practice: this does not touch your computer. It only simulates output.</p>
-            </div>
-            <div class="btnRow">
-              <button class="btn ghost" id="btnCopyTranscript">Copy transcript</button>
-            </div>
-          </div>
-
-          <div class="cardBody">
-            <div class="terminal" aria-label="Terminal simulator">
-              <div class="termTop">
-                <div class="dots" aria-hidden="true">
-                  <div class="d"></div><div class="d"></div><div class="d"></div>
-                </div>
-                <div class="termTitle">
-                  Terminal Lab
-                  <span id="termPath">~/</span>
-                </div>
-                <div class="btnRow">
-                  <button class="btn" id="btnClearOut" title="Clear terminal output">Clear</button>
-                </div>
-              </div>
-              <div class="termBody">
-                <div class="termOut" id="termOut"></div>
-                <div class="termInRow">
-                  <div class="prompt">$</div>
-                  <input class="termIn" id="termIn" autocomplete="off" spellcheck="false" placeholder="Type a git command (e.g., git status) and press Enter" />
-                </div>
-                <div class="hint" style="color: rgba(255,255,255,.62); margin-top:10px;">
-                  Try: <code>git init</code>, <code>git status</code>, <code>git add .</code>, <code>git commit -m "msg"</code>, <code>git log --oneline</code>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" id="quiz" style="margin-top:14px;">
-          <div class="cardHeader">
-            <div>
-              <h3>Quick Quiz (5 Questions)</h3>
-              <p>Students answer, then check score.</p>
-            </div>
-            <div class="btnRow">
-              <button class="btn primary" id="btnGrade">Grade</button>
-              <button class="btn ghost" id="btnResetQuiz">Reset</button>
-            </div>
-          </div>
-
-          <div class="cardBody" id="quizBody">
-            <!-- Quiz injected by JS -->
-          </div>
-        </section>
-
-        <section class="footer">
-          <small><b>Programmer’s Picnic</b> • Champak Roy • Built for teaching</small>
-          <small>Tip: copy commands → run in lab → then do it in real terminal.</small>
-        </section>
-      </aside>
-    </div>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <div class="check" aria-hidden="true"></div>
-    <div id="toastTxt">Copied</div>
-  </div>
-
-  <script>
-    (function(){
-      "use strict";
-
-      // ---------- Toast ----------
-      var toast = document.getElementById("toast");
-      var toastTxt = document.getElementById("toastTxt");
-      var toastTimer = null;
-
-      function showToast(msg){
-        toastTxt.textContent = msg || "Done";
-        toast.classList.add("show");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function(){
-          toast.classList.remove("show");
-        }, 1400);
-      }
-
-      // ---------- Clipboard ----------
-      async function copyText(text){
-        try{
-          await navigator.clipboard.writeText(text);
-          showToast("Copied to clipboard");
-        }catch(e){
-          // fallback
-          var ta = document.createElement("textarea");
-          ta.value = text;
-          ta.style.position = "fixed";
-          ta.style.left = "-9999px";
-          ta.style.top = "-9999px";
-          document.body.appendChild(ta);
-          ta.focus();
-          ta.select();
-          try{
-            document.execCommand("copy");
-            showToast("Copied to clipboard");
-          }catch(err){
-            showToast("Copy failed");
-          }
-          document.body.removeChild(ta);
-        }
-      }
-
-      document.addEventListener("click", function(e){
-        var t = e.target;
-        if(t && t.matches && t.matches("[data-copy]")){
-          var txt = t.getAttribute("data-copy") || "";
-          copyText(txt);
-        }
-      });
-
-      // ---------- Smooth jump ----------
-      var btnScrollCommands = document.getElementById("btnScrollCommands");
-      if(btnScrollCommands){
-        btnScrollCommands.addEventListener("click", function(){
-          var el = document.getElementById("commands");
-          if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
-        });
-      }
-
-      var btnPrint = document.getElementById("btnPrint");
-      if(btnPrint){
-        btnPrint.addEventListener("click", function(){ window.print(); });
-      }
-
-      // ---------- Terminal Simulator State ----------
-      var termOut = document.getElementById("termOut");
-      var termIn = document.getElementById("termIn");
-      var termPath = document.getElementById("termPath");
-      var btnClearOut = document.getElementById("btnClearOut");
-      var btnCopyTranscript = document.getElementById("btnCopyTranscript");
-
-      var state = {
-        cwd: "~",
-        inRepo: false,
-        repoName: "",
-        stagedAny: false,
-        commits: [],
-        branch: "main",
-        branches: ["main"],
-        remotes: {},
-        tracking: null
-      };
-
-      function nowTime(){
-        var d = new Date();
-        return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-      }
-
-      function printLine(s){
-        termOut.textContent += s + "\n";
-        termOut.scrollTop = termOut.scrollHeight;
-      }
-
-      function setPath(){
-        var shown = state.cwd;
-        if(state.repoName){
-          shown = state.cwd + "/" + state.repoName;
-        }
-        termPath.textContent = shown;
-      }
-
-      function resetLab(){
-        state.cwd = "~";
-        state.inRepo = false;
-        state.repoName = "";
-        state.stagedAny = false;
-        state.commits = [];
-        state.branch = "main";
-        state.branches = ["main"];
-        state.remotes = {};
-        state.tracking = null;
-
-        termOut.textContent = "";
-        setPath();
-
-        printLine("Programmer’s Picnic Terminal Lab — " + nowTime());
-        printLine("This is a simulator. Use it to practice command flow safely.\n");
-        printLine("Try: mkdir pp-git-lesson1");
-        printLine("Then: cd pp-git-lesson1");
-        printLine("Then: git init\n");
-      }
-
-      function errorLine(msg){
-        printLine("error: " + msg);
-      }
-
-      function okLine(msg){
-        printLine(msg);
-      }
-
-      function simulate(cmdRaw){
-        var cmd = (cmdRaw || "").trim();
-        if(!cmd) return;
-
-        printLine("$ " + cmd);
-
-        // very small parser with multi-line support
-        var parts = cmd.split("\n").map(function(x){ return x.trim(); }).filter(Boolean);
-        if(parts.length > 1){
-          for(var i=0;i<parts.length;i++){
-            if(i===0) continue; // first already printed
-            printLine("$ " + parts[i]);
-            simulateSingle(parts[i]);
-          }
-          return;
-        }
-
-        simulateSingle(cmd);
-
-        function simulateSingle(c){
-          // Basic commands
-          if(c === "help" || c === "git help"){
-            okLine("Try: git init, git status, git add ., git commit -m \"msg\", git log --oneline, git remote -v, git push, git pull");
-            return;
-          }
-
-          if(c.indexOf("mkdir ") === 0){
-            var name = c.slice(6).trim();
-            if(!name){ errorLine("mkdir: missing operand"); return; }
-            state.repoName = name;
-            okLine("Created folder: " + name);
-            setPath();
-            return;
-          }
-
-          if(c.indexOf("cd ") === 0){
-            var target = c.slice(3).trim();
-            if(!target){ state.cwd="~"; okLine("Moved to ~"); setPath(); return; }
-            if(state.repoName && target === state.repoName){
-              okLine("Entered folder: " + target);
-              setPath();
-              return;
-            }
-            okLine("Entered folder: " + target);
-            setPath();
-            return;
-          }
-
-          if(c === "git --version"){
-            okLine("git version 2.4x.x (simulated)");
-            return;
-          }
-
-          if(c.indexOf("git config ") === 0){
-            okLine("Configured (simulated).");
-            return;
-          }
-
-          if(c === "git init"){
-            if(!state.repoName){
-              okLine("Initialized empty Git repository in .git/ (simulated)");
-            }else{
-              okLine("Initialized empty Git repository in " + state.repoName + "/.git/ (simulated)");
-            }
-            state.inRepo = true;
-            state.branch = "main";
-            if(state.branches.indexOf("main") === -1) state.branches.push("main");
-            return;
-          }
-
-          if(c === "git status"){
-            if(!state.inRepo){ errorLine("not a git repository (or any of the parent directories): .git"); return; }
-            okLine("On branch " + state.branch);
-            if(state.commits.length === 0){
-              okLine("No commits yet");
-            }
-            if(state.stagedAny){
-              okLine("Changes to be committed: (simulated)");
-              okLine("  (use \"git restore --staged <file>...\" to unstage)");
-              okLine("  new file:   index.html");
-            }else{
-              okLine("Untracked files: (simulated)");
-              okLine("  (use \"git add <file>...\" to include in what will be committed)");
-              okLine("  index.html");
-            }
-            okLine("nothing added to commit but untracked files present (use \"git add\" to track)");
-            return;
-          }
-
-          if(c === "git add ." || c.indexOf("git add ") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            state.stagedAny = true;
-            okLine("Staged changes (simulated).");
-            return;
-          }
-
-          if(c.indexOf("git commit") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            if(!state.stagedAny){
-              okLine("On branch " + state.branch);
-              okLine("nothing to commit, working tree clean (simulated)");
-              return;
-            }
-            var msg = "Commit";
-            var m = c.match(/-m\s+"([^"]+)"/);
-            if(m && m[1]) msg = m[1];
-            var id = Math.random().toString(16).slice(2, 9);
-            state.commits.unshift({id:id, msg:msg, branch: state.branch});
-            state.stagedAny = false;
-            okLine("[" + state.branch + " " + id + "] " + msg);
-            okLine(" 1 file changed, 1 insertion(+) (simulated)");
-            return;
-          }
-
-          if(c === "git log --oneline"){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            if(state.commits.length === 0){
-              okLine("(no commits)");
-              return;
-            }
-            state.commits.forEach(function(cm){
-              okLine(cm.id + " " + cm.msg);
-            });
-            return;
-          }
-
-          if(c.indexOf("git checkout -b ") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            var bn = c.slice(("git checkout -b ").length).trim();
-            if(!bn){ errorLine("branch name required"); return; }
-            if(state.branches.indexOf(bn) !== -1){
-              errorLine("a branch named '" + bn + "' already exists");
-              return;
-            }
-            state.branches.push(bn);
-            state.branch = bn;
-            okLine("Switched to a new branch '" + bn + "'");
-            return;
-          }
-
-          if(c.indexOf("git checkout ") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            var to = c.slice(("git checkout ").length).trim();
-            if(state.branches.indexOf(to) === -1){
-              errorLine("pathspec '" + to + "' did not match any file(s) known to git");
-              return;
-            }
-            state.branch = to;
-            okLine("Switched to branch '" + to + "'");
-            return;
-          }
-
-          if(c.indexOf("git merge ") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            var from = c.slice(("git merge ").length).trim();
-            if(state.branches.indexOf(from) === -1){
-              errorLine("branch '" + from + "' not found");
-              return;
-            }
-            if(from === state.branch){
-              okLine("Already up to date.");
-              return;
-            }
-            okLine("Merge made by the 'ort' strategy. (simulated)");
-            okLine(" 1 file changed, 1 insertion(+) (simulated)");
-            return;
-          }
-
-          if(c.indexOf("git remote add ") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            var rest = c.slice(("git remote add ").length).trim();
-            var toks = rest.split(/\s+/);
-            if(toks.length < 2){ errorLine("usage: git remote add <name> <url>"); return; }
-            var rname = toks[0];
-            var url = toks.slice(1).join(" ");
-            state.remotes[rname] = url;
-            okLine("Added remote '" + rname + "' (simulated).");
-            return;
-          }
-
-          if(c === "git remote -v"){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            var keys = Object.keys(state.remotes);
-            if(keys.length === 0){
-              okLine("(no remotes configured)");
-              return;
-            }
-            keys.forEach(function(k){
-              okLine(k + "\t" + state.remotes[k] + " (fetch)");
-              okLine(k + "\t" + state.remotes[k] + " (push)");
-            });
-            return;
-          }
-
-          if(c.indexOf("git push") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            if(Object.keys(state.remotes).length === 0){
-              errorLine("No configured push destination. Use 'git remote add origin <url>'");
-              return;
-            }
-            // naive parse
-            if(c.indexOf("-u ") !== -1){
-              state.tracking = "origin/" + state.branch;
-              okLine("Branch '" + state.branch + "' set up to track '" + state.tracking + "' (simulated).");
-            }
-            okLine("Pushed to origin " + state.branch + " (simulated).");
-            return;
-          }
-
-          if(c === "git pull" || c.indexOf("git pull ") === 0){
-            if(!state.inRepo){ errorLine("not a git repository"); return; }
-            okLine("Already up to date. (simulated)");
-            return;
-          }
-
-          if(c === "git restore index.html"){
-            okLine("Restored working tree file (simulated).");
-            return;
-          }
-
-          if(c === "git restore --staged index.html"){
-            state.stagedAny = false;
-            okLine("Unstaged changes (simulated).");
-            return;
-          }
-
-          if(c.indexOf("git commit --amend") === 0){
-            if(state.commits.length === 0){
-              errorLine("You have nothing to amend");
-              return;
-            }
-            var mm = c.match(/-m\s+"([^"]+)"/);
-            if(mm && mm[1]){
-              state.commits[0].msg = mm[1];
-              okLine("Amended last commit message (simulated).");
-            }else{
-              okLine("Opened editor to amend commit (simulated).");
-            }
-            return;
-          }
-
-          // Default
-          errorLine("command not recognized in simulator");
-          okLine("Tip: Use common Git commands shown on the left.");
-        }
-      }
-
-      // Input enter handler
-      termIn.addEventListener("keydown", function(e){
-        if(e.key === "Enter"){
-          var v = termIn.value;
-          termIn.value = "";
-          simulate(v);
-        }
-      });
-
-      // Clear
-      btnClearOut.addEventListener("click", function(){
-        termOut.textContent = "";
-        showToast("Cleared");
-      });
-
-      // Copy transcript
-      btnCopyTranscript.addEventListener("click", function(){
-        copyText(termOut.textContent || "");
-      });
-
-      // Run buttons inside command blocks
-      document.addEventListener("click", function(e){
-        var t = e.target;
-        if(!t) return;
-        if(t.hasAttribute && t.hasAttribute("data-run-btn")){
-          var box = t.closest(".cmd");
-          if(!box) return;
-          var run = box.getAttribute("data-run") || "";
-          // Some blocks have HTML entities for newlines; normalize:
-          run = run.replace(/&#10;/g, "\n").replace(/&quot;/g, "\"");
-          simulate(run);
-          showToast("Ran in lab");
-        }
-      });
-
-      // Run mini workflow
-      var btnRunAll = document.getElementById("btnRunAll");
-      btnRunAll.addEventListener("click", function(){
-        var steps = [
-          "mkdir pp-git-lesson1",
-          "cd pp-git-lesson1",
-          "git init",
-          "git status",
-          "git add .",
-          "git commit -m \"Initial commit\"",
-          "git log --oneline"
-        ];
-        steps.forEach(function(s){ simulate(s); });
-        showToast("Mini workflow done");
-      });
-
-      // Reset lab
-      var btnResetLab = document.getElementById("btnResetLab");
-      btnResetLab.addEventListener("click", function(){
-        resetLab();
-        showToast("Lab reset");
-      });
-
-      // Branch demo
-      var btnBranchDemo = document.getElementById("btnBranchDemo");
-      btnBranchDemo.addEventListener("click", function(){
-        var steps = [
-          "git checkout -b feature-about",
-          "git add .",
-          "git commit -m \"Add about section\"",
-          "git checkout main",
-          "git merge feature-about"
-        ];
-        steps.forEach(function(s){ simulate(s); });
-        showToast("Branch demo done");
-      });
-
-      // ---------- Quiz ----------
-      var quizData = [
-        {
-          q: "1) Git is mainly used for…",
-          choices: [
-            "Hosting repositories online",
-            "Tracking changes and history locally",
-            "Writing code faster",
-            "Designing UI"
-          ],
-          answer: 1,
-          explain: "Git is the local version control tool that tracks history."
-        },
-        {
-          q: "2) GitHub is mainly used for…",
-          choices: [
-            "Hosting Git repositories online and collaborating",
-            "Replacing Git completely",
-            "Compiling programs",
-            "Running your code"
-          ],
-          answer: 0,
-          explain: "GitHub hosts repos and adds collaboration tools."
-        },
-        {
-          q: "3) What does 'git add' do?",
-          choices: [
-            "Deletes a file",
-            "Stages changes for the next commit",
-            "Pushes code to GitHub",
-            "Creates a new repository on GitHub"
-          ],
-          answer: 1,
-          explain: "Staging selects what will be included in the next snapshot."
-        },
-        {
-          q: "4) What does 'git commit' create?",
-          choices: [
-            "A snapshot of your project with a message",
-            "A new GitHub account",
-            "A new programming language",
-            "A folder on your desktop"
-          ],
-          answer: 0,
-          explain: "A commit is a snapshot (saved checkpoint) with metadata."
-        },
-        {
-          q: "5) Why use branches?",
-          choices: [
-            "To work on features safely without breaking main",
-            "To make Git faster",
-            "To avoid writing commit messages",
-            "To store images only"
-          ],
-          answer: 0,
-          explain: "Branches enable parallel work and safer feature development."
-        }
-      ];
-
-      var quizBody = document.getElementById("quizBody");
-
-      function renderQuiz(){
-        quizBody.innerHTML = "";
-        quizData.forEach(function(item, idx){
-          var wrap = document.createElement("div");
-          wrap.className = "quizQ";
-          wrap.setAttribute("data-q", String(idx));
-
-          var q = document.createElement("div");
-          q.className = "q";
-          q.textContent = item.q;
-          wrap.appendChild(q);
-
-          var choices = document.createElement("div");
-          choices.className = "choices";
-
-          item.choices.forEach(function(ch, cIdx){
-            var opt = document.createElement("div");
-            opt.className = "choice";
-            opt.setAttribute("role","button");
-            opt.setAttribute("tabindex","0");
-            opt.setAttribute("data-choice", String(cIdx));
-
-            var radio = document.createElement("div");
-            radio.className = "radio";
-            radio.setAttribute("aria-hidden","true");
-
-            var txt = document.createElement("div");
-            txt.className = "txt";
-            txt.textContent = ch;
-
-            opt.appendChild(radio);
-            opt.appendChild(txt);
-
-            opt.addEventListener("click", function(){
-              selectChoice(idx, cIdx);
-            });
-            opt.addEventListener("keydown", function(ev){
-              if(ev.key === "Enter" || ev.key === " "){
-                ev.preventDefault();
-                selectChoice(idx, cIdx);
-              }
-            });
-
-            choices.appendChild(opt);
-          });
-
-          wrap.appendChild(choices);
-
-          var res = document.createElement("div");
-          res.className = "result";
-          res.id = "res_" + idx;
-          wrap.appendChild(res);
-
-          quizBody.appendChild(wrap);
-        });
-      }
-
-      var answers = new Array(quizData.length).fill(null);
-
-      function selectChoice(qIdx, cIdx){
-        answers[qIdx] = cIdx;
-        var box = quizBody.querySelector('.quizQ[data-q="' + qIdx + '"]');
-        if(!box) return;
-        var opts = box.querySelectorAll(".choice");
-        for(var i=0;i<opts.length;i++){
-          opts[i].classList.toggle("selected", Number(opts[i].getAttribute("data-choice")) === cIdx);
-        }
-      }
-
-      function gradeQuiz(){
-        var score = 0;
-        quizData.forEach(function(item, i){
-          var picked = answers[i];
-          var res = document.getElementById("res_" + i);
-          var ok = (picked === item.answer);
-          if(ok) score++;
-
-          res.classList.add("show");
-          res.innerHTML = "";
-          var b = document.createElement("b");
-          b.textContent = ok ? "Correct" : "Not quite";
-          var s = document.createElement("span");
-          s.textContent = item.explain;
-
-          res.appendChild(b);
-          res.appendChild(s);
-
-          // subtle highlight via background
-          res.style.background = ok ? "rgba(22,163,74,.10)" : "rgba(185,28,28,.08)";
-          res.style.borderColor = ok ? "rgba(22,163,74,.25)" : "rgba(185,28,28,.22)";
-        });
-
-        showToast("Score: " + score + "/" + quizData.length);
-      }
-
-      function resetQuiz(){
-        answers = new Array(quizData.length).fill(null);
-        // remove selection + hide results
-        var opts = quizBody.querySelectorAll(".choice");
-        for(var i=0;i<opts.length;i++) opts[i].classList.remove("selected");
-        var res = quizBody.querySelectorAll(".result");
-        for(var j=0;j<res.length;j++) res[j].classList.remove("show");
-        showToast("Quiz reset");
-      }
-
-      document.getElementById("btnGrade").addEventListener("click", gradeQuiz);
-      document.getElementById("btnResetQuiz").addEventListener("click", resetQuiz);
-
-      // ---------- Init ----------
-      renderQuiz();
-      resetLab();
-
-      // ---------- Extra: copy transcript of key commands ----------
-      var btnCopySummary = document.querySelector('[aria-label="Copy summary sentence"]');
-      if(btnCopySummary){
-        // handled by data-copy listener
-      }
-
-      // ---------- Keep term path updated ----------
-      setPath();
-
-      // ---------- Run command from left blocks when "Run in lab" clicked ----------
-      // already wired.
-
-    })();
-  </script>
+
+<div class="wrapper">
+
+<header>
+<h1>📈 Trading Dashboard</h1>
+<button onclick="reloadJSON()">Reload JSON</button>
+</header>
+
+<div class="card">
+<div class="summary">
+
+<div class="metric">
+Invested
+<b id="invested"></b>
+</div>
+
+<div class="metric">
+Portfolio Value
+<b id="value"></b>
+</div>
+
+<div class="metric">
+Total Return
+<b id="return"></b>
+</div>
+
+<div class="metric">
+Return %
+<b id="percent"></b>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+
+<h3>Holdings</h3>
+
+<table>
+<thead>
+<tr>
+<th>Stock</th>
+<th>Shares</th>
+<th>Buy Price</th>
+<th>Current Price</th>
+<th class="right">Value</th>
+<th class="right">P/L</th>
+<th>Signal</th>
+</tr>
+</thead>
+
+<tbody id="table"></tbody>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<h3>JSON Data</h3>
+<p>You can edit prices here and press reload.</p>
+
+<textarea id="json"></textarea>
+
+</div>
+
+</div>
+
+<script>
+
+const DATA = {
+
+"portfolio":{
+
+"stocks":[
+
+{
+"symbol":"SBI",
+"name":"SBI",
+"shares":6,
+"buy_price":780,
+"price":780
+},
+
+{
+"symbol":"VI",
+"name":"Vodafone Idea",
+"shares":80,
+"buy_price":12,
+"price":12
+},
+
+{
+"symbol":"NTPC",
+"name":"NTPC",
+"shares":2,
+"buy_price":300,
+"price":300
+},
+
+{
+"symbol":"RELIANCE",
+"name":"Reliance Industries",
+"shares":2,
+"buy_price":2800,
+"price":2800
+},
+
+{
+"symbol":"INDHOTEL",
+"name":"Indian Hotels",
+"shares":7,
+"buy_price":600,
+"price":600
+},
+
+{
+"symbol":"TATAPOWER",
+"name":"Tata Power",
+"shares":2,
+"buy_price":420,
+"price":420
+},
+
+{
+"symbol":"ETERNAL",
+"name":"Eternal",
+"shares":10,
+"buy_price":270,
+"price":270
+},
+
+{
+"symbol":"EXIDE",
+"name":"Exide Industries",
+"shares":1,
+"buy_price":580,
+"price":580
+},
+
+{
+"symbol":"JIOFIN",
+"name":"Jio Financial",
+"shares":8,
+"buy_price":420,
+"price":420
+},
+
+{
+"symbol":"LEMONTREE",
+"name":"Lemon Tree",
+"shares":6,
+"buy_price":160,
+"price":160
+}
+
+]
+
+}
+
+}
+
+function format(n){
+return "₹"+n.toFixed(2)
+}
+
+function signal(buy,current){
+
+let diff=((current-buy)/buy)*100
+
+if(diff<=-5) return "<span class='good'>BUY DIP</span>"
+if(diff>=5) return "<span class='bad'>SELL RISE</span>"
+
+return "HOLD"
+
+}
+
+function render(data){
+
+let table=""
+let invested=0
+let value=0
+
+data.portfolio.stocks.forEach(s=>{
+
+let cost=s.buy_price*s.shares
+let val=s.price*s.shares
+let pnl=val-cost
+
+invested+=cost
+value+=val
+
+table+=`
+
+<tr>
+
+<td>${s.name}</td>
+<td>${s.shares}</td>
+
+<td>${format(s.buy_price)}</td>
+
+<td>
+<input type="number" value="${s.price}"
+onchange="updatePrice('${s.symbol}',this.value)">
+</td>
+
+<td class="right">${format(val)}</td>
+
+<td class="right ${pnl>=0?'good':'bad'}">${format(pnl)}</td>
+
+<td>${signal(s.buy_price,s.price)}</td>
+
+</tr>
+
+`
+
+})
+
+document.getElementById("table").innerHTML=table
+
+let ret=value-invested
+let pct=(ret/invested)*100
+
+document.getElementById("invested").innerText=format(invested)
+document.getElementById("value").innerText=format(value)
+
+document.getElementById("return").innerText=format(ret)
+document.getElementById("percent").innerText=pct.toFixed(2)+"%"
+
+}
+
+function updatePrice(sym,val){
+
+DATA.portfolio.stocks.forEach(s=>{
+if(s.symbol===sym){
+s.price=parseFloat(val)
+}
+})
+
+render(DATA)
+
+}
+
+function reloadJSON(){
+
+let j=document.getElementById("json").value
+
+let obj=JSON.parse(j)
+
+render(obj)
+
+}
+
+document.getElementById("json").value=JSON.stringify(DATA,null,2)
+
+render(DATA)
+
+</script>
+
 </body>
 </html>
