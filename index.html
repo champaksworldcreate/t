@@ -3,341 +3,385 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sunrise Public School — School Portal</title>
+  <title>Sunrise Public School</title>
   <meta
     name="description"
-    content="A modern school website and student portal with notices, homework, attendance, results, admissions, teachers, and admin dashboard."
+    content="A modern school website with multiple themes, multiple layouts, and toggle buttons."
   />
-  <meta name="theme-color" content="#f59e0b" />
+  <meta name="theme-color" content="#ea580c" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
 
   <style>
     :root{
-      --saffron:#f59e0b;
-      --saffron-2:#fb923c;
-      --saffron-3:#ffedd5;
-      --bg:#fffaf0;
-      --bg-soft:#fff7e6;
+      --bg:#fffaf2;
       --panel:#ffffff;
-      --panel-2:#fffdf8;
-      --ink:#1f2937;
+      --panel-2:#fff7e8;
+      --soft:#fff3df;
+      --text:#1f2937;
       --muted:#6b7280;
-      --line:#f1dfb8;
-      --shadow:0 12px 30px rgba(245,158,11,.10);
-      --radius:22px;
-      --radius-sm:14px;
-      --ok:#15803d;
-      --warn:#b45309;
-      --bad:#b91c1c;
+      --line:#fed7aa;
+      --accent:#ea580c;
+      --accent-2:#c2410c;
+      --accent-3:#fff7ed;
+      --hero1:#ffedd5;
+      --hero2:#fffbeb;
+      --hero3:#ffffff;
+      --shadow:0 16px 40px rgba(15,23,42,.08);
+      --radius:24px;
+      --radius-sm:16px;
+      --max:1200px;
+      --header-bg:rgba(255,255,255,.88);
     }
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:"DM Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(251,146,60,.12), transparent 28%),
-        linear-gradient(180deg, #fffdf8 0%, #fff9ef 40%, #fff7e6 100%);
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
     }
 
-    a{color:inherit;text-decoration:none}
+    h1,h2,h3,h4,.brand{
+      font-family:"DM Sans",system-ui,sans-serif;
+      margin:0;
+      line-height:1.15;
+    }
+
+    a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
 
     .container{
-      width:min(1180px, calc(100% - 28px));
+      width:min(var(--max), calc(100% - 32px));
       margin-inline:auto;
     }
 
-    .topbar{
-      background:linear-gradient(90deg, #f59e0b, #fb923c);
-      color:#fff;
-      font-size:14px;
-      padding:10px 0;
-    }
-    .topbar-inner{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    header{
+    .site-header{
       position:sticky;
       top:0;
-      z-index:50;
-      backdrop-filter:blur(10px);
-      background:rgba(255,250,240,.82);
-      border-bottom:1px solid rgba(241,223,184,.85);
+      z-index:100;
+      backdrop-filter:blur(12px);
+      background:var(--header-bg);
+      border-bottom:1px solid var(--line);
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:14px 0;
+      flex-wrap:wrap;
+    }
+
+    .brand-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .brand{
+      font-size:1.7rem;
+      font-weight:800;
+      color:var(--accent-2);
+      letter-spacing:-.02em;
+    }
+
+    .tagline{
+      color:var(--muted);
+      font-size:.95rem;
     }
 
     .nav{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      min-height:74px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-
-    .brand-logo{
-      width:52px;
-      height:52px;
-      border-radius:16px;
-      background:linear-gradient(135deg,var(--saffron),var(--saffron-2));
-      color:#fff;
-      display:grid;
-      place-items:center;
-      box-shadow:var(--shadow);
-      font-size:22px;
-      font-weight:800;
-    }
-
-    .brand-text h1{
-      margin:0;
-      font-size:20px;
-      line-height:1.05;
-    }
-
-    .brand-text p{
-      margin:4px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .nav-links{
-      display:flex;
-      gap:10px;
+      gap:18px;
       flex-wrap:wrap;
+      font-weight:600;
+      color:var(--muted);
+    }
+
+    .nav a:hover{
+      color:var(--accent-2);
+    }
+
+    .toolbar{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .toggle-group{
+      display:flex;
       align-items:center;
-    }
-
-    .nav-links a{
-      padding:10px 14px;
-      border-radius:999px;
-      color:var(--ink);
-      font-weight:700;
-      font-size:14px;
-    }
-
-    .nav-links a:hover{
-      background:var(--saffron-3);
-    }
-
-    .btn{
-      border:0;
-      cursor:pointer;
-      border-radius:999px;
-      padding:12px 18px;
-      font-weight:800;
-      font-family:inherit;
-      transition:.2s ease;
-    }
-
-    .btn-primary{
-      background:linear-gradient(90deg,var(--saffron),var(--saffron-2));
-      color:#fff;
+      gap:8px;
+      padding:8px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      border-radius:18px;
       box-shadow:var(--shadow);
     }
 
-    .btn-primary:hover{transform:translateY(-1px)}
+    .toggle-label{
+      padding:0 6px;
+      font-size:.75rem;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:var(--muted);
+      font-weight:700;
+      white-space:nowrap;
+    }
 
-    .btn-secondary{
-      background:#fff;
-      color:var(--ink);
-      border:1px solid var(--line);
+    .toggle-btn{
+      border:none;
+      background:transparent;
+      color:var(--muted);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:.82rem;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+
+    .toggle-btn:hover{
+      background:var(--soft);
+      color:var(--accent-2);
+    }
+
+    .toggle-btn.active{
+      background:var(--accent);
+      color:white;
+      box-shadow:0 10px 20px rgba(0,0,0,.08);
     }
 
     .hero{
-      padding:42px 0 26px;
-    }
-
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:22px;
-      align-items:stretch;
-    }
-
-    .hero-card,
-    .panel{
-      background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,253,248,.95));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-
-    .hero-card{
-      padding:34px;
       position:relative;
       overflow:hidden;
     }
 
-    .hero-card::after{
+    .hero::before{
       content:"";
       position:absolute;
-      right:-80px;
-      top:-80px;
-      width:220px;
-      height:220px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(251,146,60,.18), transparent 70%);
+      inset:0;
+      background:linear-gradient(135deg,var(--hero1),var(--hero2),var(--hero3));
       pointer-events:none;
     }
 
-    .eyebrow{
+    .hero-inner{
+      position:relative;
+      padding:56px 0 40px;
+    }
+
+    .hero-grid{
+      display:grid;
+      gap:28px;
+      align-items:center;
+    }
+
+    .hero-grid.classic{
+      grid-template-columns:1.08fr .92fr;
+    }
+
+    .hero-grid.cards{
+      grid-template-columns:1fr;
+    }
+
+    .hero-grid.split{
+      grid-template-columns:1.08fr .92fr;
+      gap:0;
+    }
+
+    .hero-main{
+      padding:8px 0;
+    }
+
+    .hero-main.split-box{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:32px 0 0 32px;
+      padding:42px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero-side.split-box{
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-left:none;
+      border-radius:0 32px 32px 0;
+      padding:28px;
+    }
+
+    .badge{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:13px;
-      font-weight:800;
-      color:var(--warn);
-      background:#fff7ed;
-      border:1px solid #fed7aa;
-      padding:8px 12px;
+      padding:8px 14px;
       border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      color:var(--accent-2);
+      font-weight:700;
+      font-size:.88rem;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
     }
 
-    .hero h2{
-      font-size:clamp(34px, 5vw, 56px);
-      line-height:1.02;
-      margin:16px 0 12px;
-      letter-spacing:-.03em;
+    .hero h1{
+      font-size:clamp(2.2rem, 5vw, 4.5rem);
+      letter-spacing:-.04em;
     }
 
-    .hero p.lead{
+    .hero-text{
+      margin-top:18px;
       color:var(--muted);
-      font-size:17px;
-      margin:0 0 22px;
-      max-width:60ch;
+      font-size:1.08rem;
+      max-width:720px;
     }
 
     .hero-actions{
       display:flex;
-      gap:12px;
+      gap:14px;
       flex-wrap:wrap;
-      margin-bottom:22px;
+      margin-top:28px;
     }
 
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
-    }
-
-    .stat{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .stat .num{
-      font-size:24px;
-      font-weight:800;
-      color:var(--saffron);
-      margin-bottom:6px;
-    }
-
-    .stat .lbl{
-      font-size:13px;
-      color:var(--muted);
-      font-weight:700;
-    }
-
-    .hero-side{
-      display:grid;
-      gap:18px;
-    }
-
-    .quick-card{
-      padding:22px;
-    }
-
-    .quick-card h3,
-    .section-head h3,
-    .panel-title{
-      margin:0 0 8px;
-      font-size:20px;
-    }
-
-    .muted{
-      color:var(--muted);
-    }
-
-    .chip-row{
-      display:flex;
-      flex-wrap:wrap;
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       gap:10px;
-      margin-top:14px;
+      border:none;
+      cursor:pointer;
+      padding:14px 20px;
+      border-radius:18px;
+      font-weight:800;
+      transition:.2s ease;
+      font-size:.96rem;
     }
 
-    .chip{
-      padding:9px 12px;
-      border-radius:999px;
-      background:var(--saffron-3);
-      border:1px solid #fed7aa;
-      font-size:13px;
-      font-weight:700;
-      color:#9a3412;
+    .btn:hover{
+      transform:translateY(-1px);
     }
 
-    main{
-      padding:8px 0 44px;
+    .btn-primary{
+      background:var(--accent);
+      color:white;
+      box-shadow:var(--shadow);
     }
 
-    .section{
-      margin-top:22px;
+    .btn-secondary{
+      background:var(--panel);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .hero-cards{
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(2,1fr);
+    }
+
+    .hero-cards.cards-layout{
+      margin-top:26px;
+      grid-template-columns:repeat(3,1fr);
+    }
+
+    .hero-card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero-card.wide{
+      grid-column:span 2;
+    }
+
+    .eyebrow{
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-weight:800;
+      color:var(--accent);
+      margin-bottom:10px;
+    }
+
+    .hero-card h3{
+      font-size:1.4rem;
+      letter-spacing:-.02em;
+    }
+
+    .hero-card p{
+      margin:10px 0 0;
+      color:var(--muted);
+    }
+
+    section.section{
+      padding:70px 0;
     }
 
     .section-head{
-      display:flex;
-      justify-content:space-between;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
       align-items:end;
-      gap:16px;
-      margin-bottom:14px;
+      margin-bottom:28px;
     }
 
     .section-head p{
       margin:0;
       color:var(--muted);
+      font-size:1.05rem;
     }
 
-    .grid-3{
+    .section-title{
+      font-size:clamp(1.8rem, 3.2vw, 3rem);
+      letter-spacing:-.03em;
+      margin-top:8px;
+    }
+
+    .cards-4{
       display:grid;
+      gap:18px;
+      grid-template-columns:repeat(4,1fr);
+    }
+
+    .cards-3{
+      display:grid;
+      gap:18px;
       grid-template-columns:repeat(3,1fr);
-      gap:18px;
     }
 
-    .grid-2{
+    .cards-2{
       display:grid;
-      grid-template-columns:repeat(2,1fr);
       gap:18px;
+      grid-template-columns:repeat(2,1fr);
     }
 
     .card{
-      background:linear-gradient(180deg, #fff, #fffdf8);
+      background:var(--panel);
       border:1px solid var(--line);
-      border-radius:22px;
-      padding:22px;
+      border-radius:28px;
+      padding:24px;
       box-shadow:var(--shadow);
     }
 
-    .card h4{
-      margin:0 0 6px;
-      font-size:18px;
+    .card.soft{
+      background:var(--soft);
+    }
+
+    .card h3{
+      font-size:1.25rem;
+      margin-bottom:10px;
+      letter-spacing:-.02em;
     }
 
     .card p{
@@ -345,1008 +389,616 @@
       color:var(--muted);
     }
 
-    .notice-list{
-      display:grid;
-      gap:12px;
-      margin-top:10px;
-    }
-
-    .notice{
-      padding:14px 16px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:start;
-    }
-
-    .notice strong{
-      display:block;
-      margin-bottom:3px;
-    }
-
-    .notice small{
-      color:var(--muted);
-      font-weight:700;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:76px;
-      padding:8px 10px;
-      border-radius:999px;
+    .program-item{
       font-weight:800;
-      font-size:12px;
-      background:#fff7ed;
-      color:#9a3412;
-      border:1px solid #fed7aa;
-      white-space:nowrap;
+      font-family:"DM Sans",system-ui,sans-serif;
+      letter-spacing:-.01em;
+      font-size:1.05rem;
     }
 
-    .teachers{
+    .facilities-grid{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
       gap:18px;
+      grid-template-columns:1fr 2fr;
     }
 
-    .teacher-card{
-      text-align:center;
-    }
-
-    .teacher-avatar{
-      width:88px;
-      height:88px;
-      margin:0 auto 14px;
-      border-radius:50%;
-      display:grid;
-      place-items:center;
-      color:#fff;
-      font-size:28px;
-      font-weight:800;
-      background:linear-gradient(135deg,var(--saffron),var(--saffron-2));
+    .facility-feature{
+      background:var(--accent);
+      color:white;
+      border-radius:28px;
+      padding:30px;
       box-shadow:var(--shadow);
     }
 
-    .teacher-meta{
-      margin-top:10px;
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      flex-wrap:wrap;
+    .facility-feature .eyebrow{
+      color:rgba(255,255,255,.82);
     }
 
-    .teacher-meta span{
-      font-size:12px;
-      font-weight:700;
-      color:#9a3412;
-      background:#fff7ed;
-      border:1px solid #fed7aa;
-      padding:6px 10px;
-      border-radius:999px;
-    }
-
-    .portal{
-      display:grid;
-      grid-template-columns:.8fr 1.2fr;
-      gap:18px;
-    }
-
-    .login-box input,
-    .admin-box input,
-    .admin-box textarea,
-    .admin-box select{
-      width:100%;
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:14px;
-      padding:13px 14px;
-      font:inherit;
-      color:var(--ink);
-      outline:none;
-    }
-
-    .login-box input:focus,
-    .admin-box input:focus,
-    .admin-box textarea:focus,
-    .admin-box select:focus{
-      border-color:#f59e0b;
-      box-shadow:0 0 0 4px rgba(245,158,11,.12);
-    }
-
-    .form-row{
-      display:grid;
-      gap:12px;
-      margin-top:12px;
-    }
-
-    .student-card{
-      padding:18px;
-      border:1px dashed #f2c77c;
-      background:linear-gradient(180deg,#fff,#fffaf3);
-      border-radius:18px;
+    .facility-feature p{
+      color:rgba(255,255,255,.9);
       margin-top:14px;
     }
 
-    .student-meta{
+    .notice-section{
+      background:var(--panel-2);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .contact-grid{
       display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin-top:12px;
+      gap:18px;
+      grid-template-columns:1.15fr .85fr;
     }
 
-    .mini{
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      background:#fff;
+    .info-list{
+      display:grid;
+      gap:20px;
+      grid-template-columns:repeat(2,1fr);
+      margin-top:26px;
     }
 
-    .mini .label{
-      font-size:12px;
+    .info-label{
       color:var(--muted);
+      font-size:.9rem;
       font-weight:700;
       margin-bottom:6px;
     }
 
-    .mini .value{
-      font-size:18px;
-      font-weight:800;
+    .info-value{
+      font-size:1rem;
     }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:12px;
-      overflow:hidden;
-      border-radius:18px;
+    .admission-box{
+      background:linear-gradient(135deg,var(--hero1),var(--hero2));
     }
 
-    th, td{
-      text-align:left;
-      padding:12px 14px;
-      border-bottom:1px solid #f4ead2;
-      font-size:14px;
+    .site-footer{
+      border-top:1px solid var(--line);
+      background:var(--panel);
     }
 
-    th{
-      color:#92400e;
-      background:#fff7ed;
-      font-size:13px;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
-
-    tr:last-child td{border-bottom:0}
-
-    .status-good{color:var(--ok);font-weight:800}
-    .status-mid{color:var(--warn);font-weight:800}
-    .status-bad{color:var(--bad);font-weight:800}
-
-    .homework-list{
-      display:grid;
-      gap:12px;
-      margin-top:12px;
-    }
-
-    .hw-item{
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
-      padding:15px 16px;
+    .footer-inner{
+      padding:24px 0;
       display:flex;
       justify-content:space-between;
-      align-items:start;
-      gap:12px;
-    }
-
-    .hw-item h5{
-      margin:0 0 5px;
-      font-size:16px;
-    }
-
-    .hw-item p{
-      margin:0;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .admin-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-top:14px;
-    }
-
-    .admin-box textarea{
-      min-height:116px;
-      resize:vertical;
-    }
-
-    .timeline{
-      display:grid;
-      gap:12px;
-      margin-top:10px;
-    }
-
-    .timeline-item{
-      display:grid;
-      grid-template-columns:110px 1fr;
-      gap:12px;
-      align-items:start;
-      padding:12px;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:16px;
-    }
-
-    .timeline-item .time{
-      font-weight:800;
-      color:#9a3412;
-      background:#fff7ed;
-      border:1px solid #fed7aa;
-      border-radius:12px;
-      text-align:center;
-      padding:10px 8px;
-      font-size:13px;
-    }
-
-    .cta{
-      margin-top:24px;
-      background:linear-gradient(90deg, rgba(245,158,11,.12), rgba(251,146,60,.12));
-      border:1px solid #f8d7a0;
-      border-radius:24px;
-      padding:26px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
+      gap:20px;
       flex-wrap:wrap;
-    }
-
-    footer{
-      margin-top:34px;
-      padding:28px 0 40px;
       color:var(--muted);
-      font-size:14px;
+      font-size:.95rem;
     }
 
-    .footer-card{
-      background:rgba(255,255,255,.75);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:20px;
-      box-shadow:var(--shadow);
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
+    .hidden{display:none !important}
 
-    .mobile-menu-btn{
-      display:none;
-    }
-
-    @media (max-width: 1024px){
-      .hero-grid,
-      .portal,
-      .teachers,
-      .grid-3,
-      .grid-2,
-      .admin-grid{
-        grid-template-columns:1fr 1fr;
-      }
-
-      .teachers{
-        grid-template-columns:repeat(2,1fr);
-      }
-
-      .stats{
-        grid-template-columns:repeat(2,1fr);
-      }
-    }
-
-    @media (max-width: 760px){
-      .nav{
-        min-height:68px;
-        padding:8px 0;
-      }
-
-      .mobile-menu-btn{
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-      }
-
-      .nav-links{
-        display:none;
-        width:100%;
-        padding:10px 0 2px;
-      }
-
-      .nav-links.open{
-        display:flex;
-      }
-
-      .hero-grid,
-      .portal,
-      .teachers,
-      .grid-3,
-      .grid-2,
-      .admin-grid,
-      .student-meta{
+    @media (max-width: 1100px){
+      .cards-4{grid-template-columns:repeat(2,1fr)}
+      .hero-cards.cards-layout{grid-template-columns:1fr}
+      .hero-grid.classic,
+      .hero-grid.split,
+      .facilities-grid,
+      .contact-grid,
+      .section-head{
         grid-template-columns:1fr;
       }
+      .hero-main.split-box{
+        border-radius:32px 32px 0 0;
+      }
+      .hero-side.split-box{
+        border-left:1px solid var(--line);
+        border-top:none;
+        border-radius:0 0 32px 32px;
+      }
+    }
 
-      .notice,
-      .hw-item,
-      .cta,
-      .footer-card{
-        flex-direction:column;
+    @media (max-width: 780px){
+      .nav{display:none}
+      .cards-3,
+      .cards-2,
+      .hero-cards,
+      .info-list{
+        grid-template-columns:1fr;
+      }
+      .hero-card.wide{grid-column:auto}
+      .toolbar{
+        width:100%;
+      }
+      .toggle-group{
+        width:100%;
+        flex-wrap:wrap;
+      }
+      .header-inner{
         align-items:flex-start;
       }
-
-      .timeline-item{
-        grid-template-columns:1fr;
+      .hero-inner{
+        padding:42px 0 28px;
+      }
+      section.section{
+        padding:54px 0;
       }
     }
   </style>
 </head>
-<body>
+<body data-theme="saffron" data-layout="classic">
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-wrap">
+        <div class="brand">Sunrise Public School</div>
+        <div class="tagline">Learn with discipline. Grow with confidence.</div>
+      </div>
 
-  <div class="topbar">
-    <div class="container topbar-inner">
-      <div>Academic Session 2026–27 Admissions Open</div>
-      <div>Email: info@sunrisepublicschool.edu · Phone: +91 98765 43210</div>
-    </div>
-  </div>
-
-  <header>
-    <div class="container nav">
-      <a href="#" class="brand" aria-label="Sunrise Public School">
-        <div class="brand-logo">SP</div>
-        <div class="brand-text">
-          <h1>Sunrise Public School</h1>
-          <p>Knowledge · Discipline · Excellence</p>
-        </div>
-      </a>
-
-      <button class="btn btn-secondary mobile-menu-btn" id="menuBtn" type="button">Menu</button>
-
-      <nav class="nav-links" id="navLinks">
+      <nav class="nav" aria-label="Primary">
         <a href="#about">About</a>
+        <a href="#programs">Programs</a>
+        <a href="#facilities">Facilities</a>
         <a href="#notices">Notices</a>
-        <a href="#academics">Academics</a>
-        <a href="#teachers">Teachers</a>
-        <a href="#portal">Portal</a>
-        <a href="#admissions">Admissions</a>
         <a href="#contact">Contact</a>
-        <a href="#portal" class="btn btn-primary" style="padding:10px 16px;color:#fff;">Student Login</a>
       </nav>
+
+      <div class="toolbar">
+        <div class="toggle-group">
+          <span class="toggle-label">Theme</span>
+          <button class="toggle-btn active" data-theme-btn="saffron">Saffron</button>
+          <button class="toggle-btn" data-theme-btn="blue">Blue</button>
+          <button class="toggle-btn" data-theme-btn="emerald">Emerald</button>
+          <button class="toggle-btn" data-theme-btn="dark">Dark</button>
+        </div>
+
+        <div class="toggle-group">
+          <span class="toggle-label">Layout</span>
+          <button class="toggle-btn active" data-layout-btn="classic">Classic</button>
+          <button class="toggle-btn" data-layout-btn="cards">Cards</button>
+          <button class="toggle-btn" data-layout-btn="split">Split</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-card">
-        <div class="eyebrow">School Website + Student Portal</div>
-        <h2>Welcome to a modern school experience.</h2>
-        <p class="lead">
-          A clean and powerful school portal for students, parents, teachers, and administrators.
-          View notices, homework, results, attendance, admissions, and academic updates in one place.
-        </p>
-
-        <div class="hero-actions">
-          <a href="#admissions" class="btn btn-primary">Apply for Admission</a>
-          <a href="#portal" class="btn btn-secondary">Open Student Portal</a>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="num">1200+</div>
-            <div class="lbl">Students</div>
-          </div>
-          <div class="stat">
-            <div class="num">65+</div>
-            <div class="lbl">Teachers</div>
-          </div>
-          <div class="stat">
-            <div class="num">98%</div>
-            <div class="lbl">Attendance</div>
-          </div>
-          <div class="stat">
-            <div class="num">15</div>
-            <div class="lbl">Clubs & Activities</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-side">
-        <div class="panel quick-card">
-          <h3>Today at a Glance</h3>
-          <p class="muted">Quick updates for students and parents.</p>
-          <div class="chip-row">
-            <span class="chip">Morning Assembly · 8:00 AM</span>
-            <span class="chip">Math Test · Class 8</span>
-            <span class="chip">Library Week</span>
-            <span class="chip">Science Lab Open</span>
-          </div>
-        </div>
-
-        <div class="panel quick-card">
-          <h3>Why this version is useful</h3>
-          <p class="muted">
-            This single HTML file is easy to host on GitHub Pages, Blogger, school servers, or local systems.
-            You can later connect it to real APIs and databases.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <main class="container">
-
-    <section class="section" id="about">
-      <div class="section-head">
-        <div>
-          <h3>About Our School</h3>
-          <p>Building strong foundations for future success.</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <h4>Our Vision</h4>
-          <p>
-            To nurture confident, skilled, and responsible learners through quality education,
-            creativity, discipline, and character development.
-          </p>
-        </div>
-        <div class="card">
-          <h4>Our Mission</h4>
-          <p>
-            To provide a balanced academic environment with technology, critical thinking,
-            co-curricular growth, and strong teacher support.
-          </p>
-        </div>
-        <div class="card">
-          <h4>Campus Culture</h4>
-          <p>
-            Safe classrooms, a positive learning atmosphere, regular parent communication,
-            and opportunities in sports, arts, science, and computing.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="notices">
-      <div class="section-head">
-        <div>
-          <h3>Notice Board</h3>
-          <p>Latest school announcements.</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="notice-list" id="noticeList"></div>
-      </div>
-    </section>
-
-    <section class="section" id="academics">
-      <div class="section-head">
-        <div>
-          <h3>Academics</h3>
-          <p>Structured classes and focused learning support.</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <h4>Primary Section</h4>
-          <p>Classes 1 to 5 with strong fundamentals in language, mathematics, science, and arts.</p>
-        </div>
-        <div class="card">
-          <h4>Middle Section</h4>
-          <p>Classes 6 to 8 with deeper academic engagement, projects, labs, and skill development.</p>
-        </div>
-        <div class="card">
-          <h4>Senior Section</h4>
-          <p>Classes 9 to 12 with board preparation, subject specialization, and career guidance.</p>
-        </div>
-      </div>
-
-      <div class="grid-2 section">
-        <div class="card">
-          <h4>Facilities</h4>
-          <p>Smart classrooms, computer lab, science laboratories, library, playground, and activity rooms.</p>
-        </div>
-        <div class="card">
-          <h4>Co-Curricular Growth</h4>
-          <p>Debates, sports, music, art, coding club, science exhibitions, and annual cultural events.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="teachers">
-      <div class="section-head">
-        <div>
-          <h3>Meet Our Teachers</h3>
-          <p>Dedicated educators guiding every step of the student journey.</p>
-        </div>
-      </div>
-
-      <div class="teachers" id="teacherGrid"></div>
-    </section>
-
-    <section class="section" id="portal">
-      <div class="section-head">
-        <div>
-          <h3>Student Portal</h3>
-          <p>Login demo with attendance, results, and homework.</p>
-        </div>
-      </div>
-
-      <div class="portal">
-        <div class="card login-box">
-          <h4>Student Login</h4>
-          <p class="muted">Use the demo credentials shown below.</p>
-
-          <div class="form-row">
-            <input type="text" id="studentId" placeholder="Student ID" value="STU1001" />
-            <input type="password" id="studentPass" placeholder="Password" value="1234" />
-            <button class="btn btn-primary" id="loginBtn" type="button">Login to Portal</button>
-          </div>
-
-          <div class="student-card">
-            <strong>Demo Credentials</strong>
-            <p class="muted" style="margin-top:6px;">Student ID: <b>STU1001</b> · Password: <b>1234</b></p>
-          </div>
-        </div>
-
-        <div class="card" id="studentPortalView">
-          <h4>Portal Preview</h4>
-          <p class="muted">Login to view student details.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="admissions">
-      <div class="section-head">
-        <div>
-          <h3>Admissions</h3>
-          <p>Start your child’s learning journey with us.</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <h4>Admission Process</h4>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="time">Step 1</div>
-              <div>
-                <strong>Submit Enquiry Form</strong>
-                <p class="muted">Provide student and parent details for initial registration.</p>
-              </div>
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <!-- CLASSIC -->
+        <div class="hero-grid classic layout-panel" id="layout-classic">
+          <div class="hero-main">
+            <div class="badge">Admissions Open 2026–27</div>
+            <h1>A modern school website for a trusted learning community.</h1>
+            <p class="hero-text">
+              Build a strong first impression with a clean school homepage that highlights
+              academics, admissions, faculty, facilities, notices, and contact information.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#contact">Enquire Now</a>
+              <a class="btn btn-secondary" href="#about">Explore School</a>
             </div>
-            <div class="timeline-item">
-              <div class="time">Step 2</div>
-              <div>
-                <strong>Document Verification</strong>
-                <p class="muted">Birth certificate, previous report card, ID proof, and address proof.</p>
-              </div>
+          </div>
+
+          <div class="hero-cards">
+            <article class="hero-card">
+              <div class="eyebrow">Campus</div>
+              <h3>Safe, clean, inspiring</h3>
+              <p>Designed to support learning, discipline, and joyful student life.</p>
+            </article>
+
+            <article class="hero-card">
+              <div class="eyebrow">Results</div>
+              <h3>Strong academic focus</h3>
+              <p>Clear routines, supportive teachers, and student-centered progress.</p>
+            </article>
+
+            <article class="hero-card wide">
+              <div class="eyebrow">Why Parents Choose Us</div>
+              <h3>Balanced growth for every child</h3>
+              <p>
+                A well-structured school environment that balances academics, character-building,
+                technology, communication skills, and co-curricular growth.
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <!-- CARDS -->
+        <div class="hero-grid cards layout-panel hidden" id="layout-cards">
+          <div class="hero-main" style="text-align:center">
+            <div class="badge">Welcome to Our School</div>
+            <h1>Every essential school detail, presented beautifully.</h1>
+            <p class="hero-text" style="margin-inline:auto">
+              This layout uses visual cards throughout the homepage so parents can quickly
+              scan programs, campus highlights, updates, and admissions information.
+            </p>
+            <div class="hero-actions" style="justify-content:center">
+              <a class="btn btn-primary" href="#contact">Book a Visit</a>
+              <a class="btn btn-secondary" href="#programs">View Programs</a>
             </div>
-            <div class="timeline-item">
-              <div class="time">Step 3</div>
-              <div>
-                <strong>Interaction / Assessment</strong>
-                <p class="muted">A simple interaction or assessment based on the class level.</p>
-              </div>
+          </div>
+
+          <div class="hero-cards cards-layout">
+            <article class="hero-card">
+              <div class="eyebrow">Campus</div>
+              <h3>Safe, clean, inspiring</h3>
+              <p>Designed to support learning, discipline, and joyful student life.</p>
+            </article>
+
+            <article class="hero-card">
+              <div class="eyebrow">Results</div>
+              <h3>Strong academic focus</h3>
+              <p>Clear routines, supportive teachers, and student-centered progress.</p>
+            </article>
+
+            <article class="hero-card">
+              <div class="eyebrow">Why Parents Choose Us</div>
+              <h3>Balanced growth for every child</h3>
+              <p>
+                A well-structured school environment that balances academics, character-building,
+                technology, communication skills, and co-curricular growth.
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <!-- SPLIT -->
+        <div class="hero-grid split layout-panel hidden" id="layout-split">
+          <div class="hero-main split-box">
+            <div class="badge">Parent-Friendly Layout</div>
+            <h1>Present your school with clarity, trust, and warmth.</h1>
+            <p class="hero-text">
+              A split layout gives strong visual focus to school identity on one side
+              and key decision-making information on the other.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#contact">Contact Office</a>
+              <a class="btn btn-secondary" href="#notices">Latest Notices</a>
             </div>
-            <div class="timeline-item">
-              <div class="time">Step 4</div>
-              <div>
-                <strong>Fee Submission</strong>
-                <p class="muted">Complete the fee process to confirm admission.</p>
-              </div>
+          </div>
+
+          <div class="hero-side split-box">
+            <div class="cards-3" style="grid-template-columns:1fr;gap:14px">
+              <article class="card">
+                <div class="eyebrow">Campus</div>
+                <h3>Safe, clean, inspiring</h3>
+                <p>Designed to support learning, discipline, and joyful student life.</p>
+              </article>
+
+              <article class="card">
+                <div class="eyebrow">Results</div>
+                <h3>Strong academic focus</h3>
+                <p>Clear routines, supportive teachers, and student-centered progress.</p>
+              </article>
+
+              <article class="card">
+                <div class="eyebrow">Why Parents Choose Us</div>
+                <h3>Balanced growth for every child</h3>
+                <p>
+                  A well-structured school environment that balances academics,
+                  character-building, technology, communication skills, and co-curricular growth.
+                </p>
+              </article>
             </div>
           </div>
         </div>
-
-        <div class="card">
-          <h4>Admission Enquiry</h4>
-          <p class="muted">This is a front-end demo form.</p>
-
-          <div class="form-row">
-            <input type="text" id="admissionName" placeholder="Student Name" />
-            <input type="text" id="admissionClass" placeholder="Class Applying For" />
-            <input type="text" id="admissionParent" placeholder="Parent Name" />
-            <input type="text" id="admissionPhone" placeholder="Phone Number" />
-            <button class="btn btn-primary" id="admissionBtn" type="button">Submit Enquiry</button>
-          </div>
-
-          <div id="admissionMessage" style="margin-top:14px;"></div>
-        </div>
       </div>
     </section>
 
-    <section class="section" id="admin">
-      <div class="section-head">
-        <div>
-          <h3>Admin Panel Demo</h3>
-          <p>Add notices from the browser. Stored temporarily in page memory.</p>
-        </div>
-      </div>
-
-      <div class="card admin-box">
-        <div class="admin-grid">
+    <section id="about" class="section">
+      <div class="container">
+        <div class="section-head">
           <div>
-            <label class="muted"><strong>Notice Title</strong></label>
-            <input type="text" id="adminNoticeTitle" placeholder="Example: Mid-Term Exams Start Next Week" />
+            <div class="eyebrow">About the School</div>
+            <h2 class="section-title">Shaping responsible, capable, and confident students.</h2>
           </div>
+          <p>
+            Sunrise Public School is presented here as a sample modern school website.
+            This design is ideal for a school that wants to communicate trust, discipline,
+            academic strength, and parent-friendly access to essential information.
+          </p>
+        </div>
+
+        <div class="cards-4">
+          <article class="card">
+            <h3>Academic Excellence</h3>
+            <p>
+              A balanced curriculum designed to help students think clearly, build strong fundamentals,
+              and grow with confidence.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Caring Faculty</h3>
+            <p>
+              Experienced teachers who combine discipline, encouragement, and personal attention
+              in every classroom.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Modern Learning</h3>
+            <p>
+              Smart classrooms, activity-based learning, computer education, and a future-ready environment.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Safe Campus</h3>
+            <p>
+              A secure, clean, and student-friendly campus that supports learning, sports, and creativity.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="programs" class="section" style="background:var(--panel)">
+      <div class="container">
+        <div class="section-head">
           <div>
-            <label class="muted"><strong>Category</strong></label>
-            <select id="adminNoticeTag">
-              <option value="General">General</option>
-              <option value="Exam">Exam</option>
-              <option value="Holiday">Holiday</option>
-              <option value="Event">Event</option>
-              <option value="Admissions">Admissions</option>
-            </select>
+            <div class="eyebrow">Programs</div>
+            <h2 class="section-title">Classes and learning areas</h2>
+          </div>
+          <p>
+            Show parents the academic journey clearly, from early years to higher classes,
+            along with labs, sports, and skill-building.
+          </p>
+        </div>
+
+        <div class="cards-3">
+          <article class="card soft"><div class="program-item">Pre-Primary</div></article>
+          <article class="card soft"><div class="program-item">Primary School</div></article>
+          <article class="card soft"><div class="program-item">Middle School</div></article>
+          <article class="card soft"><div class="program-item">Secondary School</div></article>
+          <article class="card soft"><div class="program-item">Computer Education</div></article>
+          <article class="card soft"><div class="program-item">Sports & Activities</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="facilities" class="section">
+      <div class="container">
+        <div class="facilities-grid">
+          <div class="facility-feature">
+            <div class="eyebrow">Facilities</div>
+            <h2 class="section-title" style="font-size:2.2rem">Everything students need to learn and grow.</h2>
+            <p>
+              Add photographs and descriptions for your library, science lab, computer lab,
+              activity room, transport, sports ground, and classrooms.
+            </p>
+          </div>
+
+          <div class="cards-2">
+            <article class="card soft">
+              <h3>Smart Classrooms</h3>
+              <p>Replace this with your school’s actual facility details and photographs.</p>
+            </article>
+            <article class="card soft">
+              <h3>Library & Reading Space</h3>
+              <p>Replace this with your school’s actual facility details and photographs.</p>
+            </article>
+            <article class="card soft">
+              <h3>Science Laboratory</h3>
+              <p>Replace this with your school’s actual facility details and photographs.</p>
+            </article>
+            <article class="card soft">
+              <h3>Computer Lab</h3>
+              <p>Replace this with your school’s actual facility details and photographs.</p>
+            </article>
+            <article class="card soft">
+              <h3>Sports & Physical Education</h3>
+              <p>Replace this with your school’s actual facility details and photographs.</p>
+            </article>
+            <article class="card soft">
+              <h3>Transport Facility</h3>
+              <p>Replace this with your school’s actual facility details and photographs.</p>
+            </article>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="form-row">
-          <textarea id="adminNoticeBody" placeholder="Write the notice details here..."></textarea>
-          <button class="btn btn-primary" id="addNoticeBtn" type="button">Add Notice</button>
+    <section id="notices" class="section notice-section">
+      <div class="container">
+        <div class="eyebrow">Notices</div>
+        <h2 class="section-title">Latest updates for parents and students</h2>
+
+        <div class="cards-3" style="margin-top:28px">
+          <article class="card">
+            <div class="eyebrow">Notice</div>
+            <h3>Admissions open for the 2026–27 session.</h3>
+            <p>Please contact the school office for eligibility, fee structure, and documents required.</p>
+          </article>
+
+          <article class="card">
+            <div class="eyebrow">Notice</div>
+            <h3>New smart classroom block inaugurated.</h3>
+            <p>Our upgraded learning spaces now support interactive, student-friendly teaching.</p>
+          </article>
+
+          <article class="card">
+            <div class="eyebrow">Notice</div>
+            <h3>Weekly parent interaction every Saturday.</h3>
+            <p>Parents can meet teachers during school office hours for regular academic discussion.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <div class="cta">
-      <div>
-        <h3 style="margin:0 0 6px;">Ready to upgrade this into a real school system?</h3>
-        <p class="muted" style="margin:0;">
-          Next step: connect this front-end to PHP, Django, Firebase, Supabase, or Node.js with real student records.
-        </p>
-      </div>
-      <a href="#contact" class="btn btn-primary">Contact the School</a>
-    </div>
+    <section id="contact" class="section">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="card">
+            <div class="eyebrow">Contact</div>
+            <h2 class="section-title">Get in touch with the school office</h2>
 
-    <section class="section" id="contact">
-      <div class="section-head">
-        <div>
-          <h3>Contact Us</h3>
-          <p>We are here to help students and parents.</p>
-        </div>
-      </div>
+            <div class="info-list">
+              <div>
+                <div class="info-label">Address</div>
+                <div class="info-value">123 Education Road, Knowledge Nagar, Your City, India</div>
+              </div>
 
-      <div class="grid-3">
-        <div class="card">
-          <h4>Address</h4>
-          <p>Sunrise Public School, Main Road, Education Nagar, City</p>
-        </div>
-        <div class="card">
-          <h4>Phone & Email</h4>
-          <p>+91 98765 43210<br />info@sunrisepublicschool.edu</p>
-        </div>
-        <div class="card">
-          <h4>Office Hours</h4>
-          <p>Monday to Saturday<br />8:00 AM to 4:00 PM</p>
+              <div>
+                <div class="info-label">Phone</div>
+                <div class="info-value">+91 90000 00000</div>
+              </div>
+
+              <div>
+                <div class="info-label">Email</div>
+                <div class="info-value">info@sunrisepublicschool.edu</div>
+              </div>
+
+              <div>
+                <div class="info-label">Office Hours</div>
+                <div class="info-value">Monday to Saturday, 8:00 AM to 4:00 PM</div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="card admission-box">
+            <div class="eyebrow">Admissions</div>
+            <h3 style="font-size:2rem">Ready to enroll?</h3>
+            <p style="margin-top:12px">
+              Add your admission process here: eligibility, documents required,
+              fee enquiry, visit schedule, and entrance information.
+            </p>
+            <div style="margin-top:24px">
+              <a class="btn btn-primary" href="#">Apply for Admission</a>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
-
-    <footer>
-      <div class="footer-card">
-        <div>
-          <strong>Sunrise Public School</strong><br />
-          Modern School Website Demo
-        </div>
-        <div>
-          © 2026 Sunrise Public School · Website layout prepared for deployment on GitHub Pages or Blogger
-        </div>
-      </div>
-    </footer>
-
   </main>
 
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© 2026 Sunrise Public School. All rights reserved.</div>
+      <div>Interactive multi-theme school homepage demo.</div>
+    </div>
+  </footer>
+
   <script>
-    const schoolData = {
-      notices: [
-        {
-          title: "Admissions open for session 2026–27",
-          body: "Registration forms are now available for Nursery to Class 11.",
-          tag: "Admissions",
-          date: "2026-03-07"
+    (function () {
+      const body = document.body;
+
+      const themes = {
+        saffron: {
+          "--bg": "#fffaf2",
+          "--panel": "#ffffff",
+          "--panel-2": "#fff7e8",
+          "--soft": "#fff3df",
+          "--text": "#1f2937",
+          "--muted": "#6b7280",
+          "--line": "#fed7aa",
+          "--accent": "#ea580c",
+          "--accent-2": "#c2410c",
+          "--accent-3": "#fff7ed",
+          "--hero1": "#ffedd5",
+          "--hero2": "#fffbeb",
+          "--hero3": "#ffffff",
+          "--header-bg": "rgba(255,255,255,.88)",
+          "--shadow": "0 16px 40px rgba(15,23,42,.08)"
         },
-        {
-          title: "Parent-Teacher Meeting",
-          body: "The parent-teacher meeting will be held this Friday from 10:00 AM onward.",
-          tag: "General",
-          date: "2026-03-06"
+        blue: {
+          "--bg": "#f8fbff",
+          "--panel": "#ffffff",
+          "--panel-2": "#eef6ff",
+          "--soft": "#eff6ff",
+          "--text": "#1e293b",
+          "--muted": "#64748b",
+          "--line": "#bfdbfe",
+          "--accent": "#2563eb",
+          "--accent-2": "#1d4ed8",
+          "--accent-3": "#eff6ff",
+          "--hero1": "#dbeafe",
+          "--hero2": "#ecfeff",
+          "--hero3": "#ffffff",
+          "--header-bg": "rgba(255,255,255,.9)",
+          "--shadow": "0 16px 40px rgba(37,99,235,.10)"
         },
-        {
-          title: "Science Exhibition",
-          body: "Students from Classes 6 to 10 will participate in the annual science exhibition.",
-          tag: "Event",
-          date: "2026-03-05"
+        emerald: {
+          "--bg": "#f7fffb",
+          "--panel": "#ffffff",
+          "--panel-2": "#edfdf5",
+          "--soft": "#ecfdf5",
+          "--text": "#1f2937",
+          "--muted": "#6b7280",
+          "--line": "#a7f3d0",
+          "--accent": "#059669",
+          "--accent-2": "#047857",
+          "--accent-3": "#ecfdf5",
+          "--hero1": "#d1fae5",
+          "--hero2": "#f7fee7",
+          "--hero3": "#ffffff",
+          "--header-bg": "rgba(255,255,255,.9)",
+          "--shadow": "0 16px 40px rgba(5,150,105,.10)"
         },
-        {
-          title: "Mid-Term Assessment Notice",
-          body: "Mid-term assessments for Classes 8 to 12 begin next week. Please review the timetable.",
-          tag: "Exam",
-          date: "2026-03-04"
+        dark: {
+          "--bg": "#020617",
+          "--panel": "#0f172a",
+          "--panel-2": "#0b1220",
+          "--soft": "#111827",
+          "--text": "#e5e7eb",
+          "--muted": "#94a3b8",
+          "--line": "#1e293b",
+          "--accent": "#f59e0b",
+          "--accent-2": "#fbbf24",
+          "--accent-3": "#1f2937",
+          "--hero1": "#111827",
+          "--hero2": "#0f172a",
+          "--hero3": "#020617",
+          "--header-bg": "rgba(2,6,23,.85)",
+          "--shadow": "0 16px 40px rgba(0,0,0,.38)"
         }
-      ],
+      };
 
-      teachers: [
-        { name: "Anita Sharma", subject: "Mathematics", exp: "10 Years", initials: "AS" },
-        { name: "Rohit Verma", subject: "Science", exp: "8 Years", initials: "RV" },
-        { name: "Neha Kapoor", subject: "English", exp: "12 Years", initials: "NK" },
-        { name: "Arjun Singh", subject: "Computer Science", exp: "7 Years", initials: "AR" }
-      ],
+      const themeButtons = document.querySelectorAll("[data-theme-btn]");
+      const layoutButtons = document.querySelectorAll("[data-layout-btn]");
+      const layoutPanels = {
+        classic: document.getElementById("layout-classic"),
+        cards: document.getElementById("layout-cards"),
+        split: document.getElementById("layout-split")
+      };
 
-      students: {
-        "STU1001": {
-          password: "1234",
-          name: "Aarav Mishra",
-          className: "Class 8",
-          roll: "18",
-          section: "A",
-          attendance: 94,
-          result: [
-            { subject: "English", marks: 88, grade: "A" },
-            { subject: "Mathematics", marks: 95, grade: "A+" },
-            { subject: "Science", marks: 91, grade: "A+" },
-            { subject: "Social Science", marks: 84, grade: "A" },
-            { subject: "Computer Science", marks: 97, grade: "A+" }
-          ],
-          homework: [
-            {
-              subject: "Mathematics",
-              title: "Complete Exercise 6B",
-              due: "2026-03-09",
-              desc: "Solve questions 1 to 10 in the notebook."
-            },
-            {
-              subject: "Science",
-              title: "Prepare Volcano Model Notes",
-              due: "2026-03-11",
-              desc: "Write observation points for the science activity."
-            },
-            {
-              subject: "English",
-              title: "Grammar Worksheet",
-              due: "2026-03-10",
-              desc: "Complete tenses and voice practice worksheet."
-            }
-          ]
-        }
-      }
-    };
+      function applyTheme(themeName) {
+        const selected = themes[themeName] || themes.saffron;
+        Object.keys(selected).forEach(function (key) {
+          document.documentElement.style.setProperty(key, selected[key]);
+        });
 
-    const noticeList = document.getElementById("noticeList");
-    const teacherGrid = document.getElementById("teacherGrid");
-    const studentPortalView = document.getElementById("studentPortalView");
+        body.setAttribute("data-theme", themeName);
 
-    function formatDate(dateString){
-      const d = new Date(dateString);
-      return d.toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric"
-      });
-    }
+        themeButtons.forEach(function (btn) {
+          btn.classList.toggle("active", btn.getAttribute("data-theme-btn") === themeName);
+        });
 
-    function renderNotices(){
-      noticeList.innerHTML = "";
-      schoolData.notices.forEach(item => {
-        const el = document.createElement("div");
-        el.className = "notice";
-        el.innerHTML = `
-          <div>
-            <strong>${escapeHtml(item.title)}</strong>
-            <div class="muted">${escapeHtml(item.body)}</div>
-            <small>${formatDate(item.date)}</small>
-          </div>
-          <div class="badge">${escapeHtml(item.tag)}</div>
-        `;
-        noticeList.appendChild(el);
-      });
-    }
-
-    function renderTeachers(){
-      teacherGrid.innerHTML = "";
-      schoolData.teachers.forEach(t => {
-        const el = document.createElement("div");
-        el.className = "card teacher-card";
-        el.innerHTML = `
-          <div class="teacher-avatar">${escapeHtml(t.initials)}</div>
-          <h4>${escapeHtml(t.name)}</h4>
-          <p>${escapeHtml(t.subject)}</p>
-          <div class="teacher-meta">
-            <span>${escapeHtml(t.subject)}</span>
-            <span>${escapeHtml(t.exp)}</span>
-          </div>
-        `;
-        teacherGrid.appendChild(el);
-      });
-    }
-
-    function gradeStatusClass(attendance){
-      if(attendance >= 90) return "status-good";
-      if(attendance >= 75) return "status-mid";
-      return "status-bad";
-    }
-
-    function renderStudentPortal(student){
-      const total = student.result.reduce((sum, s) => sum + s.marks, 0);
-      const avg = (total / student.result.length).toFixed(1);
-
-      const resultRows = student.result.map(s => `
-        <tr>
-          <td>${escapeHtml(s.subject)}</td>
-          <td>${s.marks}</td>
-          <td>${escapeHtml(s.grade)}</td>
-        </tr>
-      `).join("");
-
-      const homeworkRows = student.homework.map(hw => `
-        <div class="hw-item">
-          <div>
-            <h5>${escapeHtml(hw.subject)} — ${escapeHtml(hw.title)}</h5>
-            <p>${escapeHtml(hw.desc)}</p>
-          </div>
-          <div class="badge">Due ${formatDate(hw.due)}</div>
-        </div>
-      `).join("");
-
-      studentPortalView.innerHTML = `
-        <h4>Welcome, ${escapeHtml(student.name)}</h4>
-        <p class="muted">Student dashboard successfully loaded.</p>
-
-        <div class="student-meta">
-          <div class="mini">
-            <div class="label">Class</div>
-            <div class="value">${escapeHtml(student.className)}</div>
-          </div>
-          <div class="mini">
-            <div class="label">Roll No.</div>
-            <div class="value">${escapeHtml(student.roll)}</div>
-          </div>
-          <div class="mini">
-            <div class="label">Section</div>
-            <div class="value">${escapeHtml(student.section)}</div>
-          </div>
-        </div>
-
-        <div class="grid-2" style="margin-top:16px;">
-          <div class="mini">
-            <div class="label">Attendance</div>
-            <div class="value ${gradeStatusClass(student.attendance)}">${student.attendance}%</div>
-          </div>
-          <div class="mini">
-            <div class="label">Average Marks</div>
-            <div class="value">${avg}%</div>
-          </div>
-        </div>
-
-        <div style="margin-top:18px;">
-          <h4>Result Summary</h4>
-          <table>
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Marks</th>
-                <th>Grade</th>
-              </tr>
-            </thead>
-            <tbody>${resultRows}</tbody>
-          </table>
-        </div>
-
-        <div style="margin-top:18px;">
-          <h4>Homework</h4>
-          <div class="homework-list">${homeworkRows}</div>
-        </div>
-      `;
-    }
-
-    function escapeHtml(str){
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    document.getElementById("loginBtn").addEventListener("click", function(){
-      const studentId = document.getElementById("studentId").value.trim();
-      const password = document.getElementById("studentPass").value.trim();
-
-      const student = schoolData.students[studentId];
-
-      if(!student){
-        studentPortalView.innerHTML = `
-          <h4>Login Failed</h4>
-          <p class="status-bad">Student ID not found.</p>
-        `;
-        return;
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute("content", selected["--accent"]);
       }
 
-      if(student.password !== password){
-        studentPortalView.innerHTML = `
-          <h4>Login Failed</h4>
-          <p class="status-bad">Incorrect password.</p>
-        `;
-        return;
+      function applyLayout(layoutName) {
+        body.setAttribute("data-layout", layoutName);
+
+        Object.keys(layoutPanels).forEach(function (key) {
+          layoutPanels[key].classList.toggle("hidden", key !== layoutName);
+        });
+
+        layoutButtons.forEach(function (btn) {
+          btn.classList.toggle("active", btn.getAttribute("data-layout-btn") === layoutName);
+        });
       }
 
-      renderStudentPortal(student);
-    });
-
-    document.getElementById("admissionBtn").addEventListener("click", function(){
-      const studentName = document.getElementById("admissionName").value.trim();
-      const className = document.getElementById("admissionClass").value.trim();
-      const parentName = document.getElementById("admissionParent").value.trim();
-      const phone = document.getElementById("admissionPhone").value.trim();
-      const msg = document.getElementById("admissionMessage");
-
-      if(!studentName || !className || !parentName || !phone){
-        msg.innerHTML = `<div class="badge" style="background:#fef2f2;border-color:#fecaca;color:#991b1b;">Please fill all admission fields.</div>`;
-        return;
-      }
-
-      msg.innerHTML = `
-        <div class="badge" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534;min-width:auto;">
-          Enquiry submitted for ${escapeHtml(studentName)} (${escapeHtml(className)}). Our team will contact ${escapeHtml(parentName)} soon.
-        </div>
-      `;
-
-      document.getElementById("admissionName").value = "";
-      document.getElementById("admissionClass").value = "";
-      document.getElementById("admissionParent").value = "";
-      document.getElementById("admissionPhone").value = "";
-    });
-
-    document.getElementById("addNoticeBtn").addEventListener("click", function(){
-      const title = document.getElementById("adminNoticeTitle").value.trim();
-      const tag = document.getElementById("adminNoticeTag").value;
-      const body = document.getElementById("adminNoticeBody").value.trim();
-
-      if(!title || !body){
-        alert("Please enter both notice title and notice body.");
-        return;
-      }
-
-      schoolData.notices.unshift({
-        title,
-        body,
-        tag,
-        date: new Date().toISOString().slice(0,10)
+      themeButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const themeName = btn.getAttribute("data-theme-btn");
+          applyTheme(themeName);
+        });
       });
 
-      renderNotices();
+      layoutButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const layoutName = btn.getAttribute("data-layout-btn");
+          applyLayout(layoutName);
+        });
+      });
 
-      document.getElementById("adminNoticeTitle").value = "";
-      document.getElementById("adminNoticeBody").value = "";
-      document.getElementById("adminNoticeTag").value = "General";
-
-      alert("Notice added successfully.");
-    });
-
-    document.getElementById("menuBtn").addEventListener("click", function(){
-      document.getElementById("navLinks").classList.toggle("open");
-    });
-
-    renderNotices();
-    renderTeachers();
+      applyTheme("saffron");
+      applyLayout("classic");
+    })();
   </script>
 </body>
 </html>
