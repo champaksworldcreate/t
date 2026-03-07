@@ -3,40 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kashi Valley School — Varanasi School Finder</title>
+  <title>Traditional Hindu Marriage in Varanasi | Groom House, Bride House, and Joint Rituals</title>
   <meta
     name="description"
-    content="A Varanasi-localized school website with school finder, transport routes, admission enquiry, quick class guide, notices, and parent-friendly tools."
+    content="A beautifully designed bilingual HTML page explaining the main events of a traditional Hindu marriage in Varanasi, including rituals at the groom's house, bride's house, joint wedding ceremonies, and post-wedding customs."
   />
-  <meta name="theme-color" content="#ea580c" />
-  <meta name="geo.region" content="IN-UP" />
-  <meta name="geo.placename" content="Varanasi" />
-  <meta name="geo.position" content="25.3176;82.9739" />
+  <meta name="theme-color" content="#8a4b08" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap"
     rel="stylesheet"
   />
 
   <style>
     :root{
-      --bg:#fffaf2;
+      --bg:#fff8ef;
       --panel:#ffffff;
-      --panel2:#fff5e9;
-      --soft:#fff0dd;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --line:#fed7aa;
-      --accent:#ea580c;
-      --accent2:#c2410c;
-      --hero1:#ffedd5;
-      --hero2:#fff7ed;
-      --hero3:#ffffff;
-      --ok:#059669;
-      --shadow:0 16px 40px rgba(15,23,42,.08);
-      --header-bg:rgba(255,255,255,.9);
+      --panel-2:#fff4e4;
+      --ink:#1f2328;
+      --muted:#5f6670;
+      --line:#ead7bd;
+      --saffron:#c87400;
+      --saffron-2:#ffb347;
+      --deep:#6b3d00;
+      --rose:#b33f62;
+      --green:#28664f;
+      --shadow:0 14px 38px rgba(69, 38, 5, .10);
+      --radius:22px;
+      --radius-sm:16px;
       --max:1240px;
     }
 
@@ -44,1967 +40,1826 @@
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:var(--bg);
-      color:var(--text);
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(255, 179, 71, .18), transparent 26%),
+        radial-gradient(circle at left center, rgba(200, 116, 0, .10), transparent 25%),
+        linear-gradient(180deg, #fffaf4 0%, #fff8ef 48%, #fff3e7 100%);
+      font-family:Inter, DM Sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       line-height:1.6;
     }
 
-    h1,h2,h3,h4,h5,.brand,.section-title,.big-number{
-      font-family:"DM Sans",system-ui,sans-serif;
-      margin:0;
-      line-height:1.12;
-      letter-spacing:-.02em;
+    a{color:inherit}
+    img{max-width:100%;display:block}
+
+    .container{
+      width:min(calc(100% - 28px), var(--max));
+      margin:auto;
     }
 
-    a{text-decoration:none;color:inherit}
-    button,input,select,textarea{font:inherit}
-    img{display:block;max-width:100%}
-    .container{width:min(var(--max),calc(100% - 28px));margin-inline:auto}
-    .hidden{display:none !important}
-
-    .notice-strip{
-      padding:12px 0;
-      background:var(--accent);
-      color:#fff;
-      overflow:hidden;
-      font-weight:800;
-      font-size:.94rem;
-    }
-    .ticker{
-      white-space:nowrap;
-      display:inline-block;
-      padding-left:100%;
-      animation:ticker 28s linear infinite;
-    }
-    @keyframes ticker{
-      0%{transform:translateX(0)}
-      100%{transform:translateX(-100%)}
-    }
-
-    .site-header{
+    .topbar{
       position:sticky;
       top:0;
-      z-index:1000;
-      backdrop-filter:blur(14px);
-      background:var(--header-bg);
-      border-bottom:1px solid var(--line);
+      z-index:50;
+      backdrop-filter:blur(12px);
+      background:rgba(255, 248, 239, .82);
+      border-bottom:1px solid rgba(234, 215, 189, .85);
     }
-    .header-inner{
+
+    .topbar-inner{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-      padding:14px 0;
-    }
-    .brand-wrap{
-      display:flex;
       gap:14px;
-      align-items:center;
-    }
-    .logo-badge{
-      width:58px;
-      height:58px;
-      border-radius:18px;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      display:grid;
-      place-items:center;
-      color:#fff;
-      font-weight:800;
-      box-shadow:var(--shadow);
-      flex:0 0 auto;
-    }
-    .brand{
-      font-size:1.45rem;
-      font-weight:800;
-      color:var(--accent2);
-    }
-    .sub-brand{
-      color:var(--muted);
-      font-size:.92rem;
+      min-height:68px;
     }
 
-    .nav{
+    .brand{
       display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      color:var(--muted);
-      font-weight:700;
-      font-size:.94rem;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+      letter-spacing:.2px;
     }
-    .nav a:hover{color:var(--accent2)}
+
+    .brand-mark{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, var(--saffron), var(--saffron-2));
+      color:#fff;
+      box-shadow:0 10px 24px rgba(200, 116, 0, .22);
+      font-size:1.1rem;
+      font-weight:800;
+    }
+
+    .brand-text small{
+      display:block;
+      color:var(--muted);
+      font-size:.78rem;
+      font-weight:600;
+      margin-top:1px;
+    }
 
     .toolbar{
       display:flex;
+      flex-wrap:wrap;
       gap:10px;
-      flex-wrap:wrap;
-    }
-    .toggle-group{
-      display:flex;
-      gap:7px;
       align-items:center;
-      flex-wrap:wrap;
-      padding:8px;
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-    }
-    .toggle-label{
-      padding:0 8px;
-      font-size:.74rem;
-      text-transform:uppercase;
-      letter-spacing:.16em;
-      color:var(--muted);
-      font-weight:800;
-      white-space:nowrap;
-    }
-    .toggle-btn{
-      border:none;
-      background:transparent;
-      color:var(--muted);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-      font-size:.82rem;
-      transition:.2s ease;
-    }
-    .toggle-btn:hover{background:var(--soft);color:var(--accent2)}
-    .toggle-btn.active{
-      background:var(--accent);
-      color:#fff;
-      box-shadow:0 10px 22px rgba(0,0,0,.09);
-    }
-
-    .hero{
-      position:relative;
-      overflow:hidden;
-    }
-    .hero::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(135deg,var(--hero1),var(--hero2),var(--hero3));
-      pointer-events:none;
-    }
-    .hero-inner{
-      position:relative;
-      padding:54px 0 34px;
-    }
-    .hero-grid{
-      display:grid;
-      gap:28px;
-      align-items:center;
-    }
-    .hero-grid.classic{grid-template-columns:1.12fr .88fr}
-    .hero-grid.cards{grid-template-columns:1fr}
-    .hero-grid.split{grid-template-columns:1.05fr .95fr;gap:0}
-
-    .badge-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:18px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 14px;
-      border-radius:999px;
-      background:var(--panel);
-      border:1px solid var(--line);
-      color:var(--accent2);
-      font-size:.88rem;
-      font-weight:800;
-      box-shadow:var(--shadow);
-    }
-    .hero h1{
-      font-size:clamp(2.35rem,6vw,5rem);
-      max-width:760px;
-    }
-    .hero-text{
-      margin-top:18px;
-      color:var(--muted);
-      font-size:1.06rem;
-      max-width:720px;
-    }
-    .hero-actions{
-      margin-top:26px;
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
     .btn{
-      border:none;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 14px;
+      font:600 .95rem/1 Inter, sans-serif;
       cursor:pointer;
+      box-shadow:0 3px 12px rgba(31,35,40,.04);
+      transition:.2s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      border-color:#d7b58c;
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg, var(--saffron), #da8a1c);
+      color:#fff;
+      border-color:transparent;
+    }
+
+    .hero{
+      padding:38px 0 20px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .hero-card, .hero-art{
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(234, 215, 189, .9);
+      border-radius:30px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero-card{
+      padding:30px;
+    }
+
+    .eyebrow{
       display:inline-flex;
       align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding:13px 18px;
-      border-radius:18px;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff2dc;
+      color:var(--deep);
+      border:1px solid #f2d1a0;
+      font-size:.86rem;
       font-weight:800;
-      transition:.2s ease;
-      font-size:.95rem;
-      text-decoration:none;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{
-      background:var(--accent);
-      color:#fff;
-      box-shadow:var(--shadow);
-    }
-    .btn-secondary{
-      background:var(--panel);
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-    .btn-soft{
-      background:var(--soft);
-      color:var(--accent2);
-      border:1px solid var(--line);
-    }
-
-    .hero-card-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:16px;
-    }
-    .hero-card-grid.cards-layout{
-      grid-template-columns:repeat(4,1fr);
-      margin-top:26px;
-    }
-    .hero-card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:28px;
-      padding:22px;
-      box-shadow:var(--shadow);
-    }
-    .hero-card.wide{grid-column:span 2}
-    .eyebrow{
-      font-size:.78rem;
       text-transform:uppercase;
-      letter-spacing:.18em;
-      font-weight:800;
-      color:var(--accent);
-      margin-bottom:10px;
-    }
-    .hero-card h3{font-size:1.25rem}
-    .hero-card p{margin:10px 0 0;color:var(--muted)}
-
-    .hero-split-main{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:34px 0 0 34px;
-      padding:42px;
-      box-shadow:var(--shadow);
-    }
-    .hero-split-side{
-      background:var(--soft);
-      border:1px solid var(--line);
-      border-left:none;
-      border-radius:0 34px 34px 0;
-      padding:24px;
+      letter-spacing:.08em;
     }
 
-    .quick-stats{
-      margin-top:26px;
+    h1{
+      font-size:clamp(2rem, 4vw, 3.4rem);
+      line-height:1.08;
+      margin:16px 0 12px;
+      letter-spacing:-.04em;
+    }
+
+    .lede{
+      color:var(--muted);
+      font-size:1.05rem;
+      max-width:65ch;
+    }
+
+    .hero-pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .pill{
+      padding:10px 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--deep);
+      font-weight:700;
+      font-size:.92rem;
+    }
+
+    .hero-art{
+      overflow:hidden;
+      position:relative;
+      min-height:320px;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,.95), rgba(255,255,255,.25) 36%, transparent 38%),
+        linear-gradient(135deg, #fff3dd, #fff8f0 48%, #ffe6cd);
+    }
+
+    .hero-art svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .intro{
+      margin:12px 0 28px;
+      padding:0 2px;
+      color:var(--muted);
+    }
+
+    .legend{
       display:grid;
+      grid-template-columns:repeat(4, 1fr);
       gap:14px;
-      grid-template-columns:repeat(4,1fr);
+      margin:22px 0 8px;
     }
-    .stat{
-      background:rgba(255,255,255,.8);
+
+    .legend-card{
+      background:rgba(255,255,255,.82);
       border:1px solid var(--line);
       border-radius:22px;
-      padding:16px 18px;
       box-shadow:var(--shadow);
+      padding:16px;
     }
-    .big-number{font-size:1.75rem;font-weight:800}
-    .stat small{display:block;color:var(--muted);margin-top:2px}
 
-    section.section{padding:70px 0}
-    .feature-band{
-      background:var(--panel2);
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
+    .legend-card h3{
+      margin:0 0 8px;
+      font-size:1rem;
     }
+
+    .section{
+      padding:18px 0 10px;
+    }
+
     .section-head{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:24px;
+      display:flex;
       align-items:end;
-      margin-bottom:28px;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
     }
+
+    .section-head h2{
+      margin:0;
+      font-size:clamp(1.4rem, 2.5vw, 2.2rem);
+      letter-spacing:-.03em;
+    }
+
     .section-head p{
       margin:0;
       color:var(--muted);
-      font-size:1.03rem;
-    }
-    .section-title{
-      font-size:clamp(1.85rem,3vw,3rem);
-      margin-top:8px;
-    }
-
-    .grid-4,.grid-3,.grid-2{
-      display:grid;
-      gap:18px;
-    }
-    .grid-4{grid-template-columns:repeat(4,1fr)}
-    .grid-3{grid-template-columns:repeat(3,1fr)}
-    .grid-2{grid-template-columns:repeat(2,1fr)}
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:28px;
-      padding:24px;
-      box-shadow:var(--shadow);
-    }
-    .card.soft{background:var(--soft)}
-    .card h3{font-size:1.2rem;margin-bottom:10px}
-    .card p{margin:0;color:var(--muted)}
-
-    .chips{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .chip{
-      border:1px solid var(--line);
-      background:var(--panel);
-      color:var(--muted);
-      padding:11px 14px;
-      border-radius:999px;
-      cursor:pointer;
-      font-weight:800;
-      transition:.2s ease;
-    }
-    .chip:hover{background:var(--soft);color:var(--accent2)}
-    .chip.active{
-      background:var(--accent);
-      color:#fff;
-    }
-
-    .class-panel,
-    .checker-grid,
-    .finder-grid,
-    .transport-grid,
-    .contact-grid{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:18px;
-    }
-
-    .mini-list{
-      display:grid;
-      gap:10px;
-      margin-top:14px;
-    }
-    .mini-item{
-      padding:12px 14px;
-      border-radius:16px;
-      background:var(--soft);
-      border:1px solid var(--line);
-      color:var(--text);
-      font-weight:600;
-    }
-
-    .field{
-      display:grid;
-      gap:7px;
-    }
-    .field label{
-      font-size:.92rem;
-      font-weight:700;
-      color:var(--muted);
-    }
-    .field.full{grid-column:1/-1}
-    .input,.select,.textarea{
-      width:100%;
-      border:1px solid var(--line);
-      background:var(--panel);
-      color:var(--text);
-      border-radius:16px;
-      padding:13px 14px;
-      outline:none;
-      transition:.2s ease;
-    }
-    .textarea{resize:vertical;min-height:120px}
-    .input:focus,.select:focus,.textarea:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 4px rgba(234,88,12,.12);
-    }
-
-    .result-box{
-      padding:18px;
-      border-radius:18px;
-      background:var(--soft);
-      border:1px solid var(--line);
-      margin-top:16px;
-      color:var(--text);
-    }
-    .result-box strong{
-      display:block;
-      font-size:1.05rem;
-      margin-bottom:6px;
-    }
-
-    .notice-filters{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:18px;
-    }
-    .filter-btn{
-      border:1px solid var(--line);
-      background:var(--panel);
-      color:var(--muted);
-      padding:10px 14px;
-      border-radius:999px;
-      font-weight:800;
-      cursor:pointer;
-    }
-    .filter-btn.active{
-      background:var(--accent);
-      color:#fff;
-    }
-    .notice-card .tag{
-      display:inline-flex;
-      align-items:center;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:.74rem;
-      font-weight:800;
-      margin-bottom:10px;
-      border:1px solid var(--line);
-      background:var(--soft);
-      color:var(--accent2);
+      max-width:58ch;
     }
 
     .timeline{
       display:grid;
-      gap:14px;
-    }
-    .timeline-item{
-      display:grid;
-      grid-template-columns:140px 1fr;
-      gap:14px;
-      align-items:start;
-      padding:16px;
-      border-radius:20px;
-      border:1px solid var(--line);
-      background:var(--panel);
-      box-shadow:var(--shadow);
-    }
-    .timeline-time{
-      font-weight:800;
-      color:var(--accent2);
-      background:var(--soft);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px 12px;
-      text-align:center;
-    }
-    .timeline-item p{
-      margin:6px 0 0;
-      color:var(--muted);
-    }
-
-    .results-row{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
       gap:18px;
     }
-    .results-metrics{
+
+    .event{
       display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:16px;
-      margin-top:18px;
-    }
-    .metric{
-      padding:18px;
-      border-radius:22px;
-      background:var(--soft);
+      grid-template-columns:110px 1fr;
+      gap:18px;
+      background:rgba(255,255,255,.86);
       border:1px solid var(--line);
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      padding:18px;
+      align-items:start;
     }
-    .metric .big-number{font-size:2rem}
-    .bar-list{display:grid;gap:14px}
-    .bar-item{display:grid;gap:8px}
-    .bar-head{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      font-weight:700;
-      font-size:.96rem;
-    }
-    .bar{
-      height:12px;
-      background:rgba(148,163,184,.2);
-      border-radius:999px;
+
+    .icon-wrap{
+      position:relative;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(180deg, #fff8ee, #fff0db);
+      border:1px solid #f2d7b0;
+      border-radius:22px;
+      min-height:110px;
       overflow:hidden;
     }
-    .bar > span{
-      display:block;
-      height:100%;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
+
+    .icon-wrap svg{
+      width:84px;
+      height:84px;
+    }
+
+    .step{
+      position:absolute;
+      top:10px;
+      left:10px;
+      min-width:32px;
+      height:32px;
+      display:grid;
+      place-items:center;
       border-radius:999px;
-    }
-
-    .landmark-grid,
-    .downloads-grid{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(4,1fr);
-    }
-
-    .info-list{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(2,1fr);
-      margin-top:24px;
-    }
-    .info-label{
-      color:var(--muted);
-      font-size:.9rem;
+      background:linear-gradient(135deg, var(--saffron), #e8982f);
+      color:#fff;
+      font-size:.86rem;
       font-weight:800;
-      margin-bottom:6px;
-    }
-    .admission-box{
-      background:linear-gradient(135deg,var(--hero1),var(--hero2));
+      box-shadow:0 8px 16px rgba(200, 116, 0, .28);
+      padding:0 10px;
     }
 
-    .cta-row{
+    .event-body{
+      min-width:0;
+    }
+
+    .event-head{
       display:flex;
+      align-items:start;
+      justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
-      margin-top:16px;
+      margin-bottom:8px;
     }
-    .success-box{
-      margin-top:16px;
-      padding:14px 16px;
-      border-radius:16px;
-      background:rgba(5,150,105,.12);
-      border:1px solid rgba(5,150,105,.22);
-      color:var(--ok);
+
+    .tag{
+      border:1px solid var(--line);
+      background:#fff8ee;
+      color:var(--deep);
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:.82rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .title-en{
+      margin:0;
+      font-size:1.28rem;
+      line-height:1.2;
+      letter-spacing:-.02em;
+    }
+
+    .title-hi{
+      margin:5px 0 0;
+      font-family:"Noto Sans Devanagari", sans-serif;
+      font-size:1.07rem;
+      color:var(--deep);
       font-weight:700;
-      display:none;
     }
 
-    .faq-grid{
+    .desc{
       display:grid;
-      gap:18px;
-    }
-    details.faq{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:16px 18px;
-      box-shadow:var(--shadow);
-    }
-    details.faq summary{
-      cursor:pointer;
-      font-weight:800;
-      list-style:none;
-    }
-    details.faq summary::-webkit-details-marker{display:none}
-    details.faq p{margin:12px 0 0;color:var(--muted)}
-
-    .site-footer{
-      border-top:1px solid var(--line);
-      background:var(--panel);
-      margin-top:10px;
-    }
-    .footer-inner{
-      padding:26px 0;
-      display:flex;
-      justify-content:space-between;
-      gap:18px;
-      flex-wrap:wrap;
-      color:var(--muted);
-      font-size:.95rem;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:12px;
     }
 
-    .floating-wa{
-      position:fixed;
-      right:16px;
-      bottom:16px;
-      z-index:1000;
-      display:grid;
-      gap:10px;
-      justify-items:end;
-    }
-    .fab{
-      width:58px;
-      height:58px;
-      border:none;
+    .lang-card{
+      background:var(--panel-2);
+      border:1px solid #f1dfc4;
       border-radius:18px;
-      cursor:pointer;
-      background:var(--accent);
-      color:#fff;
-      box-shadow:var(--shadow);
-      font-size:1.08rem;
+      padding:14px 15px;
+    }
+
+    .lang-label{
+      display:inline-block;
+      font-size:.78rem;
       font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--rose);
+      margin-bottom:8px;
     }
-    .wa-panel{
-      width:min(320px, calc(100vw - 32px));
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      box-shadow:var(--shadow);
-      padding:16px;
-      display:none;
+
+    .lang-card p{
+      margin:0;
+      color:#3c4046;
+      font-size:.97rem;
     }
-    .wa-panel.open{display:block}
-    .wa-panel h4{margin:0 0 10px}
-    .wa-actions{
-      display:grid;
+
+    .hindi{
+      font-family:"Noto Sans Devanagari", sans-serif;
+      font-size:1rem;
+      color:#402d12;
+    }
+
+    .details{
+      display:flex;
+      flex-wrap:wrap;
       gap:10px;
+      margin-top:14px;
     }
 
-    @media (max-width:1100px){
-      .hero-grid.classic,
-      .hero-grid.split,
-      .section-head,
-      .class-panel,
-      .checker-grid,
-      .finder-grid,
-      .transport-grid,
-      .contact-grid,
-      .results-row{
-        grid-template-columns:1fr;
-      }
-      .hero-split-main{border-radius:34px 34px 0 0}
-      .hero-split-side{
-        border-left:1px solid var(--line);
-        border-top:none;
-        border-radius:0 0 34px 34px;
-      }
-      .quick-stats{grid-template-columns:repeat(2,1fr)}
-      .grid-4,.landmark-grid,.downloads-grid{grid-template-columns:repeat(2,1fr)}
-      .hero-card-grid.cards-layout{grid-template-columns:repeat(2,1fr)}
+    .detail-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-size:.9rem;
+      color:#5b4122;
+      font-weight:700;
     }
 
-    @media (max-width:780px){
-      .nav{display:none}
-      .toolbar{width:100%}
-      .toggle-group{width:100%}
-      .header-inner{align-items:flex-start}
-      .hero-inner{padding:42px 0 26px}
-      .quick-stats,
-      .grid-4,
-      .grid-3,
-      .grid-2,
-      .hero-card-grid,
-      .hero-card-grid.cards-layout,
-      .results-metrics,
-      .landmark-grid,
-      .downloads-grid,
-      .info-list{
+    .summary-box{
+      margin:28px 0 18px;
+      background:linear-gradient(135deg, #fff2da, #fffaf3);
+      border:1px solid #f0d6ac;
+      border-radius:28px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .summary-item{
+      border:1px solid #eed6b2;
+      background:rgba(255,255,255,.74);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .summary-item h4{
+      margin:0 0 7px;
+      font-size:1rem;
+    }
+
+    .summary-item p{
+      margin:0;
+      font-size:.94rem;
+      color:var(--muted);
+    }
+
+    .footer{
+      padding:26px 0 44px;
+      color:var(--muted);
+    }
+
+    .foot-card{
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:rgba(255,255,255,.82);
+      box-shadow:var(--shadow);
+      padding:18px 20px;
+    }
+
+    .mode-both .lang-card{display:block}
+    .mode-en .lang-card.hi-only{display:none}
+    .mode-hi .lang-card.en-only{display:none}
+
+    .mode-hi .title-en{display:none}
+    .mode-en .title-hi{display:none}
+
+    .mode-hi .lede-en{display:none}
+    .mode-en .lede-hi{display:none}
+
+    .lede-hi{
+      display:block;
+      font-family:"Noto Sans Devanagari", sans-serif;
+      color:#4d3517;
+      margin-top:12px;
+      font-size:1.02rem;
+    }
+
+    .toc{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .toc a{
+      text-decoration:none;
+      padding:10px 14px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      font-weight:700;
+      color:#66401a;
+    }
+
+    @media (max-width: 1080px){
+      .hero-grid,
+      .legend,
+      .summary-grid{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    @media (max-width: 860px){
+      .hero-grid,
+      .legend,
+      .summary-grid,
+      .desc{
         grid-template-columns:1fr;
       }
-      .hero-card.wide{grid-column:auto}
-      .timeline-item{grid-template-columns:1fr}
-      section.section{padding:56px 0}
+
+      .event{
+        grid-template-columns:1fr;
+      }
+
+      .icon-wrap{
+        min-height:96px;
+      }
+
+      .section-head{
+        flex-direction:column;
+        align-items:start;
+      }
+    }
+
+    @media (max-width: 560px){
+      .topbar-inner{
+        padding:8px 0;
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .toolbar{
+        width:100%;
+        justify-content:flex-start;
+      }
+
+      .hero-card{
+        padding:22px;
+      }
+
+      .event{
+        padding:14px;
+        border-radius:22px;
+      }
     }
   </style>
 </head>
-<body data-theme="saffron" data-layout="classic">
-  <div class="notice-strip">
-    <div class="ticker">
-      Admissions open for Session 2026–27 • Serving Assi, Lanka, Sigra, Mahmoorganj, Bhelupur, Rathyatra, Kabir Nagar, DLW, Pandeypur, Shivpur, Sarnath, Chauk, Godowlia and Ramnagar areas • Transport routes available
-    </div>
-  </div>
-
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand-wrap">
-        <div class="logo-badge">KV</div>
-        <div>
-          <div class="brand">Kashi Valley School</div>
-          <div class="sub-brand">Near BHU Gate, Lanka Road, Varanasi</div>
+<body class="mode-both">
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">ॐ</div>
+        <div class="brand-text">
+          Hindu Marriage in Varanasi
+          <small>Traditional sequence • Bilingual presentation</small>
         </div>
       </div>
 
-      <nav class="nav" aria-label="Primary">
-        <a href="#finder">School Finder</a>
-        <a href="#transport">Transport</a>
-        <a href="#quick-entry">Classes</a>
-        <a href="#checker">Eligibility</a>
-        <a href="#notices">Notices</a>
-        <a href="#contact">Contact</a>
-      </nav>
-
-      <div class="toolbar">
-        <div class="toggle-group">
-          <span class="toggle-label">Theme</span>
-          <button class="toggle-btn active" data-theme-btn="saffron">Saffron</button>
-          <button class="toggle-btn" data-theme-btn="blue">Blue</button>
-          <button class="toggle-btn" data-theme-btn="emerald">Emerald</button>
-          <button class="toggle-btn" data-theme-btn="dark">Dark</button>
-        </div>
-
-        <div class="toggle-group">
-          <span class="toggle-label">Layout</span>
-          <button class="toggle-btn active" data-layout-btn="classic">Classic</button>
-          <button class="toggle-btn" data-layout-btn="cards">Cards</button>
-          <button class="toggle-btn" data-layout-btn="split">Split</button>
-        </div>
+      <div class="toolbar" aria-label="Language display controls">
+        <button class="btn" id="showBoth">English + हिन्दी</button>
+        <button class="btn" id="showEnglish">English</button>
+        <button class="btn" id="showHindi">हिन्दी</button>
+        <button class="btn primary" id="printPage">Print / Save PDF</button>
       </div>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-grid classic layout-panel" id="layout-classic">
-          <div>
-            <div class="badge-row">
-              <div class="badge">Admissions Open 2026–27</div>
-              <div class="badge">Varanasi School Finder</div>
-            </div>
-            <h1>Find your school access from anywhere in Varanasi.</h1>
-            <p class="hero-text">
-              This school website is localized for Varanasi. Parents can check distance,
-              travel time, landmarks, and bus route availability from areas like Assi,
-              Lanka, Sigra, Mahmoorganj, Bhelupur, Pandeypur, Sarnath, Shivpur, and more.
-            </p>
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="#finder">Use School Finder</a>
-              <a class="btn btn-secondary" href="#transport">Check Bus Route</a>
-              <a class="btn btn-soft" href="#contact">Admission Enquiry</a>
-            </div>
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">Varanasi Wedding Guide</div>
+          <h1>Traditional Hindu Marriage Events in Varanasi</h1>
 
-            <div class="quick-stats">
-              <div class="stat">
-                <div class="big-number">15</div>
-                <small>Varanasi Areas</small>
-              </div>
-              <div class="stat">
-                <div class="big-number">95%</div>
-                <small>Board Result</small>
-              </div>
-              <div class="stat">
-                <div class="big-number">12+</div>
-                <small>Bus Route Paths</small>
-              </div>
-              <div class="stat">
-                <div class="big-number">1800+</div>
-                <small>Students</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="hero-card-grid">
-            <article class="hero-card">
-              <div class="eyebrow">School Finder</div>
-              <h3>Distance and travel estimate</h3>
-              <p>Choose your area and see how far the school is from your home side of Varanasi.</p>
-            </article>
-            <article class="hero-card">
-              <div class="eyebrow">Transport Support</div>
-              <h3>Route-wise coverage</h3>
-              <p>Check whether the demo bus route covers your locality or nearby pickup point.</p>
-            </article>
-            <article class="hero-card wide">
-              <div class="eyebrow">Localized for Varanasi</div>
-              <h3>Names and routes that feel real</h3>
-              <p>
-                The school finder uses local place names such as Assi, Lanka, Sigra, Mahmoorganj,
-                Bhelupur, Rathyatra, Kabir Nagar, DLW, Pandeypur, Varuna Bridge, Sarnath, Shivpur,
-                Chauk, Godowlia and Ramnagar.
-              </p>
-            </article>
-          </div>
-        </div>
-
-        <div class="hero-grid cards layout-panel hidden" id="layout-cards">
-          <div style="text-align:center">
-            <div class="badge-row" style="justify-content:center">
-              <div class="badge">Localized for Varanasi</div>
-              <div class="badge">Parent-Friendly Design</div>
-            </div>
-            <h1>Every important school detail, tailored for Varanasi parents.</h1>
-            <p class="hero-text" style="margin-inline:auto">
-              Quickly check school access, routes, class details, eligibility, notices, and contact options.
-            </p>
-            <div class="hero-actions" style="justify-content:center">
-              <a class="btn btn-primary" href="#finder">Find My Area</a>
-              <a class="btn btn-secondary" href="#quick-entry">View Class Guide</a>
-            </div>
-          </div>
-
-          <div class="hero-card-grid cards-layout">
-            <article class="hero-card">
-              <div class="eyebrow">Area Search</div>
-              <h3>Assi or Sigra?</h3>
-              <p>Check estimated distance from your area to the school.</p>
-            </article>
-            <article class="hero-card">
-              <div class="eyebrow">Routes</div>
-              <h3>Bus support</h3>
-              <p>See sample bus paths from key Varanasi localities.</p>
-            </article>
-            <article class="hero-card">
-              <div class="eyebrow">Classes</div>
-              <h3>Quick section guide</h3>
-              <p>View fee, timings, and highlights for each stage.</p>
-            </article>
-            <article class="hero-card">
-              <div class="eyebrow">Contact</div>
-              <h3>Fast admission enquiry</h3>
-              <p>Use form, call, or WhatsApp for admissions support.</p>
-            </article>
-          </div>
-        </div>
-
-        <div class="hero-grid split layout-panel hidden" id="layout-split">
-          <div class="hero-split-main">
-            <div class="badge-row">
-              <div class="badge">Varanasi Access Layout</div>
-            </div>
-            <h1>Check access, routes, and school details from your location.</h1>
-            <p class="hero-text">
-              Parents can quickly estimate school reachability and transport support from their area.
-            </p>
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="#finder">Open Finder</a>
-              <a class="btn btn-secondary" href="#transport">See Routes</a>
-            </div>
-          </div>
-          <div class="hero-split-side">
-            <div class="grid-2" style="grid-template-columns:1fr">
-              <article class="card">
-                <div class="eyebrow">Distance</div>
-                <h3>Area-based estimate</h3>
-                <p>Check approximate distance and travel time from localities across Varanasi.</p>
-              </article>
-              <article class="card">
-                <div class="eyebrow">Eligibility</div>
-                <h3>Age-to-class guidance</h3>
-                <p>Parents can estimate class suitability before calling the school.</p>
-              </article>
-              <article class="card">
-                <div class="eyebrow">Routes</div>
-                <h3>Transport availability</h3>
-                <p>See whether your area is on a sample bus route.</p>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="finder" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Varanasi School Finder</div>
-            <h2 class="section-title">Estimate school access from your area</h2>
-          </div>
-          <p>
-            This finder assumes the school is located near BHU Gate, Lanka Road, Varanasi.
-            Choose your locality to see sample distance, travel time, nearby landmark, and transport status.
+          <p class="lede lede-en">
+            This page organizes the main ceremonies into four parts:
+            rituals at the groom’s house, rituals at the bride’s house,
+            rituals performed together during the wedding, and post-wedding customs.
           </p>
-        </div>
 
-        <div class="finder-grid">
-          <div class="card">
-            <div class="field">
-              <label for="finderArea">Select your area</label>
-              <select class="select" id="finderArea">
-                <option value="">Choose Area</option>
-                <option>Assi</option>
-                <option>Lanka</option>
-                <option>Sigra</option>
-                <option>Mahmoorganj</option>
-                <option>Bhelupur</option>
-                <option>Rathyatra</option>
-                <option>Kabir Nagar</option>
-                <option>DLW</option>
-                <option>Pandeypur</option>
-                <option>Varuna Bridge</option>
-                <option>Sarnath</option>
-                <option>Shivpur</option>
-                <option>Chauk</option>
-                <option>Godowlia</option>
-                <option>Ramnagar</option>
-              </select>
-            </div>
-
-            <div class="cta-row">
-              <button class="btn btn-primary" type="button" id="finderBtn">Find School Access</button>
-            </div>
-
-            <div class="result-box" id="finderResult">
-              <strong>Your result will appear here</strong>
-              Select an area and click the button to view estimated distance, travel time, landmark, and route support.
-            </div>
+          <div class="lede-hi">
+            यह पृष्ठ वाराणसी के पारंपरिक हिन्दू विवाह के मुख्य कार्यक्रमों को चार भागों में व्यवस्थित करता है:
+            वर पक्ष के घर के संस्कार, वधू पक्ष के घर के संस्कार, विवाह के समय साथ होने वाले संस्कार,
+            और विवाह के बाद की प्रमुख रस्में।
           </div>
 
-          <div class="card soft">
-            <div class="eyebrow">Demo School Location</div>
-            <h3>Kashi Valley School</h3>
-            <p style="margin-top:10px">
-              This demo assumes the school is located near BHU Gate on Lanka Road, Varanasi.
-              You can later replace these sample values with your real school address.
-            </p>
-            <div class="mini-list">
-              <div class="mini-item">Address side: BHU Gate / Lanka</div>
-              <div class="mini-item">City: Varanasi</div>
-              <div class="mini-item">Good for local SEO</div>
-              <div class="mini-item">Useful for admissions planning</div>
-            </div>
+          <div class="hero-pills">
+            <span class="pill">Groom House / वर पक्ष</span>
+            <span class="pill">Bride House / वधू पक्ष</span>
+            <span class="pill">Wedding Together / संयुक्त विवाह संस्कार</span>
+            <span class="pill">Post Wedding / विवाहोत्तर रस्में</span>
+          </div>
+
+          <div class="toc">
+            <a href="#groom-house">Groom House</a>
+            <a href="#bride-house">Bride House</a>
+            <a href="#together">Together</a>
+            <a href="#post-wedding">Post Wedding</a>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-label="Bilingual wedding illustration">
+          <svg viewBox="0 0 700 500" role="img" aria-labelledby="heroTitle heroDesc">
+            <title id="heroTitle">Wedding procession and sacred fire illustration | बारात और अग्नि का चित्र</title>
+            <desc id="heroDesc">A festive SVG scene showing a mandap, sacred fire, bride, groom and decorative lights. | एक उत्सवी दृश्य जिसमें मंडप, अग्नि, वधू, वर और सजावट दिखाई गई है।</desc>
+
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fff8eb"/>
+                <stop offset="100%" stop-color="#ffe8cb"/>
+              </linearGradient>
+              <linearGradient id="mandapTop" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d88411"/>
+                <stop offset="100%" stop-color="#f2a53f"/>
+              </linearGradient>
+              <linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#c73e60"/>
+                <stop offset="100%" stop-color="#e57892"/>
+              </linearGradient>
+            </defs>
+
+            <rect width="700" height="500" fill="url(#sky)"/>
+            <circle cx="90" cy="88" r="24" fill="#ffd77d" opacity=".75"/>
+            <circle cx="520" cy="80" r="14" fill="#ffcc73" opacity=".65"/>
+            <circle cx="586" cy="126" r="8" fill="#ffb85f" opacity=".6"/>
+
+            <rect x="0" y="370" width="700" height="130" fill="#f6d8b1"/>
+            <rect x="0" y="410" width="700" height="90" fill="#e8c08e"/>
+
+            <g opacity=".9">
+              <line x1="70" y1="65" x2="630" y2="65" stroke="#c88417" stroke-width="5"/>
+              <circle cx="100" cy="65" r="7" fill="#b33f62"/>
+              <circle cx="155" cy="65" r="7" fill="#d99700"/>
+              <circle cx="210" cy="65" r="7" fill="#b33f62"/>
+              <circle cx="265" cy="65" r="7" fill="#d99700"/>
+              <circle cx="320" cy="65" r="7" fill="#b33f62"/>
+              <circle cx="375" cy="65" r="7" fill="#d99700"/>
+              <circle cx="430" cy="65" r="7" fill="#b33f62"/>
+              <circle cx="485" cy="65" r="7" fill="#d99700"/>
+              <circle cx="540" cy="65" r="7" fill="#b33f62"/>
+              <circle cx="595" cy="65" r="7" fill="#d99700"/>
+            </g>
+
+            <g>
+              <rect x="135" y="120" width="430" height="18" rx="9" fill="url(#mandapTop)"/>
+              <rect x="150" y="138" width="18" height="200" rx="8" fill="#a15c10"/>
+              <rect x="532" y="138" width="18" height="200" rx="8" fill="#a15c10"/>
+              <rect x="190" y="138" width="330" height="20" rx="10" fill="url(#cloth)"/>
+              <path d="M190 158 L210 195 L230 158 L250 195 L270 158 L290 195 L310 158 L330 195 L350 158 L370 195 L390 158 L410 195 L430 158 L450 195 L470 158 L490 195 L520 158" fill="#d85275" opacity=".94"/>
+            </g>
+
+            <g transform="translate(295 290)">
+              <ellipse cx="55" cy="80" rx="88" ry="16" fill="#cfb08a"/>
+              <rect x="12" y="24" width="86" height="18" rx="9" fill="#8b5320"/>
+              <rect x="20" y="12" width="70" height="16" rx="8" fill="#9c6028"/>
+              <path d="M55 8 C38 28 38 48 55 72 C72 48 72 28 55 8Z" fill="#ff9b34"/>
+              <path d="M55 20 C44 34 44 46 55 60 C66 46 66 34 55 20Z" fill="#ffd15a"/>
+              <path d="M55 30 C48 39 48 47 55 53 C62 47 62 39 55 30Z" fill="#fff2a7"/>
+            </g>
+
+            <g transform="translate(220 210)">
+              <circle cx="0" cy="0" r="22" fill="#f1c294"/>
+              <rect x="-14" y="24" width="28" height="58" rx="12" fill="#f0c18f"/>
+              <path d="M-30 82 Q0 52 30 82 V118 H-30 Z" fill="#bb2d57"/>
+              <rect x="-14" y="82" width="10" height="48" rx="5" fill="#f0c18f"/>
+              <rect x="4" y="82" width="10" height="48" rx="5" fill="#f0c18f"/>
+              <path d="M-18 -18 Q0 -34 18 -18" stroke="#8f5413" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <circle cx="-7" cy="-3" r="2.2" fill="#3c2b1d"/>
+              <circle cx="7" cy="-3" r="2.2" fill="#3c2b1d"/>
+            </g>
+
+            <g transform="translate(480 210)">
+              <circle cx="0" cy="0" r="22" fill="#f1c294"/>
+              <rect x="-14" y="24" width="28" height="58" rx="12" fill="#f0c18f"/>
+              <path d="M-30 82 Q0 56 30 82 V120 H-30 Z" fill="#e18d1e"/>
+              <rect x="-14" y="82" width="10" height="48" rx="5" fill="#f0c18f"/>
+              <rect x="4" y="82" width="10" height="48" rx="5" fill="#f0c18f"/>
+              <path d="M-18 -24 L18 -24 L14 -6 L-14 -6 Z" fill="#d6486d"/>
+              <circle cx="-7" cy="-3" r="2.2" fill="#3c2b1d"/>
+              <circle cx="7" cy="-3" r="2.2" fill="#3c2b1d"/>
+            </g>
+
+            <g opacity=".78">
+              <circle cx="120" cy="165" r="5" fill="#e58d1b"/>
+              <circle cx="600" cy="178" r="5" fill="#c73e60"/>
+              <circle cx="565" cy="220" r="4" fill="#e58d1b"/>
+              <circle cx="144" cy="222" r="4" fill="#c73e60"/>
+              <circle cx="110" cy="258" r="6" fill="#e58d1b"/>
+              <circle cx="610" cy="278" r="6" fill="#c73e60"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="intro">
+          The order of ceremonies may vary from family to family, but the following structure gives a clear and practical overview of the major events commonly associated with a traditional wedding in and around Varanasi.
+        </div>
+
+        <div class="legend">
+          <div class="legend-card">
+            <h3>1. Groom’s House</h3>
+            <div class="hindi">१. वर पक्ष के घर की रस्में</div>
+          </div>
+          <div class="legend-card">
+            <h3>2. Bride’s House</h3>
+            <div class="hindi">२. वधू पक्ष के घर की रस्में</div>
+          </div>
+          <div class="legend-card">
+            <h3>3. Wedding Together</h3>
+            <div class="hindi">३. संयुक्त विवाह संस्कार</div>
+          </div>
+          <div class="legend-card">
+            <h3>4. Post-Wedding</h3>
+            <div class="hindi">४. विवाहोत्तर रस्में</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="quick-entry" class="section">
+    <section class="section" id="groom-house">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Class-wise Quick Entry</div>
-            <h2 class="section-title">Show the right information to the right parent</h2>
+            <h2>Rituals at the Groom’s House</h2>
+            <div class="hindi">वर पक्ष के घर होने वाली प्रमुख रस्में</div>
           </div>
           <p>
-            Parents often only care about one stage of schooling. These quick filters let them instantly see
-            class-specific fee, timing, highlights, and admission notes.
-          </p>
-        </div>
-
-        <div class="chips" id="classChips">
-          <button class="chip active" data-class-key="nursery">Nursery / KG</button>
-          <button class="chip" data-class-key="primary">Primary</button>
-          <button class="chip" data-class-key="middle">Middle School</button>
-          <button class="chip" data-class-key="secondary">Secondary</button>
-          <button class="chip" data-class-key="senior">Senior Secondary</button>
-        </div>
-
-        <div class="class-panel">
-          <div class="card">
-            <div class="eyebrow">Selected Section</div>
-            <h3 id="classTitle">Nursery / KG</h3>
-            <p id="classDesc" style="margin-top:10px">
-              Early learning with phonics, basic numeracy, confidence building, classroom habits, and playful skill development.
-            </p>
-            <div class="mini-list" id="classHighlights"></div>
-          </div>
-
-          <div class="card soft">
-            <div class="eyebrow">Quick Details</div>
-            <div class="mini-list">
-              <div class="mini-item"><strong>Timing:</strong> <span id="classTiming">8:30 AM – 12:30 PM</span></div>
-              <div class="mini-item"><strong>Approx. Fee:</strong> <span id="classFee">₹2,500 / month</span></div>
-              <div class="mini-item"><strong>Admission Note:</strong> <span id="classNote">Friendly onboarding and parent orientation available.</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="checker" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Admission Eligibility Checker</div>
-            <h2 class="section-title">A simple tool parents will actually use</h2>
-          </div>
-          <p>
-            Let parents estimate likely eligibility before they enquire. This reduces repeated office questions
-            and gives them a more confident first step.
-          </p>
-        </div>
-
-        <div class="checker-grid">
-          <div class="card">
-            <div class="field">
-              <label for="childAge">Child Age (in years)</label>
-              <input class="input" id="childAge" type="number" min="2" max="20" placeholder="Example: 5" />
-            </div>
-            <div class="field" style="margin-top:14px">
-              <label for="desiredClass">Desired Class</label>
-              <select class="select" id="desiredClass">
-                <option value="">Select class</option>
-                <option>Nursery</option>
-                <option>LKG</option>
-                <option>UKG</option>
-                <option>Class I</option>
-                <option>Class II</option>
-                <option>Class III</option>
-                <option>Class IV</option>
-                <option>Class V</option>
-                <option>Class VI</option>
-                <option>Class VII</option>
-                <option>Class VIII</option>
-                <option>Class IX</option>
-                <option>Class X</option>
-                <option>Class XI</option>
-                <option>Class XII</option>
-              </select>
-            </div>
-            <div class="cta-row">
-              <button class="btn btn-primary" id="checkEligibilityBtn" type="button">Check Eligibility</button>
-            </div>
-            <div class="result-box" id="eligibilityResult">
-              <strong>Result will appear here</strong>
-              Enter the child’s age and desired class, then click the button.
-            </div>
-          </div>
-
-          <div class="card soft">
-            <div class="eyebrow">Usually Required</div>
-            <div class="mini-list">
-              <div class="mini-item">Birth certificate</div>
-              <div class="mini-item">Passport-size photographs</div>
-              <div class="mini-item">Address proof</div>
-              <div class="mini-item">Previous report card where applicable</div>
-              <div class="mini-item">Transfer certificate for higher classes where applicable</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="transport" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Varanasi Transport Routes</div>
-            <h2 class="section-title">Check if school buses run near your area</h2>
-          </div>
-          <p>
-            Parents often first ask whether the school bus comes near home. Select your area below to see a sample route.
-          </p>
-        </div>
-
-        <div class="transport-grid">
-          <div class="card">
-            <div class="field">
-              <label for="areaSelect">Select your area</label>
-              <select class="select" id="areaSelect">
-                <option value="">Choose Area</option>
-                <option>Assi</option>
-                <option>Lanka</option>
-                <option>Sigra</option>
-                <option>Mahmoorganj</option>
-                <option>Bhelupur</option>
-                <option>Rathyatra</option>
-                <option>Kabir Nagar</option>
-                <option>DLW</option>
-                <option>Pandeypur</option>
-                <option>Varuna Bridge</option>
-                <option>Sarnath</option>
-                <option>Shivpur</option>
-                <option>Chauk</option>
-                <option>Godowlia</option>
-                <option>Ramnagar</option>
-              </select>
-            </div>
-
-            <div class="result-box" id="transportResult">
-              <strong>Route information will appear here</strong>
-              Select an area above to see the available bus route.
-            </div>
-          </div>
-
-          <div class="card soft">
-            <div class="eyebrow">Sample Coverage</div>
-            <div class="mini-list">
-              <div class="mini-item">Assi → Bhelupur → Rathyatra → School</div>
-              <div class="mini-item">Lanka → BHU Gate → Naria → School</div>
-              <div class="mini-item">Sigra → Mahmoorganj → Rathyatra → School</div>
-              <div class="mini-item">Pandeypur → Varuna Bridge → School</div>
-              <div class="mini-item">Sarnath → Ashapur → School</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="landmarks" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Varanasi Landmarks</div>
-            <h2 class="section-title">Easy to reach from major city points</h2>
-          </div>
-          <p>
-            Landmark-based confidence helps parents quickly understand where the school sits in the city.
-          </p>
-        </div>
-
-        <div class="landmark-grid">
-          <article class="card">
-            <h3>BHU Gate</h3>
-            <p>Very close to the Lanka side of this demo school location.</p>
-          </article>
-          <article class="card">
-            <h3>Assi Ghat</h3>
-            <p>Convenient for families coming from Assi and southern Varanasi areas.</p>
-          </article>
-          <article class="card">
-            <h3>Sigra</h3>
-            <p>Good road connectivity through Bhelupur and Rathyatra routes.</p>
-          </article>
-          <article class="card">
-            <h3>Sarnath</h3>
-            <p>Accessible through Ashapur-side route planning in this demo.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="notices" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Smart Notice Center</div>
-            <h2 class="section-title">Parents should not dig through every notice</h2>
-          </div>
-          <p>
-            Filter notices by what matters most: admissions, exams, holidays, events, or urgent updates.
-          </p>
-        </div>
-
-        <div class="notice-filters">
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="admissions">Admissions</button>
-          <button class="filter-btn" data-filter="exams">Exams</button>
-          <button class="filter-btn" data-filter="holidays">Holidays</button>
-          <button class="filter-btn" data-filter="events">Events</button>
-          <button class="filter-btn" data-filter="urgent">Urgent</button>
-        </div>
-
-        <div class="grid-3" id="noticeGrid">
-          <article class="card notice-card" data-category="admissions">
-            <div class="tag">Admissions</div>
-            <h3>Admissions open for Session 2026–27</h3>
-            <p>Please contact the school office for eligibility, documents required, and class availability.</p>
-          </article>
-
-          <article class="card notice-card" data-category="exams">
-            <div class="tag">Exams</div>
-            <h3>Mid-term examination schedule released</h3>
-            <p>Class-wise dates, reporting instructions, and subject timetable are available now.</p>
-          </article>
-
-          <article class="card notice-card" data-category="holidays">
-            <div class="tag">Holidays</div>
-            <h3>Holiday schedule updated</h3>
-            <p>Parents are requested to check reopening date and assignment instructions carefully.</p>
-          </article>
-
-          <article class="card notice-card" data-category="events">
-            <div class="tag">Events</div>
-            <h3>Annual function rehearsal begins next week</h3>
-            <p>Students selected for stage events should follow the rehearsal timing shared by teachers.</p>
-          </article>
-
-          <article class="card notice-card" data-category="urgent">
-            <div class="tag">Urgent</div>
-            <h3>Tomorrow’s bus route adjusted in two areas</h3>
-            <p>Parents using transport are requested to confirm pickup timing with the transport desk.</p>
-          </article>
-
-          <article class="card notice-card" data-category="admissions">
-            <div class="tag">Admissions</div>
-            <h3>Scholarship test registration begins this month</h3>
-            <p>Merit-based evaluation for selected classes. Enquiry available through the office.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="day" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">A Day at School</div>
-            <h2 class="section-title">Show routine, discipline, and balance</h2>
-          </div>
-          <p>
-            Parents like seeing how the day is structured. It signals order, care, and a healthy learning environment.
+            These rituals prepare the groom and his household for the wedding procession and formal union.
           </p>
         </div>
 
         <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-time">8:00 AM</div>
-            <div>
-              <h3>Morning Arrival & Assembly</h3>
-              <p>Students gather for attendance, announcements, values, and a calm start to the day.</p>
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">1</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Tilak tray | तिलक की थाली">
+                <circle cx="50" cy="54" r="28" fill="#f4c482"/>
+                <circle cx="50" cy="54" r="20" fill="#f7ddb6"/>
+                <circle cx="38" cy="48" r="5" fill="#b33f62"/>
+                <circle cx="50" cy="48" r="5" fill="#d78900"/>
+                <circle cx="62" cy="48" r="5" fill="#28664f"/>
+                <rect x="22" y="68" width="56" height="8" rx="4" fill="#b7792a"/>
+              </svg>
             </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-time">9:00 AM</div>
-            <div>
-              <h3>Core Academic Sessions</h3>
-              <p>Focused periods for language, mathematics, science, and social studies.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-time">11:30 AM</div>
-            <div>
-              <h3>Lab / Activity / Reading Block</h3>
-              <p>Computer lab, science practicals, library reading, or activity-based sessions.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-time">1:00 PM</div>
-            <div>
-              <h3>Sports / Clubs / Enrichment</h3>
-              <p>Physical education, house activities, art, music, and confidence-building programs.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="results" class="section">
-      <div class="container">
-        <div class="results-row">
-          <div class="card">
-            <div class="eyebrow">Board Results</div>
-            <h2 class="section-title">Strong outcomes backed by steady guidance.</h2>
-            <p style="margin-top:14px;color:var(--muted)">
-              Use this section to show academic performance, toppers, scholarship selections,
-              and subject-level outcomes.
-            </p>
-
-            <div class="results-metrics">
-              <div class="metric">
-                <div class="big-number">95%</div>
-                <small>Class X Pass Percentage</small>
-              </div>
-              <div class="metric">
-                <div class="big-number">93%</div>
-                <small>Class XII Pass Percentage</small>
-              </div>
-              <div class="metric">
-                <div class="big-number">18</div>
-                <small>Students above 90%</small>
-              </div>
-              <div class="metric">
-                <div class="big-number">42</div>
-                <small>Merit Distinctions</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="eyebrow">Subject Performance</div>
-            <div class="bar-list">
-              <div class="bar-item">
-                <div class="bar-head"><span>Mathematics</span><span>91%</span></div>
-                <div class="bar"><span style="width:91%"></span></div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-head"><span>Science</span><span>94%</span></div>
-                <div class="bar"><span style="width:94%"></span></div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-head"><span>English</span><span>96%</span></div>
-                <div class="bar"><span style="width:96%"></span></div>
-              </div>
-              <div class="bar-item">
-                <div class="bar-head"><span>Social Science</span><span>89%</span></div>
-                <div class="bar"><span style="width:89%"></span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="downloads" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Worksheet Zone</div>
-            <h2 class="section-title">Useful downloads for parents</h2>
-          </div>
-          <p>
-            Instead of forcing parents to call or message, keep simple class-wise downloads ready here.
-          </p>
-        </div>
-
-        <div class="downloads-grid">
-          <article class="card">
-            <h3>Class III English Worksheet Pack</h3>
-            <p>Reading, grammar, and vocabulary practice for the current month.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
-          </article>
-          <article class="card">
-            <h3>Class VII Science Revision Sheet</h3>
-            <p>Short concept review, diagrams, and practice questions.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
-          </article>
-          <article class="card">
-            <h3>Class X Math Test Practice Set</h3>
-            <p>Board-style sample questions for chapter review and timed practice.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
-          </article>
-          <article class="card">
-            <h3>Holiday Homework Pack</h3>
-            <p>A sample homework download area for school breaks and special assignments.</p>
-            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section">
-      <div class="container">
-        <div class="contact-grid">
-          <div class="card">
-            <div class="eyebrow">Admission Enquiry</div>
-            <h2 class="section-title">Send an enquiry to the school office</h2>
-            <p style="margin-top:12px;color:var(--muted)">
-              This demo form stores the message locally in the browser and shows a success message.
-              Connect it to your backend, Google Form, email service, or WhatsApp workflow later.
-            </p>
-
-            <form id="admissionForm">
-              <div class="grid-2">
-                <div class="field">
-                  <label for="parentName">Parent Name</label>
-                  <input class="input" id="parentName" name="parentName" placeholder="Enter parent name" required />
-                </div>
-                <div class="field">
-                  <label for="studentName">Student Name</label>
-                  <input class="input" id="studentName" name="studentName" placeholder="Enter student name" required />
-                </div>
-                <div class="field">
-                  <label for="phone">Phone Number</label>
-                  <input class="input" id="phone" name="phone" placeholder="9335874326" required />
-                </div>
-                <div class="field">
-                  <label for="classSeeking">Class Seeking Admission In</label>
-                  <select class="select" id="classSeeking" name="classSeeking" required>
-                    <option value="">Select class</option>
-                    <option>Nursery</option>
-                    <option>LKG</option>
-                    <option>UKG</option>
-                    <option>Class I</option>
-                    <option>Class II</option>
-                    <option>Class III</option>
-                    <option>Class IV</option>
-                    <option>Class V</option>
-                    <option>Class VI</option>
-                    <option>Class VII</option>
-                    <option>Class VIII</option>
-                    <option>Class IX</option>
-                    <option>Class X</option>
-                    <option>Class XI</option>
-                    <option>Class XII</option>
-                  </select>
-                </div>
-                <div class="field full">
-                  <label for="message">Message</label>
-                  <textarea class="textarea" id="message" name="message" placeholder="Tell us any questions about admission, fee, transport, visit, or documents required."></textarea>
-                </div>
-              </div>
-
-              <div class="cta-row">
-                <button class="btn btn-primary" type="submit">Submit Enquiry</button>
-                <button class="btn btn-secondary" type="button" id="whatsappBtn">Send on WhatsApp</button>
-              </div>
-
-              <div class="success-box" id="formSuccess">
-                Enquiry submitted successfully in demo mode. Replace this with your real submission flow.
-              </div>
-            </form>
-          </div>
-
-          <aside class="card admission-box">
-            <div class="eyebrow">Contact Details</div>
-            <h3 style="font-size:2rem">Get in touch with the school office</h3>
-
-            <div class="info-list">
-              <div>
-                <div class="info-label">Address</div>
+            <div class="event-body">
+              <div class="event-head">
                 <div>
-                  Near BHU Gate,<br>
-                  Lanka Road,<br>
-                  Varanasi, Uttar Pradesh 221005
+                  <h3 class="title-en">Tilak Ceremony</h3>
+                  <div class="title-hi">तिलक समारोह</div>
+                </div>
+                <span class="tag">Acceptance Ritual</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride’s family visits the groom’s house. A ceremonial tilak is applied to the groom’s forehead,
+                    and gifts, sweets, clothes, and शुभ items are offered as a mark of respect and formal acceptance.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू पक्ष के लोग वर के घर आते हैं। वर के मस्तक पर तिलक लगाया जाता है और आदर तथा औपचारिक स्वीकृति के रूप में
+                    वस्त्र, मिठाई, नारियल और अन्य शुभ सामग्री अर्पित की जाती है।
+                  </p>
                 </div>
               </div>
-              <div>
-                <div class="info-label">Phone</div>
-                <div>9335874326</div>
-              </div>
-              <div>
-                <div class="info-label">Email</div>
-                <div>admissions@kashivalleyschool.edu</div>
-              </div>
-              <div>
-                <div class="info-label">Office Hours</div>
-                <div>Monday to Saturday, 8:00 AM to 4:00 PM</div>
-              </div>
-            </div>
 
-            <div class="cta-row" style="margin-top:24px">
-              <a class="btn btn-primary" href="#admissionForm">Start Admission</a>
-              <a class="btn btn-secondary" href="tel:9335874326">Call Now</a>
+              <div class="details">
+                <span class="detail-chip">Forehead tilak</span>
+                <span class="detail-chip">Gifts and sweets</span>
+                <span class="detail-chip">Family acceptance</span>
+              </div>
             </div>
-          </aside>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">2</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Rings | अंगूठियाँ">
+                <circle cx="38" cy="55" r="15" fill="none" stroke="#d89a2b" stroke-width="8"/>
+                <circle cx="62" cy="45" r="15" fill="none" stroke="#c78314" stroke-width="8"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Sagai / Ring Ceremony</h3>
+                  <div class="title-hi">सगाई / अंगूठी समारोह</div>
+                </div>
+                <span class="tag">Engagement</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    In many families this is combined with the tilak event. Rings may be exchanged and the marriage is
+                    formally announced among relatives and invited guests.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    अनेक परिवारों में यह तिलक के साथ ही किया जाता है। अंगूठियों का आदान-प्रदान होता है और विवाह की औपचारिक घोषणा
+                    रिश्तेदारों तथा अतिथियों के बीच की जाती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Ring exchange</span>
+                <span class="detail-chip">Formal announcement</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">3</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Haldi bowl | हल्दी का कटोरा">
+                <rect x="22" y="46" width="56" height="22" rx="11" fill="#b87327"/>
+                <path d="M26 46 Q50 28 74 46" fill="#f0bf2f"/>
+                <circle cx="50" cy="39" r="10" fill="#ffd95c"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Haldi Ceremony</h3>
+                  <div class="title-hi">हल्दी समारोह</div>
+                </div>
+                <span class="tag">Purification</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    Turmeric paste is applied to the groom by family members. It is associated with purification,
+                    auspiciousness, blessings, and festive family participation.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    परिवार के सदस्य वर को हल्दी लगाते हैं। इसे शुद्धि, मंगल, आशीर्वाद और उत्सवी पारिवारिक सहभागिता का प्रतीक माना जाता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Turmeric paste</span>
+                <span class="detail-chip">Blessings</span>
+                <span class="detail-chip">Family songs</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">4</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Sacred soil pot | मिट्टी का कलश">
+                <ellipse cx="50" cy="65" rx="24" ry="16" fill="#a96022"/>
+                <path d="M30 65 C30 42 36 30 50 30 C64 30 70 42 70 65" fill="#c27c34"/>
+                <rect x="42" y="18" width="16" height="16" rx="5" fill="#8a531f"/>
+                <path d="M50 20 C56 12 66 12 71 22 C61 24 55 28 50 35 C45 28 39 24 29 22 C34 12 44 12 50 20Z" fill="#2f8a58"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Matkor / Sacred Soil Ritual</h3>
+                  <div class="title-hi">मटकोर / पवित्र मिट्टी की रस्म</div>
+                </div>
+                <span class="tag">Regional Tradition</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    Women of the family bring sacred soil from a water-side location or traditional spot.
+                    This soil is used in related marriage preparations and connects the ceremony to the earth and household blessings.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    परिवार की महिलाएँ किसी जलाशय या पारंपरिक स्थान से पवित्र मिट्टी लाती हैं। यह मिट्टी विवाह से जुड़ी तैयारियों में प्रयुक्त होती है
+                    और धरती तथा गृह-मंगल से जुड़ाव का प्रतीक मानी जाती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Sacred soil</span>
+                <span class="detail-chip">Women-led ritual</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">5</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Mandap structure | मंडप">
+                <rect x="20" y="24" width="60" height="8" rx="4" fill="#d58516"/>
+                <rect x="24" y="32" width="8" height="42" rx="4" fill="#9b5a1c"/>
+                <rect x="68" y="32" width="8" height="42" rx="4" fill="#9b5a1c"/>
+                <path d="M24 32 H76 L68 48 H32 Z" fill="#cf4d73"/>
+                <rect x="16" y="74" width="68" height="8" rx="4" fill="#c7975f"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Mandap Sthapana</h3>
+                  <div class="title-hi">मंडप स्थापना</div>
+                </div>
+                <span class="tag">Sacred Setup</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The sacred wedding structure is prepared. Ritual items such as kalash, threads, and worship materials
+                    are arranged under priestly guidance.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    विवाह हेतु पवित्र मंडप की स्थापना की जाती है। पुरोहित के निर्देशन में कलश, सूत्र और पूजन सामग्री व्यवस्थित की जाती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Mandap setup</span>
+                <span class="detail-chip">Kalash and puja items</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">6</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Turban and sehra | साफा और सेहरा">
+                <path d="M22 58 Q50 26 78 58" fill="#d98819"/>
+                <rect x="26" y="58" width="48" height="12" rx="6" fill="#b96f11"/>
+                <line x1="34" y1="70" x2="34" y2="84" stroke="#f1d79f" stroke-width="4"/>
+                <line x1="44" y1="70" x2="44" y2="84" stroke="#f1d79f" stroke-width="4"/>
+                <line x1="54" y1="70" x2="54" y2="84" stroke="#f1d79f" stroke-width="4"/>
+                <line x1="64" y1="70" x2="64" y2="84" stroke="#f1d79f" stroke-width="4"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Sehra Bandi</h3>
+                  <div class="title-hi">सेहरा बंदी</div>
+                </div>
+                <span class="tag">Before Departure</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    Just before leaving with the baraat, the groom is dressed in ceremonial attire.
+                    The sehra is tied, and family members bless him through aarti and protective rituals.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    बारात प्रस्थान से ठीक पहले वर को विवाह-वेश में सजाया जाता है। सेहरा बाँधा जाता है और परिवारजन आरती तथा रक्षा-सूचक रस्मों द्वारा आशीर्वाद देते हैं।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Ceremonial dress</span>
+                <span class="detail-chip">Aarti</span>
+                <span class="detail-chip">Protective blessing</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">7</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Baraat horse and music | बारात">
+                <rect x="14" y="60" width="42" height="16" rx="5" fill="#b88754"/>
+                <circle cx="24" cy="80" r="7" fill="#5a4638"/>
+                <circle cx="48" cy="80" r="7" fill="#5a4638"/>
+                <circle cx="63" cy="34" r="10" fill="#f2c493"/>
+                <rect x="56" y="44" width="14" height="20" rx="6" fill="#f2c493"/>
+                <path d="M56 62 H78 L76 76 H58 Z" fill="#d98819"/>
+                <circle cx="82" cy="28" r="5" fill="#c53b61"/>
+                <rect x="79" y="34" width="6" height="18" rx="3" fill="#d09a2f"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Baraat Departure</h3>
+                  <div class="title-hi">बारात प्रस्थान</div>
+                </div>
+                <span class="tag">Procession</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The groom departs with the wedding procession. Music, dancing, decorated vehicles or a horse,
+                    and festive energy mark the journey to the bride’s venue.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वर बारात के साथ प्रस्थान करता है। संगीत, नृत्य, सजी हुई गाड़ी या घोड़ा, और उत्सवपूर्ण वातावरण के साथ
+                    यह यात्रा वधू के स्थल की ओर बढ़ती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Music and dance</span>
+                <span class="detail-chip">Procession to bride’s side</span>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section feature-band">
+    <section class="section" id="bride-house">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">FAQ</div>
-            <h2 class="section-title">Frequently asked questions</h2>
+            <h2>Rituals at the Bride’s House</h2>
+            <div class="hindi">वधू पक्ष के घर होने वाली प्रमुख रस्में</div>
           </div>
           <p>
-            Add answers for admission dates, documents required, transport routes, fee submission, uniforms, and school timings.
+            These events prepare the bride for the wedding and bring together family, beauty rituals, worship, and celebration.
           </p>
         </div>
 
-        <div class="faq-grid">
-          <details class="faq">
-            <summary>Which Varanasi areas are covered in this demo?</summary>
-            <p>This demo covers Assi, Lanka, Sigra, Mahmoorganj, Bhelupur, Rathyatra, Kabir Nagar, DLW, Pandeypur, Varuna Bridge, Sarnath, Shivpur, Chauk, Godowlia, and Ramnagar.</p>
-          </details>
-          <details class="faq">
-            <summary>Is transport available?</summary>
-            <p>Yes. This demo includes sample route coverage and pickup-side paths from several Varanasi localities.</p>
-          </details>
-          <details class="faq">
-            <summary>How can parents enquire about fee details?</summary>
-            <p>Parents can use the admission form, phone number, WhatsApp quick actions, or visit the school office during working hours.</p>
-          </details>
+        <div class="timeline">
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">1</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Sweets and agreement | रोका और मिठाई">
+                <rect x="20" y="40" width="60" height="30" rx="8" fill="#d49a51"/>
+                <circle cx="35" cy="55" r="7" fill="#f6dfbc"/>
+                <circle cx="50" cy="55" r="7" fill="#f7cd7c"/>
+                <circle cx="65" cy="55" r="7" fill="#f1b6ad"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Roka / Marriage Fixing</h3>
+                  <div class="title-hi">रोका / विवाह निश्चिती</div>
+                </div>
+                <span class="tag">Beginning</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    This is the initial understanding and confirmation between the two families.
+                    It may include blessings, exchange of sweets, and an informal yet meaningful acknowledgement of the match.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    यह दोनों परिवारों के बीच प्रारम्भिक सहमति और पुष्टि का चरण होता है। इसमें आशीर्वाद, मिठाई का आदान-प्रदान
+                    और संबंध की सार्थक स्वीकृति शामिल हो सकती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Family agreement</span>
+                <span class="detail-chip">Blessings and sweets</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">2</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Mehendi hand | मेहंदी लगा हाथ">
+                <path d="M42 22 C36 30 34 40 36 52 L36 72 C36 80 42 86 50 86 C58 86 64 80 64 72 L64 50 C64 38 58 28 50 22 Z" fill="#f0c08d"/>
+                <path d="M41 42 Q50 34 59 42 Q50 50 41 42Z" fill="#8a5a1f"/>
+                <circle cx="50" cy="60" r="8" fill="none" stroke="#8a5a1f" stroke-width="3"/>
+                <path d="M50 52 V68 M42 60 H58" stroke="#8a5a1f" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Mehendi Ceremony</h3>
+                  <div class="title-hi">मेहंदी समारोह</div>
+                </div>
+                <span class="tag">Adornment</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride’s hands and feet are decorated with henna designs. This is one of the most joyful pre-wedding events,
+                    often filled with singing, dance, and playful rituals.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू के हाथों और पैरों पर मेहंदी सजाई जाती है। यह विवाह-पूर्व की अत्यन्त आनंदमयी रस्मों में से एक होती है,
+                    जिसमें गीत, नृत्य और हँसी-खुशी का वातावरण रहता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Henna designs</span>
+                <span class="detail-chip">Songs and dance</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">3</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Haldi bowl | हल्दी">
+                <rect x="24" y="50" width="52" height="18" rx="9" fill="#a66727"/>
+                <path d="M28 50 Q50 34 72 50" fill="#f0c12e"/>
+                <circle cx="50" cy="44" r="8" fill="#ffd95c"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Haldi Ceremony</h3>
+                  <div class="title-hi">हल्दी समारोह</div>
+                </div>
+                <span class="tag">Auspicious Preparation</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    Turmeric is applied to the bride by family members. It represents purity, festive blessing,
+                    and the ceremonial preparation of the bride for the wedding day.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    परिवारजन वधू को हल्दी लगाते हैं। यह शुद्धि, मंगल-आशीर्वाद और विवाह-दिवस की पवित्र तैयारी का प्रतीक है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Purity</span>
+                <span class="detail-chip">Blessing</span>
+                <span class="detail-chip">Family participation</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">4</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Soil pot ritual | मटकोर">
+                <ellipse cx="50" cy="66" rx="22" ry="15" fill="#aa6527"/>
+                <path d="M28 66 C28 45 35 34 50 34 C65 34 72 45 72 66" fill="#c47d34"/>
+                <circle cx="50" cy="26" r="9" fill="#4a9e65"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Matkor</h3>
+                  <div class="title-hi">मटकोर</div>
+                </div>
+                <span class="tag">Regional Ritual</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    A similar sacred-soil tradition is performed on the bride’s side as well.
+                    It adds a strong regional and family-centered character to the marriage preparations.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू पक्ष में भी पवित्र मिट्टी से जुड़ी यह परंपरा निभाई जाती है। यह विवाह-तैयारी को क्षेत्रीय और पारिवारिक पहचान प्रदान करती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Sacred soil</span>
+                <span class="detail-chip">Regional identity</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">5</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Mandap | मंडप">
+                <rect x="20" y="24" width="60" height="8" rx="4" fill="#d58516"/>
+                <rect x="24" y="32" width="8" height="42" rx="4" fill="#9b5a1c"/>
+                <rect x="68" y="32" width="8" height="42" rx="4" fill="#9b5a1c"/>
+                <path d="M24 32 H76 L70 48 H30 Z" fill="#cf4d73"/>
+                <rect x="16" y="74" width="68" height="8" rx="4" fill="#c7975f"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Mandap Sthapana</h3>
+                  <div class="title-hi">मंडप स्थापना</div>
+                </div>
+                <span class="tag">Wedding Space</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The wedding area is prepared on the bride’s side, with the mandap becoming the ritual center
+                    for the main marriage ceremony.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू पक्ष में विवाह-स्थल की तैयारी की जाती है और मंडप मुख्य वैवाहिक संस्कारों का केंद्र बनता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Sacred space</span>
+                <span class="detail-chip">Main ceremony setup</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">6</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Prayer hands and lotus | गौरी पूजा">
+                <circle cx="50" cy="28" r="10" fill="#ffd174"/>
+                <path d="M32 62 C38 48 45 42 50 38 C55 42 62 48 68 62 C60 56 55 56 50 60 C45 56 40 56 32 62Z" fill="#c84b72"/>
+                <path d="M38 70 L50 48 L62 70" fill="none" stroke="#aa6e1b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Gauri Puja</h3>
+                  <div class="title-hi">गौरी पूजा</div>
+                </div>
+                <span class="tag">Prayer</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride offers prayers for a blessed married life. This ritual is associated with devotion,
+                    inner calm, and the wish for harmony in marriage.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू सुखी दाम्पत्य जीवन के लिए प्रार्थना करती है। यह रस्म श्रद्धा, मन की शांति और वैवाहिक समरसता की कामना से जुड़ी होती है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Blessed married life</span>
+                <span class="detail-chip">Devotional ritual</span>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
+
+    <section class="section" id="together">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Main Wedding Rituals Performed Together</h2>
+            <div class="hindi">विवाह के समय साथ होने वाले मुख्य संस्कार</div>
+          </div>
+          <p>
+            These are the central marriage ceremonies where both sides come together and the sacred bond is formally established.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">1</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Welcome aarti | स्वागत आरती">
+                <circle cx="50" cy="54" r="24" fill="#f6d19c"/>
+                <circle cx="50" cy="54" r="16" fill="#fff1da"/>
+                <path d="M50 40 C44 48 44 56 50 62 C56 56 56 48 50 40Z" fill="#ff9d35"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Baraat Arrival and Welcome</h3>
+                  <div class="title-hi">बारात आगमन और स्वागत</div>
+                </div>
+                <span class="tag">Reception of Groom</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride’s family welcomes the groom and the baraat. The atmosphere is formal, festive, and full of symbolic hospitality.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू पक्ष वर और बारात का स्वागत करता है। यह चरण आदर, उत्सव और प्रतीकात्मक आतिथ्य से भरा होता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Aarti</span>
+                <span class="detail-chip">Welcoming rites</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">2</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Garland exchange | वरमाला">
+                <circle cx="32" cy="40" r="12" fill="#f0c192"/>
+                <circle cx="68" cy="40" r="12" fill="#f0c192"/>
+                <ellipse cx="32" cy="62" rx="16" ry="20" fill="none" stroke="#c43e64" stroke-width="6"/>
+                <ellipse cx="68" cy="62" rx="16" ry="20" fill="none" stroke="#d48d1f" stroke-width="6"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Jaimala / Varmala</h3>
+                  <div class="title-hi">जयमाला / वरमाला</div>
+                </div>
+                <span class="tag">Mutual Acceptance</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride and groom exchange floral garlands. This is one of the most recognizable moments of the wedding
+                    and symbolizes mutual acceptance.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू और वर एक-दूसरे को वरमाला पहनाते हैं। यह विवाह का अत्यन्त प्रसिद्ध क्षण है और परस्पर स्वीकृति का प्रतीक माना जाता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Garland exchange</span>
+                <span class="detail-chip">Public ritual moment</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">3</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Hands joined | कन्यादान">
+                <circle cx="38" cy="38" r="10" fill="#f0c192"/>
+                <circle cx="62" cy="38" r="10" fill="#f0c192"/>
+                <path d="M26 58 Q38 48 50 58 Q62 48 74 58" fill="none" stroke="#d98819" stroke-width="8" stroke-linecap="round"/>
+                <path d="M34 67 Q50 78 66 67" fill="none" stroke="#b33f62" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Kanyadaan</h3>
+                  <div class="title-hi">कन्यादान</div>
+                </div>
+                <span class="tag">Sacred Offering</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride’s parents formally offer the hand of the bride in marriage. It is regarded as one of the most sacred and emotional rites.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू के माता-पिता औपचारिक रूप से कन्या का हाथ विवाह हेतु समर्पित करते हैं। इसे अत्यन्त पवित्र और भावनात्मक संस्कार माना जाता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Parents’ blessing</span>
+                <span class="detail-chip">Sacred commitment</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">4</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Sacred fire | अग्नि">
+                <rect x="28" y="58" width="44" height="12" rx="6" fill="#8c5320"/>
+                <path d="M50 20 C36 38 36 54 50 68 C64 54 64 38 50 20Z" fill="#ff972f"/>
+                <path d="M50 32 C42 43 42 52 50 60 C58 52 58 43 50 32Z" fill="#ffd458"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Vivah Havan</h3>
+                  <div class="title-hi">विवाह हवन</div>
+                </div>
+                <span class="tag">Divine Witness</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The sacred fire is invoked as witness to the marriage. Mantras are recited and the ceremony proceeds in a solemn ritual atmosphere.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    पवित्र अग्नि को विवाह का साक्षी माना जाता है। मंत्रोच्चार के साथ यह संस्कार गंभीर और दिव्य वातावरण में सम्पन्न होता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Sacred fire</span>
+                <span class="detail-chip">Mantras</span>
+                <span class="detail-chip">Ritual sanctity</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">5</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Knotted cloth | गठबंधन">
+                <rect x="18" y="36" width="26" height="22" rx="6" fill="#c53f62"/>
+                <rect x="56" y="36" width="26" height="22" rx="6" fill="#d48a1a"/>
+                <circle cx="50" cy="47" r="10" fill="#f4d9b1" stroke="#9c6a28" stroke-width="3"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Gathbandhan</h3>
+                  <div class="title-hi">गठबंधन</div>
+                </div>
+                <span class="tag">Union</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The garments of the bride and groom are tied together, symbolizing that their lives are now joined in shared duty and companionship.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू और वर के वस्त्र आपस में बाँधे जाते हैं। यह उनके जीवन के संयुक्त दायित्व, साथ और बंधन का प्रतीक है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Shared bond</span>
+                <span class="detail-chip">Symbolic union</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">6</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Seven circles around fire | सात फेरे">
+                <circle cx="50" cy="50" r="24" fill="none" stroke="#d48a1a" stroke-width="4" stroke-dasharray="10 6"/>
+                <path d="M50 30 C42 40 42 50 50 58 C58 50 58 40 50 30Z" fill="#ff9a33"/>
+                <circle cx="26" cy="52" r="6" fill="#c53f62"/>
+                <circle cx="74" cy="52" r="6" fill="#d48a1a"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Phere</h3>
+                  <div class="title-hi">फेरे</div>
+                </div>
+                <span class="tag">Seven Sacred Steps</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The couple circles the sacred fire and takes the central vows of marriage. This is among the most important moments of the wedding.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    दंपति पवित्र अग्नि के चारों ओर फेरे लेते हैं और विवाह के मुख्य व्रत ग्रहण करते हैं। यह विवाह का अत्यन्त महत्त्वपूर्ण संस्कार है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Sacred vows</span>
+                <span class="detail-chip">Agni as witness</span>
+                <span class="detail-chip">Marriage bond</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">7</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Sindoor and mangalsutra | सिन्दूर और मंगलसूत्र">
+                <path d="M30 70 Q50 28 70 70" fill="none" stroke="#7b5123" stroke-width="6" stroke-linecap="round"/>
+                <rect x="44" y="26" width="12" height="16" rx="5" fill="#c62e4d"/>
+                <path d="M30 54 Q50 72 70 54" fill="none" stroke="#d89a2b" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Sindoor and Mangalsutra</h3>
+                  <div class="title-hi">सिन्दूर और मंगलसूत्र</div>
+                </div>
+                <span class="tag">Marriage Symbols</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The groom applies sindoor and, where followed, ties the mangalsutra. These become visible and sacred symbols of the marriage bond.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वर वधू की माँग में सिन्दूर भरता है और जहाँ प्रचलन हो वहाँ मंगलसूत्र भी पहनाता है। ये वैवाहिक बंधन के पवित्र और प्रत्यक्ष प्रतीक माने जाते हैं।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Sindoor</span>
+                <span class="detail-chip">Mangalsutra</span>
+                <span class="detail-chip">Marital symbols</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="post-wedding">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Post-Wedding Rituals</h2>
+            <div class="hindi">विवाह के बाद की प्रमुख रस्में</div>
+          </div>
+          <p>
+            These customs mark the emotional transition from the wedding ceremony to the couple’s new family life.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">1</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Farewell rice toss | विदाई">
+                <path d="M24 68 Q50 36 76 68" fill="none" stroke="#b56f18" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="32" cy="34" r="3" fill="#f1e3c6"/>
+                <circle cx="42" cy="26" r="3" fill="#f1e3c6"/>
+                <circle cx="52" cy="22" r="3" fill="#f1e3c6"/>
+                <circle cx="62" cy="26" r="3" fill="#f1e3c6"/>
+                <circle cx="72" cy="34" r="3" fill="#f1e3c6"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Vidai</h3>
+                  <div class="title-hi">विदाई</div>
+                </div>
+                <span class="tag">Emotional Farewell</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride departs from her parental home. This is one of the most emotional moments of the wedding,
+                    often marked by blessings, tears, and symbolic gestures of gratitude.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू अपने मायके से विदा होती है। यह विवाह के सबसे भावनात्मक क्षणों में से एक है, जिसमें आशीर्वाद, अश्रु और कृतज्ञता के प्रतीकात्मक भाव शामिल रहते हैं।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Farewell</span>
+                <span class="detail-chip">Blessings</span>
+                <span class="detail-chip">Transition</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">2</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="House entry and rice pot | गृह प्रवेश">
+                <rect x="22" y="46" width="56" height="34" rx="6" fill="#f0d8b4"/>
+                <path d="M18 48 L50 24 L82 48" fill="#d98819"/>
+                <rect x="44" y="58" width="12" height="22" rx="4" fill="#a56627"/>
+                <ellipse cx="72" cy="78" rx="10" ry="6" fill="#b56f18"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Griha Pravesh</h3>
+                  <div class="title-hi">गृह प्रवेश</div>
+                </div>
+                <span class="tag">Entering New Home</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    The bride is welcomed into the groom’s house through auspicious entry rituals,
+                    often associated with prosperity, blessing, and acceptance into the new home.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    वधू का वर के घर मंगलमय रीति से स्वागत किया जाता है। यह समृद्धि, शुभागमन और नए घर में स्वीकृति का प्रतीक माना जाता है।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Auspicious entry</span>
+                <span class="detail-chip">New household</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">3</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Bride veil and gifts | मुंह दिखाई">
+                <circle cx="50" cy="36" r="12" fill="#f0c192"/>
+                <path d="M30 58 Q50 38 70 58 V78 H30 Z" fill="#cf4d73"/>
+                <rect x="64" y="28" width="14" height="14" rx="4" fill="#d89a2b"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Mooh Dikhai</h3>
+                  <div class="title-hi">मुंह दिखाई</div>
+                </div>
+                <span class="tag">Introduction to Relatives</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    Female relatives and family members meet the new bride, bless her, and may present gifts as part of the welcoming custom.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    परिवार की महिलाएँ और रिश्तेदार नई वधू से मिलते हैं, उसे आशीर्वाद देते हैं और स्वागत-रिवाज के रूप में उपहार भी दे सकते हैं।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Family welcome</span>
+                <span class="detail-chip">Blessings and gifts</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="icon-wrap">
+              <div class="step">4</div>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Reception stage | स्वागत समारोह">
+                <rect x="20" y="62" width="60" height="12" rx="6" fill="#b77b34"/>
+                <path d="M24 62 L32 44 H68 L76 62 Z" fill="#cf4d73"/>
+                <circle cx="40" cy="34" r="8" fill="#f0c192"/>
+                <circle cx="60" cy="34" r="8" fill="#f0c192"/>
+              </svg>
+            </div>
+            <div class="event-body">
+              <div class="event-head">
+                <div>
+                  <h3 class="title-en">Reception</h3>
+                  <div class="title-hi">स्वागत समारोह / रिसेप्शन</div>
+                </div>
+                <span class="tag">Celebration</span>
+              </div>
+
+              <div class="desc">
+                <div class="lang-card en-only">
+                  <span class="lang-label">English</span>
+                  <p>
+                    A social celebration may be hosted after the wedding, allowing extended family, friends,
+                    and the community to greet the couple.
+                  </p>
+                </div>
+                <div class="lang-card hi-only">
+                  <span class="lang-label hindi">हिन्दी</span>
+                  <p class="hindi">
+                    विवाह के बाद एक सामाजिक स्वागत समारोह आयोजित किया जा सकता है, जिसमें रिश्तेदार, मित्र और परिचित नवदंपति को शुभकामनाएँ देते हैं।
+                  </p>
+                </div>
+              </div>
+
+              <div class="details">
+                <span class="detail-chip">Guests greet the couple</span>
+                <span class="detail-chip">Public celebration</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="summary-box">
+          <h2 style="margin:0 0 8px;">Quick Timeline</h2>
+          <div class="hindi" style="margin-bottom:8px;">संक्षिप्त क्रम</div>
+          <p style="margin:0;color:var(--muted);">
+            A simple way to remember the overall flow of a traditional wedding sequence.
+          </p>
+
+          <div class="summary-grid">
+            <div class="summary-item">
+              <h4>Before the Wedding</h4>
+              <p>Roka, Tilak, Sagai</p>
+              <div class="hindi">विवाह से पहले: रोका, तिलक, सगाई</div>
+            </div>
+            <div class="summary-item">
+              <h4>1–3 Days Before</h4>
+              <p>Mehendi, Haldi, Matkor, Mandap Setup</p>
+              <div class="hindi">१–३ दिन पहले: मेहंदी, हल्दी, मटकोर, मंडप</div>
+            </div>
+            <div class="summary-item">
+              <h4>Wedding Ceremony</h4>
+              <p>Baraat, Jaimala, Kanyadaan, Havan, Phere, Sindoor</p>
+              <div class="hindi">विवाह: बारात, जयमाला, कन्यादान, हवन, फेरे, सिन्दूर</div>
+            </div>
+            <div class="summary-item">
+              <h4>After Wedding</h4>
+              <p>Vidai, Griha Pravesh, Mooh Dikhai, Reception</p>
+              <div class="hindi">विवाह के बाद: विदाई, गृह प्रवेश, मुंह दिखाई, स्वागत समारोह</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="foot-card">
+          <strong>Note:</strong>
+          Different families in Varanasi may add, merge, rename, or slightly reorder rituals based on family tradition, sampradaya, region, and priestly guidance.
+          <div class="hindi" style="margin-top:8px;">
+            टिप्पणी: वाराणसी में अलग-अलग परिवार अपनी परंपरा, सम्प्रदाय, क्षेत्रीय रीति और पुरोहित की सलाह के अनुसार कुछ रस्में जोड़, घटा, मिला या क्रम बदल सकते हैं।
+          </div>
+        </div>
+      </div>
+    </footer>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div>© 2026 Kashi Valley School. All rights reserved.</div>
-      <div>Varanasi-localized school website demo with school finder and transport lookup.</div>
-    </div>
-  </footer>
-
-  <div class="floating-wa">
-    <div class="wa-panel" id="waPanel">
-      <h4>Quick WhatsApp Actions</h4>
-      <div class="wa-actions">
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about admission at Kashi Valley School in Varanasi.">Ask about Admission</button>
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about fee details at Kashi Valley School in Varanasi.">Ask about Fees</button>
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about transport availability from my Varanasi area.">Ask about Transport</button>
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to plan a school visit for Kashi Valley School in Varanasi.">Plan School Visit</button>
-      </div>
-    </div>
-    <button class="fab" id="waToggleBtn" title="WhatsApp">WA</button>
-    <button class="fab" id="scrollTopBtn" title="Go to top">↑</button>
-  </div>
-
   <script>
-    (function () {
+    (function(){
       const body = document.body;
-      const whatsappNumber = "919335874326";
+      const btnBoth = document.getElementById('showBoth');
+      const btnEn = document.getElementById('showEnglish');
+      const btnHi = document.getElementById('showHindi');
+      const btnPrint = document.getElementById('printPage');
 
-      const themes = {
-        saffron: {
-          "--bg": "#fffaf2",
-          "--panel": "#ffffff",
-          "--panel2": "#fff5e9",
-          "--soft": "#fff0dd",
-          "--text": "#1f2937",
-          "--muted": "#6b7280",
-          "--line": "#fed7aa",
-          "--accent": "#ea580c",
-          "--accent2": "#c2410c",
-          "--hero1": "#ffedd5",
-          "--hero2": "#fff7ed",
-          "--hero3": "#ffffff",
-          "--header-bg": "rgba(255,255,255,.9)"
-        },
-        blue: {
-          "--bg": "#f8fbff",
-          "--panel": "#ffffff",
-          "--panel2": "#edf6ff",
-          "--soft": "#eff6ff",
-          "--text": "#1e293b",
-          "--muted": "#64748b",
-          "--line": "#bfdbfe",
-          "--accent": "#2563eb",
-          "--accent2": "#1d4ed8",
-          "--hero1": "#dbeafe",
-          "--hero2": "#ecfeff",
-          "--hero3": "#ffffff",
-          "--header-bg": "rgba(255,255,255,.9)"
-        },
-        emerald: {
-          "--bg": "#f7fffb",
-          "--panel": "#ffffff",
-          "--panel2": "#edfdf5",
-          "--soft": "#ecfdf5",
-          "--text": "#1f2937",
-          "--muted": "#6b7280",
-          "--line": "#a7f3d0",
-          "--accent": "#059669",
-          "--accent2": "#047857",
-          "--hero1": "#d1fae5",
-          "--hero2": "#f7fee7",
-          "--hero3": "#ffffff",
-          "--header-bg": "rgba(255,255,255,.9)"
-        },
-        dark: {
-          "--bg": "#020617",
-          "--panel": "#0f172a",
-          "--panel2": "#0b1220",
-          "--soft": "#111827",
-          "--text": "#e5e7eb",
-          "--muted": "#94a3b8",
-          "--line": "#1e293b",
-          "--accent": "#f59e0b",
-          "--accent2": "#fbbf24",
-          "--hero1": "#111827",
-          "--hero2": "#0f172a",
-          "--hero3": "#020617",
-          "--header-bg": "rgba(2,6,23,.88)"
-        }
-      };
-
-      const classData = {
-        nursery: {
-          title: "Nursery / KG",
-          desc: "Early learning with phonics, basic numeracy, confidence building, classroom habits, and playful skill development.",
-          timing: "8:30 AM – 12:30 PM",
-          fee: "₹2,500 / month",
-          note: "Friendly onboarding and parent orientation available.",
-          highlights: [
-            "Play-based learning",
-            "Phonics and early numeracy",
-            "Story time and activity corners",
-            "Gentle classroom habit building"
-          ]
-        },
-        primary: {
-          title: "Primary",
-          desc: "Strong foundations in language, mathematics, reading, classroom confidence, and basic digital exposure.",
-          timing: "8:00 AM – 1:45 PM",
-          fee: "₹3,400 / month",
-          note: "Library and computer access included.",
-          highlights: [
-            "Strong basics in English and mathematics",
-            "Worksheet and reading support",
-            "Activity-based classroom teaching",
-            "Regular parent updates"
-          ]
-        },
-        middle: {
-          title: "Middle School",
-          desc: "Students begin subject depth, project work, science exposure, discipline, and communication development.",
-          timing: "8:00 AM – 2:15 PM",
-          fee: "₹4,100 / month",
-          note: "Science, computer, and co-curricular exposure increases here.",
-          highlights: [
-            "Subject-wise teaching structure",
-            "Projects and practical exposure",
-            "Computer and library usage",
-            "Club and house participation"
-          ]
-        },
-        secondary: {
-          title: "Secondary",
-          desc: "Focused preparation for board-oriented learning with tests, revision plans, mentoring, and subject support.",
-          timing: "7:45 AM – 2:30 PM",
-          fee: "₹4,800 / month",
-          note: "Board preparation and performance tracking supported.",
-          highlights: [
-            "Periodic test cycles",
-            "Structured revision support",
-            "Academic mentoring",
-            "Performance analysis meetings"
-          ]
-        },
-        senior: {
-          title: "Senior Secondary",
-          desc: "Stream-based academic maturity, guidance, exam strategy, and a stronger focus on future pathways.",
-          timing: "7:45 AM – 2:45 PM",
-          fee: "₹5,500 / month",
-          note: "Lab work, stream guidance, and exam planning included.",
-          highlights: [
-            "Stream-wise academic support",
-            "Practical and lab sessions",
-            "Career guidance orientation",
-            "Focused exam preparation"
-          ]
-        }
-      };
-
-      const routeData = {
-        "Assi":"Route A: Assi → Bhelupur → Rathyatra → School",
-        "Lanka":"Route B: Lanka → BHU Gate → Naria → School",
-        "Sigra":"Route C: Sigra → Mahmoorganj → Rathyatra → School",
-        "Mahmoorganj":"Route C: Mahmoorganj → Sigra → School",
-        "Bhelupur":"Route A: Bhelupur → Rathyatra → School",
-        "Rathyatra":"Route A: Rathyatra → School",
-        "Kabir Nagar":"Route D: Kabir Nagar → DLW → School",
-        "DLW":"Route D: DLW → Kabir Nagar → School",
-        "Pandeypur":"Route E: Pandeypur → Varuna Bridge → School",
-        "Varuna Bridge":"Route E: Varuna Bridge → School",
-        "Sarnath":"Route F: Sarnath → Ashapur → School",
-        "Shivpur":"Route G: Shivpur → Bhojuveer → School",
-        "Chauk":"Route H: Chauk → Godowlia → School",
-        "Godowlia":"Route H: Godowlia → School",
-        "Ramnagar":"Route I: Ramnagar → BHU → School"
-      };
-
-      const finderData = {
-        "Assi": {
-          distance: "3.5 km",
-          time: "12–18 min",
-          landmark: "Assi Ghat / Assi Crossing",
-          transport: "Available",
-          note: "A convenient approach through Bhelupur and Lanka-side roads."
-        },
-        "Lanka": {
-          distance: "1.2 km",
-          time: "5–8 min",
-          landmark: "BHU Gate",
-          transport: "Available",
-          note: "One of the closest areas to the school location."
-        },
-        "Sigra": {
-          distance: "5.8 km",
-          time: "18–25 min",
-          landmark: "Sigra Stadium side",
-          transport: "Available",
-          note: "Well connected through Rathyatra and Bhelupur."
-        },
-        "Mahmoorganj": {
-          distance: "6.2 km",
-          time: "20–28 min",
-          landmark: "Mahmoorganj Main Road",
-          transport: "Available",
-          note: "Accessible through Sigra–Rathyatra corridor."
-        },
-        "Bhelupur": {
-          distance: "2.8 km",
-          time: "10–15 min",
-          landmark: "Bhelupur Crossing",
-          transport: "Available",
-          note: "Fast access toward Lanka and BHU side."
-        },
-        "Rathyatra": {
-          distance: "4.4 km",
-          time: "14–20 min",
-          landmark: "Rathyatra Crossing",
-          transport: "Available",
-          note: "Good road connectivity for daily travel."
-        },
-        "Kabir Nagar": {
-          distance: "7.5 km",
-          time: "22–30 min",
-          landmark: "Kabir Nagar Main Stretch",
-          transport: "Available",
-          note: "Usually connected with DLW-side route planning."
-        },
-        "DLW": {
-          distance: "8.1 km",
-          time: "24–32 min",
-          landmark: "DLW area",
-          transport: "Available",
-          note: "Useful for families on the western side of the city."
-        },
-        "Pandeypur": {
-          distance: "11.5 km",
-          time: "30–42 min",
-          landmark: "Pandeypur Crossing",
-          transport: "Available",
-          note: "Longer travel side; route support matters more here."
-        },
-        "Varuna Bridge": {
-          distance: "10.2 km",
-          time: "28–38 min",
-          landmark: "Varuna Bridge side",
-          transport: "Available",
-          note: "Commonly linked with Pandeypur-side route flow."
-        },
-        "Sarnath": {
-          distance: "12.8 km",
-          time: "34–45 min",
-          landmark: "Sarnath Main Area",
-          transport: "Available",
-          note: "Best handled through dedicated route planning."
-        },
-        "Shivpur": {
-          distance: "13.4 km",
-          time: "35–48 min",
-          landmark: "Shivpur side",
-          transport: "Available",
-          note: "A longer route, often useful for planned bus coverage."
-        },
-        "Chauk": {
-          distance: "6.8 km",
-          time: "22–30 min",
-          landmark: "Old City / Chauk Area",
-          transport: "Limited / confirm",
-          note: "Traffic variation may affect timing significantly."
-        },
-        "Godowlia": {
-          distance: "5.1 km",
-          time: "18–26 min",
-          landmark: "Godowlia Crossing",
-          transport: "Limited / confirm",
-          note: "Travel time can vary depending on city movement."
-        },
-        "Ramnagar": {
-          distance: "8.7 km",
-          time: "22–34 min",
-          landmark: "Ramnagar Fort side",
-          transport: "Available",
-          note: "Useful for families crossing toward BHU/Lanka side."
-        }
-      };
-
-      const themeButtons = document.querySelectorAll("[data-theme-btn]");
-      const layoutButtons = document.querySelectorAll("[data-layout-btn]");
-      const layoutPanels = {
-        classic: document.getElementById("layout-classic"),
-        cards: document.getElementById("layout-cards"),
-        split: document.getElementById("layout-split")
-      };
-
-      function applyTheme(themeName) {
-        const selected = themes[themeName] || themes.saffron;
-        Object.keys(selected).forEach(function (key) {
-          document.documentElement.style.setProperty(key, selected[key]);
-        });
-        body.setAttribute("data-theme", themeName);
-        themeButtons.forEach(function (btn) {
-          btn.classList.toggle("active", btn.getAttribute("data-theme-btn") === themeName);
-        });
-        const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) metaTheme.setAttribute("content", selected["--accent"]);
+      function setMode(mode){
+        body.classList.remove('mode-both', 'mode-en', 'mode-hi');
+        body.classList.add(mode);
       }
 
-      function applyLayout(layoutName) {
-        body.setAttribute("data-layout", layoutName);
-        Object.keys(layoutPanels).forEach(function (key) {
-          layoutPanels[key].classList.toggle("hidden", key !== layoutName);
-        });
-        layoutButtons.forEach(function (btn) {
-          btn.classList.toggle("active", btn.getAttribute("data-layout-btn") === layoutName);
-        });
-      }
-
-      themeButtons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          applyTheme(btn.getAttribute("data-theme-btn"));
-        });
-      });
-
-      layoutButtons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          applyLayout(btn.getAttribute("data-layout-btn"));
-        });
-      });
-
-      const classTitle = document.getElementById("classTitle");
-      const classDesc = document.getElementById("classDesc");
-      const classTiming = document.getElementById("classTiming");
-      const classFee = document.getElementById("classFee");
-      const classNote = document.getElementById("classNote");
-      const classHighlights = document.getElementById("classHighlights");
-      const classChips = document.querySelectorAll("[data-class-key]");
-
-      function renderClass(key) {
-        const item = classData[key];
-        if (!item) return;
-        classTitle.textContent = item.title;
-        classDesc.textContent = item.desc;
-        classTiming.textContent = item.timing;
-        classFee.textContent = item.fee;
-        classNote.textContent = item.note;
-        classHighlights.innerHTML = item.highlights.map(function (point) {
-          return '<div class="mini-item">' + point + '</div>';
-        }).join("");
-        classChips.forEach(function (chip) {
-          chip.classList.toggle("active", chip.getAttribute("data-class-key") === key);
-        });
-      }
-
-      classChips.forEach(function (chip) {
-        chip.addEventListener("click", function () {
-          renderClass(chip.getAttribute("data-class-key"));
-        });
-      });
-
-      document.getElementById("checkEligibilityBtn").addEventListener("click", function () {
-        const age = parseFloat(document.getElementById("childAge").value);
-        const desired = document.getElementById("desiredClass").value;
-        const result = document.getElementById("eligibilityResult");
-
-        if (!age || !desired) {
-          result.innerHTML = "<strong>Please complete both fields</strong>Enter the child’s age and select the desired class.";
-          return;
-        }
-
-        const recommended = (function () {
-          if (age < 3) return "Below typical school entry age";
-          if (age < 4) return "Nursery";
-          if (age < 5) return "LKG";
-          if (age < 6) return "UKG";
-          if (age < 7) return "Class I";
-          if (age < 8) return "Class II";
-          if (age < 9) return "Class III";
-          if (age < 10) return "Class IV";
-          if (age < 11) return "Class V";
-          if (age < 12) return "Class VI";
-          if (age < 13) return "Class VII";
-          if (age < 14) return "Class VIII";
-          if (age < 15) return "Class IX";
-          if (age < 16) return "Class X";
-          if (age < 17) return "Class XI";
-          return "Class XII or counselling required";
-        })();
-
-        if (desired === recommended || (recommended === "Class XII or counselling required" && desired === "Class XII")) {
-          result.innerHTML =
-            "<strong>Likely suitable</strong>" +
-            "Based on age, the selected class looks broadly suitable. Final eligibility should still be confirmed with school records and previous academic documents.";
-        } else {
-          result.innerHTML =
-            "<strong>Needs office confirmation</strong>" +
-            "Based on age, the likely starting point appears closer to <b>" + recommended + "</b>. The requested class is <b>" + desired + "</b>. Please confirm with the admission office.";
-        }
-      });
-
-      document.getElementById("finderBtn").addEventListener("click", function () {
-        const area = document.getElementById("finderArea").value;
-        const result = document.getElementById("finderResult");
-
-        if (!area) {
-          result.innerHTML = "<strong>Please select an area</strong>Choose your Varanasi locality first.";
-          return;
-        }
-
-        const item = finderData[area];
-        if (!item) {
-          result.innerHTML = "<strong>No demo data found</strong>Please choose another listed area.";
-          return;
-        }
-
-        result.innerHTML =
-          "<strong>" + area + " → School Access</strong>" +
-          "Estimated distance: <b>" + item.distance + "</b><br>" +
-          "Estimated travel time: <b>" + item.time + "</b><br>" +
-          "Nearby landmark: <b>" + item.landmark + "</b><br>" +
-          "Transport support: <b>" + item.transport + "</b><br>" +
-          item.note;
-      });
-
-      document.getElementById("areaSelect").addEventListener("change", function () {
-        const area = this.value;
-        const result = document.getElementById("transportResult");
-
-        if (!area) {
-          result.innerHTML = "<strong>Select an area above</strong>";
-          return;
-        }
-
-        result.innerHTML = "<strong>Available Route:</strong><br>" + routeData[area];
-      });
-
-      const filterButtons = document.querySelectorAll(".filter-btn");
-      const noticeCards = document.querySelectorAll(".notice-card");
-
-      filterButtons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          const filter = btn.getAttribute("data-filter");
-          filterButtons.forEach(function (b) { b.classList.remove("active"); });
-          btn.classList.add("active");
-
-          noticeCards.forEach(function (card) {
-            const category = card.getAttribute("data-category");
-            const show = filter === "all" || category === filter;
-            card.classList.toggle("hidden", !show);
-          });
-        });
-      });
-
-      const admissionForm = document.getElementById("admissionForm");
-      const formSuccess = document.getElementById("formSuccess");
-
-      admissionForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const data = {
-          parentName: document.getElementById("parentName").value.trim(),
-          studentName: document.getElementById("studentName").value.trim(),
-          phone: document.getElementById("phone").value.trim(),
-          classSeeking: document.getElementById("classSeeking").value,
-          message: document.getElementById("message").value.trim(),
-          submittedAt: new Date().toISOString()
-        };
-
-        const oldEntries = JSON.parse(localStorage.getItem("schoolAdmissionEnquiries") || "[]");
-        oldEntries.push(data);
-        localStorage.setItem("schoolAdmissionEnquiries", JSON.stringify(oldEntries));
-
-        formSuccess.style.display = "block";
-        admissionForm.reset();
-
-        setTimeout(function () {
-          formSuccess.style.display = "none";
-        }, 4000);
-      });
-
-      document.getElementById("whatsappBtn").addEventListener("click", function () {
-        const parentName = document.getElementById("parentName").value.trim();
-        const studentName = document.getElementById("studentName").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const classSeeking = document.getElementById("classSeeking").value;
-        const message = document.getElementById("message").value.trim();
-
-        const rawMessage =
-          "Admission Enquiry\n" +
-          "School: Kashi Valley School\n" +
-          "Location: Varanasi\n" +
-          "Parent Name: " + parentName + "\n" +
-          "Student Name: " + studentName + "\n" +
-          "Phone: " + phone + "\n" +
-          "Class: " + classSeeking + "\n" +
-          "Message: " + message;
-
-        window.open("https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(rawMessage), "_blank");
-      });
-
-      const waPanel = document.getElementById("waPanel");
-      const waToggleBtn = document.getElementById("waToggleBtn");
-
-      waToggleBtn.addEventListener("click", function () {
-        waPanel.classList.toggle("open");
-      });
-
-      document.querySelectorAll(".wa-quick").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          const text = btn.getAttribute("data-wa-text");
-          window.open("https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(text), "_blank");
-        });
-      });
-
-      document.getElementById("scrollTopBtn").addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-
-      renderClass("nursery");
-      applyTheme("saffron");
-      applyLayout("classic");
+      btnBoth.addEventListener('click', () => setMode('mode-both'));
+      btnEn.addEventListener('click', () => setMode('mode-en'));
+      btnHi.addEventListener('click', () => setMode('mode-hi'));
+      btnPrint.addEventListener('click', () => window.print());
     })();
   </script>
 </body>
