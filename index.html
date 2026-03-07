@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sunrise Public School</title>
+  <title>Sunrise Public School — Admissions Open</title>
   <meta
     name="description"
-    content="A modern school website with multiple themes, multiple layouts, and toggle buttons."
+    content="A modern multi-theme school website with layouts, principal message, gallery, fee section, notices, results, contact details, and admission enquiry form."
   />
   <meta name="theme-color" content="#ea580c" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
 
@@ -27,14 +27,16 @@
       --line:#fed7aa;
       --accent:#ea580c;
       --accent-2:#c2410c;
-      --accent-3:#fff7ed;
       --hero1:#ffedd5;
       --hero2:#fffbeb;
       --hero3:#ffffff;
+      --ok:#059669;
+      --warn:#b45309;
+      --danger:#dc2626;
       --shadow:0 16px 40px rgba(15,23,42,.08);
       --radius:24px;
       --radius-sm:16px;
-      --max:1200px;
+      --max:1220px;
       --header-bg:rgba(255,255,255,.88);
     }
 
@@ -47,96 +49,85 @@
       color:var(--text);
       line-height:1.6;
     }
-
-    h1,h2,h3,h4,.brand{
+    h1,h2,h3,h4,h5,.brand,.section-title,.big-number{
       font-family:"DM Sans",system-ui,sans-serif;
       margin:0;
-      line-height:1.15;
+      line-height:1.12;
+      letter-spacing:-.02em;
     }
-
     a{text-decoration:none;color:inherit}
-    img{max-width:100%;display:block}
-
-    .container{
-      width:min(var(--max), calc(100% - 32px));
-      margin-inline:auto;
-    }
+    img{display:block;max-width:100%}
+    button,input,select,textarea{font:inherit}
+    .container{width:min(var(--max),calc(100% - 30px));margin-inline:auto}
+    .hidden{display:none !important}
 
     .site-header{
       position:sticky;
       top:0;
-      z-index:100;
-      backdrop-filter:blur(12px);
+      z-index:1000;
+      backdrop-filter:blur(14px);
       background:var(--header-bg);
       border-bottom:1px solid var(--line);
     }
-
     .header-inner{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:20px;
-      padding:14px 0;
-      flex-wrap:wrap;
-    }
-
-    .brand-wrap{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-
-    .brand{
-      font-size:1.7rem;
-      font-weight:800;
-      color:var(--accent-2);
-      letter-spacing:-.02em;
-    }
-
-    .tagline{
-      color:var(--muted);
-      font-size:.95rem;
-    }
-
-    .nav{
-      display:flex;
       gap:18px;
       flex-wrap:wrap;
-      font-weight:600;
-      color:var(--muted);
+      padding:14px 0;
     }
-
-    .nav a:hover{
+    .brand-wrap{display:flex;gap:12px;align-items:center}
+    .logo-badge{
+      width:52px;height:52px;border-radius:18px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:grid;place-items:center;color:#fff;font-weight:800;
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand{
+      font-size:1.45rem;
+      font-weight:800;
       color:var(--accent-2);
     }
-
+    .sub-brand{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+    .nav{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-weight:700;
+      font-size:.95rem;
+    }
+    .nav a:hover{color:var(--accent-2)}
     .toolbar{
       display:flex;
-      gap:12px;
+      gap:10px;
       flex-wrap:wrap;
     }
-
     .toggle-group{
       display:flex;
       align-items:center;
-      gap:8px;
+      gap:7px;
+      flex-wrap:wrap;
       padding:8px;
-      border:1px solid var(--line);
       background:var(--panel);
+      border:1px solid var(--line);
       border-radius:18px;
       box-shadow:var(--shadow);
     }
-
     .toggle-label{
-      padding:0 6px;
-      font-size:.75rem;
+      padding:0 8px;
+      font-size:.74rem;
       text-transform:uppercase;
       letter-spacing:.16em;
       color:var(--muted);
-      font-weight:700;
+      font-weight:800;
       white-space:nowrap;
     }
-
     .toggle-btn{
       border:none;
       background:transparent;
@@ -144,28 +135,21 @@
       padding:10px 12px;
       border-radius:12px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       font-size:.82rem;
       transition:.2s ease;
-      white-space:nowrap;
     }
-
-    .toggle-btn:hover{
-      background:var(--soft);
-      color:var(--accent-2);
-    }
-
+    .toggle-btn:hover{background:var(--soft);color:var(--accent-2)}
     .toggle-btn.active{
       background:var(--accent);
-      color:white;
-      box-shadow:0 10px 20px rgba(0,0,0,.08);
+      color:#fff;
+      box-shadow:0 10px 22px rgba(0,0,0,.09);
     }
 
     .hero{
       position:relative;
       overflow:hidden;
     }
-
     .hero::before{
       content:"";
       position:absolute;
@@ -173,126 +157,94 @@
       background:linear-gradient(135deg,var(--hero1),var(--hero2),var(--hero3));
       pointer-events:none;
     }
-
     .hero-inner{
       position:relative;
-      padding:56px 0 40px;
+      padding:56px 0 34px;
     }
-
     .hero-grid{
       display:grid;
       gap:28px;
       align-items:center;
     }
+    .hero-grid.classic{grid-template-columns:1.1fr .9fr}
+    .hero-grid.cards{grid-template-columns:1fr}
+    .hero-grid.split{grid-template-columns:1.02fr .98fr;gap:0}
 
-    .hero-grid.classic{
-      grid-template-columns:1.08fr .92fr;
+    .badge-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
     }
-
-    .hero-grid.cards{
-      grid-template-columns:1fr;
-    }
-
-    .hero-grid.split{
-      grid-template-columns:1.08fr .92fr;
-      gap:0;
-    }
-
-    .hero-main{
-      padding:8px 0;
-    }
-
-    .hero-main.split-box{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:32px 0 0 32px;
-      padding:42px;
-      box-shadow:var(--shadow);
-    }
-
-    .hero-side.split-box{
-      background:var(--soft);
-      border:1px solid var(--line);
-      border-left:none;
-      border-radius:0 32px 32px 0;
-      padding:28px;
-    }
-
     .badge{
       display:inline-flex;
       align-items:center;
       gap:8px;
       padding:8px 14px;
       border-radius:999px;
-      border:1px solid var(--line);
       background:var(--panel);
+      border:1px solid var(--line);
       color:var(--accent-2);
-      font-weight:700;
       font-size:.88rem;
+      font-weight:800;
       box-shadow:var(--shadow);
-      margin-bottom:18px;
     }
 
     .hero h1{
-      font-size:clamp(2.2rem, 5vw, 4.5rem);
-      letter-spacing:-.04em;
+      font-size:clamp(2.4rem, 6vw, 5rem);
+      max-width:760px;
     }
-
     .hero-text{
       margin-top:18px;
       color:var(--muted);
-      font-size:1.08rem;
-      max-width:720px;
+      font-size:1.06rem;
+      max-width:710px;
     }
-
     .hero-actions{
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
       margin-top:28px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
     }
-
     .btn{
+      border:none;
+      cursor:pointer;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap:10px;
-      border:none;
-      cursor:pointer;
       padding:14px 20px;
       border-radius:18px;
       font-weight:800;
       transition:.2s ease;
       font-size:.96rem;
     }
-
-    .btn:hover{
-      transform:translateY(-1px);
-    }
-
+    .btn:hover{transform:translateY(-1px)}
     .btn-primary{
       background:var(--accent);
-      color:white;
+      color:#fff;
       box-shadow:var(--shadow);
     }
-
     .btn-secondary{
       background:var(--panel);
       color:var(--text);
       border:1px solid var(--line);
     }
+    .btn-ghost{
+      background:transparent;
+      border:1px dashed var(--line);
+      color:var(--accent-2);
+    }
 
-    .hero-cards{
+    .hero-card-grid{
       display:grid;
-      gap:16px;
       grid-template-columns:repeat(2,1fr);
+      gap:16px;
     }
-
-    .hero-cards.cards-layout{
+    .hero-card-grid.cards-layout{
+      grid-template-columns:repeat(4,1fr);
       margin-top:26px;
-      grid-template-columns:repeat(3,1fr);
     }
-
     .hero-card{
       background:var(--panel);
       border:1px solid var(--line);
@@ -300,11 +252,7 @@
       padding:22px;
       box-shadow:var(--shadow);
     }
-
-    .hero-card.wide{
-      grid-column:span 2;
-    }
-
+    .hero-card.wide{grid-column:span 2}
     .eyebrow{
       font-size:.78rem;
       text-transform:uppercase;
@@ -313,58 +261,61 @@
       color:var(--accent);
       margin-bottom:10px;
     }
+    .hero-card h3{font-size:1.3rem}
+    .hero-card p{margin:10px 0 0;color:var(--muted)}
 
-    .hero-card h3{
-      font-size:1.4rem;
-      letter-spacing:-.02em;
+    .hero-split-main{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:34px 0 0 34px;
+      padding:42px;
+      box-shadow:var(--shadow);
+    }
+    .hero-split-side{
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-left:none;
+      border-radius:0 34px 34px 0;
+      padding:24px;
     }
 
-    .hero-card p{
-      margin:10px 0 0;
-      color:var(--muted);
+    .quick-stats{
+      margin-top:28px;
+      display:grid;
+      gap:14px;
+      grid-template-columns:repeat(4,1fr);
     }
-
-    section.section{
-      padding:70px 0;
+    .stat{
+      background:rgba(255,255,255,.72);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:16px 18px;
+      box-shadow:var(--shadow);
     }
+    .big-number{font-size:1.8rem;font-weight:800}
+    .stat small{display:block;color:var(--muted);margin-top:2px}
 
+    section.section{padding:72px 0}
     .section-head{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:24px;
+      gap:26px;
       align-items:end;
       margin-bottom:28px;
     }
-
-    .section-head p{
-      margin:0;
-      color:var(--muted);
-      font-size:1.05rem;
-    }
-
+    .section-head p{margin:0;color:var(--muted);font-size:1.03rem}
     .section-title{
-      font-size:clamp(1.8rem, 3.2vw, 3rem);
-      letter-spacing:-.03em;
+      font-size:clamp(1.9rem,3vw,3rem);
       margin-top:8px;
     }
 
-    .cards-4{
+    .grid-4,.grid-3,.grid-2{
       display:grid;
       gap:18px;
-      grid-template-columns:repeat(4,1fr);
     }
-
-    .cards-3{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(3,1fr);
-    }
-
-    .cards-2{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(2,1fr);
-    }
+    .grid-4{grid-template-columns:repeat(4,1fr)}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
 
     .card{
       background:var(--panel);
@@ -373,27 +324,94 @@
       padding:24px;
       box-shadow:var(--shadow);
     }
-
-    .card.soft{
-      background:var(--soft);
-    }
-
-    .card h3{
-      font-size:1.25rem;
-      margin-bottom:10px;
-      letter-spacing:-.02em;
-    }
-
-    .card p{
-      margin:0;
-      color:var(--muted);
-    }
-
+    .card.soft{background:var(--soft)}
+    .card h3{font-size:1.22rem;margin-bottom:10px}
+    .card p{margin:0;color:var(--muted)}
     .program-item{
       font-weight:800;
-      font-family:"DM Sans",system-ui,sans-serif;
-      letter-spacing:-.01em;
       font-size:1.05rem;
+      font-family:"DM Sans",system-ui,sans-serif;
+    }
+
+    .notice-strip{
+      padding:14px 0;
+      background:var(--accent);
+      color:#fff;
+      overflow:hidden;
+    }
+    .ticker{
+      white-space:nowrap;
+      display:inline-block;
+      padding-left:100%;
+      animation:ticker 26s linear infinite;
+      font-weight:800;
+    }
+    @keyframes ticker{
+      0%{transform:translateX(0)}
+      100%{transform:translateX(-100%)}
+    }
+
+    .feature-band{
+      background:var(--panel-2);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .principal{
+      display:grid;
+      grid-template-columns:.78fr 1.22fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    .principal-photo{
+      min-height:320px;
+      border-radius:28px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      background:
+        linear-gradient(135deg, rgba(0,0,0,.04), rgba(0,0,0,.04)),
+        url("https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80") center/cover;
+    }
+
+    .results-row{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+    .results-metrics{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+      margin-top:18px;
+    }
+    .metric{
+      padding:18px;
+      border-radius:22px;
+      background:var(--soft);
+      border:1px solid var(--line);
+    }
+    .metric .big-number{font-size:2rem}
+    .bar-list{display:grid;gap:14px}
+    .bar-item{display:grid;gap:8px}
+    .bar-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-weight:700;
+      font-size:.96rem;
+    }
+    .bar{
+      height:12px;
+      background:rgba(148,163,184,.2);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar > span{
+      display:block;
+      height:100%;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      border-radius:999px;
     }
 
     .facilities-grid{
@@ -401,136 +419,268 @@
       gap:18px;
       grid-template-columns:1fr 2fr;
     }
-
     .facility-feature{
       background:var(--accent);
-      color:white;
+      color:#fff;
       border-radius:28px;
       padding:30px;
       box-shadow:var(--shadow);
     }
+    .facility-feature .eyebrow{color:rgba(255,255,255,.8)}
+    .facility-feature p{margin-top:14px;color:rgba(255,255,255,.92)}
 
-    .facility-feature .eyebrow{
-      color:rgba(255,255,255,.82);
+    .gallery-grid{
+      display:grid;
+      gap:14px;
+      grid-template-columns:1.2fr .8fr .8fr;
+      grid-template-rows:230px 230px;
     }
+    .gallery-item{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      min-height:190px;
+      background-size:cover;
+      background-position:center;
+    }
+    .gallery-item::after{
+      content:attr(data-label);
+      position:absolute;
+      left:14px;
+      bottom:14px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:#111827;
+      font-size:.82rem;
+      font-weight:800;
+    }
+    .gallery-item.large{grid-row:span 2}
 
-    .facility-feature p{
-      color:rgba(255,255,255,.9);
-      margin-top:14px;
+    .fees-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
     }
-
-    .notice-section{
-      background:var(--panel-2);
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
+    .fee-price{
+      font-size:2rem;
+      font-weight:800;
+      color:var(--accent-2);
+      margin-bottom:8px;
     }
+    .fee-points{
+      margin:14px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+    }
+    .fee-points li+li{margin-top:6px}
 
     .contact-grid{
       display:grid;
+      grid-template-columns:1.06fr .94fr;
       gap:18px;
-      grid-template-columns:1.15fr .85fr;
     }
-
     .info-list{
       display:grid;
-      gap:20px;
+      gap:18px;
       grid-template-columns:repeat(2,1fr);
-      margin-top:26px;
+      margin-top:24px;
     }
-
     .info-label{
       color:var(--muted);
       font-size:.9rem;
-      font-weight:700;
+      font-weight:800;
       margin-bottom:6px;
     }
-
-    .info-value{
-      font-size:1rem;
-    }
-
     .admission-box{
       background:linear-gradient(135deg,var(--hero1),var(--hero2));
     }
 
+    .form-grid{
+      display:grid;
+      gap:14px;
+      grid-template-columns:repeat(2,1fr);
+      margin-top:20px;
+    }
+    .field{
+      display:grid;
+      gap:7px;
+    }
+    .field.full{grid-column:1/-1}
+    .field label{
+      font-size:.92rem;
+      font-weight:700;
+      color:var(--muted);
+    }
+    .input,.textarea,.select{
+      width:100%;
+      border:1px solid var(--line);
+      background:var(--panel);
+      color:var(--text);
+      border-radius:16px;
+      padding:13px 14px;
+      outline:none;
+      transition:.2s ease;
+    }
+    .textarea{min-height:120px;resize:vertical}
+    .input:focus,.textarea:focus,.select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 4px rgba(234,88,12,.12);
+    }
+
+    .cta-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .success-box{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(5,150,105,.12);
+      border:1px solid rgba(5,150,105,.22);
+      color:var(--ok);
+      font-weight:700;
+      display:none;
+    }
+
+    .faq-grid{
+      display:grid;
+      gap:14px;
+    }
+    details.faq{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px 18px;
+      box-shadow:var(--shadow);
+    }
+    details.faq summary{
+      cursor:pointer;
+      font-weight:800;
+      list-style:none;
+    }
+    details.faq summary::-webkit-details-marker{display:none}
+    details.faq p{margin:12px 0 0;color:var(--muted)}
+
     .site-footer{
       border-top:1px solid var(--line);
       background:var(--panel);
+      margin-top:10px;
     }
-
     .footer-inner{
-      padding:24px 0;
+      padding:26px 0;
       display:flex;
       justify-content:space-between;
-      gap:20px;
+      gap:18px;
       flex-wrap:wrap;
       color:var(--muted);
       font-size:.95rem;
     }
 
-    .hidden{display:none !important}
-
-    @media (max-width: 1100px){
-      .cards-4{grid-template-columns:repeat(2,1fr)}
-      .hero-cards.cards-layout{grid-template-columns:1fr}
-      .hero-grid.classic,
-      .hero-grid.split,
-      .facilities-grid,
-      .contact-grid,
-      .section-head{
-        grid-template-columns:1fr;
-      }
-      .hero-main.split-box{
-        border-radius:32px 32px 0 0;
-      }
-      .hero-side.split-box{
-        border-left:1px solid var(--line);
-        border-top:none;
-        border-radius:0 0 32px 32px;
-      }
+    .sticky-actions{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      display:grid;
+      gap:10px;
+      z-index:999;
+    }
+    .fab{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      border:none;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+      box-shadow:var(--shadow);
+      font-size:1.2rem;
+      font-weight:800;
     }
 
-    @media (max-width: 780px){
+    @media (max-width:1100px){
+      .hero-grid.classic,
+      .hero-grid.split,
+      .section-head,
+      .principal,
+      .results-row,
+      .facilities-grid,
+      .contact-grid{
+        grid-template-columns:1fr;
+      }
+      .hero-split-main{
+        border-radius:34px 34px 0 0;
+      }
+      .hero-split-side{
+        border-left:1px solid var(--line);
+        border-top:none;
+        border-radius:0 0 34px 34px;
+      }
+      .quick-stats{grid-template-columns:repeat(2,1fr)}
+      .grid-4{grid-template-columns:repeat(2,1fr)}
+      .fees-grid{grid-template-columns:1fr}
+      .gallery-grid{
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:220px 220px 220px;
+      }
+      .gallery-item.large{grid-row:span 1;grid-column:1/-1}
+      .hero-card-grid.cards-layout{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media (max-width:780px){
       .nav{display:none}
-      .cards-3,
-      .cards-2,
-      .hero-cards,
-      .info-list{
+      .toolbar{width:100%}
+      .toggle-group{width:100%}
+      .header-inner{align-items:flex-start}
+      .hero-inner{padding:42px 0 26px}
+      .quick-stats,
+      .grid-3,
+      .grid-2,
+      .grid-4,
+      .hero-card-grid,
+      .hero-card-grid.cards-layout,
+      .info-list,
+      .form-grid,
+      .results-metrics,
+      .gallery-grid{
         grid-template-columns:1fr;
       }
       .hero-card.wide{grid-column:auto}
-      .toolbar{
-        width:100%;
-      }
-      .toggle-group{
-        width:100%;
-        flex-wrap:wrap;
-      }
-      .header-inner{
-        align-items:flex-start;
-      }
-      .hero-inner{
-        padding:42px 0 28px;
-      }
-      section.section{
-        padding:54px 0;
-      }
+      .gallery-grid{grid-template-rows:auto}
+      section.section{padding:58px 0}
+      .principal-photo{min-height:260px}
     }
   </style>
 </head>
 <body data-theme="saffron" data-layout="classic">
+  <div class="notice-strip">
+    <div class="ticker">
+      Admissions open for Session 2026–27 • Nursery to Class XII • Smart classrooms • Weekly parent interaction • School transport available • Scholarship test registration open
+    </div>
+  </div>
+
   <header class="site-header">
     <div class="container header-inner">
       <div class="brand-wrap">
-        <div class="brand">Sunrise Public School</div>
-        <div class="tagline">Learn with discipline. Grow with confidence.</div>
+        <div class="logo-badge">SP</div>
+        <div>
+          <div class="brand">Sunrise Public School</div>
+          <div class="sub-brand">Learn with discipline. Grow with confidence.</div>
+        </div>
       </div>
 
       <nav class="nav" aria-label="Primary">
         <a href="#about">About</a>
-        <a href="#programs">Programs</a>
+        <a href="#principal">Principal</a>
+        <a href="#academics">Academics</a>
+        <a href="#results">Results</a>
         <a href="#facilities">Facilities</a>
-        <a href="#notices">Notices</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#fees">Fees</a>
         <a href="#contact">Contact</a>
       </nav>
 
@@ -558,38 +708,62 @@
       <div class="container hero-inner">
         <!-- CLASSIC -->
         <div class="hero-grid classic layout-panel" id="layout-classic">
-          <div class="hero-main">
-            <div class="badge">Admissions Open 2026–27</div>
-            <h1>A modern school website for a trusted learning community.</h1>
+          <div>
+            <div class="badge-row">
+              <div class="badge">Admissions Open 2026–27</div>
+              <div class="badge">Nursery to Class XII</div>
+            </div>
+            <h1>Building bright minds, strong values, and confident futures.</h1>
             <p class="hero-text">
-              Build a strong first impression with a clean school homepage that highlights
-              academics, admissions, faculty, facilities, notices, and contact information.
+              A complete school website homepage with principal message, academic programs,
+              board results, facilities, gallery, fees, notices, and admission enquiry.
+              Replace the sample content with your real school details and publish.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#contact">Enquire Now</a>
-              <a class="btn btn-secondary" href="#about">Explore School</a>
+              <a class="btn btn-primary" href="#contact">Apply for Admission</a>
+              <a class="btn btn-secondary" href="#gallery">Explore Campus</a>
+              <a class="btn btn-ghost" href="#fees">View Fee Plans</a>
+            </div>
+
+            <div class="quick-stats">
+              <div class="stat">
+                <div class="big-number">1800+</div>
+                <small>Students</small>
+              </div>
+              <div class="stat">
+                <div class="big-number">95%</div>
+                <small>Board Result</small>
+              </div>
+              <div class="stat">
+                <div class="big-number">75+</div>
+                <small>Teachers</small>
+              </div>
+              <div class="stat">
+                <div class="big-number">22</div>
+                <small>Years of Trust</small>
+              </div>
             </div>
           </div>
 
-          <div class="hero-cards">
+          <div class="hero-card-grid">
             <article class="hero-card">
               <div class="eyebrow">Campus</div>
               <h3>Safe, clean, inspiring</h3>
-              <p>Designed to support learning, discipline, and joyful student life.</p>
+              <p>Designed to support learning, discipline, creativity, and joyful student life.</p>
             </article>
 
             <article class="hero-card">
-              <div class="eyebrow">Results</div>
-              <h3>Strong academic focus</h3>
-              <p>Clear routines, supportive teachers, and student-centered progress.</p>
+              <div class="eyebrow">Faculty</div>
+              <h3>Caring and experienced</h3>
+              <p>Teachers who combine strong fundamentals with personal attention.</p>
             </article>
 
             <article class="hero-card wide">
               <div class="eyebrow">Why Parents Choose Us</div>
               <h3>Balanced growth for every child</h3>
               <p>
-                A well-structured school environment that balances academics, character-building,
-                technology, communication skills, and co-curricular growth.
+                A well-structured school environment that balances academics,
+                discipline, communication skills, technology, sports, and co-curricular growth.
               </p>
             </article>
           </div>
@@ -597,47 +771,52 @@
 
         <!-- CARDS -->
         <div class="hero-grid cards layout-panel hidden" id="layout-cards">
-          <div class="hero-main" style="text-align:center">
-            <div class="badge">Welcome to Our School</div>
+          <div style="text-align:center">
+            <div class="badge-row" style="justify-content:center">
+              <div class="badge">Welcome to Our School</div>
+              <div class="badge">Scholarship Test Open</div>
+            </div>
             <h1>Every essential school detail, presented beautifully.</h1>
             <p class="hero-text" style="margin-inline:auto">
-              This layout uses visual cards throughout the homepage so parents can quickly
-              scan programs, campus highlights, updates, and admissions information.
+              This layout uses a card-driven presentation so parents can quickly scan
+              academic programs, results, facilities, updates, and admissions information.
             </p>
             <div class="hero-actions" style="justify-content:center">
               <a class="btn btn-primary" href="#contact">Book a Visit</a>
-              <a class="btn btn-secondary" href="#programs">View Programs</a>
+              <a class="btn btn-secondary" href="#academics">View Academics</a>
             </div>
           </div>
 
-          <div class="hero-cards cards-layout">
+          <div class="hero-card-grid cards-layout">
             <article class="hero-card">
-              <div class="eyebrow">Campus</div>
-              <h3>Safe, clean, inspiring</h3>
-              <p>Designed to support learning, discipline, and joyful student life.</p>
+              <div class="eyebrow">Admissions</div>
+              <h3>Session 2026–27 open</h3>
+              <p>Easy enquiry flow, class-wise intake, and parent guidance support.</p>
             </article>
-
             <article class="hero-card">
               <div class="eyebrow">Results</div>
-              <h3>Strong academic focus</h3>
-              <p>Clear routines, supportive teachers, and student-centered progress.</p>
+              <h3>Strong board performance</h3>
+              <p>Consistent academic progress with focused classroom mentoring.</p>
             </article>
-
             <article class="hero-card">
-              <div class="eyebrow">Why Parents Choose Us</div>
-              <h3>Balanced growth for every child</h3>
-              <p>
-                A well-structured school environment that balances academics, character-building,
-                technology, communication skills, and co-curricular growth.
-              </p>
+              <div class="eyebrow">Facilities</div>
+              <h3>Labs, library, sports</h3>
+              <p>Smart classrooms, computer lab, transport, and activity spaces.</p>
+            </article>
+            <article class="hero-card">
+              <div class="eyebrow">Community</div>
+              <h3>Parent-school partnership</h3>
+              <p>Regular interaction, transparent communication, and student support.</p>
             </article>
           </div>
         </div>
 
         <!-- SPLIT -->
         <div class="hero-grid split layout-panel hidden" id="layout-split">
-          <div class="hero-main split-box">
-            <div class="badge">Parent-Friendly Layout</div>
+          <div class="hero-split-main">
+            <div class="badge-row">
+              <div class="badge">Parent-Friendly Layout</div>
+            </div>
             <h1>Present your school with clarity, trust, and warmth.</h1>
             <p class="hero-text">
               A split layout gives strong visual focus to school identity on one side
@@ -645,31 +824,25 @@
             </p>
             <div class="hero-actions">
               <a class="btn btn-primary" href="#contact">Contact Office</a>
-              <a class="btn btn-secondary" href="#notices">Latest Notices</a>
+              <a class="btn btn-secondary" href="#results">See Results</a>
             </div>
           </div>
-
-          <div class="hero-side split-box">
-            <div class="cards-3" style="grid-template-columns:1fr;gap:14px">
+          <div class="hero-split-side">
+            <div class="grid-2" style="grid-template-columns:1fr">
               <article class="card">
                 <div class="eyebrow">Campus</div>
                 <h3>Safe, clean, inspiring</h3>
-                <p>Designed to support learning, discipline, and joyful student life.</p>
+                <p>Designed to support learning, discipline, and student well-being.</p>
               </article>
-
               <article class="card">
-                <div class="eyebrow">Results</div>
-                <h3>Strong academic focus</h3>
-                <p>Clear routines, supportive teachers, and student-centered progress.</p>
+                <div class="eyebrow">Academics</div>
+                <h3>Strong fundamentals</h3>
+                <p>Focused teaching with regular evaluation and guided improvement.</p>
               </article>
-
               <article class="card">
-                <div class="eyebrow">Why Parents Choose Us</div>
-                <h3>Balanced growth for every child</h3>
-                <p>
-                  A well-structured school environment that balances academics,
-                  character-building, technology, communication skills, and co-curricular growth.
-                </p>
+                <div class="eyebrow">Parent Trust</div>
+                <h3>Transparent and accessible</h3>
+                <p>Regular updates, approachable staff, and structured school communication.</p>
               </article>
             </div>
           </div>
@@ -685,134 +858,267 @@
             <h2 class="section-title">Shaping responsible, capable, and confident students.</h2>
           </div>
           <p>
-            Sunrise Public School is presented here as a sample modern school website.
-            This design is ideal for a school that wants to communicate trust, discipline,
-            academic strength, and parent-friendly access to essential information.
+            Sunrise Public School is shown here as a complete, publication-ready sample.
+            It highlights academic excellence, disciplined school culture, caring teachers,
+            modern learning tools, sports, co-curricular growth, and parent-friendly communication.
           </p>
         </div>
 
-        <div class="cards-4">
+        <div class="grid-4">
           <article class="card">
             <h3>Academic Excellence</h3>
-            <p>
-              A balanced curriculum designed to help students think clearly, build strong fundamentals,
-              and grow with confidence.
-            </p>
+            <p>A balanced curriculum that helps students build strong fundamentals and clear thinking.</p>
           </article>
-
           <article class="card">
             <h3>Caring Faculty</h3>
-            <p>
-              Experienced teachers who combine discipline, encouragement, and personal attention
-              in every classroom.
-            </p>
+            <p>Experienced teachers who combine discipline, encouragement, and classroom attention.</p>
           </article>
-
           <article class="card">
             <h3>Modern Learning</h3>
-            <p>
-              Smart classrooms, activity-based learning, computer education, and a future-ready environment.
-            </p>
+            <p>Smart classrooms, activity-based learning, digital tools, and future-ready teaching.</p>
           </article>
-
           <article class="card">
             <h3>Safe Campus</h3>
-            <p>
-              A secure, clean, and student-friendly campus that supports learning, sports, and creativity.
-            </p>
+            <p>A secure and student-friendly environment supporting learning, creativity, and sports.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="programs" class="section" style="background:var(--panel)">
+    <section id="principal" class="section feature-band">
+      <div class="container">
+        <div class="principal">
+          <div class="principal-photo" aria-label="Principal photo"></div>
+          <div class="card">
+            <div class="eyebrow">Principal’s Message</div>
+            <h2 class="section-title">Education with values, discipline, and purpose.</h2>
+            <p style="margin-top:16px;color:var(--muted)">
+              At Sunrise Public School, we believe education must shape both intellect and character.
+              Our goal is to create a learning environment where students become confident thinkers,
+              responsible citizens, and compassionate human beings.
+            </p>
+            <p style="margin-top:14px;color:var(--muted)">
+              We focus on strong academic fundamentals, clear communication, regular guidance,
+              and balanced growth through sports, arts, and technology. We welcome every child
+              with the commitment to nurture potential and inspire excellence.
+            </p>
+            <div style="margin-top:18px;font-weight:800">Dr. Ananya Sharma</div>
+            <div style="color:var(--muted)">Principal, Sunrise Public School</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="academics" class="section">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Programs</div>
-            <h2 class="section-title">Classes and learning areas</h2>
+            <div class="eyebrow">Academics</div>
+            <h2 class="section-title">Classes and learning pathways</h2>
           </div>
           <p>
-            Show parents the academic journey clearly, from early years to higher classes,
-            along with labs, sports, and skill-building.
+            Show parents the academic journey clearly, from foundational years to senior classes,
+            along with labs, language development, sports, and skill-building.
           </p>
         </div>
 
-        <div class="cards-3">
-          <article class="card soft"><div class="program-item">Pre-Primary</div></article>
-          <article class="card soft"><div class="program-item">Primary School</div></article>
-          <article class="card soft"><div class="program-item">Middle School</div></article>
-          <article class="card soft"><div class="program-item">Secondary School</div></article>
-          <article class="card soft"><div class="program-item">Computer Education</div></article>
-          <article class="card soft"><div class="program-item">Sports & Activities</div></article>
+        <div class="grid-3">
+          <article class="card soft"><div class="program-item">Pre-Primary — Nursery to UKG</div><p style="margin-top:8px">Play-based learning, phonics, early numeracy, and confidence building.</p></article>
+          <article class="card soft"><div class="program-item">Primary — Classes I to V</div><p style="margin-top:8px">Strong basics in language, mathematics, environmental studies, and habits.</p></article>
+          <article class="card soft"><div class="program-item">Middle School — Classes VI to VIII</div><p style="margin-top:8px">Subject depth, projects, science exposure, communication, and discipline.</p></article>
+          <article class="card soft"><div class="program-item">Secondary — Classes IX to X</div><p style="margin-top:8px">Board preparation, tests, revision cycles, and subject mentoring.</p></article>
+          <article class="card soft"><div class="program-item">Senior Secondary — XI to XII</div><p style="margin-top:8px">Stream-based guidance, focused coaching, and academic maturity.</p></article>
+          <article class="card soft"><div class="program-item">Beyond the Classroom</div><p style="margin-top:8px">Computer education, sports, arts, clubs, assemblies, and leadership activities.</p></article>
         </div>
       </div>
     </section>
 
-    <section id="facilities" class="section">
+    <section id="results" class="section">
+      <div class="container">
+        <div class="results-row">
+          <div class="card">
+            <div class="eyebrow">Board Results</div>
+            <h2 class="section-title">Strong outcomes backed by steady guidance.</h2>
+            <p style="margin-top:14px;color:var(--muted)">
+              Use this section to show real academic performance, toppers, subject results,
+              scholarship selections, and college admissions.
+            </p>
+
+            <div class="results-metrics">
+              <div class="metric">
+                <div class="big-number">95%</div>
+                <small>Class X Pass Percentage</small>
+              </div>
+              <div class="metric">
+                <div class="big-number">93%</div>
+                <small>Class XII Pass Percentage</small>
+              </div>
+              <div class="metric">
+                <div class="big-number">18</div>
+                <small>Students above 90%</small>
+              </div>
+              <div class="metric">
+                <div class="big-number">42</div>
+                <small>Merit Distinctions</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="eyebrow">Subject Performance</div>
+            <div class="bar-list">
+              <div class="bar-item">
+                <div class="bar-head"><span>Mathematics</span><span>91%</span></div>
+                <div class="bar"><span style="width:91%"></span></div>
+              </div>
+              <div class="bar-item">
+                <div class="bar-head"><span>Science</span><span>94%</span></div>
+                <div class="bar"><span style="width:94%"></span></div>
+              </div>
+              <div class="bar-item">
+                <div class="bar-head"><span>English</span><span>96%</span></div>
+                <div class="bar"><span style="width:96%"></span></div>
+              </div>
+              <div class="bar-item">
+                <div class="bar-head"><span>Social Science</span><span>89%</span></div>
+                <div class="bar"><span style="width:89%"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="facilities" class="section feature-band">
       <div class="container">
         <div class="facilities-grid">
           <div class="facility-feature">
             <div class="eyebrow">Facilities</div>
-            <h2 class="section-title" style="font-size:2.2rem">Everything students need to learn and grow.</h2>
+            <h2 class="section-title" style="font-size:2.1rem">Everything students need to learn and grow.</h2>
             <p>
-              Add photographs and descriptions for your library, science lab, computer lab,
-              activity room, transport, sports ground, and classrooms.
+              Add real photographs and descriptions for your library, science lab,
+              computer lab, transport, sports ground, and classrooms.
             </p>
           </div>
 
-          <div class="cards-2">
-            <article class="card soft">
-              <h3>Smart Classrooms</h3>
-              <p>Replace this with your school’s actual facility details and photographs.</p>
-            </article>
-            <article class="card soft">
-              <h3>Library & Reading Space</h3>
-              <p>Replace this with your school’s actual facility details and photographs.</p>
-            </article>
-            <article class="card soft">
-              <h3>Science Laboratory</h3>
-              <p>Replace this with your school’s actual facility details and photographs.</p>
-            </article>
-            <article class="card soft">
-              <h3>Computer Lab</h3>
-              <p>Replace this with your school’s actual facility details and photographs.</p>
-            </article>
-            <article class="card soft">
-              <h3>Sports & Physical Education</h3>
-              <p>Replace this with your school’s actual facility details and photographs.</p>
-            </article>
-            <article class="card soft">
-              <h3>Transport Facility</h3>
-              <p>Replace this with your school’s actual facility details and photographs.</p>
-            </article>
+          <div class="grid-2">
+            <article class="card soft"><h3>Smart Classrooms</h3><p>Interactive teaching support and visual learning tools for better concept clarity.</p></article>
+            <article class="card soft"><h3>Library & Reading Space</h3><p>Quiet reading zones, reference books, story collections, and learning resources.</p></article>
+            <article class="card soft"><h3>Science Laboratory</h3><p>Hands-on experiments that connect classroom science with observation and practice.</p></article>
+            <article class="card soft"><h3>Computer Lab</h3><p>Digital literacy, foundational computing, and guided practical sessions.</p></article>
+            <article class="card soft"><h3>Sports & Activities</h3><p>Physical fitness, teamwork, stage confidence, and co-curricular participation.</p></article>
+            <article class="card soft"><h3>Transport Facility</h3><p>Safe, planned routes with school transport support for families across the city.</p></article>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="notices" class="section notice-section">
+    <section id="gallery" class="section">
       <div class="container">
-        <div class="eyebrow">Notices</div>
-        <h2 class="section-title">Latest updates for parents and students</h2>
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Gallery</div>
+            <h2 class="section-title">A glimpse of school life</h2>
+          </div>
+          <p>
+            Replace these sample campus images with your school building, classrooms, labs,
+            annual day, sports day, assemblies, tours, and activity pictures.
+          </p>
+        </div>
 
-        <div class="cards-3" style="margin-top:28px">
+        <div class="gallery-grid">
+          <div class="gallery-item large" data-label="Main Campus"
+            style="background-image:url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80')"></div>
+          <div class="gallery-item" data-label="Library"
+            style="background-image:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=900&q=80')"></div>
+          <div class="gallery-item" data-label="Computer Lab"
+            style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80')"></div>
+          <div class="gallery-item" data-label="Classroom"
+            style="background-image:url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80')"></div>
+          <div class="gallery-item" data-label="Sports Day"
+            style="background-image:url('https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=900&q=80')"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fees" class="section feature-band">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Fee Structure</div>
+            <h2 class="section-title">Simple sample fee plans</h2>
+          </div>
+          <p>
+            Replace these values with your real admission fee, annual charges,
+            transport fee, and class-wise tuition structure.
+          </p>
+        </div>
+
+        <div class="fees-grid">
           <article class="card">
-            <div class="eyebrow">Notice</div>
-            <h3>Admissions open for the 2026–27 session.</h3>
-            <p>Please contact the school office for eligibility, fee structure, and documents required.</p>
+            <div class="eyebrow">Pre-Primary</div>
+            <div class="fee-price">₹2,500 / month</div>
+            <p>Best for Nursery to UKG students beginning their school journey.</p>
+            <ul class="fee-points">
+              <li>Activity-based learning</li>
+              <li>Foundational literacy and numeracy</li>
+              <li>Parent orientation support</li>
+            </ul>
           </article>
 
           <article class="card">
-            <div class="eyebrow">Notice</div>
-            <h3>New smart classroom block inaugurated.</h3>
-            <p>Our upgraded learning spaces now support interactive, student-friendly teaching.</p>
+            <div class="eyebrow">Primary</div>
+            <div class="fee-price">₹3,400 / month</div>
+            <p>For Classes I to V with strong academic basics and holistic growth.</p>
+            <ul class="fee-points">
+              <li>Classroom assessment</li>
+              <li>Library and computer access</li>
+              <li>Co-curricular activities</li>
+            </ul>
           </article>
 
           <article class="card">
+            <div class="eyebrow">Secondary & Senior</div>
+            <div class="fee-price">₹4,800 / month</div>
+            <p>Structured academic guidance, board focus, and subject-specific support.</p>
+            <ul class="fee-points">
+              <li>Board preparation support</li>
+              <li>Practical and lab access</li>
+              <li>Career and stream guidance</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="notices" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Latest Notices</div>
+            <h2 class="section-title">Important updates for parents and students</h2>
+          </div>
+          <p>
+            Use this section for admission dates, exam schedules, holidays, annual day,
+            PTM announcements, and new session updates.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
             <div class="eyebrow">Notice</div>
-            <h3>Weekly parent interaction every Saturday.</h3>
-            <p>Parents can meet teachers during school office hours for regular academic discussion.</p>
+            <h3>Admissions open for Session 2026–27</h3>
+            <p>Please contact the school office for eligibility, documents required, and class availability.</p>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Update</div>
+            <h3>Scholarship test registration begins this month</h3>
+            <p>Merit-based evaluation for selected classes. Enquiry available through the office.</p>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Reminder</div>
+            <h3>Weekly parent interaction every Saturday</h3>
+            <p>Parents can meet teachers during office hours for progress discussion and guidance.</p>
           </article>
         </div>
       </div>
@@ -822,43 +1128,123 @@
       <div class="container">
         <div class="contact-grid">
           <div class="card">
-            <div class="eyebrow">Contact</div>
-            <h2 class="section-title">Get in touch with the school office</h2>
+            <div class="eyebrow">Admission Enquiry</div>
+            <h2 class="section-title">Send an enquiry to the school office</h2>
+            <p style="margin-top:12px;color:var(--muted)">
+              This demo form stores the message locally in the browser and shows a success message.
+              Connect it to your backend, Google Form, email service, or WhatsApp workflow later.
+            </p>
+
+            <form id="admissionForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="parentName">Parent Name</label>
+                  <input class="input" id="parentName" name="parentName" placeholder="Enter parent name" required />
+                </div>
+                <div class="field">
+                  <label for="studentName">Student Name</label>
+                  <input class="input" id="studentName" name="studentName" placeholder="Enter student name" required />
+                </div>
+                <div class="field">
+                  <label for="phone">Phone Number</label>
+                  <input class="input" id="phone" name="phone" placeholder="+91 90000 00000" required />
+                </div>
+                <div class="field">
+                  <label for="classSeeking">Class Seeking Admission In</label>
+                  <select class="select" id="classSeeking" name="classSeeking" required>
+                    <option value="">Select class</option>
+                    <option>Nursery</option>
+                    <option>LKG</option>
+                    <option>UKG</option>
+                    <option>Class I</option>
+                    <option>Class II</option>
+                    <option>Class III</option>
+                    <option>Class IV</option>
+                    <option>Class V</option>
+                    <option>Class VI</option>
+                    <option>Class VII</option>
+                    <option>Class VIII</option>
+                    <option>Class IX</option>
+                    <option>Class X</option>
+                    <option>Class XI</option>
+                    <option>Class XII</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="message">Message</label>
+                  <textarea class="textarea" id="message" name="message" placeholder="Tell us any questions about admission, fee, transport, visit, or documents required."></textarea>
+                </div>
+              </div>
+
+              <div class="cta-row">
+                <button class="btn btn-primary" type="submit">Submit Enquiry</button>
+                <button class="btn btn-secondary" type="button" id="whatsappBtn">Send on WhatsApp</button>
+              </div>
+
+              <div class="success-box" id="formSuccess">
+                Enquiry submitted successfully in demo mode. Replace this with your real submission flow.
+              </div>
+            </form>
+          </div>
+
+          <aside class="card admission-box">
+            <div class="eyebrow">Contact Details</div>
+            <h3 style="font-size:2rem">Get in touch with the school office</h3>
 
             <div class="info-list">
               <div>
                 <div class="info-label">Address</div>
-                <div class="info-value">123 Education Road, Knowledge Nagar, Your City, India</div>
+                <div>123 Education Road, Knowledge Nagar, Your City, India</div>
               </div>
-
               <div>
                 <div class="info-label">Phone</div>
-                <div class="info-value">+91 90000 00000</div>
+                <div>+91 90000 00000</div>
               </div>
-
               <div>
                 <div class="info-label">Email</div>
-                <div class="info-value">info@sunrisepublicschool.edu</div>
+                <div>info@sunrisepublicschool.edu</div>
               </div>
-
               <div>
                 <div class="info-label">Office Hours</div>
-                <div class="info-value">Monday to Saturday, 8:00 AM to 4:00 PM</div>
+                <div>Monday to Saturday, 8:00 AM to 4:00 PM</div>
               </div>
             </div>
-          </div>
 
-          <aside class="card admission-box">
-            <div class="eyebrow">Admissions</div>
-            <h3 style="font-size:2rem">Ready to enroll?</h3>
-            <p style="margin-top:12px">
-              Add your admission process here: eligibility, documents required,
-              fee enquiry, visit schedule, and entrance information.
-            </p>
-            <div style="margin-top:24px">
-              <a class="btn btn-primary" href="#">Apply for Admission</a>
+            <div class="cta-row" style="margin-top:24px">
+              <a class="btn btn-primary" href="#admissionForm">Start Admission</a>
+              <a class="btn btn-secondary" href="tel:+919000000000">Call Now</a>
             </div>
           </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">FAQ</div>
+            <h2 class="section-title">Frequently asked questions</h2>
+          </div>
+          <p>
+            Add answers for admission dates, documents required, transport routes,
+            fee submission, uniforms, books, and school timings.
+          </p>
+        </div>
+
+        <div class="faq-grid">
+          <details class="faq">
+            <summary>What documents are usually required for admission?</summary>
+            <p>Typically, schools request birth certificate, previous report card, transfer certificate where applicable, identity proof, photographs, and address details.</p>
+          </details>
+          <details class="faq">
+            <summary>Is transport available?</summary>
+            <p>Yes, this sample site includes a transport facility section. Replace it with your route-wise details, pickup areas, and contact numbers.</p>
+          </details>
+          <details class="faq">
+            <summary>How can parents enquire about fee details?</summary>
+            <p>Parents can use the admission form, phone number, WhatsApp button, or visit the school office during working hours.</p>
+          </details>
         </div>
       </div>
     </section>
@@ -867,9 +1253,13 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>© 2026 Sunrise Public School. All rights reserved.</div>
-      <div>Interactive multi-theme school homepage demo.</div>
+      <div>Multi-theme school website demo with layouts, gallery, fees, and admission form.</div>
     </div>
   </footer>
+
+  <div class="sticky-actions">
+    <button class="fab" id="scrollTopBtn" title="Go to top">↑</button>
+  </div>
 
   <script>
     (function () {
@@ -886,7 +1276,6 @@
           "--line": "#fed7aa",
           "--accent": "#ea580c",
           "--accent-2": "#c2410c",
-          "--accent-3": "#fff7ed",
           "--hero1": "#ffedd5",
           "--hero2": "#fffbeb",
           "--hero3": "#ffffff",
@@ -896,19 +1285,18 @@
         blue: {
           "--bg": "#f8fbff",
           "--panel": "#ffffff",
-          "--panel-2": "#eef6ff",
+          "--panel-2": "#edf6ff",
           "--soft": "#eff6ff",
           "--text": "#1e293b",
           "--muted": "#64748b",
           "--line": "#bfdbfe",
           "--accent": "#2563eb",
           "--accent-2": "#1d4ed8",
-          "--accent-3": "#eff6ff",
           "--hero1": "#dbeafe",
           "--hero2": "#ecfeff",
           "--hero3": "#ffffff",
           "--header-bg": "rgba(255,255,255,.9)",
-          "--shadow": "0 16px 40px rgba(37,99,235,.10)"
+          "--shadow": "0 16px 40px rgba(37,99,235,.1)"
         },
         emerald: {
           "--bg": "#f7fffb",
@@ -920,12 +1308,11 @@
           "--line": "#a7f3d0",
           "--accent": "#059669",
           "--accent-2": "#047857",
-          "--accent-3": "#ecfdf5",
           "--hero1": "#d1fae5",
           "--hero2": "#f7fee7",
           "--hero3": "#ffffff",
           "--header-bg": "rgba(255,255,255,.9)",
-          "--shadow": "0 16px 40px rgba(5,150,105,.10)"
+          "--shadow": "0 16px 40px rgba(5,150,105,.1)"
         },
         dark: {
           "--bg": "#020617",
@@ -937,12 +1324,11 @@
           "--line": "#1e293b",
           "--accent": "#f59e0b",
           "--accent-2": "#fbbf24",
-          "--accent-3": "#1f2937",
           "--hero1": "#111827",
           "--hero2": "#0f172a",
           "--hero3": "#020617",
-          "--header-bg": "rgba(2,6,23,.85)",
-          "--shadow": "0 16px 40px rgba(0,0,0,.38)"
+          "--header-bg": "rgba(2,6,23,.86)",
+          "--shadow": "0 16px 40px rgba(0,0,0,.35)"
         }
       };
 
@@ -956,6 +1342,7 @@
 
       function applyTheme(themeName) {
         const selected = themes[themeName] || themes.saffron;
+
         Object.keys(selected).forEach(function (key) {
           document.documentElement.style.setProperty(key, selected[key]);
         });
@@ -984,16 +1371,64 @@
 
       themeButtons.forEach(function (btn) {
         btn.addEventListener("click", function () {
-          const themeName = btn.getAttribute("data-theme-btn");
-          applyTheme(themeName);
+          applyTheme(btn.getAttribute("data-theme-btn"));
         });
       });
 
       layoutButtons.forEach(function (btn) {
         btn.addEventListener("click", function () {
-          const layoutName = btn.getAttribute("data-layout-btn");
-          applyLayout(layoutName);
+          applyLayout(btn.getAttribute("data-layout-btn"));
         });
+      });
+
+      const form = document.getElementById("admissionForm");
+      const successBox = document.getElementById("formSuccess");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const data = {
+          parentName: document.getElementById("parentName").value.trim(),
+          studentName: document.getElementById("studentName").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          classSeeking: document.getElementById("classSeeking").value,
+          message: document.getElementById("message").value.trim(),
+          submittedAt: new Date().toISOString()
+        };
+
+        const oldEntries = JSON.parse(localStorage.getItem("schoolAdmissionEnquiries") || "[]");
+        oldEntries.push(data);
+        localStorage.setItem("schoolAdmissionEnquiries", JSON.stringify(oldEntries));
+
+        successBox.style.display = "block";
+        form.reset();
+
+        setTimeout(function () {
+          successBox.style.display = "none";
+        }, 4000);
+      });
+
+      document.getElementById("whatsappBtn").addEventListener("click", function () {
+        const parentName = document.getElementById("parentName").value.trim();
+        const studentName = document.getElementById("studentName").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const classSeeking = document.getElementById("classSeeking").value;
+        const message = document.getElementById("message").value.trim();
+
+        const text =
+          "Admission Enquiry%0A" +
+          "Parent Name: " + encodeURIComponent(parentName) + "%0A" +
+          "Student Name: " + encodeURIComponent(studentName) + "%0A" +
+          "Phone: " + encodeURIComponent(phone) + "%0A" +
+          "Class: " + encodeURIComponent(classSeeking) + "%0A" +
+          "Message: " + encodeURIComponent(message);
+
+        const whatsappNumber = "919000000000";
+        window.open("https://wa.me/" + whatsappNumber + "?text=" + text, "_blank");
+      });
+
+      document.getElementById("scrollTopBtn").addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
       applyTheme("saffron");
