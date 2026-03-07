@@ -3,12 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Greenfield International School — Smart School Website Demo</title>
+  <title>Kashi Valley School — Varanasi School Finder</title>
   <meta
     name="description"
-    content="A modern multi-theme school website with layouts, class-wise quick entry, admission eligibility checker, smart notices, visit booking, worksheet downloads, fee explainer, achievements, transport lookup, gallery slider, and principal video section."
+    content="A Varanasi-localized school website with school finder, transport routes, admission enquiry, quick class guide, notices, and parent-friendly tools."
   />
   <meta name="theme-color" content="#ea580c" />
+  <meta name="geo.region" content="IN-UP" />
+  <meta name="geo.placename" content="Varanasi" />
+  <meta name="geo.position" content="25.3176;82.9739" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -20,23 +24,20 @@
     :root{
       --bg:#fffaf2;
       --panel:#ffffff;
-      --panel-2:#fff7e8;
-      --soft:#fff3df;
-      --soft-2:#fff0d8;
+      --panel2:#fff5e9;
+      --soft:#fff0dd;
       --text:#1f2937;
       --muted:#6b7280;
       --line:#fed7aa;
       --accent:#ea580c;
-      --accent-2:#c2410c;
+      --accent2:#c2410c;
       --hero1:#ffedd5;
-      --hero2:#fffbeb;
+      --hero2:#fff7ed;
       --hero3:#ffffff;
       --ok:#059669;
-      --warn:#b45309;
-      --danger:#dc2626;
       --shadow:0 16px 40px rgba(15,23,42,.08);
-      --max:1260px;
-      --header-bg:rgba(255,255,255,.88);
+      --header-bg:rgba(255,255,255,.9);
+      --max:1240px;
     }
 
     *{box-sizing:border-box}
@@ -48,12 +49,14 @@
       color:var(--text);
       line-height:1.6;
     }
+
     h1,h2,h3,h4,h5,.brand,.section-title,.big-number{
       font-family:"DM Sans",system-ui,sans-serif;
       margin:0;
       line-height:1.12;
       letter-spacing:-.02em;
     }
+
     a{text-decoration:none;color:inherit}
     button,input,select,textarea{font:inherit}
     img{display:block;max-width:100%}
@@ -66,13 +69,13 @@
       color:#fff;
       overflow:hidden;
       font-weight:800;
-      font-size:.95rem;
+      font-size:.94rem;
     }
     .ticker{
       white-space:nowrap;
       display:inline-block;
       padding-left:100%;
-      animation:ticker 26s linear infinite;
+      animation:ticker 28s linear infinite;
     }
     @keyframes ticker{
       0%{transform:translateX(0)}
@@ -100,30 +103,38 @@
       gap:14px;
       align-items:center;
     }
-    .logo-svg{
+    .logo-badge{
       width:58px;
       height:58px;
+      border-radius:18px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:800;
+      box-shadow:var(--shadow);
       flex:0 0 auto;
-      filter:drop-shadow(0 8px 18px rgba(0,0,0,.08));
     }
     .brand{
       font-size:1.45rem;
       font-weight:800;
-      color:var(--accent-2);
+      color:var(--accent2);
     }
     .sub-brand{
       color:var(--muted);
       font-size:.92rem;
     }
+
     .nav{
       display:flex;
-      gap:15px;
+      gap:14px;
       flex-wrap:wrap;
       color:var(--muted);
       font-weight:700;
       font-size:.94rem;
     }
-    .nav a:hover{color:var(--accent-2)}
+    .nav a:hover{color:var(--accent2)}
+
     .toolbar{
       display:flex;
       gap:10px;
@@ -160,7 +171,7 @@
       font-size:.82rem;
       transition:.2s ease;
     }
-    .toggle-btn:hover{background:var(--soft);color:var(--accent-2)}
+    .toggle-btn:hover{background:var(--soft);color:var(--accent2)}
     .toggle-btn.active{
       background:var(--accent);
       color:#fff;
@@ -187,7 +198,7 @@
       gap:28px;
       align-items:center;
     }
-    .hero-grid.classic{grid-template-columns:1.1fr .9fr}
+    .hero-grid.classic{grid-template-columns:1.12fr .88fr}
     .hero-grid.cards{grid-template-columns:1fr}
     .hero-grid.split{grid-template-columns:1.05fr .95fr;gap:0}
 
@@ -205,20 +216,20 @@
       border-radius:999px;
       background:var(--panel);
       border:1px solid var(--line);
-      color:var(--accent-2);
+      color:var(--accent2);
       font-size:.88rem;
       font-weight:800;
       box-shadow:var(--shadow);
     }
     .hero h1{
-      font-size:clamp(2.35rem, 6vw, 5rem);
-      max-width:780px;
+      font-size:clamp(2.35rem,6vw,5rem);
+      max-width:760px;
     }
     .hero-text{
       margin-top:18px;
       color:var(--muted);
       font-size:1.06rem;
-      max-width:730px;
+      max-width:720px;
     }
     .hero-actions{
       margin-top:26px;
@@ -226,6 +237,7 @@
       gap:12px;
       flex-wrap:wrap;
     }
+
     .btn{
       border:none;
       cursor:pointer;
@@ -253,13 +265,8 @@
     }
     .btn-soft{
       background:var(--soft);
-      color:var(--accent-2);
+      color:var(--accent2);
       border:1px solid var(--line);
-    }
-    .btn-ghost{
-      background:transparent;
-      border:1px dashed var(--line);
-      color:var(--accent-2);
     }
 
     .hero-card-grid{
@@ -287,7 +294,7 @@
       color:var(--accent);
       margin-bottom:10px;
     }
-    .hero-card h3{font-size:1.3rem}
+    .hero-card h3{font-size:1.25rem}
     .hero-card p{margin:10px 0 0;color:var(--muted)}
 
     .hero-split-main{
@@ -312,7 +319,7 @@
       grid-template-columns:repeat(4,1fr);
     }
     .stat{
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.8);
       border:1px solid var(--line);
       border-radius:22px;
       padding:16px 18px;
@@ -323,7 +330,7 @@
 
     section.section{padding:70px 0}
     .feature-band{
-      background:var(--panel-2);
+      background:var(--panel2);
       border-top:1px solid var(--line);
       border-bottom:1px solid var(--line);
     }
@@ -340,7 +347,7 @@
       font-size:1.03rem;
     }
     .section-title{
-      font-size:clamp(1.85rem, 3vw, 3rem);
+      font-size:clamp(1.85rem,3vw,3rem);
       margin-top:8px;
     }
 
@@ -360,8 +367,7 @@
       box-shadow:var(--shadow);
     }
     .card.soft{background:var(--soft)}
-    .card.soft2{background:var(--soft-2)}
-    .card h3{font-size:1.22rem;margin-bottom:10px}
+    .card h3{font-size:1.2rem;margin-bottom:10px}
     .card p{margin:0;color:var(--muted)}
 
     .chips{
@@ -379,18 +385,22 @@
       font-weight:800;
       transition:.2s ease;
     }
-    .chip:hover{background:var(--soft);color:var(--accent-2)}
+    .chip:hover{background:var(--soft);color:var(--accent2)}
     .chip.active{
       background:var(--accent);
       color:#fff;
     }
 
-    .class-panel{
-      margin-top:20px;
+    .class-panel,
+    .checker-grid,
+    .finder-grid,
+    .transport-grid,
+    .contact-grid{
       display:grid;
       grid-template-columns:1.1fr .9fr;
       gap:18px;
     }
+
     .mini-list{
       display:grid;
       gap:10px;
@@ -405,11 +415,6 @@
       font-weight:600;
     }
 
-    .checker-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-    }
     .field{
       display:grid;
       gap:7px;
@@ -435,12 +440,14 @@
       border-color:var(--accent);
       box-shadow:0 0 0 4px rgba(234,88,12,.12);
     }
+
     .result-box{
       padding:18px;
       border-radius:18px;
       background:var(--soft);
       border:1px solid var(--line);
       margin-top:16px;
+      color:var(--text);
     }
     .result-box strong{
       display:block;
@@ -477,110 +484,7 @@
       margin-bottom:10px;
       border:1px solid var(--line);
       background:var(--soft);
-      color:var(--accent-2);
-    }
-
-    .principal{
-      display:grid;
-      grid-template-columns:.8fr 1.2fr;
-      gap:18px;
-      align-items:stretch;
-    }
-    .principal-photo{
-      min-height:320px;
-      border-radius:28px;
-      border:1px solid var(--line);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      background:
-        linear-gradient(135deg, rgba(0,0,0,.04), rgba(0,0,0,.04)),
-        url("https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80") center/cover;
-    }
-    .video-wrap{
-      position:relative;
-      overflow:hidden;
-      border-radius:28px;
-      border:1px solid var(--line);
-      min-height:320px;
-      background:
-        linear-gradient(135deg, rgba(0,0,0,.28), rgba(0,0,0,.18)),
-        url("https://images.unsplash.com/photo-1497486751825-1233686d5d80?auto=format&fit=crop&w=1200&q=80") center/cover;
-      box-shadow:var(--shadow);
-      display:grid;
-      align-items:end;
-      padding:24px;
-      color:#fff;
-    }
-    .play-btn{
-      width:72px;height:72px;border-radius:50%;
-      border:none;cursor:pointer;
-      background:rgba(255,255,255,.92);
-      color:var(--accent);
-      font-size:1.8rem;font-weight:800;
-      display:grid;place-items:center;
-      box-shadow:var(--shadow);
-      margin-bottom:16px;
-    }
-    .video-modal{
-      position:fixed;
-      inset:0;
-      background:rgba(2,6,23,.75);
-      display:none;
-      place-items:center;
-      z-index:1200;
-      padding:20px;
-    }
-    .video-modal.open{display:grid}
-    .video-box{
-      width:min(900px, 100%);
-      background:#000;
-      border-radius:24px;
-      overflow:hidden;
-      position:relative;
-      box-shadow:0 24px 80px rgba(0,0,0,.45);
-    }
-    .video-box iframe{
-      width:100%;
-      aspect-ratio:16/9;
-      display:block;
-      border:0;
-    }
-    .video-close{
-      position:absolute;
-      top:12px;
-      right:12px;
-      width:40px;
-      height:40px;
-      border:none;
-      border-radius:12px;
-      background:rgba(255,255,255,.95);
-      font-weight:800;
-      cursor:pointer;
-      z-index:2;
-    }
-
-    .team-grid{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(4,1fr);
-    }
-    .person-card{
-      text-align:center;
-    }
-    .person-avatar{
-      width:82px;height:82px;border-radius:50%;
-      margin:0 auto 14px;
-      background:linear-gradient(135deg,var(--hero1),var(--hero2));
-      border:1px solid var(--line);
-      display:grid;place-items:center;
-      font-weight:800;
-      color:var(--accent-2);
-      font-size:1.15rem;
-    }
-    .person-role{
-      color:var(--muted);
-      font-size:.92rem;
-      margin-top:4px;
+      color:var(--accent2);
     }
 
     .timeline{
@@ -600,7 +504,7 @@
     }
     .timeline-time{
       font-weight:800;
-      color:var(--accent-2);
+      color:var(--accent2);
       background:var(--soft);
       border:1px solid var(--line);
       border-radius:14px;
@@ -648,132 +552,28 @@
     .bar > span{
       display:block;
       height:100%;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
       border-radius:999px;
     }
 
-    .facilities-grid{
+    .landmark-grid,
+    .downloads-grid{
       display:grid;
       gap:18px;
-      grid-template-columns:1fr 2fr;
-    }
-    .facility-feature{
-      background:var(--accent);
-      color:#fff;
-      border-radius:28px;
-      padding:30px;
-      box-shadow:var(--shadow);
-    }
-    .facility-feature .eyebrow{color:rgba(255,255,255,.82)}
-    .facility-feature p{margin-top:14px;color:rgba(255,255,255,.92)}
-
-    .slider-shell{
-      position:relative;
-      overflow:hidden;
-      border-radius:28px;
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      background:var(--panel);
-    }
-    .slides{
-      display:flex;
-      transition:transform .45s ease;
-    }
-    .slide{
-      min-width:100%;
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      min-height:420px;
-      background:var(--panel);
-    }
-    .slide-image{
-      background-size:cover;
-      background-position:center;
-      min-height:280px;
-    }
-    .slide-copy{
-      padding:28px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:12px;
-    }
-    .slider-controls{
-      display:flex;
-      gap:10px;
-      margin-top:16px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .dots{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .dot{
-      width:12px;height:12px;border-radius:50%;
-      border:none;cursor:pointer;
-      background:rgba(148,163,184,.35);
-    }
-    .dot.active{background:var(--accent)}
-    .arrow-btn{
-      width:46px;height:46px;border:none;border-radius:14px;
-      cursor:pointer;background:var(--panel);border:1px solid var(--line);
-      font-weight:800;color:var(--accent-2);
+      grid-template-columns:repeat(4,1fr);
     }
 
-    .fees-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:18px;
-    }
-    .fee-price{
-      font-size:2rem;
-      font-weight:800;
-      color:var(--accent-2);
-      margin-bottom:8px;
-    }
-    .fee-points{
-      margin:14px 0 0;
-      padding-left:18px;
-      color:var(--muted);
-    }
-    .fee-points li+li{margin-top:6px}
-
-    .downloads-grid,
-    .achievement-grid,
-    .visit-grid,
-    .faq-grid{
-      display:grid;
-      gap:18px;
-    }
-    .downloads-grid{grid-template-columns:repeat(3,1fr)}
-    .achievement-grid{grid-template-columns:repeat(4,1fr)}
-    .visit-grid{grid-template-columns:1fr .9fr}
-    .transport-grid{display:grid;grid-template-columns:1fr .9fr;gap:18px}
-    .download-card a{
-      margin-top:14px;
-    }
-    .achievement-badge{
-      width:58px;height:58px;border-radius:18px;
-      display:grid;place-items:center;
-      background:var(--soft);
-      border:1px solid var(--line);
-      color:var(--accent-2);
-      font-weight:800;
-      margin-bottom:14px;
-    }
-
-    .contact-grid{
-      display:grid;
-      grid-template-columns:1.06fr .94fr;
-      gap:18px;
-    }
     .info-list{
       display:grid;
       gap:18px;
       grid-template-columns:repeat(2,1fr);
       margin-top:24px;
+    }
+    .info-label{
+      color:var(--muted);
+      font-size:.9rem;
+      font-weight:800;
+      margin-bottom:6px;
     }
     .admission-box{
       background:linear-gradient(135deg,var(--hero1),var(--hero2));
@@ -796,6 +596,10 @@
       display:none;
     }
 
+    .faq-grid{
+      display:grid;
+      gap:18px;
+    }
     details.faq{
       background:var(--panel);
       border:1px solid var(--line);
@@ -836,7 +640,9 @@
       justify-items:end;
     }
     .fab{
-      width:58px;height:58px;border:none;
+      width:58px;
+      height:58px;
+      border:none;
       border-radius:18px;
       cursor:pointer;
       background:var(--accent);
@@ -865,15 +671,12 @@
       .hero-grid.classic,
       .hero-grid.split,
       .section-head,
-      .principal,
-      .results-row,
-      .facilities-grid,
-      .visit-grid,
-      .contact-grid,
       .class-panel,
       .checker-grid,
+      .finder-grid,
       .transport-grid,
-      .slide{
+      .contact-grid,
+      .results-row{
         grid-template-columns:1fr;
       }
       .hero-split-main{border-radius:34px 34px 0 0}
@@ -883,8 +686,7 @@
         border-radius:0 0 34px 34px;
       }
       .quick-stats{grid-template-columns:repeat(2,1fr)}
-      .grid-4,.team-grid,.achievement-grid{grid-template-columns:repeat(2,1fr)}
-      .fees-grid,.downloads-grid{grid-template-columns:1fr}
+      .grid-4,.landmark-grid,.downloads-grid{grid-template-columns:repeat(2,1fr)}
       .hero-card-grid.cards-layout{grid-template-columns:repeat(2,1fr)}
     }
 
@@ -901,56 +703,40 @@
       .hero-card-grid,
       .hero-card-grid.cards-layout,
       .results-metrics,
-      .info-list,
-      .team-grid,
-      .achievement-grid{
+      .landmark-grid,
+      .downloads-grid,
+      .info-list{
         grid-template-columns:1fr;
       }
       .hero-card.wide{grid-column:auto}
-      .timeline-item{
-        grid-template-columns:1fr;
-      }
+      .timeline-item{grid-template-columns:1fr}
       section.section{padding:56px 0}
-      .principal-photo,
-      .video-wrap{min-height:260px}
     }
   </style>
 </head>
 <body data-theme="saffron" data-layout="classic">
   <div class="notice-strip">
     <div class="ticker">
-      Admissions open for Session 2026–27 • Nursery to Class XII • Smart classrooms • Weekly parent interaction • School transport available • Scholarship test registration open
+      Admissions open for Session 2026–27 • Serving Assi, Lanka, Sigra, Mahmoorganj, Bhelupur, Rathyatra, Kabir Nagar, DLW, Pandeypur, Shivpur, Sarnath, Chauk, Godowlia and Ramnagar areas • Transport routes available
     </div>
   </div>
 
   <header class="site-header">
     <div class="container header-inner">
       <div class="brand-wrap">
-        <svg class="logo-svg" viewBox="0 0 100 100" aria-label="School logo">
-          <defs>
-            <linearGradient id="logoGrad" x1="0" x2="1">
-              <stop offset="0%" stop-color="var(--accent)" />
-              <stop offset="100%" stop-color="var(--accent-2)" />
-            </linearGradient>
-          </defs>
-          <rect x="8" y="8" width="84" height="84" rx="24" fill="url(#logoGrad)"></rect>
-          <path d="M24 58 L50 26 L76 58" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
-          <path d="M30 62 H70" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"></path>
-          <circle cx="50" cy="70" r="6" fill="#fff"></circle>
-        </svg>
+        <div class="logo-badge">KV</div>
         <div>
-          <div class="brand">Greenfield International School</div>
-          <div class="sub-brand">Learn with discipline. Grow with confidence.</div>
+          <div class="brand">Kashi Valley School</div>
+          <div class="sub-brand">Near BHU Gate, Lanka Road, Varanasi</div>
         </div>
       </div>
 
       <nav class="nav" aria-label="Primary">
-        <a href="#about">About</a>
+        <a href="#finder">School Finder</a>
+        <a href="#transport">Transport</a>
         <a href="#quick-entry">Classes</a>
         <a href="#checker">Eligibility</a>
-        <a href="#principal-video">Principal Video</a>
-        <a href="#gallery-slider">Gallery</a>
-        <a href="#transport">Transport</a>
+        <a href="#notices">Notices</a>
         <a href="#contact">Contact</a>
       </nav>
 
@@ -980,57 +766,58 @@
           <div>
             <div class="badge-row">
               <div class="badge">Admissions Open 2026–27</div>
-              <div class="badge">Dummy Demo Content</div>
+              <div class="badge">Varanasi School Finder</div>
             </div>
-            <h1>Smarter school website experience for parents, students, and the office.</h1>
+            <h1>Find your school access from anywhere in Varanasi.</h1>
             <p class="hero-text">
-              This upgraded version adds class-wise quick entry, admission eligibility checker,
-              filtered notices, visit booking, worksheet downloads, achievements, fee explainers,
-              WhatsApp quick actions, a gallery slider, transport route lookup, and a principal message video section.
+              This school website is localized for Varanasi. Parents can check distance,
+              travel time, landmarks, and bus route availability from areas like Assi,
+              Lanka, Sigra, Mahmoorganj, Bhelupur, Pandeypur, Sarnath, Shivpur, and more.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#contact">Apply for Admission</a>
-              <a class="btn btn-secondary" href="#gallery-slider">See Campus Highlights</a>
-              <a class="btn btn-soft" href="#visit">Book a Campus Visit</a>
+              <a class="btn btn-primary" href="#finder">Use School Finder</a>
+              <a class="btn btn-secondary" href="#transport">Check Bus Route</a>
+              <a class="btn btn-soft" href="#contact">Admission Enquiry</a>
             </div>
 
             <div class="quick-stats">
               <div class="stat">
-                <div class="big-number">1800+</div>
-                <small>Students</small>
+                <div class="big-number">15</div>
+                <small>Varanasi Areas</small>
               </div>
               <div class="stat">
                 <div class="big-number">95%</div>
                 <small>Board Result</small>
               </div>
               <div class="stat">
-                <div class="big-number">75+</div>
-                <small>Teachers</small>
+                <div class="big-number">12+</div>
+                <small>Bus Route Paths</small>
               </div>
               <div class="stat">
-                <div class="big-number">22</div>
-                <small>Years of Trust</small>
+                <div class="big-number">1800+</div>
+                <small>Students</small>
               </div>
             </div>
           </div>
 
           <div class="hero-card-grid">
             <article class="hero-card">
-              <div class="eyebrow">Class-wise Guidance</div>
-              <h3>Parents find details faster</h3>
-              <p>Separate quick information for nursery, primary, middle, and senior sections.</p>
+              <div class="eyebrow">School Finder</div>
+              <h3>Distance and travel estimate</h3>
+              <p>Choose your area and see how far the school is from your home side of Varanasi.</p>
             </article>
             <article class="hero-card">
-              <div class="eyebrow">Transport Lookup</div>
-              <h3>Area-wise route check</h3>
-              <p>Parents can verify route availability without calling repeatedly.</p>
+              <div class="eyebrow">Transport Support</div>
+              <h3>Route-wise coverage</h3>
+              <p>Check whether the demo bus route covers your locality or nearby pickup point.</p>
             </article>
             <article class="hero-card wide">
-              <div class="eyebrow">Useful Features</div>
-              <h3>Practical, not just decorative</h3>
+              <div class="eyebrow">Localized for Varanasi</div>
+              <h3>Names and routes that feel real</h3>
               <p>
-                This page is designed to reduce confusion, improve trust, and help parents take action
-                through forms, WhatsApp, filtered notices, transport lookup, and structured information.
+                The school finder uses local place names such as Assi, Lanka, Sigra, Mahmoorganj,
+                Bhelupur, Rathyatra, Kabir Nagar, DLW, Pandeypur, Varuna Bridge, Sarnath, Shivpur,
+                Chauk, Godowlia and Ramnagar.
               </p>
             </article>
           </div>
@@ -1039,40 +826,39 @@
         <div class="hero-grid cards layout-panel hidden" id="layout-cards">
           <div style="text-align:center">
             <div class="badge-row" style="justify-content:center">
-              <div class="badge">Welcome to Our School</div>
+              <div class="badge">Localized for Varanasi</div>
               <div class="badge">Parent-Friendly Design</div>
             </div>
-            <h1>Every important school detail, presented clearly.</h1>
+            <h1>Every important school detail, tailored for Varanasi parents.</h1>
             <p class="hero-text" style="margin-inline:auto">
-              This layout uses visual cards so parents can quickly scan academics, notices,
-              eligibility, transport, achievements, and visit booking.
+              Quickly check school access, routes, class details, eligibility, notices, and contact options.
             </p>
             <div class="hero-actions" style="justify-content:center">
-              <a class="btn btn-primary" href="#checker">Check Eligibility</a>
-              <a class="btn btn-secondary" href="#transport">Check Transport</a>
+              <a class="btn btn-primary" href="#finder">Find My Area</a>
+              <a class="btn btn-secondary" href="#quick-entry">View Class Guide</a>
             </div>
           </div>
 
           <div class="hero-card-grid cards-layout">
             <article class="hero-card">
-              <div class="eyebrow">Admissions</div>
-              <h3>Easy enquiry flow</h3>
-              <p>Simple forms, WhatsApp actions, and visit booking.</p>
+              <div class="eyebrow">Area Search</div>
+              <h3>Assi or Sigra?</h3>
+              <p>Check estimated distance from your area to the school.</p>
             </article>
             <article class="hero-card">
-              <div class="eyebrow">Notices</div>
-              <h3>Filter by need</h3>
-              <p>Parents can view urgent, exam, holiday, or admission notices separately.</p>
+              <div class="eyebrow">Routes</div>
+              <h3>Bus support</h3>
+              <p>See sample bus paths from key Varanasi localities.</p>
             </article>
             <article class="hero-card">
-              <div class="eyebrow">Downloads</div>
-              <h3>Worksheets and forms</h3>
-              <p>Quick access to study material and school documents.</p>
+              <div class="eyebrow">Classes</div>
+              <h3>Quick section guide</h3>
+              <p>View fee, timings, and highlights for each stage.</p>
             </article>
             <article class="hero-card">
-              <div class="eyebrow">Trust</div>
-              <h3>Visible outcomes</h3>
-              <p>Results, achievements, teachers, and routines build confidence.</p>
+              <div class="eyebrow">Contact</div>
+              <h3>Fast admission enquiry</h3>
+              <p>Use form, call, or WhatsApp for admissions support.</p>
             </article>
           </div>
         </div>
@@ -1080,34 +866,33 @@
         <div class="hero-grid split layout-panel hidden" id="layout-split">
           <div class="hero-split-main">
             <div class="badge-row">
-              <div class="badge">Action-Oriented Layout</div>
+              <div class="badge">Varanasi Access Layout</div>
             </div>
-            <h1>Present the school with clarity, structure, and trust.</h1>
+            <h1>Check access, routes, and school details from your location.</h1>
             <p class="hero-text">
-              One side focuses on school identity, while the other highlights decision-making support
-              for parents through useful tools and updates.
+              Parents can quickly estimate school reachability and transport support from their area.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#contact">Contact Office</a>
-              <a class="btn btn-secondary" href="#principal-video">Watch Principal Message</a>
+              <a class="btn btn-primary" href="#finder">Open Finder</a>
+              <a class="btn btn-secondary" href="#transport">See Routes</a>
             </div>
           </div>
           <div class="hero-split-side">
             <div class="grid-2" style="grid-template-columns:1fr">
               <article class="card">
+                <div class="eyebrow">Distance</div>
+                <h3>Area-based estimate</h3>
+                <p>Check approximate distance and travel time from localities across Varanasi.</p>
+              </article>
+              <article class="card">
                 <div class="eyebrow">Eligibility</div>
                 <h3>Age-to-class guidance</h3>
-                <p>Parents can estimate admission suitability before calling the office.</p>
+                <p>Parents can estimate class suitability before calling the school.</p>
               </article>
               <article class="card">
-                <div class="eyebrow">Gallery Slider</div>
-                <h3>Better visual storytelling</h3>
-                <p>A larger slider highlights campus, labs, classroom life, and events.</p>
-              </article>
-              <article class="card">
-                <div class="eyebrow">WhatsApp Actions</div>
-                <h3>Quick communication</h3>
-                <p>Ask about fees, transport, admission, or a school visit with one tap.</p>
+                <div class="eyebrow">Routes</div>
+                <h3>Transport availability</h3>
+                <p>See whether your area is on a sample bus route.</p>
               </article>
             </div>
           </div>
@@ -1115,41 +900,72 @@
       </div>
     </section>
 
-    <section id="about" class="section">
+    <section id="finder" class="section feature-band">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">About the School</div>
-            <h2 class="section-title">Shaping responsible, capable, and confident students.</h2>
+            <div class="eyebrow">Varanasi School Finder</div>
+            <h2 class="section-title">Estimate school access from your area</h2>
           </div>
           <p>
-            Greenfield International School is a dummy demo name. This sample website shows how a school
-            can present academics, trust, discipline, communication, and parent convenience in a more useful way.
+            This finder assumes the school is located near BHU Gate, Lanka Road, Varanasi.
+            Choose your locality to see sample distance, travel time, nearby landmark, and transport status.
           </p>
         </div>
 
-        <div class="grid-4">
-          <article class="card">
-            <h3>Academic Excellence</h3>
-            <p>A balanced curriculum that helps students build strong fundamentals and clear thinking.</p>
-          </article>
-          <article class="card">
-            <h3>Caring Faculty</h3>
-            <p>Experienced teachers who combine discipline, encouragement, and classroom attention.</p>
-          </article>
-          <article class="card">
-            <h3>Modern Learning</h3>
-            <p>Smart classrooms, activity-based learning, digital tools, and future-ready teaching.</p>
-          </article>
-          <article class="card">
-            <h3>Parent-Friendly Systems</h3>
-            <p>Structured notices, downloads, transport lookup, visit booking, and quick contact options.</p>
-          </article>
+        <div class="finder-grid">
+          <div class="card">
+            <div class="field">
+              <label for="finderArea">Select your area</label>
+              <select class="select" id="finderArea">
+                <option value="">Choose Area</option>
+                <option>Assi</option>
+                <option>Lanka</option>
+                <option>Sigra</option>
+                <option>Mahmoorganj</option>
+                <option>Bhelupur</option>
+                <option>Rathyatra</option>
+                <option>Kabir Nagar</option>
+                <option>DLW</option>
+                <option>Pandeypur</option>
+                <option>Varuna Bridge</option>
+                <option>Sarnath</option>
+                <option>Shivpur</option>
+                <option>Chauk</option>
+                <option>Godowlia</option>
+                <option>Ramnagar</option>
+              </select>
+            </div>
+
+            <div class="cta-row">
+              <button class="btn btn-primary" type="button" id="finderBtn">Find School Access</button>
+            </div>
+
+            <div class="result-box" id="finderResult">
+              <strong>Your result will appear here</strong>
+              Select an area and click the button to view estimated distance, travel time, landmark, and route support.
+            </div>
+          </div>
+
+          <div class="card soft">
+            <div class="eyebrow">Demo School Location</div>
+            <h3>Kashi Valley School</h3>
+            <p style="margin-top:10px">
+              This demo assumes the school is located near BHU Gate on Lanka Road, Varanasi.
+              You can later replace these sample values with your real school address.
+            </p>
+            <div class="mini-list">
+              <div class="mini-item">Address side: BHU Gate / Lanka</div>
+              <div class="mini-item">City: Varanasi</div>
+              <div class="mini-item">Good for local SEO</div>
+              <div class="mini-item">Useful for admissions planning</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="quick-entry" class="section feature-band">
+    <section id="quick-entry" class="section">
       <div class="container">
         <div class="section-head">
           <div>
@@ -1180,7 +996,7 @@
             <div class="mini-list" id="classHighlights"></div>
           </div>
 
-          <div class="card soft2">
+          <div class="card soft">
             <div class="eyebrow">Quick Details</div>
             <div class="mini-list">
               <div class="mini-item"><strong>Timing:</strong> <span id="classTiming">8:30 AM – 12:30 PM</span></div>
@@ -1192,7 +1008,7 @@
       </div>
     </section>
 
-    <section id="checker" class="section">
+    <section id="checker" class="section feature-band">
       <div class="container">
         <div class="section-head">
           <div>
@@ -1255,91 +1071,161 @@
       </div>
     </section>
 
-    <section id="principal-video" class="section feature-band">
+    <section id="transport" class="section">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Principal Message Video</div>
-            <h2 class="section-title">A warmer and more personal introduction</h2>
+            <div class="eyebrow">Varanasi Transport Routes</div>
+            <h2 class="section-title">Check if school buses run near your area</h2>
           </div>
           <p>
-            A short welcome video helps parents connect with the school’s tone, values, and leadership far more quickly than plain text.
+            Parents often first ask whether the school bus comes near home. Select your area below to see a sample route.
           </p>
         </div>
 
-        <div class="grid-2">
-          <div class="video-wrap">
-            <button class="play-btn" id="playVideoBtn" aria-label="Play principal message">▶</button>
-            <div>
-              <div class="eyebrow" style="color:#fff">Featured Video</div>
-              <h3 style="font-size:2rem">Welcome from the Principal</h3>
-              <p style="margin-top:10px;color:rgba(255,255,255,.9)">
-                Replace this sample video with your own principal’s welcome message, school overview, or admissions guidance.
-              </p>
+        <div class="transport-grid">
+          <div class="card">
+            <div class="field">
+              <label for="areaSelect">Select your area</label>
+              <select class="select" id="areaSelect">
+                <option value="">Choose Area</option>
+                <option>Assi</option>
+                <option>Lanka</option>
+                <option>Sigra</option>
+                <option>Mahmoorganj</option>
+                <option>Bhelupur</option>
+                <option>Rathyatra</option>
+                <option>Kabir Nagar</option>
+                <option>DLW</option>
+                <option>Pandeypur</option>
+                <option>Varuna Bridge</option>
+                <option>Sarnath</option>
+                <option>Shivpur</option>
+                <option>Chauk</option>
+                <option>Godowlia</option>
+                <option>Ramnagar</option>
+              </select>
+            </div>
+
+            <div class="result-box" id="transportResult">
+              <strong>Route information will appear here</strong>
+              Select an area above to see the available bus route.
             </div>
           </div>
 
-          <div class="card">
-            <div class="eyebrow">Principal’s Note</div>
-            <h3>Education with values, discipline, and purpose.</h3>
-            <p style="margin-top:12px">
-              At Greenfield International School, we believe education must shape both intellect and character.
-              Our goal is to create a learning environment where students become confident thinkers,
-              responsible citizens, and compassionate human beings.
-            </p>
-            <p style="margin-top:12px">
-              We focus on strong academic fundamentals, clear communication, regular guidance,
-              and balanced growth through sports, arts, and technology.
-            </p>
-            <div style="margin-top:18px;font-weight:800">Dr. Olivia Bennett</div>
-            <div style="color:var(--muted)">Principal, Greenfield International School</div>
+          <div class="card soft">
+            <div class="eyebrow">Sample Coverage</div>
+            <div class="mini-list">
+              <div class="mini-item">Assi → Bhelupur → Rathyatra → School</div>
+              <div class="mini-item">Lanka → BHU Gate → Naria → School</div>
+              <div class="mini-item">Sigra → Mahmoorganj → Rathyatra → School</div>
+              <div class="mini-item">Pandeypur → Varuna Bridge → School</div>
+              <div class="mini-item">Sarnath → Ashapur → School</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="contacts-team" class="section">
+    <section id="landmarks" class="section feature-band">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Whom to Contact</div>
-            <h2 class="section-title">Direct parents to the right desk</h2>
+            <div class="eyebrow">Varanasi Landmarks</div>
+            <h2 class="section-title">Easy to reach from major city points</h2>
           </div>
           <p>
-            This prevents confusion and unnecessary call transfers. You can later replace these with real names and extensions.
+            Landmark-based confidence helps parents quickly understand where the school sits in the city.
           </p>
         </div>
 
-        <div class="team-grid">
-          <article class="card person-card">
-            <div class="person-avatar">OB</div>
-            <h3>Dr. Olivia Bennett</h3>
-            <div class="person-role">Principal</div>
+        <div class="landmark-grid">
+          <article class="card">
+            <h3>BHU Gate</h3>
+            <p>Very close to the Lanka side of this demo school location.</p>
           </article>
-          <article class="card person-card">
-            <div class="person-avatar">MS</div>
-            <h3>Maria Scott</h3>
-            <div class="person-role">Admissions Office</div>
+          <article class="card">
+            <h3>Assi Ghat</h3>
+            <p>Convenient for families coming from Assi and southern Varanasi areas.</p>
           </article>
-          <article class="card person-card">
-            <div class="person-avatar">RN</div>
-            <h3>Ryan Nelson</h3>
-            <div class="person-role">Transport Desk</div>
+          <article class="card">
+            <h3>Sigra</h3>
+            <p>Good road connectivity through Bhelupur and Rathyatra routes.</p>
           </article>
-          <article class="card person-card">
-            <div class="person-avatar">AL</div>
-            <h3>Ava Lewis</h3>
-            <div class="person-role">Accounts & Fee Desk</div>
+          <article class="card">
+            <h3>Sarnath</h3>
+            <p>Accessible through Ashapur-side route planning in this demo.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="day-at-school" class="section feature-band">
+    <section id="notices" class="section">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">A Day at Our School</div>
+            <div class="eyebrow">Smart Notice Center</div>
+            <h2 class="section-title">Parents should not dig through every notice</h2>
+          </div>
+          <p>
+            Filter notices by what matters most: admissions, exams, holidays, events, or urgent updates.
+          </p>
+        </div>
+
+        <div class="notice-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="admissions">Admissions</button>
+          <button class="filter-btn" data-filter="exams">Exams</button>
+          <button class="filter-btn" data-filter="holidays">Holidays</button>
+          <button class="filter-btn" data-filter="events">Events</button>
+          <button class="filter-btn" data-filter="urgent">Urgent</button>
+        </div>
+
+        <div class="grid-3" id="noticeGrid">
+          <article class="card notice-card" data-category="admissions">
+            <div class="tag">Admissions</div>
+            <h3>Admissions open for Session 2026–27</h3>
+            <p>Please contact the school office for eligibility, documents required, and class availability.</p>
+          </article>
+
+          <article class="card notice-card" data-category="exams">
+            <div class="tag">Exams</div>
+            <h3>Mid-term examination schedule released</h3>
+            <p>Class-wise dates, reporting instructions, and subject timetable are available now.</p>
+          </article>
+
+          <article class="card notice-card" data-category="holidays">
+            <div class="tag">Holidays</div>
+            <h3>Holiday schedule updated</h3>
+            <p>Parents are requested to check reopening date and assignment instructions carefully.</p>
+          </article>
+
+          <article class="card notice-card" data-category="events">
+            <div class="tag">Events</div>
+            <h3>Annual function rehearsal begins next week</h3>
+            <p>Students selected for stage events should follow the rehearsal timing shared by teachers.</p>
+          </article>
+
+          <article class="card notice-card" data-category="urgent">
+            <div class="tag">Urgent</div>
+            <h3>Tomorrow’s bus route adjusted in two areas</h3>
+            <p>Parents using transport are requested to confirm pickup timing with the transport desk.</p>
+          </article>
+
+          <article class="card notice-card" data-category="admissions">
+            <div class="tag">Admissions</div>
+            <h3>Scholarship test registration begins this month</h3>
+            <p>Merit-based evaluation for selected classes. Enquiry available through the office.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="day" class="section feature-band">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">A Day at School</div>
             <h2 class="section-title">Show routine, discipline, and balance</h2>
           </div>
           <p>
@@ -1436,239 +1322,12 @@
       </div>
     </section>
 
-    <section id="achievements" class="section feature-band">
+    <section id="downloads" class="section feature-band">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Student Achievement Wall</div>
-            <h2 class="section-title">Make the school feel alive and active</h2>
-          </div>
-          <p>
-            Highlighting student wins builds trust and shows that the school celebrates effort across academics, sports, and the arts.
-          </p>
-        </div>
-
-        <div class="achievement-grid">
-          <article class="card">
-            <div class="achievement-badge">A+</div>
-            <h3>Academic Topper</h3>
-            <p>Emma Carter scored the highest in Class X mock boards with strong performance across all major subjects.</p>
-          </article>
-          <article class="card">
-            <div class="achievement-badge">🏅</div>
-            <h3>Sports Winner</h3>
-            <p>The Blue House relay team secured first place in the inter-school athletics meet.</p>
-          </article>
-          <article class="card">
-            <div class="achievement-badge">🎤</div>
-            <h3>Debate Recognition</h3>
-            <p>Noah Bennett won best speaker in the city-level junior debate competition.</p>
-          </article>
-          <article class="card">
-            <div class="achievement-badge">🎨</div>
-            <h3>Creative Arts</h3>
-            <p>Sophia Martin’s artwork was selected for the regional student art showcase.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="facilities" class="section">
-      <div class="container">
-        <div class="facilities-grid">
-          <div class="facility-feature">
-            <div class="eyebrow">Facilities</div>
-            <h2 class="section-title" style="font-size:2.1rem">Everything students need to learn and grow.</h2>
-            <p>
-              Add real photographs and descriptions for your library, science lab, computer lab,
-              transport, sports ground, and classrooms.
-            </p>
-          </div>
-
-          <div class="grid-2">
-            <article class="card soft"><h3>Smart Classrooms</h3><p>Interactive teaching support and visual learning tools for better concept clarity.</p></article>
-            <article class="card soft"><h3>Library & Reading Space</h3><p>Quiet reading zones, reference books, story collections, and learning resources.</p></article>
-            <article class="card soft"><h3>Science Laboratory</h3><p>Hands-on experiments that connect classroom science with observation and practice.</p></article>
-            <article class="card soft"><h3>Computer Lab</h3><p>Digital literacy, foundational computing, and guided practical sessions.</p></article>
-            <article class="card soft"><h3>Sports & Activities</h3><p>Physical fitness, teamwork, stage confidence, and co-curricular participation.</p></article>
-            <article class="card soft"><h3>Transport Facility</h3><p>Safe, planned routes with school transport support for families across the city.</p></article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="gallery-slider" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Campus Highlight Slider</div>
-            <h2 class="section-title">A stronger visual first impression</h2>
-          </div>
-          <p>
-            Replace these sample slides with your school building, labs, classrooms, annual day, sports events, and student activities.
-          </p>
-        </div>
-
-        <div class="slider-shell">
-          <div class="slides" id="slides">
-            <div class="slide">
-              <div class="slide-image" style="background-image:url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=80')"></div>
-              <div class="slide-copy">
-                <div class="eyebrow">Main Campus</div>
-                <h3 style="font-size:2rem">A welcoming and well-organized learning environment</h3>
-                <p>Use this area to highlight your school building, entrance, and general campus impression.</p>
-              </div>
-            </div>
-
-            <div class="slide">
-              <div class="slide-image" style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80')"></div>
-              <div class="slide-copy">
-                <div class="eyebrow">Computer Lab</div>
-                <h3 style="font-size:2rem">Technology-supported learning and digital readiness</h3>
-                <p>Show how students interact with digital tools, guided practice, and practical sessions.</p>
-              </div>
-            </div>
-
-            <div class="slide">
-              <div class="slide-image" style="background-image:url('https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=1600&q=80')"></div>
-              <div class="slide-copy">
-                <div class="eyebrow">Sports & Activities</div>
-                <h3 style="font-size:2rem">Growth beyond academics</h3>
-                <p>Highlight sports day, teamwork, student participation, and confidence-building experiences.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="slider-controls">
-          <div style="display:flex;gap:10px">
-            <button class="arrow-btn" id="prevSlide" aria-label="Previous slide">←</button>
-            <button class="arrow-btn" id="nextSlide" aria-label="Next slide">→</button>
-          </div>
-          <div class="dots" id="sliderDots"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="fees" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Fee Explainer</div>
-            <h2 class="section-title">Show fees clearly, not just as one number</h2>
-          </div>
-          <p>
-            Parents understand school cost better when tuition, annual charges, transport, and optional items are shown separately.
-          </p>
-        </div>
-
-        <div class="fees-grid">
-          <article class="card">
-            <div class="eyebrow">Pre-Primary</div>
-            <div class="fee-price">₹2,500 / month</div>
-            <p>Best for Nursery to UKG students beginning their school journey.</p>
-            <ul class="fee-points">
-              <li>Admission fee: ₹6,000 one-time</li>
-              <li>Monthly tuition: ₹2,500</li>
-              <li>Activity fee included</li>
-              <li>Transport separate if applicable</li>
-            </ul>
-          </article>
-
-          <article class="card">
-            <div class="eyebrow">Primary</div>
-            <div class="fee-price">₹3,400 / month</div>
-            <p>For Classes I to V with strong academic basics and holistic growth.</p>
-            <ul class="fee-points">
-              <li>Admission fee: ₹8,000 one-time</li>
-              <li>Monthly tuition: ₹3,400</li>
-              <li>Library and computer access</li>
-              <li>Books and uniform extra</li>
-            </ul>
-          </article>
-
-          <article class="card">
-            <div class="eyebrow">Secondary & Senior</div>
-            <div class="fee-price">₹4,800 / month</div>
-            <p>Structured academic guidance, board focus, and subject-specific support.</p>
-            <ul class="fee-points">
-              <li>Admission fee: ₹10,000 one-time</li>
-              <li>Monthly tuition: ₹4,800</li>
-              <li>Lab and exam support</li>
-              <li>Transport separate if applicable</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="notices" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Smart Notice Center</div>
-            <h2 class="section-title">Parents should not dig through every notice</h2>
-          </div>
-          <p>
-            Filter notices by what matters most: admissions, exams, holidays, events, or urgent updates.
-          </p>
-        </div>
-
-        <div class="notice-filters">
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="admissions">Admissions</button>
-          <button class="filter-btn" data-filter="exams">Exams</button>
-          <button class="filter-btn" data-filter="holidays">Holidays</button>
-          <button class="filter-btn" data-filter="events">Events</button>
-          <button class="filter-btn" data-filter="urgent">Urgent</button>
-        </div>
-
-        <div class="grid-3" id="noticeGrid">
-          <article class="card notice-card" data-category="admissions">
-            <div class="tag">Admissions</div>
-            <h3>Admissions open for Session 2026–27</h3>
-            <p>Please contact the school office for eligibility, documents required, and class availability.</p>
-          </article>
-
-          <article class="card notice-card" data-category="exams">
-            <div class="tag">Exams</div>
-            <h3>Mid-term examination schedule released</h3>
-            <p>Class-wise dates, reporting instructions, and subject timetable are available now.</p>
-          </article>
-
-          <article class="card notice-card" data-category="holidays">
-            <div class="tag">Holidays</div>
-            <h3>Autumn break dates announced</h3>
-            <p>Parents are requested to check reopening date and assignment instructions for each section.</p>
-          </article>
-
-          <article class="card notice-card" data-category="events">
-            <div class="tag">Events</div>
-            <h3>Annual function rehearsal begins next week</h3>
-            <p>Students selected for stage events should follow the rehearsal timing shared by teachers.</p>
-          </article>
-
-          <article class="card notice-card" data-category="urgent">
-            <div class="tag">Urgent</div>
-            <h3>Tomorrow’s bus route adjusted in two areas</h3>
-            <p>Parents using transport are requested to confirm pickup timing with the transport desk.</p>
-          </article>
-
-          <article class="card notice-card" data-category="admissions">
-            <div class="tag">Admissions</div>
-            <h3>Scholarship test registration begins this month</h3>
-            <p>Merit-based evaluation for selected classes. Enquiry available through the office.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="worksheets" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Homework & Worksheet Zone</div>
-            <h2 class="section-title">A genuinely useful parent section</h2>
+            <div class="eyebrow">Worksheet Zone</div>
+            <h2 class="section-title">Useful downloads for parents</h2>
           </div>
           <p>
             Instead of forcing parents to call or message, keep simple class-wise downloads ready here.
@@ -1676,154 +1335,31 @@
         </div>
 
         <div class="downloads-grid">
-          <article class="card download-card">
-            <div class="eyebrow">Primary</div>
+          <article class="card">
             <h3>Class III English Worksheet Pack</h3>
             <p>Reading, grammar, and vocabulary practice for the current month.</p>
-            <a href="#" class="btn btn-secondary">Download PDF</a>
+            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
           </article>
-          <article class="card download-card">
-            <div class="eyebrow">Middle</div>
+          <article class="card">
             <h3>Class VII Science Revision Sheet</h3>
             <p>Short concept review, diagrams, and practice questions.</p>
-            <a href="#" class="btn btn-secondary">Download PDF</a>
+            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
           </article>
-          <article class="card download-card">
-            <div class="eyebrow">Secondary</div>
+          <article class="card">
             <h3>Class X Math Test Practice Set</h3>
             <p>Board-style sample questions for chapter review and timed practice.</p>
-            <a href="#" class="btn btn-secondary">Download PDF</a>
+            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
+          </article>
+          <article class="card">
+            <h3>Holiday Homework Pack</h3>
+            <p>A sample homework download area for school breaks and special assignments.</p>
+            <a href="#" class="btn btn-secondary" style="margin-top:14px">Download PDF</a>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="transport" class="section feature-band">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Transport Route Lookup</div>
-            <h2 class="section-title">Check route availability by area</h2>
-          </div>
-          <p>
-            This is one of the most practical features for admissions. Parents can quickly see whether school transport serves their locality.
-          </p>
-        </div>
-
-        <div class="transport-grid">
-          <div class="card">
-            <div class="field">
-              <label for="areaInput">Enter area / locality</label>
-              <input class="input" id="areaInput" placeholder="Example: Riverside" />
-            </div>
-            <div class="cta-row">
-              <button class="btn btn-primary" type="button" id="checkRouteBtn">Check Route</button>
-            </div>
-            <div class="result-box" id="routeResult">
-              <strong>Route details will appear here</strong>
-              Enter an area name to check whether transport is available in this demo.
-            </div>
-          </div>
-
-          <div class="card soft">
-            <div class="eyebrow">Sample Service Areas</div>
-            <div class="mini-list">
-              <div class="mini-item">Riverside — Route R1</div>
-              <div class="mini-item">Maple Colony — Route M2</div>
-              <div class="mini-item">North City — Route N3</div>
-              <div class="mini-item">Lake View — Route L4</div>
-              <div class="mini-item">East Garden — Route E5</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="visit" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Campus Visit Booking</div>
-            <h2 class="section-title">Turn interest into an actual visit</h2>
-          </div>
-          <p>
-            A visit booking form feels more professional than a generic contact button and helps the office plan better.
-          </p>
-        </div>
-
-        <div class="visit-grid">
-          <div class="card">
-            <form id="visitForm">
-              <div class="grid-2">
-                <div class="field">
-                  <label for="visitParentName">Parent Name</label>
-                  <input class="input" id="visitParentName" placeholder="Enter parent name" required />
-                </div>
-                <div class="field">
-                  <label for="visitPhone">Phone Number</label>
-                  <input class="input" id="visitPhone" placeholder="9335874326" required />
-                </div>
-                <div class="field">
-                  <label for="visitClass">Interested Class</label>
-                  <select class="select" id="visitClass" required>
-                    <option value="">Select class</option>
-                    <option>Nursery / KG</option>
-                    <option>Primary</option>
-                    <option>Middle School</option>
-                    <option>Secondary</option>
-                    <option>Senior Secondary</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="visitDate">Preferred Date</label>
-                  <input class="input" id="visitDate" type="date" required />
-                </div>
-                <div class="field">
-                  <label for="visitSlot">Preferred Time Slot</label>
-                  <select class="select" id="visitSlot" required>
-                    <option value="">Select slot</option>
-                    <option>09:00 AM – 10:00 AM</option>
-                    <option>10:30 AM – 11:30 AM</option>
-                    <option>12:00 PM – 01:00 PM</option>
-                    <option>02:00 PM – 03:00 PM</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="visitMode">Purpose</label>
-                  <select class="select" id="visitMode" required>
-                    <option value="">Select purpose</option>
-                    <option>Admission enquiry</option>
-                    <option>Campus tour</option>
-                    <option>Fee discussion</option>
-                    <option>Meet admission office</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="cta-row">
-                <button class="btn btn-primary" type="submit">Book Visit</button>
-              </div>
-
-              <div class="success-box" id="visitSuccess">
-                Visit request saved in demo mode. Replace this with your real booking workflow.
-              </div>
-            </form>
-          </div>
-
-          <div class="card soft">
-            <div class="eyebrow">Why this helps</div>
-            <div class="mini-list">
-              <div class="mini-item">Parents choose a suitable time instead of calling repeatedly</div>
-              <div class="mini-item">The school office can plan smoother campus tours</div>
-              <div class="mini-item">Admissions staff know the class interest in advance</div>
-              <div class="mini-item">Looks more organized and professional</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section feature-band">
+    <section id="contact" class="section">
       <div class="container">
         <div class="contact-grid">
           <div class="card">
@@ -1893,7 +1429,11 @@
             <div class="info-list">
               <div>
                 <div class="info-label">Address</div>
-                <div>45 Maple Avenue, Riverside District, North City, India</div>
+                <div>
+                  Near BHU Gate,<br>
+                  Lanka Road,<br>
+                  Varanasi, Uttar Pradesh 221005
+                </div>
               </div>
               <div>
                 <div class="info-label">Phone</div>
@@ -1901,7 +1441,7 @@
               </div>
               <div>
                 <div class="info-label">Email</div>
-                <div>admissions@greenfieldschool.edu</div>
+                <div>admissions@kashivalleyschool.edu</div>
               </div>
               <div>
                 <div class="info-label">Office Hours</div>
@@ -1918,7 +1458,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section feature-band">
       <div class="container">
         <div class="section-head">
           <div>
@@ -1932,12 +1472,12 @@
 
         <div class="faq-grid">
           <details class="faq">
-            <summary>What documents are usually required for admission?</summary>
-            <p>Typically, schools request birth certificate, previous report card, transfer certificate where applicable, identity proof, photographs, and address details.</p>
+            <summary>Which Varanasi areas are covered in this demo?</summary>
+            <p>This demo covers Assi, Lanka, Sigra, Mahmoorganj, Bhelupur, Rathyatra, Kabir Nagar, DLW, Pandeypur, Varuna Bridge, Sarnath, Shivpur, Chauk, Godowlia, and Ramnagar.</p>
           </details>
           <details class="faq">
             <summary>Is transport available?</summary>
-            <p>Yes. In this demo, parents can check sample service areas through the route lookup section.</p>
+            <p>Yes. This demo includes sample route coverage and pickup-side paths from several Varanasi localities.</p>
           </details>
           <details class="faq">
             <summary>How can parents enquire about fee details?</summary>
@@ -1950,8 +1490,8 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <div>© 2026 Greenfield International School. All rights reserved.</div>
-      <div>Multi-theme school website demo with practical parent-focused features.</div>
+      <div>© 2026 Kashi Valley School. All rights reserved.</div>
+      <div>Varanasi-localized school website demo with school finder and transport lookup.</div>
     </div>
   </footer>
 
@@ -1959,27 +1499,14 @@
     <div class="wa-panel" id="waPanel">
       <h4>Quick WhatsApp Actions</h4>
       <div class="wa-actions">
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about admission at Greenfield International School.">Ask about Admission</button>
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about fee details at Greenfield International School.">Ask about Fees</button>
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about transport availability at Greenfield International School.">Ask about Transport</button>
-        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to book a campus visit for Greenfield International School.">Book Campus Visit</button>
+        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about admission at Kashi Valley School in Varanasi.">Ask about Admission</button>
+        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about fee details at Kashi Valley School in Varanasi.">Ask about Fees</button>
+        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to ask about transport availability from my Varanasi area.">Ask about Transport</button>
+        <button class="btn btn-soft wa-quick" data-wa-text="Hello, I want to plan a school visit for Kashi Valley School in Varanasi.">Plan School Visit</button>
       </div>
     </div>
     <button class="fab" id="waToggleBtn" title="WhatsApp">WA</button>
     <button class="fab" id="scrollTopBtn" title="Go to top">↑</button>
-  </div>
-
-  <div class="video-modal" id="videoModal" aria-hidden="true">
-    <div class="video-box">
-      <button class="video-close" id="videoCloseBtn" aria-label="Close video">✕</button>
-      <iframe
-        id="principalVideoFrame"
-        src=""
-        title="Principal Message Video"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      ></iframe>
-    </div>
   </div>
 
   <script>
@@ -1991,70 +1518,62 @@
         saffron: {
           "--bg": "#fffaf2",
           "--panel": "#ffffff",
-          "--panel-2": "#fff7e8",
-          "--soft": "#fff3df",
-          "--soft-2": "#fff0d8",
+          "--panel2": "#fff5e9",
+          "--soft": "#fff0dd",
           "--text": "#1f2937",
           "--muted": "#6b7280",
           "--line": "#fed7aa",
           "--accent": "#ea580c",
-          "--accent-2": "#c2410c",
+          "--accent2": "#c2410c",
           "--hero1": "#ffedd5",
-          "--hero2": "#fffbeb",
+          "--hero2": "#fff7ed",
           "--hero3": "#ffffff",
-          "--header-bg": "rgba(255,255,255,.88)",
-          "--shadow": "0 16px 40px rgba(15,23,42,.08)"
+          "--header-bg": "rgba(255,255,255,.9)"
         },
         blue: {
           "--bg": "#f8fbff",
           "--panel": "#ffffff",
-          "--panel-2": "#edf6ff",
+          "--panel2": "#edf6ff",
           "--soft": "#eff6ff",
-          "--soft-2": "#e0f2fe",
           "--text": "#1e293b",
           "--muted": "#64748b",
           "--line": "#bfdbfe",
           "--accent": "#2563eb",
-          "--accent-2": "#1d4ed8",
+          "--accent2": "#1d4ed8",
           "--hero1": "#dbeafe",
           "--hero2": "#ecfeff",
           "--hero3": "#ffffff",
-          "--header-bg": "rgba(255,255,255,.9)",
-          "--shadow": "0 16px 40px rgba(37,99,235,.1)"
+          "--header-bg": "rgba(255,255,255,.9)"
         },
         emerald: {
           "--bg": "#f7fffb",
           "--panel": "#ffffff",
-          "--panel-2": "#edfdf5",
+          "--panel2": "#edfdf5",
           "--soft": "#ecfdf5",
-          "--soft-2": "#dcfce7",
           "--text": "#1f2937",
           "--muted": "#6b7280",
           "--line": "#a7f3d0",
           "--accent": "#059669",
-          "--accent-2": "#047857",
+          "--accent2": "#047857",
           "--hero1": "#d1fae5",
           "--hero2": "#f7fee7",
           "--hero3": "#ffffff",
-          "--header-bg": "rgba(255,255,255,.9)",
-          "--shadow": "0 16px 40px rgba(5,150,105,.1)"
+          "--header-bg": "rgba(255,255,255,.9)"
         },
         dark: {
           "--bg": "#020617",
           "--panel": "#0f172a",
-          "--panel-2": "#0b1220",
+          "--panel2": "#0b1220",
           "--soft": "#111827",
-          "--soft-2": "#172033",
           "--text": "#e5e7eb",
           "--muted": "#94a3b8",
           "--line": "#1e293b",
           "--accent": "#f59e0b",
-          "--accent-2": "#fbbf24",
+          "--accent2": "#fbbf24",
           "--hero1": "#111827",
           "--hero2": "#0f172a",
           "--hero3": "#020617",
-          "--header-bg": "rgba(2,6,23,.86)",
-          "--shadow": "0 16px 40px rgba(0,0,0,.35)"
+          "--header-bg": "rgba(2,6,23,.88)"
         }
       };
 
@@ -2127,11 +1646,129 @@
       };
 
       const routeData = {
-        riverside: { available: true, route: "R1", point: "Riverside Community Gate", contact: "Transport Desk: 9335874326" },
-        maple: { available: true, route: "M2", point: "Maple Colony Park Corner", contact: "Transport Desk: 9335874326" },
-        "north city": { available: true, route: "N3", point: "North City Market Stop", contact: "Transport Desk: 9335874326" },
-        lake: { available: true, route: "L4", point: "Lake View Main Arch", contact: "Transport Desk: 9335874326" },
-        east: { available: true, route: "E5", point: "East Garden Phase 1 Gate", contact: "Transport Desk: 9335874326" }
+        "Assi":"Route A: Assi → Bhelupur → Rathyatra → School",
+        "Lanka":"Route B: Lanka → BHU Gate → Naria → School",
+        "Sigra":"Route C: Sigra → Mahmoorganj → Rathyatra → School",
+        "Mahmoorganj":"Route C: Mahmoorganj → Sigra → School",
+        "Bhelupur":"Route A: Bhelupur → Rathyatra → School",
+        "Rathyatra":"Route A: Rathyatra → School",
+        "Kabir Nagar":"Route D: Kabir Nagar → DLW → School",
+        "DLW":"Route D: DLW → Kabir Nagar → School",
+        "Pandeypur":"Route E: Pandeypur → Varuna Bridge → School",
+        "Varuna Bridge":"Route E: Varuna Bridge → School",
+        "Sarnath":"Route F: Sarnath → Ashapur → School",
+        "Shivpur":"Route G: Shivpur → Bhojuveer → School",
+        "Chauk":"Route H: Chauk → Godowlia → School",
+        "Godowlia":"Route H: Godowlia → School",
+        "Ramnagar":"Route I: Ramnagar → BHU → School"
+      };
+
+      const finderData = {
+        "Assi": {
+          distance: "3.5 km",
+          time: "12–18 min",
+          landmark: "Assi Ghat / Assi Crossing",
+          transport: "Available",
+          note: "A convenient approach through Bhelupur and Lanka-side roads."
+        },
+        "Lanka": {
+          distance: "1.2 km",
+          time: "5–8 min",
+          landmark: "BHU Gate",
+          transport: "Available",
+          note: "One of the closest areas to the school location."
+        },
+        "Sigra": {
+          distance: "5.8 km",
+          time: "18–25 min",
+          landmark: "Sigra Stadium side",
+          transport: "Available",
+          note: "Well connected through Rathyatra and Bhelupur."
+        },
+        "Mahmoorganj": {
+          distance: "6.2 km",
+          time: "20–28 min",
+          landmark: "Mahmoorganj Main Road",
+          transport: "Available",
+          note: "Accessible through Sigra–Rathyatra corridor."
+        },
+        "Bhelupur": {
+          distance: "2.8 km",
+          time: "10–15 min",
+          landmark: "Bhelupur Crossing",
+          transport: "Available",
+          note: "Fast access toward Lanka and BHU side."
+        },
+        "Rathyatra": {
+          distance: "4.4 km",
+          time: "14–20 min",
+          landmark: "Rathyatra Crossing",
+          transport: "Available",
+          note: "Good road connectivity for daily travel."
+        },
+        "Kabir Nagar": {
+          distance: "7.5 km",
+          time: "22–30 min",
+          landmark: "Kabir Nagar Main Stretch",
+          transport: "Available",
+          note: "Usually connected with DLW-side route planning."
+        },
+        "DLW": {
+          distance: "8.1 km",
+          time: "24–32 min",
+          landmark: "DLW area",
+          transport: "Available",
+          note: "Useful for families on the western side of the city."
+        },
+        "Pandeypur": {
+          distance: "11.5 km",
+          time: "30–42 min",
+          landmark: "Pandeypur Crossing",
+          transport: "Available",
+          note: "Longer travel side; route support matters more here."
+        },
+        "Varuna Bridge": {
+          distance: "10.2 km",
+          time: "28–38 min",
+          landmark: "Varuna Bridge side",
+          transport: "Available",
+          note: "Commonly linked with Pandeypur-side route flow."
+        },
+        "Sarnath": {
+          distance: "12.8 km",
+          time: "34–45 min",
+          landmark: "Sarnath Main Area",
+          transport: "Available",
+          note: "Best handled through dedicated route planning."
+        },
+        "Shivpur": {
+          distance: "13.4 km",
+          time: "35–48 min",
+          landmark: "Shivpur side",
+          transport: "Available",
+          note: "A longer route, often useful for planned bus coverage."
+        },
+        "Chauk": {
+          distance: "6.8 km",
+          time: "22–30 min",
+          landmark: "Old City / Chauk Area",
+          transport: "Limited / confirm",
+          note: "Traffic variation may affect timing significantly."
+        },
+        "Godowlia": {
+          distance: "5.1 km",
+          time: "18–26 min",
+          landmark: "Godowlia Crossing",
+          transport: "Limited / confirm",
+          note: "Travel time can vary depending on city movement."
+        },
+        "Ramnagar": {
+          distance: "8.7 km",
+          time: "22–34 min",
+          landmark: "Ramnagar Fort side",
+          transport: "Available",
+          note: "Useful for families crossing toward BHU/Lanka side."
+        }
       };
 
       const themeButtons = document.querySelectorAll("[data-theme-btn]");
@@ -2247,6 +1884,42 @@
         }
       });
 
+      document.getElementById("finderBtn").addEventListener("click", function () {
+        const area = document.getElementById("finderArea").value;
+        const result = document.getElementById("finderResult");
+
+        if (!area) {
+          result.innerHTML = "<strong>Please select an area</strong>Choose your Varanasi locality first.";
+          return;
+        }
+
+        const item = finderData[area];
+        if (!item) {
+          result.innerHTML = "<strong>No demo data found</strong>Please choose another listed area.";
+          return;
+        }
+
+        result.innerHTML =
+          "<strong>" + area + " → School Access</strong>" +
+          "Estimated distance: <b>" + item.distance + "</b><br>" +
+          "Estimated travel time: <b>" + item.time + "</b><br>" +
+          "Nearby landmark: <b>" + item.landmark + "</b><br>" +
+          "Transport support: <b>" + item.transport + "</b><br>" +
+          item.note;
+      });
+
+      document.getElementById("areaSelect").addEventListener("change", function () {
+        const area = this.value;
+        const result = document.getElementById("transportResult");
+
+        if (!area) {
+          result.innerHTML = "<strong>Select an area above</strong>";
+          return;
+        }
+
+        result.innerHTML = "<strong>Available Route:</strong><br>" + routeData[area];
+      });
+
       const filterButtons = document.querySelectorAll(".filter-btn");
       const noticeCards = document.querySelectorAll(".notice-card");
 
@@ -2300,7 +1973,8 @@
 
         const rawMessage =
           "Admission Enquiry\n" +
-          "School: Greenfield International School\n" +
+          "School: Kashi Valley School\n" +
+          "Location: Varanasi\n" +
           "Parent Name: " + parentName + "\n" +
           "Student Name: " + studentName + "\n" +
           "Phone: " + phone + "\n" +
@@ -2308,61 +1982,6 @@
           "Message: " + message;
 
         window.open("https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(rawMessage), "_blank");
-      });
-
-      const visitForm = document.getElementById("visitForm");
-      const visitSuccess = document.getElementById("visitSuccess");
-
-      visitForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const data = {
-          parentName: document.getElementById("visitParentName").value.trim(),
-          phone: document.getElementById("visitPhone").value.trim(),
-          interestedClass: document.getElementById("visitClass").value,
-          preferredDate: document.getElementById("visitDate").value,
-          preferredSlot: document.getElementById("visitSlot").value,
-          purpose: document.getElementById("visitMode").value,
-          submittedAt: new Date().toISOString()
-        };
-
-        const oldEntries = JSON.parse(localStorage.getItem("schoolVisitBookings") || "[]");
-        oldEntries.push(data);
-        localStorage.setItem("schoolVisitBookings", JSON.stringify(oldEntries));
-
-        visitSuccess.style.display = "block";
-        visitForm.reset();
-
-        setTimeout(function () {
-          visitSuccess.style.display = "none";
-        }, 4000);
-      });
-
-      document.getElementById("checkRouteBtn").addEventListener("click", function () {
-        const raw = document.getElementById("areaInput").value.trim().toLowerCase();
-        const result = document.getElementById("routeResult");
-
-        if (!raw) {
-          result.innerHTML = "<strong>Please enter an area</strong>Type a locality name like Riverside, Maple, North City, Lake, or East.";
-          return;
-        }
-
-        let found = null;
-        Object.keys(routeData).forEach(function (key) {
-          if (raw.includes(key)) found = routeData[key];
-        });
-
-        if (found) {
-          result.innerHTML =
-            "<strong>Transport available</strong>" +
-            "Route: <b>" + found.route + "</b><br>" +
-            "Pickup Point: <b>" + found.point + "</b><br>" +
-            found.contact;
-        } else {
-          result.innerHTML =
-            "<strong>Route not listed in this demo</strong>" +
-            "Please contact the transport desk to check whether your area can be covered or added.";
-        }
       });
 
       const waPanel = document.getElementById("waPanel");
@@ -2383,86 +2002,9 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      const slides = document.getElementById("slides");
-      const sliderDots = document.getElementById("sliderDots");
-      const totalSlides = slides.children.length;
-      let currentSlide = 0;
-      let sliderTimer = null;
-
-      function renderDots() {
-        sliderDots.innerHTML = "";
-        for (let i = 0; i < totalSlides; i++) {
-          const dot = document.createElement("button");
-          dot.className = "dot" + (i === currentSlide ? " active" : "");
-          dot.setAttribute("aria-label", "Go to slide " + (i + 1));
-          dot.addEventListener("click", function () {
-            currentSlide = i;
-            updateSlider();
-            resetSliderTimer();
-          });
-          sliderDots.appendChild(dot);
-        }
-      }
-
-      function updateSlider() {
-        slides.style.transform = "translateX(-" + (currentSlide * 100) + "%)";
-        renderDots();
-      }
-
-      function nextSlide() {
-        currentSlide = (currentSlide + 1) % totalSlides;
-        updateSlider();
-      }
-
-      function prevSlide() {
-        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-        updateSlider();
-      }
-
-      function resetSliderTimer() {
-        if (sliderTimer) clearInterval(sliderTimer);
-        sliderTimer = setInterval(nextSlide, 4500);
-      }
-
-      document.getElementById("nextSlide").addEventListener("click", function () {
-        nextSlide();
-        resetSliderTimer();
-      });
-
-      document.getElementById("prevSlide").addEventListener("click", function () {
-        prevSlide();
-        resetSliderTimer();
-      });
-
-      const videoModal = document.getElementById("videoModal");
-      const playVideoBtn = document.getElementById("playVideoBtn");
-      const videoCloseBtn = document.getElementById("videoCloseBtn");
-      const principalVideoFrame = document.getElementById("principalVideoFrame");
-      const sampleVideoUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
-
-      function openVideo() {
-        principalVideoFrame.src = sampleVideoUrl;
-        videoModal.classList.add("open");
-        videoModal.setAttribute("aria-hidden", "false");
-      }
-
-      function closeVideo() {
-        principalVideoFrame.src = "";
-        videoModal.classList.remove("open");
-        videoModal.setAttribute("aria-hidden", "true");
-      }
-
-      playVideoBtn.addEventListener("click", openVideo);
-      videoCloseBtn.addEventListener("click", closeVideo);
-      videoModal.addEventListener("click", function (e) {
-        if (e.target === videoModal) closeVideo();
-      });
-
       renderClass("nursery");
       applyTheme("saffron");
       applyLayout("classic");
-      updateSlider();
-      resetSliderTimer();
     })();
   </script>
 </body>
