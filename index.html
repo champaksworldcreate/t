@@ -1,724 +1,530 @@
 <!doctype html>
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programmer's Picnic Marketplace</title>
-  <meta name="description" content="A responsive multi-vendor marketplace website with search, category filters, product cards, seller onboarding sections, cart drawer, and a clean modern layout." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#fff8ee;
-      --panel:#ffffff;
-      --panel-2:#fff3df;
-      --text:#1f2328;
-      --muted:#6b7280;
-      --line:#ead8bc;
-      --brand:#d97706;
-      --brand-2:#f59e0b;
-      --brand-3:#fff1db;
-      --success:#15803d;
-      --danger:#b91c1c;
-      --shadow:0 10px 30px rgba(31,35,40,.08);
-      --radius:22px;
-      --radius-sm:16px;
-      --max:1280px;
-    }*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  color:var(--text);
-  background:
-    radial-gradient(circle at top right, rgba(245,158,11,.16), transparent 30%),
-    linear-gradient(180deg, #fffaf2 0%, #fff7ea 100%);
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Programmer’s Picnic — SQL Premium V2</title>
+
+<meta name="description" content="Programmer’s Picnic SQL Premium Editor V2 with SQLite running in browser, schema explorer, history, saved queries, share links and theme toggle."/>
+<meta name="theme-color" content="#1f6feb"/>
+
+<style>
+
+/* =========================
+THEME VARIABLES
+========================= */
+
+:root{
+--bg:#0d1117;
+--panel:#161b22;
+--panel2:#0f141b;
+--line:#30363d;
+--ink:#e6edf3;
+--muted:#8b949e;
+--accent:#1f6feb;
+--chip:#21262d;
+--field:#0b0f14;
+--topbar:#010409;
+--radius:14px;
 }
 
-a{text-decoration:none;color:inherit}
-button,input,select{font:inherit}
-img{max-width:100%;display:block}
+html[data-theme="light"]{
+--bg:#f6f8fb;
+--panel:#ffffff;
+--panel2:#eef2f7;
+--line:#d0d7de;
+--ink:#1f2328;
+--muted:#57606a;
+--accent:#d97706;
+--chip:#f3f4f6;
+--field:#ffffff;
+--topbar:#fffdf8;
+}
 
-.container{width:min(calc(100% - 32px), var(--max)); margin:auto}
+/* =========================
+BASE
+========================= */
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:var(--bg);
+color:var(--ink);
+font-family:system-ui,-apple-system,Segoe UI,Roboto;
+}
+
+/* =========================
+TOPBAR
+========================= */
 
 .topbar{
-  background:#1f2937;
-  color:#fff;
-  font-size:14px;
-  padding:10px 0;
-}
-.topbar .container{
-  display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
-}
-
-.navbar{
-  position:sticky; top:0; z-index:50;
-  backdrop-filter:blur(10px);
-  background:rgba(255,248,238,.86);
-  border-bottom:1px solid rgba(234,216,188,.8);
-}
-.nav-inner{
-  display:grid; grid-template-columns:220px 1fr auto; gap:16px; align-items:center;
-  padding:16px 0;
-}
-.brand{
-  display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.2px;
-}
-.brand-badge{
-  width:42px; height:42px; border-radius:14px;
-  background:linear-gradient(135deg,var(--brand),var(--brand-2));
-  display:grid; place-items:center; color:#fff; font-weight:800; box-shadow:var(--shadow);
-}
-.search-wrap{
-  display:flex; align-items:center; gap:10px;
-  background:var(--panel); border:1px solid var(--line); border-radius:999px;
-  padding:10px 14px; box-shadow:var(--shadow);
-}
-.search-wrap input{
-  flex:1; border:0; outline:0; background:transparent;
-}
-.nav-actions{display:flex; align-items:center; gap:10px}
-.btn, .icon-btn{
-  border:0; cursor:pointer; transition:.2s ease; 
-}
-.btn{
-  padding:12px 16px; border-radius:14px; font-weight:700;
-}
-.btn-primary{
-  background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:#fff; box-shadow:var(--shadow);
-}
-.btn-soft{background:var(--brand-3); color:#9a5a05}
-.icon-btn{
-  width:48px; height:48px; border-radius:16px; background:#fff; border:1px solid var(--line); position:relative;
-}
-.cart-count{
-  position:absolute; top:-6px; right:-4px; width:22px; height:22px; border-radius:999px;
-  background:var(--brand); color:#fff; font-size:12px; font-weight:800; display:grid; place-items:center;
+display:flex;
+gap:12px;
+align-items:center;
+padding:12px 16px;
+border-bottom:1px solid var(--line);
+background:var(--topbar);
+position:sticky;
+top:0;
+z-index:10;
 }
 
-.hero{padding:36px 0 20px}
-.hero-grid{
-  display:grid; grid-template-columns:1.25fr .9fr; gap:22px;
+.brand-dot{
+width:12px;
+height:12px;
+background:var(--accent);
+border-radius:50%;
 }
-.hero-card, .promo-card, .panel{
-  background:rgba(255,255,255,.82);
-  border:1px solid rgba(234,216,188,.9);
-  border-radius:var(--radius); box-shadow:var(--shadow);
-}
-.hero-card{
-  padding:34px; min-height:420px;
-  background:
-    radial-gradient(circle at top right, rgba(245,158,11,.18), transparent 26%),
-    linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,244,226,.96));
-  display:grid; align-content:center;
-}
-.eyebrow{
-  display:inline-flex; align-items:center; gap:8px;
-  width:max-content;
-  padding:8px 12px; border-radius:999px; background:#fff1db; color:#9a5a05; font-weight:700; font-size:13px;
-  border:1px solid #f3d3a1;
-}
-.hero h1{
-  margin:16px 0 12px; font-size:clamp(34px, 5vw, 62px); line-height:1.02;
-}
-.hero p{
-  margin:0 0 22px; font-size:17px; color:var(--muted); max-width:650px;
-}
-.hero-actions{display:flex; gap:12px; flex-wrap:wrap}
-.hero-meta{
-  display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:24px;
-}
-.hero-stat{
-  background:rgba(255,255,255,.72); border:1px solid var(--line); border-radius:18px; padding:16px;
-}
-.hero-stat strong{display:block; font-size:22px}
-.hero-stat span{color:var(--muted); font-size:14px}
 
-.promo-stack{display:grid; gap:18px}
-.promo-card{padding:22px}
-.promo-card h3{margin:0 0 8px; font-size:22px}
-.promo-card p{margin:0 0 14px; color:var(--muted)}
-.promo-tag{display:inline-block; padding:7px 10px; border-radius:999px; background:#fff1db; color:#9a5a05; font-size:12px; font-weight:800}
-
-.section{padding:22px 0}
-.section-head{
-  display:flex; justify-content:space-between; align-items:end; gap:16px; margin-bottom:18px;
+.title{
+font-weight:700;
 }
-.section-head h2{margin:0; font-size:28px}
-.section-head p{margin:6px 0 0; color:var(--muted)}
 
-.chips{display:flex; gap:10px; flex-wrap:wrap}
-.chip{
-  border:1px solid var(--line); background:#fff; color:#7c4b06; padding:10px 14px;
-  border-radius:999px; cursor:pointer; font-weight:700;
+.grow{flex:1}
+
+/* =========================
+BUTTONS
+========================= */
+
+button{
+border:1px solid var(--line);
+background:var(--chip);
+color:var(--ink);
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
 }
-.chip.active{background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:#fff; border-color:transparent}
+
+button.primary{
+background:var(--accent);
+color:white;
+border-color:var(--accent);
+}
+
+/* =========================
+LAYOUT
+========================= */
 
 .layout{
-  display:grid; grid-template-columns:280px 1fr; gap:22px;
-}
-.sidebar{padding:18px; position:sticky; top:92px; align-self:start}
-.sidebar h3{margin:0 0 14px; font-size:18px}
-.filter-group{margin-bottom:20px}
-.filter-group label{display:block; font-weight:700; margin-bottom:10px}
-.filter-group input[type="range"]{width:100%}
-.check{display:flex; align-items:center; gap:10px; margin:10px 0; color:#4b5563}
-.price-pill{display:inline-block; margin-top:8px; padding:7px 12px; border-radius:999px; background:#fff1db; color:#9a5a05; font-weight:800}
-
-.products-top{
-  display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;
-}
-.muted{color:var(--muted)}
-.sort-select{
-  background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px; outline:0;
+display:grid;
+grid-template-columns:280px 1fr 320px;
+height:calc(100vh - 56px);
 }
 
-.product-grid{
-  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;
-}
-.product-card{
-  overflow:hidden;
-}
-.product-media{
-  aspect-ratio:1 / .82;
-  background:linear-gradient(135deg,#ffe8c2,#fff6e8);
-  border-bottom:1px solid var(--line);
-  display:grid; place-items:center;
-  font-size:64px;
-}
-.product-body{padding:18px}
-.product-row{display:flex; justify-content:space-between; gap:10px; align-items:start}
-.product-title{margin:0; font-size:18px}
-.product-cat{margin:8px 0 10px; color:var(--muted); font-size:14px}
-.price-row{display:flex; align-items:center; gap:10px; margin-bottom:14px}
-.price{font-size:24px; font-weight:800}
-.old-price{color:#9ca3af; text-decoration:line-through}
-.stars{color:#b45309; font-size:14px; font-weight:700}
-.product-actions{display:flex; gap:10px}
-.product-actions .btn{flex:1}
-
-.feature-strip{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
-}
-.feature-box{padding:20px}
-.feature-box h4{margin:0 0 8px}
-.feature-box p{margin:0; color:var(--muted)}
-
-.newsletter{
-  padding:28px; display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:center;
-}
-.newsletter h3{margin:0 0 10px; font-size:28px}
-.newsletter p{margin:0; color:var(--muted)}
-.newsletter-form{
-  display:flex; gap:10px; background:#fff; padding:10px; border-radius:18px; border:1px solid var(--line);
-}
-.newsletter-form input{flex:1; border:0; outline:0; padding:0 10px; background:transparent}
-
-.footer{padding:28px 0 50px; color:#6b7280}
-.footer-grid{
-  display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:18px;
-}
-.footer-card{padding:20px}
-.footer h4{margin:0 0 12px; color:#1f2328}
-.footer a{display:block; margin:8px 0; color:#6b7280}
-
-.cart-drawer{
-  position:fixed; top:0; right:-420px; width:min(420px,100%); height:100vh;
-  background:#fff; border-left:1px solid var(--line); box-shadow:-20px 0 40px rgba(0,0,0,.12);
-  z-index:100; transition:right .28s ease; display:flex; flex-direction:column;
-}
-.cart-drawer.open{right:0}
-.cart-head, .cart-foot{padding:18px; border-bottom:1px solid var(--line)}
-.cart-head{display:flex; justify-content:space-between; align-items:center}
-.cart-body{padding:18px; overflow:auto; flex:1; display:grid; gap:12px; align-content:start}
-.cart-item{
-  display:grid; grid-template-columns:72px 1fr auto; gap:12px; align-items:center;
-  border:1px solid var(--line); border-radius:18px; padding:12px;
-}
-.cart-thumb{
-  width:72px; height:72px; border-radius:14px; background:#fff1db; display:grid; place-items:center; font-size:28px;
-}
-.qty-row{display:flex; align-items:center; gap:8px; margin-top:8px}
-.qty-btn{
-  width:28px; height:28px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;
-}
-.cart-foot{border-top:1px solid var(--line); border-bottom:0}
-.cart-foot .total{display:flex; justify-content:space-between; font-size:20px; font-weight:800; margin-bottom:12px}
-.overlay{
-  position:fixed; inset:0; background:rgba(17,24,39,.38); z-index:90; display:none;
-}
-.overlay.show{display:block}
-
-.empty-state{
-  padding:30px 18px; text-align:center; color:var(--muted);
-  border:1px dashed var(--line); border-radius:20px;
+.sidebar{
+background:var(--panel2);
+border-right:1px solid var(--line);
+padding:14px;
+overflow:auto;
 }
 
-@media (max-width: 1080px){
-  .hero-grid,.layout,.newsletter,.footer-grid,.feature-strip,.product-grid{grid-template-columns:1fr 1fr}
-  .layout{grid-template-columns:1fr}
-  .sidebar{position:static}
-}
-@media (max-width: 780px){
-  .nav-inner{grid-template-columns:1fr; gap:12px}
-  .hero-grid,.newsletter,.footer-grid,.feature-strip,.product-grid{grid-template-columns:1fr}
-  .hero-card{padding:24px; min-height:auto}
-  .hero-meta{grid-template-columns:1fr}
-  .products-top{align-items:stretch}
-  .newsletter-form{flex-direction:column}
-  .product-actions{flex-direction:column}
-  .topbar .container{justify-content:center; text-align:center}
+.rightbar{
+background:var(--panel2);
+border-left:1px solid var(--line);
+padding:14px;
+overflow:auto;
 }
 
-  </style>
+.main{
+display:flex;
+flex-direction:column;
+}
+
+/* =========================
+EDITOR
+========================= */
+
+textarea{
+width:100%;
+height:180px;
+background:var(--field);
+color:var(--ink);
+border:1px solid var(--line);
+padding:10px;
+border-radius:10px;
+font-family:monospace;
+}
+
+/* =========================
+RESULTS
+========================= */
+
+.results{
+flex:1;
+overflow:auto;
+padding:10px;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+}
+
+td,th{
+border:1px solid var(--line);
+padding:6px 8px;
+}
+
+th{
+background:var(--panel);
+}
+
+.small{
+font-size:12px;
+color:var(--muted);
+}
+
+</style>
 </head>
-<body>
-  <div class="topbar">
-    <div class="container">
-      <div>Free shipping on orders above ₹999</div>
-      <div>Multi-vendor marketplace • Seller onboarding • Secure checkout</div>
-    </div>
-  </div>  <header class="navbar">
-    <div class="container nav-inner">
-      <a class="brand" href="#">
-        <div class="brand-badge">PP</div>
-        <div>
-          <div>Programmer's Picnic</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600">Modern Multi-Vendor Marketplace</div>
-        </div>
-      </a><div class="search-wrap">
-    <span>🔎</span>
-    <input id="searchInput" type="text" placeholder="Search products, categories, keywords..." />
-  </div>
 
-  <div class="nav-actions">
-    <button class="icon-btn" title="Wishlist">♡</button>
-    <button class="icon-btn" id="cartButton" title="Cart">🛒<span class="cart-count" id="cartCount">0</span></button>
-  </div>
+<body>
+
+<div class="topbar">
+
+<div class="brand-dot"></div>
+
+<div class="title">
+Programmer’s Picnic — SQL Premium V2
 </div>
 
-  </header>  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-card">
-          <span class="eyebrow">✨ Launch your own vendor-powered marketplace</span>
-          <h1>Host a marketplace where many sellers can list and sell goods.</h1>
-          <p>This starter marketplace includes buyer-friendly product discovery and can be expanded with seller signup, vendor dashboards, product submission, commission tracking, payout flows, admin approval, and store profiles.</p>
-          <div class="hero-actions">
-            <a href="#shop" class="btn btn-primary">Browse products</a>
-            <a href="#seller-zone" class="btn btn-soft">Become a seller</a>
-          </div>
-          <div class="hero-meta">
-            <div class="hero-stat"><strong>50+</strong><span>Marketplace-ready products</span></div>
-            <div class="hero-stat"><strong>100+</strong><span>Future sellers supported</span></div>
-            <div class="hero-stat"><strong>Admin</strong><span>Control vendors and listings</span></div>
-          </div>
-        </div>
-        <div class="promo-stack">
-          <div class="promo-card">
-            <span class="promo-tag">Seller growth</span>
-            <h3>Onboard local and online sellers</h3>
-            <p>Invite merchants to create shop profiles, upload products, manage stock, and receive orders through your platform.</p>
-            <a class="btn btn-primary" href="#seller-zone">Start selling</a>
-          </div>
-          <div class="promo-card">
-            <span class="promo-tag">Platform vision</span>
-            <h3>Built for buyers, sellers, and admins</h3>
-            <p>Use this layout as the public marketplace home page, then connect login, product forms, vendor panels, and payment systems.</p>
-            <a class="btn btn-soft" href="#newsletter">Join waitlist</a>
-          </div>
-        </div>
-      </div>
-    </section><section class="section" id="featured">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>Marketplace categories</h2>
-        <p>Buyers can explore categories while sellers can choose where to list goods.</p>
-      </div>
-      <div class="chips" id="categoryChips"></div>
-    </div>
-  </div>
-</section>
+<div class="grow"></div>
 
-<section class="section" id="shop">
-  <div class="container layout">
-    <aside class="panel sidebar">
-      <h3>Filters</h3>
-      <div class="filter-group">
-        <label for="priceRange">Maximum price</label>
-        <input type="range" id="priceRange" min="500" max="5000" value="5000" step="100" />
-        <div class="price-pill">Up to ₹<span id="priceValue">5000</span></div>
-      </div>
+<button id="themeToggle">🌙 Dark</button>
 
-      <div class="filter-group">
-        <label>Customer rating</label>
-        <label class="check"><input type="checkbox" class="ratingFilter" value="4"> 4★ and above</label>
-        <label class="check"><input type="checkbox" class="ratingFilter" value="4.5"> 4.5★ and above</label>
-      </div>
+</div>
 
-      <div class="filter-group">
-        <label>Availability</label>
-        <label class="check"><input type="checkbox" id="inStockOnly"> Show only in-stock items</label>
-      </div>
+<div class="layout">
 
-      <button class="btn btn-soft" id="clearFilters" style="width:100%">Reset filters</button>
-    </aside>
+<!-- SIDEBAR -->
 
-    <div>
-      <div class="products-top">
-        <div>
-          <div style="font-size:22px;font-weight:800">Marketplace listings</div>
-          <div class="muted"><span id="resultCount">0</span> items found</div>
-        </div>
-        <select class="sort-select" id="sortSelect">
-          <option value="featured">Sort: Featured</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="rating-desc">Rating: High to Low</option>
-          <option value="name-asc">Name: A to Z</option>
-        </select>
-      </div>
+<div class="sidebar">
 
-      <div class="product-grid" id="productGrid"></div>
-    </div>
-  </div>
-</section>
+<h4>Database</h4>
 
-<section class="section">
-  <div class="container feature-strip">
-    <div class="panel feature-box">
-      <h4>Vendor onboarding</h4>
-      <p>Let sellers apply, create stores, and publish approved product listings.</p>
-    </div>
-    <div class="panel feature-box">
-      <h4>Commission model</h4>
-      <p>Charge a platform fee per order, monthly subscription, or listing fee.</p>
-    </div>
-    <div class="panel feature-box">
-      <h4>Admin approval</h4>
-      <p>Review seller accounts, moderate products, and manage disputes centrally.</p>
-    </div>
-    <div class="panel feature-box">
-      <h4>Storefront profiles</h4>
-      <p>Each vendor can have a logo, about section, product catalog, and contact options.</p>
-    </div>
-  </div>
-</section>
+<button id="sampleDB">Load Sample DB</button>
 
-<section class="section" id="seller-zone">
-  <div class="container panel newsletter" style="margin-bottom:22px;">
-    <div>
-      <h3>Seller zone</h3>
-      <p>Future sections here can include seller registration, vendor benefits, commission details, payout schedule, and onboarding steps.</p>
-    </div>
-    <div class="chips">
-      <span class="chip active" style="cursor:default">Create store</span>
-      <span class="chip" style="cursor:default">Upload products</span>
-      <span class="chip" style="cursor:default">Receive orders</span>
-      <span class="chip" style="cursor:default">Get payouts</span>
-    </div>
-  </div>
-</section>
+<hr>
 
-<section class="section" id="newsletter">
-  <div class="container panel newsletter">
-    <div>
-      <h3>Get buyer deals and seller platform updates.</h3>
-      <p>Grow both sides of your marketplace with launches, onboarding emails, coupon drops, and restock alerts.</p>
-    </div>
-    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
-      <input type="email" placeholder="Enter your email address" required />
-      <button class="btn btn-primary" type="submit">Subscribe</button>
-    </form>
-  </div>
-</section>
+<h4>Quick Queries</h4>
 
-  </main>  <footer class="footer">
-    <div class="container footer-grid">
-      <div class="panel footer-card">
-        <h4>Programmer's Picnic Marketplace</h4>
-        <p style="margin:0;color:var(--muted)">A polished multi-vendor marketplace starter for physical products, digital goods, books, gadgets, courses, or local businesses.</p>
-      </div>
-      <div class="panel footer-card">
-        <h4>Marketplace</h4>
-        <a href="#shop">All products</a>
-        <a href="#featured">Featured</a>
-        <a href="#seller-zone">Become a seller</a>
-      </div>
-      <div class="panel footer-card">
-        <h4>Help</h4>
-        <a href="#">Shipping</a>
-        <a href="#">Returns</a>
-        <a href="#">Track order</a>
-      </div>
-      <div class="panel footer-card">
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-        <a href="#">Privacy</a>
-      </div>
-    </div>
-  </footer>  <div class="overlay" id="overlay"></div>
-  <aside class="cart-drawer" id="cartDrawer">
-    <div class="cart-head">
-      <strong>Your cart</strong>
-      <button class="icon-btn" id="closeCart">✕</button>
-    </div>
-    <div class="cart-body" id="cartBody"></div>
-    <div class="cart-foot">
-      <div class="total"><span>Total</span><span id="cartTotal">₹0</span></div>
-      <button class="btn btn-primary" style="width:100%">Proceed to checkout</button>
-    </div>
-  </aside>  <script>
-    const products = [
-      {id:1, name:'Wireless Headphones Pro', category:'Electronics', price:2499, oldPrice:3299, rating:4.7, stock:true, emoji:'🎧', tags:['audio','music','wireless']},
-      {id:2, name:'Smartwatch Active', category:'Electronics', price:3199, oldPrice:3999, rating:4.4, stock:true, emoji:'⌚', tags:['watch','fitness','smart']},
-      {id:3, name:'Minimal Desk Lamp', category:'Home', price:1399, oldPrice:1799, rating:4.6, stock:true, emoji:'💡', tags:['lamp','desk','study']},
-      {id:4, name:'Campus Backpack', category:'Fashion', price:1199, oldPrice:1599, rating:4.3, stock:false, emoji:'🎒', tags:['bag','travel','student']},
-      {id:5, name:'Ergo Keyboard', category:'Electronics', price:2899, oldPrice:3499, rating:4.8, stock:true, emoji:'⌨️', tags:['keyboard','coding','office']},
-      {id:6, name:'Ceramic Coffee Mug', category:'Home', price:699, oldPrice:899, rating:4.2, stock:true, emoji:'☕', tags:['mug','coffee','kitchen']},
-      {id:7, name:'Running Shoes X1', category:'Fashion', price:2299, oldPrice:2899, rating:4.5, stock:true, emoji:'👟', tags:['sports','shoes','running']},
-      {id:8, name:'Portable SSD 1TB', category:'Electronics', price:4599, oldPrice:5299, rating:4.9, stock:true, emoji:'💽', tags:['storage','ssd','backup']},
-      {id:9, name:'Cotton Hoodie', category:'Fashion', price:1499, oldPrice:1999, rating:4.1, stock:true, emoji:'🧥', tags:['hoodie','winter','clothing']},
-      {id:10, name:'Notebook Set Premium', category:'Books', price:899, oldPrice:1199, rating:4.6, stock:true, emoji:'📚', tags:['study','writing','notes']},
-      {id:11, name:'Desk Organizer', category:'Home', price:999, oldPrice:1299, rating:4.0, stock:false, emoji:'🗂️', tags:['desk','storage','office']},
-      {id:12, name:'Phone Stand Flex', category:'Accessories', price:599, oldPrice:799, rating:4.4, stock:true, emoji:'📱', tags:['mobile','stand','desk']}
-    ];
+<button class="chip" onclick="loadQuery('SELECT * FROM employees')">Employees</button>
 
-    const state = {
-      search: '',
-      category: 'All',
-      maxPrice: 5000,
-      minRating: 0,
-      inStockOnly: false,
-      sort: 'featured',
-      cart: []
-    };
+<button class="chip" onclick="loadQuery('SELECT * FROM departments')">Departments</button>
 
-    const categoryChips = document.getElementById('categoryChips');
-    const productGrid = document.getElementById('productGrid');
-    const resultCount = document.getElementById('resultCount');
-    const searchInput = document.getElementById('searchInput');
-    const sortSelect = document.getElementById('sortSelect');
-    const priceRange = document.getElementById('priceRange');
-    const priceValue = document.getElementById('priceValue');
-    const inStockOnly = document.getElementById('inStockOnly');
-    const ratingFilters = document.querySelectorAll('.ratingFilter');
-    const clearFilters = document.getElementById('clearFilters');
-    const cartButton = document.getElementById('cartButton');
-    const closeCart = document.getElementById('closeCart');
-    const cartDrawer = document.getElementById('cartDrawer');
-    const overlay = document.getElementById('overlay');
-    const cartBody = document.getElementById('cartBody');
-    const cartTotal = document.getElementById('cartTotal');
-    const cartCount = document.getElementById('cartCount');
+<button class="chip" onclick="loadQuery('SELECT * FROM employees JOIN departments ON employees.department_id = departments.id')">Join</button>
 
-    function formatPrice(n){ return '₹' + n.toLocaleString('en-IN'); }
+<hr>
 
-    function getCategories(){
-      return ['All', ...new Set(products.map(p => p.category))];
-    }
+<h4>Saved Queries</h4>
 
-    function renderCategories(){
-      categoryChips.innerHTML = getCategories().map(cat => `
-        <button class="chip ${state.category === cat ? 'active' : ''}" data-category="${cat}">${cat}</button>
-      `).join('');
-      categoryChips.querySelectorAll('.chip').forEach(btn => {
-        btn.addEventListener('click', function(){
-          state.category = this.dataset.category;
-          renderCategories();
-          renderProducts();
-        });
-      });
-    }
+<input id="saveName" placeholder="Query name"/>
 
-    function getFilteredProducts(){
-      let list = products.filter(p => {
-        const matchesSearch = !state.search || [p.name, p.category, ...(p.tags || [])].join(' ').toLowerCase().includes(state.search.toLowerCase());
-        const matchesCategory = state.category === 'All' || p.category === state.category;
-        const matchesPrice = p.price <= state.maxPrice;
-        const matchesRating = p.rating >= state.minRating;
-        const matchesStock = !state.inStockOnly || p.stock;
-        return matchesSearch && matchesCategory && matchesPrice && matchesRating && matchesStock;
-      });
+<button onclick="saveQuery()">Save</button>
 
-      switch(state.sort){
-        case 'price-asc': list.sort((a,b)=>a.price-b.price); break;
-        case 'price-desc': list.sort((a,b)=>b.price-a.price); break;
-        case 'rating-desc': list.sort((a,b)=>b.rating-a.rating); break;
-        case 'name-asc': list.sort((a,b)=>a.name.localeCompare(b.name)); break;
-      }
-      return list;
-    }
+<div id="savedQueries"></div>
 
-    function renderProducts(){
-      const list = getFilteredProducts();
-      resultCount.textContent = list.length;
+</div>
 
-      if(!list.length){
-        productGrid.innerHTML = `
-          <div class="panel empty-state" style="grid-column:1/-1">
-            <div style="font-size:42px;margin-bottom:8px">🛍️</div>
-            <strong>No products matched your filters.</strong>
-            <div style="margin-top:6px">Try another category, higher price range, or clear filters.</div>
-          </div>
-        `;
-        return;
-      }
 
-      productGrid.innerHTML = list.map(p => `
-        <article class="panel product-card">
-          <div class="product-media">${p.emoji}</div>
-          <div class="product-body">
-            <div class="product-row">
-              <h3 class="product-title">${p.name}</h3>
-              <span class="stars">${p.rating}★</span>
-            </div>
-            <div class="product-cat">${p.category} ${p.stock ? '• In stock' : '• Out of stock'}</div>
-            <div class="price-row">
-              <span class="price">${formatPrice(p.price)}</span>
-              <span class="old-price">${formatPrice(p.oldPrice)}</span>
-            </div>
-            <div class="product-actions">
-              <button class="btn btn-soft" onclick="quickView(${p.id})">Quick view</button>
-              <button class="btn btn-primary" ${p.stock ? '' : 'disabled style="opacity:.55;cursor:not-allowed"'} onclick="addToCart(${p.id})">Add to cart</button>
-            </div>
-          </div>
-        </article>
-      `).join('');
-    }
+<!-- MAIN -->
 
-    function addToCart(id){
-      const product = products.find(p => p.id === id);
-      if(!product || !product.stock) return;
-      const found = state.cart.find(item => item.id === id);
-      if(found) found.qty += 1;
-      else state.cart.push({id, qty:1});
-      renderCart();
-      openCart();
-    }
+<div class="main">
 
-    function removeFromCart(id){
-      state.cart = state.cart.filter(item => item.id !== id);
-      renderCart();
-    }
+<div style="padding:10px">
 
-    function changeQty(id, delta){
-      const item = state.cart.find(x => x.id === id);
-      if(!item) return;
-      item.qty += delta;
-      if(item.qty <= 0) removeFromCart(id);
-      renderCart();
-    }
+<textarea id="editor">
+SELECT * FROM employees;
+</textarea>
 
-    function renderCart(){
-      const detailed = state.cart.map(item => {
-        const product = products.find(p => p.id === item.id);
-        return {...product, qty:item.qty};
-      });
+<div style="margin-top:10px">
 
-      cartCount.textContent = detailed.reduce((s,i)=>s+i.qty,0);
-      const total = detailed.reduce((s,i)=>s + i.price * i.qty, 0);
-      cartTotal.textContent = formatPrice(total);
+<button class="primary" onclick="runSQL()">Run SQL</button>
 
-      if(!detailed.length){
-        cartBody.innerHTML = `<div class="empty-state"><div style="font-size:40px;margin-bottom:8px">🛒</div>Your cart is empty.</div>`;
-        return;
-      }
+<button onclick="clearEditor()">Clear</button>
 
-      cartBody.innerHTML = detailed.map(item => `
-        <div class="cart-item">
-          <div class="cart-thumb">${item.emoji}</div>
-          <div>
-            <div style="font-weight:800">${item.name}</div>
-            <div class="muted" style="font-size:14px">${formatPrice(item.price)}</div>
-            <div class="qty-row">
-              <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
-              <strong>${item.qty}</strong>
-              <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-            </div>
-          </div>
-          <button class="icon-btn" onclick="removeFromCart(${item.id})">🗑️</button>
-        </div>
-      `).join('');
-    }
+<button onclick="shareQuery()">Share</button>
 
-    function openCart(){
-      cartDrawer.classList.add('open');
-      overlay.classList.add('show');
-    }
+</div>
 
-    function closeCartDrawer(){
-      cartDrawer.classList.remove('open');
-      overlay.classList.remove('show');
-    }
+</div>
 
-    function quickView(id){
-      const p = products.find(x => x.id === id);
-      if(!p) return;
-      alert(`${p.name}\n\nCategory: ${p.category}\nPrice: ${formatPrice(p.price)}\nRating: ${p.rating}★\nAvailability: ${p.stock ? 'In stock' : 'Out of stock'}`);
-    }
+<div class="results" id="results"></div>
 
-    searchInput.addEventListener('input', function(){
-      state.search = this.value.trim();
-      renderProducts();
-    });
+</div>
 
-    sortSelect.addEventListener('change', function(){
-      state.sort = this.value;
-      renderProducts();
-    });
 
-    priceRange.addEventListener('input', function(){
-      state.maxPrice = Number(this.value);
-      priceValue.textContent = this.value;
-      renderProducts();
-    });
+<!-- RIGHTBAR -->
 
-    inStockOnly.addEventListener('change', function(){
-      state.inStockOnly = this.checked;
-      renderProducts();
-    });
+<div class="rightbar">
 
-    ratingFilters.forEach(box => {
-      box.addEventListener('change', function(){
-        ratingFilters.forEach(other => { if(other !== this) other.checked = false; });
-        state.minRating = this.checked ? Number(this.value) : 0;
-        renderProducts();
-      });
-    });
+<h4>Query History</h4>
 
-    clearFilters.addEventListener('click', function(){
-      state.search = '';
-      state.category = 'All';
-      state.maxPrice = 5000;
-      state.minRating = 0;
-      state.inStockOnly = false;
-      state.sort = 'featured';
-      searchInput.value = '';
-      sortSelect.value = 'featured';
-      priceRange.value = 5000;
-      priceValue.textContent = '5000';
-      inStockOnly.checked = false;
-      ratingFilters.forEach(x => x.checked = false);
-      renderCategories();
-      renderProducts();
-    });
+<div id="history"></div>
 
-    cartButton.addEventListener('click', openCart);
-    closeCart.addEventListener('click', closeCartDrawer);
-    overlay.addEventListener('click', closeCartDrawer);
+<hr>
 
-    renderCategories();
-    renderProducts();
-    renderCart();
+<h4>Share Link</h4>
 
-    window.addToCart = addToCart;
-    window.removeFromCart = removeFromCart;
-    window.changeQty = changeQty;
-    window.quickView = quickView;
-  </script></body>
+<input id="shareBox"/>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
+
+<script>
+
+let SQL
+let db
+
+const editor = document.getElementById("editor")
+const results = document.getElementById("results")
+const historyDiv = document.getElementById("history")
+
+/* =========================
+INIT SQLITE
+========================= */
+
+initSqlJs({
+locateFile:file=>'https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/'+file
+}).then(function(SQLLib){
+
+SQL = SQLLib
+loadSample()
+
+})
+
+/* =========================
+LOAD SAMPLE DB
+========================= */
+
+function loadSample(){
+
+db = new SQL.Database()
+
+db.run(`
+CREATE TABLE employees(
+id INTEGER PRIMARY KEY,
+name TEXT,
+department_id INTEGER
+);
+`)
+
+db.run(`
+CREATE TABLE departments(
+id INTEGER PRIMARY KEY,
+department_name TEXT
+);
+`)
+
+db.run(`
+INSERT INTO departments VALUES
+(1,'Engineering'),
+(2,'HR'),
+(3,'Finance');
+`)
+
+db.run(`
+INSERT INTO employees VALUES
+(1,'Aman',1),
+(2,'Ritu',2),
+(3,'Karan',1),
+(4,'Sneha',3);
+`)
+
+}
+
+/* =========================
+RUN SQL
+========================= */
+
+function runSQL(){
+
+let sql = editor.value
+
+try{
+
+let res = db.exec(sql)
+
+renderResult(res)
+
+addHistory(sql)
+
+}catch(e){
+
+results.innerHTML = "<pre>"+e+"</pre>"
+
+}
+
+}
+
+/* =========================
+RENDER TABLE
+========================= */
+
+function renderResult(res){
+
+if(res.length==0){
+results.innerHTML="<div class='small'>No result</div>"
+return
+}
+
+let r = res[0]
+
+let html = "<table><tr>"
+
+r.columns.forEach(c=>{
+html+="<th>"+c+"</th>"
+})
+
+html+="</tr>"
+
+r.values.forEach(row=>{
+
+html+="<tr>"
+
+row.forEach(v=>{
+html+="<td>"+v+"</td>"
+})
+
+html+="</tr>"
+
+})
+
+html+="</table>"
+
+results.innerHTML = html
+
+}
+
+/* =========================
+HISTORY
+========================= */
+
+function addHistory(sql){
+
+let div = document.createElement("div")
+
+div.className="small"
+
+div.textContent=sql
+
+historyDiv.prepend(div)
+
+}
+
+/* =========================
+EDITOR UTIL
+========================= */
+
+function clearEditor(){
+editor.value=""
+}
+
+function loadQuery(q){
+editor.value=q
+}
+
+/* =========================
+SAVE QUERIES
+========================= */
+
+function saveQuery(){
+
+let name = document.getElementById("saveName").value
+
+if(!name)return
+
+let list = JSON.parse(localStorage.getItem("pp_sql_saved")||"[]")
+
+list.push({
+name:name,
+sql:editor.value
+})
+
+localStorage.setItem("pp_sql_saved",JSON.stringify(list))
+
+renderSaved()
+
+}
+
+function renderSaved(){
+
+let list = JSON.parse(localStorage.getItem("pp_sql_saved")||"[]")
+
+let container=document.getElementById("savedQueries")
+
+container.innerHTML=""
+
+list.forEach(q=>{
+
+let b=document.createElement("button")
+
+b.textContent=q.name
+
+b.onclick=()=>editor.value=q.sql
+
+container.appendChild(b)
+
+})
+
+}
+
+renderSaved()
+
+/* =========================
+SHARE LINK
+========================= */
+
+function shareQuery(){
+
+let q = encodeURIComponent(editor.value)
+
+let url = location.origin + location.pathname + "?q="+q
+
+document.getElementById("shareBox").value=url
+
+}
+
+const params = new URLSearchParams(location.search)
+
+if(params.get("q")){
+editor.value=decodeURIComponent(params.get("q"))
+}
+
+/* =========================
+THEME TOGGLE
+========================= */
+
+const themeBtn = document.getElementById("themeToggle")
+
+function applyTheme(mode){
+
+document.documentElement.setAttribute("data-theme",mode)
+
+localStorage.setItem("pp_sql_theme",mode)
+
+themeBtn.textContent = mode==="light" ? "☀️ Light" : "🌙 Dark"
+
+}
+
+function toggleTheme(){
+
+let mode = document.documentElement.getAttribute("data-theme")==="light"
+? "dark"
+: "light"
+
+applyTheme(mode)
+
+}
+
+themeBtn.onclick = toggleTheme
+
+applyTheme(localStorage.getItem("pp_sql_theme") || "dark")
+
+</script>
+
+</body>
 </html>
