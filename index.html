@@ -233,6 +233,7 @@ canvas {
         <option value="spiral">Spiral Bloom</option>
         <option value="bars">Radial Bars</option>
         <option value="particles">Particles</option>
+        <option value="dancer">Human Dancer</option>
       </select>
 
       <div class="slider-wrap">
@@ -307,6 +308,7 @@ canvas {
     let timeArray;
     let animationId;
     let particles = [];
+    let danceTime = 0;
 
     function resizeCanvas() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -537,6 +539,134 @@ canvas {
       });
     }
 
+    function drawDancer(m) {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const cx = w / 2;
+      const cy = h / 2 + 30;
+      const sens = Number(sensitivityEl.value);
+      const zoom = Number(zoomEl.value);
+      const bass = (m.bass / 255) * sens;
+      const mid = (m.mid / 255) * sens;
+      const treble = (m.treble / 255) * sens;
+      const volume = (m.volume / 255) * sens;
+      const t = performance.now() * 0.004;
+
+      danceTime += 0.04 + volume * 0.05;
+
+      const bodyScale = 0.9 + zoom * 0.55;
+      const torso = 90 * bodyScale;
+      const shoulderY = cy - 90 * bodyScale;
+      const hipY = cy;
+      const headR = 24 * bodyScale + bass * 5;
+      const sway = Math.sin(danceTime) * (18 + bass * 16);
+      const bounce = Math.abs(Math.sin(danceTime * 1.4)) * (18 + volume * 22);
+      const torsoLean = Math.sin(danceTime * 0.8) * 0.28;
+      const armSwingL = Math.sin(danceTime * 1.8 + 0.7) * (0.9 + treble * 0.9);
+      const armSwingR = Math.sin(danceTime * 1.8 + Math.PI) * (0.9 + treble * 0.9);
+      const legSwingL = Math.sin(danceTime * 1.6) * (0.8 + bass * 0.7);
+      const legSwingR = Math.sin(danceTime * 1.6 + Math.PI) * (0.8 + bass * 0.7);
+
+      const baseX = cx + sway;
+      const baseY = cy - bounce;
+      const shoulderWidth = 34 * bodyScale;
+      const hipWidth = 24 * bodyScale;
+      const upperArm = 48 * bodyScale;
+      const lowerArm = 42 * bodyScale;
+      const upperLeg = 58 * bodyScale;
+      const lowerLeg = 54 * bodyScale;
+
+      function joint(x, y, angle, len) {
+        return { x: x + Math.cos(angle) * len, y: y + Math.sin(angle) * len };
+      }
+
+      const neck = { x: baseX, y: baseY - torso + 6 };
+      const head = { x: neck.x, y: neck.y - headR - 8 };
+      const leftShoulder = { x: neck.x - shoulderWidth, y: shoulderY - bounce };
+      const rightShoulder = { x: neck.x + shoulderWidth, y: shoulderY - bounce };
+      const leftHip = { x: baseX - hipWidth, y: hipY - bounce };
+      const rightHip = { x: baseX + hipWidth, y: hipY - bounce };
+
+      const leftElbow = joint(leftShoulder.x, leftShoulder.y, Math.PI + armSwingL + torsoLean, upperArm);
+      const rightElbow = joint(rightShoulder.x, rightShoulder.y, armSwingR + torsoLean, upperArm);
+      const leftHand = joint(leftElbow.x, leftElbow.y, Math.PI / 2 + armSwingL * 0.8, lowerArm);
+      const rightHand = joint(rightElbow.x, rightElbow.y, Math.PI / 2 + armSwingR * 0.8, lowerArm);
+
+      const leftKnee = joint(leftHip.x, leftHip.y, Math.PI / 2 + legSwingL * 0.7, upperLeg);
+      const rightKnee = joint(rightHip.x, rightHip.y, Math.PI / 2 + legSwingR * 0.7, upperLeg);
+      const leftFoot = joint(leftKnee.x, leftKnee.y, Math.PI / 2 - legSwingL * 0.45, lowerLeg);
+      const rightFoot = joint(rightKnee.x, rightKnee.y, Math.PI / 2 - legSwingR * 0.45, lowerLeg);
+
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      const glowHue = (Date.now() / 20 + m.bass * 0.8) % 360;
+      ctx.shadowBlur = 24 + volume * 18;
+      ctx.shadowColor = `hsla(${glowHue}, 100%, 70%, 0.45)`;
+      ctx.strokeStyle = `hsla(${glowHue}, 100%, 78%, 0.95)`;
+      ctx.lineWidth = 8 + mid * 3;
+
+      for (let i = 0; i < 6; i++) {
+        const r = 70 + i * 28 + bass * 80;
+        ctx.beginPath();
+        ctx.arc(baseX, baseY - torso * 0.35, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsla(${glowHue + i * 18}, 100%, 60%, ${0.05 + i * 0.025})`;
+        ctx.lineWidth = 2 + i * 0.5;
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = `hsla(${glowHue}, 100%, 78%, 0.95)`;
+      ctx.lineWidth = 8 + mid * 3;
+
+      ctx.beginPath();
+      ctx.moveTo(neck.x, neck.y);
+      ctx.lineTo(leftShoulder.x, leftShoulder.y);
+      ctx.moveTo(neck.x, neck.y);
+      ctx.lineTo(rightShoulder.x, rightShoulder.y);
+      ctx.moveTo(baseX, baseY - torso);
+      ctx.lineTo(baseX, baseY);
+      ctx.moveTo(baseX, baseY);
+      ctx.lineTo(leftHip.x, leftHip.y);
+      ctx.moveTo(baseX, baseY);
+      ctx.lineTo(rightHip.x, rightHip.y);
+      ctx.moveTo(leftShoulder.x, leftShoulder.y);
+      ctx.lineTo(leftElbow.x, leftElbow.y);
+      ctx.lineTo(leftHand.x, leftHand.y);
+      ctx.moveTo(rightShoulder.x, rightShoulder.y);
+      ctx.lineTo(rightElbow.x, rightElbow.y);
+      ctx.lineTo(rightHand.x, rightHand.y);
+      ctx.moveTo(leftHip.x, leftHip.y);
+      ctx.lineTo(leftKnee.x, leftKnee.y);
+      ctx.lineTo(leftFoot.x, leftFoot.y);
+      ctx.moveTo(rightHip.x, rightHip.y);
+      ctx.lineTo(rightKnee.x, rightKnee.y);
+      ctx.lineTo(rightFoot.x, rightFoot.y);
+      ctx.stroke();
+
+      ctx.fillStyle = `hsla(${glowHue + 20}, 100%, 80%, 0.95)`;
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, headR, 0, Math.PI * 2);
+      ctx.fill();
+
+      [leftShoulder, rightShoulder, leftElbow, rightElbow, leftHand, rightHand, leftHip, rightHip, leftKnee, rightKnee, leftFoot, rightFoot, neck].forEach((p, idx) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4 + (idx % 3), 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${glowHue + idx * 8}, 100%, 72%, 0.9)`;
+        ctx.fill();
+      });
+
+      const floorY = Math.min(h - 40, baseY + 120 * bodyScale);
+      ctx.strokeStyle = `hsla(${glowHue + 40}, 100%, 60%, 0.35)`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(baseX - 220, floorY);
+      ctx.lineTo(baseX + 220, floorY);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
     function render() {
       const m = getMetrics();
       const volume = Math.round(m.volume);
@@ -556,6 +686,7 @@ canvas {
         case 'spiral': drawSpiral(m); break;
         case 'bars': drawBars(m); break;
         case 'particles': drawParticles(m); break;
+        case 'dancer': drawDancer(m); break;
         default: drawRings(m); break;
       }
 
