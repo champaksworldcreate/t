@@ -225,11 +225,13 @@ canvas {
   </section>
 
   <section class="card">
-    <div class="section-label">Dancer Photo</div>
+    <div class="section-label">Dancer Photos</div>
     <div class="grid">
       <input id="photoInput" type="file" accept="image/*" />
-      <button id="usePhotoBtn">Use Uploaded Photo as Silhouette</button>
-      <p class="hint">Upload your picture and the app will convert it into a glowing dark silhouette for dancer mode directly in the browser.</p>
+      <button id="usePhotoBtn">Use Uploaded Photo as Solo Silhouette</button>
+      <input id="duoPhotoInput" type="file" accept="image/*" />
+      <button id="useDuoPhotoBtn">Use Uploaded Photo as Dual Silhouette</button>
+      <p class="hint">Upload one picture for solo dancer mode, or upload a photo with two people for dual dancer mode. The app will keep all previous visualizer options and add glowing silhouette dancers.</p>
     </div>
   </section>
 
@@ -243,6 +245,7 @@ canvas {
         <option value="bars">Radial Bars</option>
         <option value="particles">Particles</option>
         <option value="dancer">Human Dancer</option>
+        <option value="duo">Dual Dancers</option>
       </select>
 
       <div class="slider-wrap">
@@ -304,6 +307,8 @@ canvas {
     const saveBtn = document.getElementById('saveBtn');
     const photoInput = document.getElementById('photoInput');
     const usePhotoBtn = document.getElementById('usePhotoBtn');
+    const duoPhotoInput = document.getElementById('duoPhotoInput');
+    const useDuoPhotoBtn = document.getElementById('useDuoPhotoBtn');
     const statusText = document.getElementById('statusText');
     const volumeText = document.getElementById('volumeText');
     const bassText = document.getElementById('bassText');
@@ -324,6 +329,11 @@ canvas {
     let dancerSilhouetteReady = false;
     const dancerCanvas = document.createElement('canvas');
     const dancerCtx = dancerCanvas.getContext('2d', { willReadFrequently: true });
+    let duoDancerSilhouetteReady = false;
+    const duoCanvas = document.createElement('canvas');
+    const duoCtx = duoCanvas.getContext('2d', { willReadFrequently: true });
+    let duoLeftBounds = null;
+    let duoRightBounds = null;
 
     function resizeCanvas() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -602,7 +612,6 @@ canvas {
       ctx.translate(cx + sway, cy - bounce);
       ctx.rotate(shoulderTilt);
       ctx.translate(-(cx + sway), -(cy - bounce));
-
       ctx.drawImage(dancerCanvas, x, y, imgW, imgH);
 
       const footY = y + imgH - 10;
@@ -625,8 +634,85 @@ canvas {
       ctx.moveTo(cx - 240 + sway, Math.min(h - 30, footY + 8));
       ctx.lineTo(cx + 240 + sway, Math.min(h - 30, footY + 8));
       ctx.stroke();
-
       ctx.restore();
+    }
+
+    function drawDualPhotoDancers(m) {
+      if (!duoDancerSilhouetteReady || !duoLeftBounds || !duoRightBounds) {
+        if (dancerSilhouetteReady) drawPhotoDancer(m);
+        else drawDancer(m);
+        return;
+      }
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const sens = Number(sensitivityEl.value);
+      const zoom = Number(zoomEl.value);
+      const bass = (m.bass / 255) * sens;
+      const treble = (m.treble / 255) * sens;
+      const volume = (m.volume / 255) * sens;
+      const t = performance.now() * 0.004;
+      const hue = (Date.now() / 18 + m.bass * 1.2) % 360;
+      const centerX = w / 2;
+      const floorY = h * 0.84;
+
+      for (let i = 0; i < 8; i++) {
+        const r = 80 + i * 30 + bass * 80;
+        ctx.beginPath();
+        ctx.arc(centerX, h * 0.42, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsla(${hue + i * 14}, 100%, 60%, ${0.04 + i * 0.022})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      const leftSway = Math.sin(t * 1.4) * (14 + bass * 12);
+      const rightSway = Math.sin(t * 1.4 + Math.PI) * (14 + bass * 12);
+      const leftBounce = Math.abs(Math.sin(t * 1.9)) * (18 + volume * 20);
+      const rightBounce = Math.abs(Math.sin(t * 1.9 + 0.5)) * (18 + volume * 20);
+      const leftArm = Math.sin(t * 2.4) * (10 + treble * 14);
+      const rightArm = Math.sin(t * 2.4 + Math.PI) * (10 + treble * 14);
+      const leftLeg = Math.sin(t * 1.8) * (16 + bass * 20);
+      const rightLeg = Math.sin(t * 1.8 + Math.PI) * (16 + bass * 20);
+
+      function drawOne(bounds, targetCenterX, bounce, sway, armSwing, legSwing, tilt, glowShift) {
+        const bw = bounds.maxX - bounds.minX + 1;
+        const bh = bounds.maxY - bounds.minY + 1;
+        const desiredH = Math.min(h * 0.62, bh * (0.58 + zoom * 0.34));
+        const scale = desiredH / bh;
+        const dw = bw * scale;
+        const dh = bh * scale;
+        const x = targetCenterX - dw / 2 + sway;
+        const y = floorY - dh - bounce;
+        ctx.save();
+        ctx.shadowBlur = 28 + volume * 18;
+        ctx.shadowColor = `hsla(${hue + glowShift}, 100%, 70%, 0.55)`;
+        ctx.translate(targetCenterX + sway, floorY - dh * 0.58 - bounce);
+        ctx.rotate(tilt);
+        ctx.translate(-(targetCenterX + sway), -(floorY - dh * 0.58 - bounce));
+        ctx.drawImage(duoCanvas, bounds.minX, bounds.minY, bw, bh, x, y, dw, dh);
+        ctx.strokeStyle = `hsla(${hue + glowShift + 30}, 100%, 72%, 0.75)`;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(targetCenterX + sway, y + dh * 0.38);
+        ctx.lineTo(targetCenterX + sway - armSwing, y + dh * 0.56);
+        ctx.moveTo(targetCenterX + sway, y + dh * 0.4);
+        ctx.lineTo(targetCenterX + sway + armSwing, y + dh * 0.58);
+        ctx.moveTo(targetCenterX + sway - 10, y + dh * 0.72);
+        ctx.lineTo(targetCenterX + sway - 16 - legSwing, y + dh - 8);
+        ctx.moveTo(targetCenterX + sway + 10, y + dh * 0.72);
+        ctx.lineTo(targetCenterX + sway + 16 + legSwing, y + dh - 8);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      drawOne(duoLeftBounds, centerX - 130, leftBounce, leftSway, leftArm, leftLeg, Math.sin(t * 1.1) * 0.08, 0);
+      drawOne(duoRightBounds, centerX + 130, rightBounce, rightSway, rightArm, rightLeg, Math.sin(t * 1.1 + 0.7) * -0.08, 40);
+
+      ctx.strokeStyle = `hsla(${hue + 20}, 100%, 65%, 0.35)`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(centerX - 320, floorY + 8);
+      ctx.lineTo(centerX + 320, floorY + 8);
+      ctx.stroke();
     }
 
     function drawDancer(m) {
@@ -780,6 +866,11 @@ canvas {
           if (dancerSilhouetteReady) drawPhotoDancer(m);
           else drawDancer(m);
           break;
+        case 'duo':
+          if (duoDancerSilhouetteReady) drawDualPhotoDancers(m);
+          else if (dancerSilhouetteReady) drawPhotoDancer(m);
+          else drawDancer(m);
+          break;
         default: drawRings(m); break;
       }
 
@@ -830,14 +921,9 @@ canvas {
       const sample = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[Math.floor(w/2),0],[0,Math.floor(h/2)],[w-1,Math.floor(h/2)]];
       sample.forEach(([sx, sy]) => {
         const i = (sy * w + sx) * 4;
-        sumR += d[i];
-        sumG += d[i + 1];
-        sumB += d[i + 2];
-        count++;
+        sumR += d[i]; sumG += d[i + 1]; sumB += d[i + 2]; count++;
       });
-      const bgR = sumR / count;
-      const bgG = sumG / count;
-      const bgB = sumB / count;
+      const bgR = sumR / count, bgG = sumG / count, bgB = sumB / count;
 
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
@@ -854,7 +940,6 @@ canvas {
           }
         }
       }
-
       dancerCtx.putImageData(imageData, 0, 0);
       dancerCtx.globalCompositeOperation = 'source-atop';
       const glow = dancerCtx.createLinearGradient(0, 0, 0, h);
@@ -867,7 +952,67 @@ canvas {
       dancerSilhouetteReady = true;
       modeSelect.value = 'dancer';
       modeBadge.textContent = 'Mode: Human Dancer';
-      statusText.textContent = 'Silhouette loaded';
+      statusText.textContent = 'Solo silhouette loaded';
+    }
+
+    function buildDualSilhouetteFromImage(img) {
+      const maxSide = 1200;
+      const ratio = Math.min(1, maxSide / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
+      const w = Math.max(1, Math.round((img.naturalWidth || img.width) * ratio));
+      const h = Math.max(1, Math.round((img.naturalHeight || img.height) * ratio));
+      duoCanvas.width = w;
+      duoCanvas.height = h;
+      duoCtx.clearRect(0, 0, w, h);
+      duoCtx.drawImage(img, 0, 0, w, h);
+      const imageData = duoCtx.getImageData(0, 0, w, h);
+      const d = imageData.data;
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      const sample = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[Math.floor(w/2),0],[0,Math.floor(h/2)],[w-1,Math.floor(h/2)]];
+      sample.forEach(([sx, sy]) => {
+        const i = (sy * w + sx) * 4;
+        sumR += d[i]; sumG += d[i + 1]; sumB += d[i + 2]; count++;
+      });
+      const bgR = sumR / count, bgG = sumG / count, bgB = sumB / count;
+      let minX = w, minY = h, maxX = 0, maxY = 0;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          const r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
+          const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
+          const brightness = (r + g + b) / 3;
+          const keep = a > 0 && (dist > 60 || brightness < 205);
+          if (keep) {
+            d[i] = 10; d[i + 1] = 10; d[i + 2] = 16; d[i + 3] = 255;
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
+          } else {
+            d[i + 3] = 0;
+          }
+        }
+      }
+      duoCtx.putImageData(imageData, 0, 0);
+      duoCtx.globalCompositeOperation = 'source-atop';
+      const glow = duoCtx.createLinearGradient(0, 0, 0, h);
+      glow.addColorStop(0, 'rgba(255,255,255,0.16)');
+      glow.addColorStop(0.45, 'rgba(32,32,40,0.96)');
+      glow.addColorStop(1, 'rgba(0,0,0,1)');
+      duoCtx.fillStyle = glow;
+      duoCtx.fillRect(0, 0, w, h);
+      duoCtx.globalCompositeOperation = 'source-over';
+
+      if (minX >= maxX || minY >= maxY) {
+        duoDancerSilhouetteReady = false;
+        return;
+      }
+      const midX = Math.floor((minX + maxX) / 2);
+      duoLeftBounds = { minX, minY, maxX: midX, maxY };
+      duoRightBounds = { minX: midX + 1, minY, maxX, maxY };
+      duoDancerSilhouetteReady = true;
+      modeSelect.value = 'duo';
+      modeBadge.textContent = 'Mode: Dual Dancers';
+      statusText.textContent = 'Dual silhouette loaded';
     }
 
     photoInput.addEventListener('change', (e) => {
@@ -892,6 +1037,24 @@ canvas {
         buildSilhouetteFromImage(img);
       };
       img.src = URL.createObjectURL(photoInput.files[0]);
+    });
+
+    duoPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => buildDualSilhouetteFromImage(img);
+      img.src = URL.createObjectURL(file);
+    });
+
+    useDuoPhotoBtn.addEventListener('click', () => {
+      if (!duoPhotoInput.files?.[0]) {
+        alert('Please upload a photo with two people first.');
+        return;
+      }
+      const img = new Image();
+      img.onload = () => buildDualSilhouetteFromImage(img);
+      img.src = URL.createObjectURL(duoPhotoInput.files[0]);
     });
 
     window.addEventListener('resize', () => {
