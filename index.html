@@ -194,6 +194,10 @@ canvas {
 
 .topbar > * { pointer-events: auto; }
 
+body.visualizer-fullscreen .sidebar{display:none}
+body.visualizer-fullscreen .app{grid-template-columns:1fr}
+body.visualizer-fullscreen .canvas-wrap{min-height:100vh;border-radius:0}
+
 @media (max-width: 980px) {
   .app {
     grid-template-columns: 1fr;
@@ -1095,7 +1099,17 @@ canvas {
     });
 
     window.addEventListener('resize', () => {
-      resizeCanvas();
+      // Auto full-screen visualizer after 5 seconds
+    setTimeout(() => {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        }
+      } catch(e) {}
+      document.body.classList.add('visualizer-fullscreen');
+    }, 5000);
+
+    resizeCanvas();
       initParticles();
     });
 
