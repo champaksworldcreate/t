@@ -229,8 +229,10 @@ canvas {
     <div class="grid">
       <input id="photoInput" type="file" accept="image/*" />
       <button id="usePhotoBtn">Use Uploaded Photo as Solo Silhouette</button>
+      <button id="saveSoloDefaultBtn">Save Solo Photo as Default</button>
       <input id="duoPhotoInput" type="file" accept="image/*" />
       <button id="useDuoPhotoBtn">Use Uploaded Photo as Dual Silhouette</button>
+      <button id="saveDuoDefaultBtn">Save Dual Photo as Default</button>
       <p class="hint">Upload one picture for solo dancer mode, or upload a photo with two people for dual dancer mode. The app will keep all previous visualizer options and add glowing silhouette dancers.</p>
     </div>
   </section>
@@ -309,12 +311,19 @@ canvas {
     const usePhotoBtn = document.getElementById('usePhotoBtn');
     const duoPhotoInput = document.getElementById('duoPhotoInput');
     const useDuoPhotoBtn = document.getElementById('useDuoPhotoBtn');
+    const saveSoloDefaultBtn = document.getElementById('saveSoloDefaultBtn');
+    const saveDuoDefaultBtn = document.getElementById('saveDuoDefaultBtn');
     const statusText = document.getElementById('statusText');
     const volumeText = document.getElementById('volumeText');
     const bassText = document.getElementById('bassText');
     const midText = document.getElementById('midText');
     const trebleText = document.getElementById('trebleText');
     const modeBadge = document.getElementById('modeBadge');
+
+    // Built-in default images.
+    // You can replace these empty strings with data URLs later if you want permanent baked-in photos.
+    const DEFAULT_SOLO_IMAGE = localStorage.getItem('pp_default_solo_image') || '';
+    const DEFAULT_DUO_IMAGE = localStorage.getItem('pp_default_duo_image') || '';
 
     let audioCtx;
     let analyser;
@@ -1057,13 +1066,72 @@ canvas {
       img.src = URL.createObjectURL(duoPhotoInput.files[0]);
     });
 
+    saveSoloDefaultBtn.addEventListener('click', () => {
+      const file = photoInput.files?.[0];
+      if (!file) {
+        alert('Please choose a solo photo first.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem('pp_default_solo_image', reader.result);
+        statusText.textContent = 'Solo default saved';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    saveDuoDefaultBtn.addEventListener('click', () => {
+      const file = duoPhotoInput.files?.[0];
+      if (!file) {
+        alert('Please choose a dual photo first.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem('pp_default_duo_image', reader.result);
+        statusText.textContent = 'Dual default saved';
+      };
+      reader.readAsDataURL(file);
+    });
+
     window.addEventListener('resize', () => {
       resizeCanvas();
       initParticles();
     });
 
+    function loadImageFromSrc(src) {
+      return new Promise((resolve, reject) => {
+        if (!src) {
+          reject(new Error('Missing image source'));
+          return;
+        }
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    async function tryLoadBuiltInDefaults() {
+      try {
+        if (DEFAULT_SOLO_IMAGE) {
+          const soloImg = await loadImageFromSrc(DEFAULT_SOLO_IMAGE);
+          dancerImage = soloImg;
+          buildSilhouetteFromImage(soloImg);
+        }
+      } catch (_) {}
+
+      try {
+        if (DEFAULT_DUO_IMAGE) {
+          const duoImg = await loadImageFromSrc(DEFAULT_DUO_IMAGE);
+          buildDualSilhouetteFromImage(duoImg);
+        }
+      } catch (_) {}
+    }
+
     resizeCanvas();
     initParticles();
     drawBackground(1);
+    tryLoadBuiltInDefaults();
   </script></body>
 </html>
