@@ -225,6 +225,15 @@ canvas {
   </section>
 
   <section class="card">
+    <div class="section-label">Dancer Photo</div>
+    <div class="grid">
+      <input id="photoInput" type="file" accept="image/*" />
+      <button id="usePhotoBtn">Use Uploaded Photo as Silhouette</button>
+      <p class="hint">Upload your picture and the app will convert it into a glowing dark silhouette for dancer mode directly in the browser.</p>
+    </div>
+  </section>
+
+  <section class="card">
     <div class="section-label">Pattern Controls</div>
     <div class="grid">
       <select id="modeSelect">
@@ -293,6 +302,8 @@ canvas {
     const micBtn = document.getElementById('micBtn');
     const stopBtn = document.getElementById('stopBtn');
     const saveBtn = document.getElementById('saveBtn');
+    const photoInput = document.getElementById('photoInput');
+    const usePhotoBtn = document.getElementById('usePhotoBtn');
     const statusText = document.getElementById('statusText');
     const volumeText = document.getElementById('volumeText');
     const bassText = document.getElementById('bassText');
@@ -309,6 +320,10 @@ canvas {
     let animationId;
     let particles = [];
     let danceTime = 0;
+    let dancerImage = null;
+    let dancerSilhouetteReady = false;
+    const dancerCanvas = document.createElement('canvas');
+    const dancerCtx = dancerCanvas.getContext('2d', { willReadFrequently: true });
 
     function resizeCanvas() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -539,6 +554,81 @@ canvas {
       });
     }
 
+    function drawPhotoDancer(m) {
+      if (!dancerImage || !dancerSilhouetteReady) {
+        drawDancer(m);
+        return;
+      }
+
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const cx = w / 2;
+      const cy = h / 2 + 40;
+      const sens = Number(sensitivityEl.value);
+      const zoom = Number(zoomEl.value);
+      const bass = (m.bass / 255) * sens;
+      const treble = (m.treble / 255) * sens;
+      const volume = (m.volume / 255) * sens;
+      const t = performance.now() * 0.004;
+
+      const sway = Math.sin(t * 1.15) * (16 + bass * 14);
+      const bounce = Math.abs(Math.sin(t * 1.9)) * (20 + volume * 22);
+      const shoulderTilt = Math.sin(t * 1.3) * 0.08;
+      const scale = (0.72 + zoom * 0.42) * (1 + volume * 0.06);
+      const legSplit = Math.sin(t * 1.65) * (18 + bass * 22);
+      const armSwing = Math.sin(t * 2.1) * (10 + treble * 18);
+      const hue = (Date.now() / 22 + m.bass) % 360;
+
+      const baseHeight = Math.min(h * 0.74, dancerCanvas.height * scale);
+      const imgScale = baseHeight / dancerCanvas.height;
+      const imgW = dancerCanvas.width * imgScale;
+      const imgH = dancerCanvas.height * imgScale;
+      const x = cx - imgW / 2 + sway;
+      const y = cy - imgH / 2 - bounce;
+
+      ctx.save();
+      ctx.shadowBlur = 30 + volume * 20;
+      ctx.shadowColor = `hsla(${hue}, 100%, 65%, 0.55)`;
+
+      for (let i = 0; i < 7; i++) {
+        const r = 70 + i * 28 + bass * 70;
+        ctx.beginPath();
+        ctx.arc(cx + sway, cy - imgH * 0.1 - bounce, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsla(${hue + i * 16}, 100%, 60%, ${0.05 + i * 0.025})`;
+        ctx.lineWidth = 2 + i * 0.5;
+        ctx.stroke();
+      }
+
+      ctx.translate(cx + sway, cy - bounce);
+      ctx.rotate(shoulderTilt);
+      ctx.translate(-(cx + sway), -(cy - bounce));
+
+      ctx.drawImage(dancerCanvas, x, y, imgW, imgH);
+
+      const footY = y + imgH - 10;
+      ctx.strokeStyle = `hsla(${hue + 40}, 100%, 70%, 0.75)`;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(cx + sway, y + imgH * 0.38);
+      ctx.lineTo(cx + sway - armSwing, y + imgH * 0.58);
+      ctx.moveTo(cx + sway, y + imgH * 0.4);
+      ctx.lineTo(cx + sway + armSwing, y + imgH * 0.6);
+      ctx.moveTo(cx + sway - 12, y + imgH * 0.72);
+      ctx.lineTo(cx + sway - 18 - legSplit, footY);
+      ctx.moveTo(cx + sway + 12, y + imgH * 0.72);
+      ctx.lineTo(cx + sway + 18 + legSplit, footY);
+      ctx.stroke();
+
+      ctx.strokeStyle = `hsla(${hue + 20}, 100%, 60%, 0.35)`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(cx - 240 + sway, Math.min(h - 30, footY + 8));
+      ctx.lineTo(cx + 240 + sway, Math.min(h - 30, footY + 8));
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
     function drawDancer(m) {
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
@@ -686,7 +776,10 @@ canvas {
         case 'spiral': drawSpiral(m); break;
         case 'bars': drawBars(m); break;
         case 'particles': drawParticles(m); break;
-        case 'dancer': drawDancer(m); break;
+        case 'dancer':
+          if (dancerSilhouetteReady) drawPhotoDancer(m);
+          else drawDancer(m);
+          break;
         default: drawRings(m); break;
       }
 
@@ -719,6 +812,86 @@ canvas {
       link.download = `music-pattern-${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
+    });
+
+    function buildSilhouetteFromImage(img) {
+      const maxSide = 900;
+      const ratio = Math.min(1, maxSide / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
+      const w = Math.max(1, Math.round((img.naturalWidth || img.width) * ratio));
+      const h = Math.max(1, Math.round((img.naturalHeight || img.height) * ratio));
+      dancerCanvas.width = w;
+      dancerCanvas.height = h;
+      dancerCtx.clearRect(0, 0, w, h);
+      dancerCtx.drawImage(img, 0, 0, w, h);
+
+      const imageData = dancerCtx.getImageData(0, 0, w, h);
+      const d = imageData.data;
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      const sample = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[Math.floor(w/2),0],[0,Math.floor(h/2)],[w-1,Math.floor(h/2)]];
+      sample.forEach(([sx, sy]) => {
+        const i = (sy * w + sx) * 4;
+        sumR += d[i];
+        sumG += d[i + 1];
+        sumB += d[i + 2];
+        count++;
+      });
+      const bgR = sumR / count;
+      const bgG = sumG / count;
+      const bgB = sumB / count;
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          const r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
+          const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
+          const brightness = (r + g + b) / 3;
+          const centerBias = 1 - Math.abs(x - w / 2) / (w / 2);
+          const keep = a > 0 && (dist > 55 || (centerBias > 0.2 && brightness < 215));
+          if (keep) {
+            d[i] = 10; d[i + 1] = 10; d[i + 2] = 16; d[i + 3] = 255;
+          } else {
+            d[i + 3] = 0;
+          }
+        }
+      }
+
+      dancerCtx.putImageData(imageData, 0, 0);
+      dancerCtx.globalCompositeOperation = 'source-atop';
+      const glow = dancerCtx.createLinearGradient(0, 0, 0, h);
+      glow.addColorStop(0, 'rgba(255,255,255,0.18)');
+      glow.addColorStop(0.45, 'rgba(32,32,40,0.96)');
+      glow.addColorStop(1, 'rgba(0,0,0,1)');
+      dancerCtx.fillStyle = glow;
+      dancerCtx.fillRect(0, 0, w, h);
+      dancerCtx.globalCompositeOperation = 'source-over';
+      dancerSilhouetteReady = true;
+      modeSelect.value = 'dancer';
+      modeBadge.textContent = 'Mode: Human Dancer';
+      statusText.textContent = 'Silhouette loaded';
+    }
+
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => {
+        dancerImage = img;
+        buildSilhouetteFromImage(img);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    usePhotoBtn.addEventListener('click', () => {
+      if (!photoInput.files?.[0]) {
+        alert('Please upload a photo first.');
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        dancerImage = img;
+        buildSilhouetteFromImage(img);
+      };
+      img.src = URL.createObjectURL(photoInput.files[0]);
     });
 
     window.addEventListener('resize', () => {
