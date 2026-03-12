@@ -1,1151 +1,1415 @@
 <!doctype html>
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Music Pattern Drawer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Programmer's Picnic Search</title>
+  <meta
+    name="description"
+    content="Programmer's Picnic search by Champak Roy with voice search, semantic search, theme toggle, and layout toggle."
+  />
+  <meta name="theme-color" content="#1e1e1e" />
+  <meta name="color-scheme" content="dark light" />
+
   <style>
-    :root {
-      --bg: #0b1020;
-      --panel: rgba(255,255,255,0.08);
-      --panel-2: rgba(255,255,255,0.12);
-      --text: #f8fafc;
-      --muted: #cbd5e1;
-      --accent: #f59e0b;
-      --accent-2: #fb7185;
-      --line: rgba(255,255,255,0.14);
-    }* { box-sizing: border-box; }
-html, body {
-  margin: 0;
-  height: 100%;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: var(--text);
-  background:
-    radial-gradient(circle at top left, rgba(245,158,11,0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(251,113,133,0.12), transparent 30%),
-    linear-gradient(135deg, #050816, #0b1020 45%, #111827);
-}
+    :root{
+      --bg:#1e1e1e;
+      --bg2:#252526;
+      --panel:#252526;
+      --panel2:#2d2d30;
+      --line:#3c3c3c;
+      --text:#d4d4d4;
+      --muted:#9da1a6;
+      --title:#ffffff;
+      --accent:#007acc;
+      --accent2:#0e639c;
+      --accentSoft:rgba(0,122,204,.14);
+      --green:#4ec9b0;
+      --orange:#ce9178;
+      --shadow:0 20px 50px rgba(0,0,0,.28);
+      --max:1280px;
+      --mono:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--text);
+      line-height:1.5;
+    }
 
-.app {
-  min-height: 100%;
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 18px;
-  padding: 18px;
-}
+    .light{
+      --bg:#fff8ef;
+      --bg2:#fffdf8;
+      --panel:#ffffff;
+      --panel2:#fffaf3;
+      --line:#e7d9c7;
+      --text:#2a241f;
+      --muted:#7a6d61;
+      --title:#16120f;
+      --accent:#d97706;
+      --accent2:#b45309;
+      --accentSoft:rgba(217,119,6,.10);
+      --green:#15803d;
+      --orange:#b45309;
+      --shadow:0 20px 50px rgba(120,80,20,.14);
+    }
 
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(12px);
-  border-radius: 24px;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.35);
-}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text)}
+    body{
+      background:
+        radial-gradient(circle at top right, var(--accentSoft), transparent 24%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+    }
 
-.sidebar {
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+    .app{
+      width:min(100%, var(--max));
+      margin:24px auto;
+      border:1px solid var(--line);
+      border-radius:24px;
+      overflow:hidden;
+      background:linear-gradient(180deg,var(--bg2),var(--bg));
+      box-shadow:var(--shadow);
+    }
 
-.title {
-  font-size: 1.55rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  margin: 0;
-}
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,var(--bg),var(--bg2));
+      flex-wrap:wrap;
+    }
 
-.subtitle {
-  margin: 8px 0 0;
-  color: var(--muted);
-  line-height: 1.5;
-  font-size: 0.96rem;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
 
-.card {
-  background: var(--panel-2);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 14px;
-}
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      color:#fff;
+      letter-spacing:.04em;
+      background:linear-gradient(135deg,var(--accent),#2aa6ff);
+      box-shadow:0 14px 26px rgba(0,122,204,.22);
+      flex:0 0 auto;
+    }
 
-.section-label {
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #fde68a;
-  margin-bottom: 10px;
-  font-weight: 700;
-}
+    .light .logo{
+      background:linear-gradient(135deg,var(--accent),#f59e0b);
+      box-shadow:0 14px 26px rgba(217,119,6,.22);
+    }
 
-.grid {
-  display: grid;
-  gap: 10px;
-}
+    .brand-title{
+      margin:0;
+      font-size:1.05rem;
+      font-weight:800;
+      color:var(--title);
+      line-height:1.15;
+    }
 
-.row-2 {
-  grid-template-columns: 1fr 1fr;
-}
+    .brand-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
 
-button,
-select,
-input[type="range"],
-input[type="file"] {
-  width: 100%;
-}
+    .top-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
 
-button,
-select {
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  border-radius: 14px;
-  padding: 12px 14px;
-  font: inherit;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-}
+    .pill,.toggle{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      padding:9px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:.84rem;
+    }
 
-button:hover,
-select:hover {
-  transform: translateY(-1px);
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.25);
-}
+    .toggle{
+      cursor:pointer;
+      transition:.18s ease;
+    }
 
-button.primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: white;
-  border: none;
-  font-weight: 700;
-}
+    .toggle:hover{
+      transform:translateY(-1px);
+      background:var(--panel);
+    }
 
-.stat {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 9px 0;
-  border-bottom: 1px dashed rgba(255,255,255,0.12);
-  font-size: 0.94rem;
-}
+    .body{
+      padding:22px;
+      background:
+        radial-gradient(circle at top right, var(--accentSoft), transparent 22%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+    }
 
-.stat:last-child { border-bottom: none; }
-.stat span:first-child { color: var(--muted); }
-.hint {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin: 0;
-}
+    .hero{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
 
-.slider-wrap { display: grid; gap: 6px; }
-.slider-wrap label {
-  font-size: 0.92rem;
-  color: var(--muted);
-}
+    .card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border-radius:20px;
+      overflow:hidden;
+    }
 
-.canvas-wrap {
-  position: relative;
-  overflow: hidden;
-  min-height: 70vh;
-}
+    .card-body{padding:22px}
 
-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 24px;
-}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:var(--accentSoft);
+      border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:700;
+      margin-bottom:14px;
+    }
 
-.overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at center, transparent 25%, rgba(3,7,18,0.12) 70%, rgba(3,7,18,0.25) 100%);
-}
+    .title{
+      margin:0;
+      font-size:clamp(1.7rem,4vw,2.7rem);
+      line-height:1.04;
+      letter-spacing:-.03em;
+      color:var(--title);
+    }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,0.08);
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 0.88rem;
-  color: var(--muted);
-}
+    .desc{
+      margin:12px 0 0;
+      color:var(--muted);
+      font-size:1rem;
+      max-width:780px;
+      line-height:1.7;
+    }
 
-.topbar {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  z-index: 2;
-  pointer-events: none;
-}
+    .search-wrap{
+      margin-top:20px;
+      border:1px solid var(--line);
+      background:var(--panel2);
+      border-radius:18px;
+      overflow:hidden;
+    }
 
-.topbar > * { pointer-events: auto; }
+    .search{
+      display:grid;
+      grid-template-columns:1fr auto auto auto auto;
+      align-items:center;
+    }
 
-body.visualizer-fullscreen .sidebar{display:none}
-body.visualizer-fullscreen .app{grid-template-columns:1fr}
-body.visualizer-fullscreen .canvas-wrap{min-height:100vh;border-radius:0}
+    .input-wrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+      padding:0 14px;
+    }
 
-@media (max-width: 980px) {
-  .app {
-    grid-template-columns: 1fr;
-  }
-  .canvas-wrap {
-    min-height: 56vh;
-  }
-}
+    .icon{
+      color:var(--muted);
+      font-size:1rem;
+      user-select:none;
+      flex:0 0 auto;
+    }
 
+    .input{
+      width:100%;
+      min-width:0;
+      border:0;
+      outline:none;
+      background:transparent;
+      color:var(--title);
+      padding:17px 0;
+      font-size:1rem;
+    }
+
+    .input::placeholder{color:var(--muted)}
+
+    .btn{
+      border:0;
+      border-left:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      min-height:56px;
+      padding:0 16px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.18s ease;
+      white-space:nowrap;
+    }
+
+    .btn:hover{background:var(--panel)}
+    .btn.site{color:var(--accent)}
+    .btn.google{
+      background:var(--accent2);
+      color:#fff;
+      min-width:140px;
+    }
+    .btn.google:hover{background:var(--accent)}
+    .btn.iconbtn{min-width:56px;padding:0 14px}
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      padding:9px 13px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:.9rem;
+      transition:.18s ease;
+    }
+
+    .chip:hover{
+      background:var(--panel);
+      transform:translateY(-1px);
+    }
+
+    .status{
+      margin-top:14px;
+      padding:12px 14px;
+      border:1px solid color-mix(in srgb, var(--green) 22%, transparent);
+      border-radius:14px;
+      background:color-mix(in srgb, var(--green) 8%, transparent);
+      color:var(--green);
+      font-size:.92rem;
+    }
+
+    .side-head,.section-head{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--title);
+      font-weight:800;
+      font-size:.98rem;
+    }
+
+    .side-body,.section-body{
+      padding:16px;
+      display:grid;
+      gap:12px;
+    }
+
+    .kpi{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kpi-label{
+      color:var(--muted);
+      font-size:.82rem;
+      margin-bottom:6px;
+    }
+
+    .kpi-value{
+      color:var(--title);
+      font-weight:800;
+      font-size:1rem;
+      word-break:break-word;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .note{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:.94rem;
+      margin:0;
+    }
+
+    .code{
+      display:block;
+      margin-top:12px;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      color:var(--accent);
+      font-family:var(--mono);
+      font-size:.88rem;
+      line-height:1.6;
+      word-break:break-word;
+      white-space:pre-wrap;
+    }
+
+    .list{
+      display:grid;
+      gap:10px;
+    }
+
+    .mini{
+      width:100%;
+      text-align:left;
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      padding:12px 13px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:.18s ease;
+      font-size:.92rem;
+    }
+
+    .mini:hover{
+      background:var(--panel);
+      transform:translateY(-1px);
+    }
+
+    .mini strong{color:var(--title)}
+
+    .footer{
+      padding:14px 18px 18px;
+      border-top:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--muted);
+      font-size:.9rem;
+      text-align:center;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.78);
+      padding:18px;
+    }
+
+    .modal.show{display:flex}
+
+    .modal-box{
+      width:min(1280px, 100%);
+      height:min(88vh, 940px);
+      background:var(--bg2);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 28px 80px rgba(0,0,0,.5);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .modal-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 14px;
+      background:var(--panel2);
+      border-bottom:1px solid var(--line);
+      flex-wrap:wrap;
+    }
+
+    .modal-title{
+      color:var(--title);
+      font-weight:800;
+      font-size:.98rem;
+    }
+
+    .modal-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .modal-btn{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      padding:9px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .modal-btn:hover{background:var(--panel)}
+    .modal-btn.primary{
+      background:var(--accent2);
+      color:#fff;
+      border-color:var(--accent2);
+    }
+    .modal-btn.primary:hover{background:var(--accent)}
+
+    .modal-toolbar{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:12px 14px;
+      background:var(--panel2);
+      border-bottom:1px solid var(--line);
+    }
+
+    .modal-query{
+      color:var(--accent);
+      font-family:var(--mono);
+      font-size:.88rem;
+      word-break:break-word;
+    }
+
+    .modal-count{
+      color:var(--muted);
+      font-size:.9rem;
+      white-space:nowrap;
+    }
+
+    .modal-layout{
+      display:flex;
+      gap:8px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background:var(--panel);
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .layout-btn{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      padding:8px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .layout-btn.active{
+      background:var(--accent2);
+      color:#fff;
+      border-color:var(--accent2);
+    }
+
+    .modal-body{
+      flex:1;
+      overflow:auto;
+      padding:14px;
+      background:var(--bg2);
+    }
+
+    .results{
+      display:grid;
+      gap:14px;
+    }
+
+    .grid-layout .results{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .list-layout .results{
+      grid-template-columns:1fr;
+    }
+
+    .result{
+      display:grid;
+      grid-template-columns:140px 1fr;
+      gap:14px;
+      border:1px solid var(--line);
+      background:var(--panel2);
+      border-radius:16px;
+      overflow:hidden;
+      transition:.18s ease;
+    }
+
+    .result:hover{
+      transform:translateY(-1px);
+      background:var(--panel);
+    }
+
+    .grid-layout .result{
+      grid-template-columns:1fr;
+    }
+
+    .grid-layout .result-thumb{min-height:190px}
+    .grid-layout .result-body{padding:0 14px 14px 14px}
+
+    .result-thumb{
+      min-height:130px;
+      background:linear-gradient(135deg,var(--panel),var(--panel2));
+      overflow:hidden;
+      position:relative;
+    }
+
+    .result-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .thumb-fallback{
+      width:100%;
+      height:100%;
+      display:grid;
+      place-items:center;
+      color:var(--muted);
+      font-size:2rem;
+      font-weight:800;
+      letter-spacing:.06em;
+      background:
+        linear-gradient(135deg, var(--accentSoft), rgba(255,255,255,.02)),
+        linear-gradient(180deg,var(--panel),var(--panel2));
+    }
+
+    .result-body{
+      padding:14px 14px 14px 0;
+      min-width:0;
+    }
+
+    .result-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:var(--accentSoft);
+      border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+      color:var(--accent);
+      font-size:.78rem;
+      font-weight:700;
+    }
+
+    .score{
+      color:var(--green);
+      font-size:.82rem;
+      font-weight:700;
+    }
+
+    .result-title{
+      margin:0 0 6px;
+      font-size:1.08rem;
+      line-height:1.25;
+      font-weight:800;
+      color:var(--title);
+    }
+
+    .result-title a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .result-title a:hover{color:var(--accent)}
+
+    .result-url{
+      display:block;
+      margin-bottom:10px;
+      color:var(--orange);
+      font-family:var(--mono);
+      font-size:.8rem;
+      word-break:break-all;
+      text-decoration:none;
+    }
+
+    .result-desc{
+      margin:0;
+      color:var(--text);
+      line-height:1.65;
+      font-size:.95rem;
+    }
+
+    .result-meta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .pill-mini{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      color:var(--text);
+    }
+
+    .empty{
+      border:1px dashed var(--line);
+      border-radius:16px;
+      padding:28px 20px;
+      text-align:center;
+      color:var(--muted);
+      background:var(--panel2);
+    }
+
+    mark{
+      background:color-mix(in srgb, var(--accent) 18%, transparent);
+      color:var(--title);
+      padding:.04em .16em;
+      border-radius:4px;
+    }
+
+    @media (max-width: 920px){
+      .hero,.grid{grid-template-columns:1fr}
+      .grid-layout .results{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 760px){
+      .top{align-items:flex-start;flex-direction:column}
+      .top-right{width:100%;justify-content:flex-start}
+      .pill{width:100%;text-align:center}
+      .body{padding:16px}
+      .search{grid-template-columns:1fr 1fr}
+      .btn.iconbtn{display:none}
+      .btn.site,.btn.google{
+        border-top:1px solid var(--line);
+        border-left:0;
+      }
+      .modal{padding:8px}
+      .modal-box{height:92vh;border-radius:16px}
+      .modal-toolbar{grid-template-columns:1fr}
+      .result{grid-template-columns:1fr}
+      .result-thumb{min-height:190px}
+      .result-body{padding:0 14px 14px 14px}
+    }
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="panel sidebar">
-      <div>
-        <h1 class="title">Music Pattern Drawer</h1>
-        <p class="subtitle">
-          Upload a song or use your microphone. The app analyzes the sound in real time and turns frequency, volume, and rhythm into animated patterns.
-        </p>
-      </div><section class="card">
-    <div class="section-label">Audio Input</div>
-    <div class="grid row-2">
-      <button id="micBtn">Use Microphone</button>
-      <button id="stopBtn">Stop Input</button>
-    </div>
-    <div style="height:10px"></div>
-    <input id="fileInput" type="file" accept="audio/*" />
-    <audio id="audioPlayer" controls style="width:100%; margin-top:10px;"></audio>
-  </section>
-
-  <section class="card">
-    <div class="section-label">Dancer Photos</div>
-    <div class="grid">
-      <input id="photoInput" type="file" accept="image/*" />
-      <button id="usePhotoBtn">Use Uploaded Photo as Solo Silhouette</button>
-      <button id="saveSoloDefaultBtn">Save Solo Photo as Default</button>
-      <input id="duoPhotoInput" type="file" accept="image/*" />
-      <button id="useDuoPhotoBtn">Use Uploaded Photo as Dual Silhouette</button>
-      <button id="saveDuoDefaultBtn">Save Dual Photo as Default</button>
-      <p class="hint">Upload one picture for solo dancer mode, or upload a photo with two people for dual dancer mode. The app will keep all previous visualizer options and add glowing silhouette dancers.</p>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="section-label">Pattern Controls</div>
-    <div class="grid">
-      <select id="modeSelect">
-        <option value="rings">Pulse Rings</option>
-        <option value="wave">Wave Field</option>
-        <option value="spiral">Spiral Bloom</option>
-        <option value="bars">Radial Bars</option>
-        <option value="particles">Particles</option>
-        <option value="dancer">Human Dancer</option>
-        <option value="duo">Dual Dancers</option>
-      </select>
-
-      <div class="slider-wrap">
-        <label for="sensitivity">Sensitivity</label>
-        <input id="sensitivity" type="range" min="0.5" max="3" value="1.3" step="0.1" />
+  <div id="app" class="app">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">PP</div>
+        <div>
+          <div class="brand-title">Programmer's Picnic Search</div>
+          <div class="brand-sub">Champak Roy · Voice search + optional semantic search</div>
+        </div>
       </div>
 
-      <div class="slider-wrap">
-        <label for="trail">Trail / Fade</label>
-        <input id="trail" type="range" min="0.02" max="0.3" value="0.08" step="0.01" />
+      <div class="top-right">
+        <button class="toggle" id="themeToggle">Theme: Dark</button>
+        <button class="toggle" id="layoutToggle">Layout: List</button>
+        <button class="toggle" id="semanticToggle">Semantic: Off</button>
+        <div class="pill">Champak Roy · Programmer's Picnic</div>
       </div>
-
-      <div class="slider-wrap">
-        <label for="zoom">Zoom</label>
-        <input id="zoom" type="range" min="0.4" max="2.4" value="1" step="0.1" />
-      </div>
-
-      <button class="primary" id="saveBtn">Save Current Frame</button>
     </div>
-  </section>
 
-  <section class="card">
-    <div class="section-label">Live Audio Stats</div>
-    <div class="stat"><span>Status</span><strong id="statusText">Idle</strong></div>
-    <div class="stat"><span>Volume</span><strong id="volumeText">0</strong></div>
-    <div class="stat"><span>Bass</span><strong id="bassText">0</strong></div>
-    <div class="stat"><span>Mid</span><strong id="midText">0</strong></div>
-    <div class="stat"><span>Treble</span><strong id="trebleText">0</strong></div>
-  </section>
+    <div class="body">
+      <div class="hero">
+        <div class="card">
+          <div class="card-body">
+            <div class="badge">Single-file search.html</div>
+            <h2 class="title">Search your content without JSON files</h2>
+            <p class="desc">
+              This page reads your Blogger feed directly, supports voice search, and can optionally use in-browser semantic ranking.
+            </p>
 
-  <section class="card">
-    <div class="section-label">Notes</div>
-    <p class="hint">
-      Browsers cannot automatically capture music playing from every app. For best results, upload an audio file or allow microphone access and play music near the device.
-    </p>
-  </section>
-</aside>
+            <form id="searchForm" class="search-wrap">
+              <div class="search">
+                <div class="input-wrap">
+                  <span class="icon">🔎</span>
+                  <input
+                    id="queryInput"
+                    class="input"
+                    type="search"
+                    placeholder="Search Python, GitHub, HTML, SQL, calendar, semantic..."
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </div>
+                <button id="voiceBtn" class="btn iconbtn" type="button" title="Voice search">🎙️</button>
+                <button id="clearBtn" class="btn iconbtn" type="button" title="Clear">✕</button>
+                <button id="siteBtn" class="btn site" type="button">Search Site</button>
+                <button id="googleBtn" class="btn google" type="submit">Search Google</button>
+              </div>
+            </form>
 
-<main class="panel canvas-wrap">
-  <div class="topbar">
-    <div class="badge" id="modeBadge">Mode: Pulse Rings</div>
-    <div class="badge">Canvas reacts to sound in real time</div>
+            <div class="chips" id="chips">
+              <button class="chip" type="button" data-q="python">python</button>
+              <button class="chip" type="button" data-q="git github">git github</button>
+              <button class="chip" type="button" data-q="html css javascript">html css javascript</button>
+              <button class="chip" type="button" data-q="sql">sql</button>
+              <button class="chip" type="button" data-q="calendar in python">calendar in python</button>
+              <button class="chip" type="button" data-q="semantic search">semantic search</button>
+            </div>
+
+            <div class="status" id="statusText">
+              Ready. Search Site = modal results. Search Google = new tab.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="side-head">Search Summary</div>
+          <div class="side-body">
+            <div class="kpi">
+              <div class="kpi-label">Content source</div>
+              <div class="kpi-value">learnwithchampak.live Blogger feed</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Google query</div>
+              <div class="kpi-value" id="previewQuery">site:learnwithchampak.live python</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Semantic search</div>
+              <div class="kpi-value" id="semanticStatus">Available but not initialized</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="section-head">How it works</div>
+          <div class="section-body">
+            <p class="note">
+              Search Site loads Blogger posts directly from the public feed and ranks them using keyword search. When semantic mode is enabled, the page also computes in-browser embeddings and re-ranks by meaning.
+            </p>
+            <code class="code" id="codeQuery">site:learnwithchampak.live python</code>
+            <code class="code" id="codeUrl">https://www.google.com/search?q=site%3Alearnwithchampak.live%20python</code>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">Quick Searches</div>
+          <div class="section-body">
+            <div class="list">
+              <button class="mini" type="button" data-q="python editor"><strong>Search:</strong> python editor</button>
+              <button class="mini" type="button" data-q="saturday questions"><strong>Search:</strong> saturday questions</button>
+              <button class="mini" type="button" data-q="trading app"><strong>Search:</strong> trading app</button>
+              <button class="mini" type="button" data-q="blogger"><strong>Search:</strong> blogger</button>
+              <button class="mini" type="button" data-q="semantic search"><strong>Search:</strong> semantic search</button>
+              <button class="mini" type="button" data-q="varanasi"><strong>Search:</strong> varanasi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Champak Roy · Programmer's Picnic</div>
   </div>
-  <canvas id="canvas"></canvas>
-  <div class="overlay"></div>
-</main>
 
-  </div>  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const modeSelect = document.getElementById('modeSelect');
-    const sensitivityEl = document.getElementById('sensitivity');
-    const trailEl = document.getElementById('trail');
-    const zoomEl = document.getElementById('zoom');
-    const fileInput = document.getElementById('fileInput');
-    const audioPlayer = document.getElementById('audioPlayer');
-    const micBtn = document.getElementById('micBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const photoInput = document.getElementById('photoInput');
-    const usePhotoBtn = document.getElementById('usePhotoBtn');
-    const duoPhotoInput = document.getElementById('duoPhotoInput');
-    const useDuoPhotoBtn = document.getElementById('useDuoPhotoBtn');
-    const saveSoloDefaultBtn = document.getElementById('saveSoloDefaultBtn');
-    const saveDuoDefaultBtn = document.getElementById('saveDuoDefaultBtn');
-    const statusText = document.getElementById('statusText');
-    const volumeText = document.getElementById('volumeText');
-    const bassText = document.getElementById('bassText');
-    const midText = document.getElementById('midText');
-    const trebleText = document.getElementById('trebleText');
-    const modeBadge = document.getElementById('modeBadge');
+  <div class="modal" id="resultsModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Programmer's Picnic Results</div>
+        <div class="modal-actions">
+          <button class="modal-btn primary" id="modalGoogleBtn" type="button">Search Google</button>
+          <button class="modal-btn" id="modalCloseBtn" type="button">Close</button>
+        </div>
+      </div>
 
-    // Built-in default images.
-    // You can replace these empty strings with data URLs later if you want permanent baked-in photos.
-    const DEFAULT_SOLO_IMAGE = localStorage.getItem('pp_default_solo_image') || '';
-    const DEFAULT_DUO_IMAGE = localStorage.getItem('pp_default_duo_image') || '';
+      <div class="modal-toolbar">
+        <div class="modal-query" id="modalQuery">Query: python</div>
+        <div class="modal-count" id="modalCount">0 results</div>
+      </div>
 
-    let audioCtx;
-    let analyser;
-    let sourceNode;
-    let micStream;
-    let dataArray;
-    let timeArray;
-    let animationId;
-    let particles = [];
-    let danceTime = 0;
-    let dancerImage = null;
-    let dancerSilhouetteReady = false;
-    const dancerCanvas = document.createElement('canvas');
-    const dancerCtx = dancerCanvas.getContext('2d', { willReadFrequently: true });
-    let duoDancerSilhouetteReady = false;
-    const duoCanvas = document.createElement('canvas');
-    const duoCtx = duoCanvas.getContext('2d', { willReadFrequently: true });
-    let duoLeftBounds = null;
-    let duoRightBounds = null;
+      <div class="modal-layout">
+        <button class="layout-btn active" id="listBtn">List View</button>
+        <button class="layout-btn" id="gridBtn">Grid View</button>
+      </div>
 
-    function resizeCanvas() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      <div class="modal-body list-layout" id="modalBody">
+        <div class="results" id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const BLOG_DOMAIN = "https://learnwithchampak.live";
+    const BLOG_FEED = BLOG_DOMAIN + "/feeds/posts/default?alt=json-in-script&max-results=200&callback=ppSearchFeedCallback";
+    const GOOGLE_BASE = "https://www.google.com/search?q=";
+    const SITE = "learnwithchampak.live";
+
+    const app = document.getElementById("app");
+    const queryInput = document.getElementById("queryInput");
+    const searchForm = document.getElementById("searchForm");
+    const siteBtn = document.getElementById("siteBtn");
+    const googleBtn = document.getElementById("googleBtn");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const chips = document.getElementById("chips");
+    const statusText = document.getElementById("statusText");
+    const previewQuery = document.getElementById("previewQuery");
+    const codeQuery = document.getElementById("codeQuery");
+    const codeUrl = document.getElementById("codeUrl");
+    const semanticStatus = document.getElementById("semanticStatus");
+
+    const themeToggle = document.getElementById("themeToggle");
+    const layoutToggle = document.getElementById("layoutToggle");
+    const semanticToggle = document.getElementById("semanticToggle");
+
+    const resultsModal = document.getElementById("resultsModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalQuery = document.getElementById("modalQuery");
+    const modalCount = document.getElementById("modalCount");
+    const modalBody = document.getElementById("modalBody");
+    const resultsEl = document.getElementById("results");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const modalGoogleBtn = document.getElementById("modalGoogleBtn");
+    const listBtn = document.getElementById("listBtn");
+    const gridBtn = document.getElementById("gridBtn");
+
+    let posts = [];
+    let feedLoaded = false;
+    let feedLoading = false;
+    let activeQuery = "";
+    let semanticEnabled = false;
+    let semanticReady = false;
+    let embedder = null;
+
+    const themeKey = "pp-search-html-theme";
+    const layoutKey = "pp-search-html-layout";
+    const semanticKey = "pp-search-html-semantic";
+
+    function getStored(key, fallback) {
+      try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
+    }
+    function setStored(key, value) {
+      try { localStorage.setItem(key, value); } catch {}
     }
 
-    function ensureAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 2048;
-        analyser.smoothingTimeConstant = 0.82;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-        timeArray = new Uint8Array(analyser.fftSize);
+    function applyTheme(theme) {
+      document.body.classList.toggle("light", theme === "light");
+      themeToggle.textContent = "Theme: " + (theme === "light" ? "Light" : "Dark");
+      setStored(themeKey, theme);
+    }
+
+    function applyLayout(layout) {
+      modalBody.classList.toggle("grid-layout", layout === "grid");
+      modalBody.classList.toggle("list-layout", layout !== "grid");
+      layoutToggle.textContent = "Layout: " + (layout === "grid" ? "Grid" : "List");
+      listBtn.classList.toggle("active", layout !== "grid");
+      gridBtn.classList.toggle("active", layout === "grid");
+      setStored(layoutKey, layout);
+    }
+
+    function setSemantic(enabled) {
+      semanticEnabled = enabled;
+      semanticToggle.textContent = "Semantic: " + (enabled ? "On" : "Off");
+      setStored(semanticKey, enabled ? "on" : "off");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function stripHtml(value) {
+      return String(value || "")
+        .replace(/<script[\s\S]*?<\/script>/gi, " ")
+        .replace(/<style[\s\S]*?<\/style>/gi, " ")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function summarize(text, maxLen) {
+      const s = stripHtml(text);
+      return s.length <= maxLen ? s : s.slice(0, maxLen).trim() + "...";
+    }
+
+    function tokenize(text) {
+      return String(text || "")
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+    }
+
+    function getQueryFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return (params.get("q") || "").trim();
+    }
+
+    function buildGoogleQuery(q) {
+      q = String(q || "").trim();
+      return "site:" + SITE + (q ? " " + q : "");
+    }
+
+    function buildGoogleUrl(q) {
+      return GOOGLE_BASE + encodeURIComponent(buildGoogleQuery(q));
+    }
+
+    function updatePreview() {
+      const q = queryInput.value.trim() || "python";
+      const query = buildGoogleQuery(q);
+      const url = buildGoogleUrl(q);
+      previewQuery.textContent = query;
+      codeQuery.textContent = query;
+      codeUrl.textContent = url;
+    }
+
+    function openGoogle(q) {
+      q = String(q || "").trim();
+      if (!q) {
+        queryInput.focus();
+        statusText.textContent = "Please enter a search term.";
+        return;
       }
+      window.open(buildGoogleUrl(q), "_blank", "noopener");
+      statusText.textContent = 'Opened Google search for "' + q + '"';
     }
 
-    function disconnectCurrentSource() {
-      if (sourceNode) {
-        try { sourceNode.disconnect(); } catch (_) {}
-        sourceNode = null;
+    function openModal() {
+      resultsModal.classList.add("show");
+      resultsModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      resultsModal.classList.remove("show");
+      resultsModal.setAttribute("aria-hidden", "true");
+    }
+
+    function getPostLink(entry) {
+      if (!entry.link || !entry.link.length) return "#";
+      for (const link of entry.link) {
+        if (link.rel === "alternate") return link.href;
       }
-      if (micStream) {
-        micStream.getTracks().forEach(track => track.stop());
-        micStream = null;
+      return entry.link[0]?.href || "#";
+    }
+
+    function getPublishedDate(entry) {
+      const raw = entry.published?.$t || "";
+      if (!raw) return "";
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) return raw;
+      return d.toLocaleDateString("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function getThumbnail(entry, html) {
+      if (entry.media$thumbnail?.url) {
+        return entry.media$thumbnail.url.replace(/\/s72-c\//, "/s400/");
       }
-      audioPlayer.pause();
-      audioPlayer.removeAttribute('src');
-      audioPlayer.load();
-      statusText.textContent = 'Idle';
+      const match = String(html || "").match(/<img[^>]+src=["']([^"']+)["']/i);
+      return match?.[1] || "";
     }
 
-    function connectAnalyser(node) {
-      if (!analyser) return;
-      node.connect(analyser);
-      analyser.connect(audioCtx.destination);
+    function scorePost(post, query) {
+      const q = String(query || "").toLowerCase().trim();
+      if (!q) return 0;
+
+      const title = post.title.toLowerCase();
+      const summary = post.summary.toLowerCase();
+      const labels = post.labels.join(" ").toLowerCase();
+      const raw = post.rawText.toLowerCase();
+      let score = 0;
+      const words = tokenize(q);
+
+      if (title === q) score += 220;
+      if (title.includes(q)) score += 95;
+      if (labels.includes(q)) score += 70;
+      if (summary.includes(q)) score += 38;
+      if (raw.includes(q)) score += 20;
+
+      for (const word of words) {
+        if (title.includes(word)) score += 28;
+        if (labels.includes(word)) score += 18;
+        if (summary.includes(word)) score += 10;
+        if (raw.includes(word)) score += 5;
+      }
+      return score;
     }
 
-    function connectFileAudio(file) {
-      ensureAudio();
-      disconnectCurrentSource();
-      const url = URL.createObjectURL(file);
-      audioPlayer.src = url;
-      audioPlayer.play().catch(() => {});
-      sourceNode = audioCtx.createMediaElementSource(audioPlayer);
-      connectAnalyser(sourceNode);
-      statusText.textContent = 'Playing file';
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      startVisualization();
+    function highlight(text, query) {
+      let safe = escapeHtml(text);
+      const words = tokenize(query);
+      for (const word of words) {
+        const w = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        if (!w) continue;
+        safe = safe.replace(new RegExp("(" + w + ")", "gi"), "<mark>$1</mark>");
+      }
+      return safe;
     }
 
-    async function connectMic() {
-      ensureAudio();
-      disconnectCurrentSource();
+    async function ensureSemantic() {
+      if (semanticReady) return true;
+      semanticStatus.textContent = "Initializing semantic search...";
+      statusText.textContent = "Loading semantic search model...";
+
       try {
-        micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        sourceNode = audioCtx.createMediaStreamSource(micStream);
-        sourceNode.connect(analyser);
-        statusText.textContent = 'Listening to microphone';
-        if (audioCtx.state === 'suspended') await audioCtx.resume();
-        startVisualization();
+        const mod = await import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2");
+        embedder = await mod.pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+        semanticReady = true;
+        semanticStatus.textContent = "Semantic search ready";
+        statusText.textContent = "Semantic search is ready.";
+        return true;
       } catch (err) {
-        statusText.textContent = 'Microphone blocked';
-        alert('Could not access microphone. Please allow mic permission.');
+        semanticReady = false;
+        semanticEnabled = false;
+        semanticToggle.textContent = "Semantic: Off";
+        semanticStatus.textContent = "Semantic search unavailable";
+        statusText.textContent = "Semantic search could not be loaded. Using keyword search only.";
+        return false;
       }
     }
 
-    function avgRange(start, end) {
-      let sum = 0;
-      const len = Math.max(1, end - start);
-      for (let i = start; i < end; i++) sum += dataArray[i] || 0;
-      return sum / len;
+    async function embedText(text) {
+      if (!embedder) return null;
+      const output = await embedder(text, { pooling: "mean", normalize: true });
+      const arr = typeof output.tolist === "function" ? output.tolist() : output;
+      return Array.isArray(arr[0]) ? arr[0] : arr;
     }
 
-    function getMetrics() {
-      if (!analyser) {
-        return { volume: 0, bass: 0, mid: 0, treble: 0, waveform: [] };
+    function cosine(a, b) {
+      if (!a || !b || a.length !== b.length) return 0;
+      let dot = 0, na = 0, nb = 0;
+      for (let i = 0; i < a.length; i++) {
+        dot += a[i] * b[i];
+        na += a[i] * a[i];
+        nb += b[i] * b[i];
       }
-      analyser.getByteFrequencyData(dataArray);
-      analyser.getByteTimeDomainData(timeArray);
-
-      const bass = avgRange(0, 20);
-      const mid = avgRange(20, 100);
-      const treble = avgRange(100, 220);
-      let volume = 0;
-      for (let i = 0; i < dataArray.length; i++) volume += dataArray[i];
-      volume /= dataArray.length;
-
-      return {
-        volume,
-        bass,
-        mid,
-        treble,
-        waveform: timeArray
-      };
+      if (!na || !nb) return 0;
+      return dot / (Math.sqrt(na) * Math.sqrt(nb));
     }
 
-    function drawBackground(fade) {
-      ctx.fillStyle = `rgba(4, 10, 24, ${fade})`;
-      ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-    }
+    async function ensureEmbeddings() {
+      if (!semanticReady) return;
+      const targets = posts.filter(p => !p.embedding);
+      if (!targets.length) return;
 
-    function drawRings(m) {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const cx = w / 2;
-      const cy = h / 2;
-      const sens = Number(sensitivityEl.value);
-      const zoom = Number(zoomEl.value);
-      const energy = (m.volume * sens) / 255;
-      const bass = (m.bass * sens) / 255;
-      const treble = (m.treble * sens) / 255;
-
-      for (let i = 0; i < 7; i++) {
-        const radius = (50 + i * 26 + energy * 120 + bass * 90) * zoom;
-        const alpha = 0.12 + (i / 12);
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(${(Date.now() / 18 + i * 32) % 360}, 90%, ${60 + treble * 20}%, ${alpha})`;
-        ctx.lineWidth = 2 + bass * 7;
-        ctx.stroke();
+      statusText.textContent = "Building semantic vectors...";
+      for (let i = 0; i < targets.length; i++) {
+        const p = targets[i];
+        p.embedding = await embedText([p.title, p.summary, p.labels.join(" "), p.rawText].join(" \n "));
       }
+      statusText.textContent = "Semantic vectors ready.";
     }
 
-    function drawWave(m) {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const waveform = m.waveform;
-      const sens = Number(sensitivityEl.value);
-      const zoom = Number(zoomEl.value);
-      ctx.beginPath();
-      for (let i = 0; i < waveform.length; i++) {
-        const x = (i / (waveform.length - 1)) * w;
-        const centered = (waveform[i] - 128) / 128;
-        const y = h / 2 + centered * 180 * sens * zoom + Math.sin(i * 0.04 + performance.now() * 0.003) * m.bass * 0.12;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = `hsla(${(Date.now() / 25) % 360}, 100%, 70%, 0.9)`;
-      ctx.lineWidth = 3;
-      ctx.stroke();
-    }
+    async function searchPosts(query) {
+      const q = String(query || "").trim();
+      let matches = posts
+        .map(post => ({ post, keywordScore: scorePost(post, q), semanticScore: 0, score: 0 }))
+        .filter(x => x.keywordScore > 0 || semanticEnabled);
 
-    function drawSpiral(m) {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const cx = w / 2;
-      const cy = h / 2;
-      const sens = Number(sensitivityEl.value);
-      const zoom = Number(zoomEl.value);
-      const turns = 220;
-      ctx.beginPath();
-      for (let i = 0; i < turns; i++) {
-        const a = i * 0.16 + performance.now() * 0.0012;
-        const radius = i * 1.3 * zoom + (m.volume * sens) * 0.35;
-        const wobble = Math.sin(i * 0.18 + performance.now() * 0.004) * m.treble * 0.16;
-        const x = cx + Math.cos(a) * (radius + wobble);
-        const y = cy + Math.sin(a) * (radius + wobble);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = `hsla(${(Date.now() / 20 + m.bass) % 360}, 100%, 68%, 0.85)`;
-      ctx.lineWidth = 2.2 + (m.mid / 255) * 4;
-      ctx.stroke();
-    }
-
-    function drawBars(m) {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const cx = w / 2;
-      const cy = h / 2;
-      const zoom = Number(zoomEl.value);
-      const bars = 120;
-      const radius = Math.min(w, h) * 0.16 * zoom;
-      for (let i = 0; i < bars; i++) {
-        const angle = (i / bars) * Math.PI * 2;
-        const val = dataArray[Math.floor((i / bars) * dataArray.length)] || 0;
-        const len = 20 + (val / 255) * 160 * Number(sensitivityEl.value);
-        const x1 = cx + Math.cos(angle) * radius;
-        const y1 = cy + Math.sin(angle) * radius;
-        const x2 = cx + Math.cos(angle) * (radius + len);
-        const y2 = cy + Math.sin(angle) * (radius + len);
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = `hsla(${(i * 3 + Date.now() / 30) % 360}, 100%, 70%, 0.8)`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
-    }
-
-    function initParticles() {
-      particles = Array.from({ length: 220 }, () => ({
-        x: Math.random() * canvas.clientWidth,
-        y: Math.random() * canvas.clientHeight,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        size: Math.random() * 3 + 1
-      }));
-    }
-
-    function drawParticles(m) {
-      if (!particles.length) initParticles();
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const sens = Number(sensitivityEl.value);
-      const push = (m.volume / 255) * 1.8 * sens;
-      const hue = (Date.now() / 24 + m.treble) % 360;
-      particles.forEach((p, idx) => {
-        const angle = idx * 0.2 + performance.now() * 0.001 + m.bass * 0.01;
-        p.vx += Math.cos(angle) * 0.02 * push;
-        p.vy += Math.sin(angle) * 0.02 * push;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vx *= 0.98;
-        p.vy *= 0.98;
-        if (p.x < 0) p.x = w;
-        if (p.x > w) p.x = 0;
-        if (p.y < 0) p.y = h;
-        if (p.y > h) p.y = 0;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size + push * 0.8, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${hue + idx * 0.7}, 100%, 70%, 0.65)`;
-        ctx.fill();
-      });
-    }
-
-    function drawPhotoDancer(m) {
-      if (!dancerImage || !dancerSilhouetteReady) {
-        drawDancer(m);
-        return;
-      }
-
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const cx = w / 2;
-      const cy = h / 2 + 40;
-      const sens = Number(sensitivityEl.value);
-      const zoom = Number(zoomEl.value);
-      const bass = (m.bass / 255) * sens;
-      const treble = (m.treble / 255) * sens;
-      const volume = (m.volume / 255) * sens;
-      const t = performance.now() * 0.004;
-
-      const sway = Math.sin(t * 1.15) * (16 + bass * 14);
-      const bounce = Math.abs(Math.sin(t * 1.9)) * (20 + volume * 22);
-      const shoulderTilt = Math.sin(t * 1.3) * 0.08;
-      const scale = (0.72 + zoom * 0.42) * (1 + volume * 0.06);
-      const legSplit = Math.sin(t * 1.65) * (18 + bass * 22);
-      const armSwing = Math.sin(t * 2.1) * (10 + treble * 18);
-      const hue = (Date.now() / 22 + m.bass) % 360;
-
-      const baseHeight = Math.min(h * 0.74, dancerCanvas.height * scale);
-      const imgScale = baseHeight / dancerCanvas.height;
-      const imgW = dancerCanvas.width * imgScale;
-      const imgH = dancerCanvas.height * imgScale;
-      const x = cx - imgW / 2 + sway;
-      const y = cy - imgH / 2 - bounce;
-
-      ctx.save();
-      ctx.shadowBlur = 30 + volume * 20;
-      ctx.shadowColor = `hsla(${hue}, 100%, 65%, 0.55)`;
-
-      for (let i = 0; i < 7; i++) {
-        const r = 70 + i * 28 + bass * 70;
-        ctx.beginPath();
-        ctx.arc(cx + sway, cy - imgH * 0.1 - bounce, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(${hue + i * 16}, 100%, 60%, ${0.05 + i * 0.025})`;
-        ctx.lineWidth = 2 + i * 0.5;
-        ctx.stroke();
-      }
-
-      ctx.translate(cx + sway, cy - bounce);
-      ctx.rotate(shoulderTilt);
-      ctx.translate(-(cx + sway), -(cy - bounce));
-      ctx.drawImage(dancerCanvas, x, y, imgW, imgH);
-
-      const footY = y + imgH - 10;
-      ctx.strokeStyle = `hsla(${hue + 40}, 100%, 70%, 0.75)`;
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(cx + sway, y + imgH * 0.38);
-      ctx.lineTo(cx + sway - armSwing, y + imgH * 0.58);
-      ctx.moveTo(cx + sway, y + imgH * 0.4);
-      ctx.lineTo(cx + sway + armSwing, y + imgH * 0.6);
-      ctx.moveTo(cx + sway - 12, y + imgH * 0.72);
-      ctx.lineTo(cx + sway - 18 - legSplit, footY);
-      ctx.moveTo(cx + sway + 12, y + imgH * 0.72);
-      ctx.lineTo(cx + sway + 18 + legSplit, footY);
-      ctx.stroke();
-
-      ctx.strokeStyle = `hsla(${hue + 20}, 100%, 60%, 0.35)`;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(cx - 240 + sway, Math.min(h - 30, footY + 8));
-      ctx.lineTo(cx + 240 + sway, Math.min(h - 30, footY + 8));
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawDualPhotoDancers(m) {
-      if (!duoDancerSilhouetteReady || !duoLeftBounds || !duoRightBounds) {
-        if (dancerSilhouetteReady) drawPhotoDancer(m);
-        else drawDancer(m);
-        return;
-      }
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const sens = Number(sensitivityEl.value);
-      const zoom = Number(zoomEl.value);
-      const bass = (m.bass / 255) * sens;
-      const treble = (m.treble / 255) * sens;
-      const volume = (m.volume / 255) * sens;
-      const t = performance.now() * 0.004;
-      const hue = (Date.now() / 18 + m.bass * 1.2) % 360;
-      const centerX = w / 2;
-      const floorY = h * 0.84;
-
-      for (let i = 0; i < 8; i++) {
-        const r = 80 + i * 30 + bass * 80;
-        ctx.beginPath();
-        ctx.arc(centerX, h * 0.42, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(${hue + i * 14}, 100%, 60%, ${0.04 + i * 0.022})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
-
-      const leftSway = Math.sin(t * 1.4) * (14 + bass * 12);
-      const rightSway = Math.sin(t * 1.4 + Math.PI) * (14 + bass * 12);
-      const leftBounce = Math.abs(Math.sin(t * 1.9)) * (18 + volume * 20);
-      const rightBounce = Math.abs(Math.sin(t * 1.9 + 0.5)) * (18 + volume * 20);
-      const leftArm = Math.sin(t * 2.4) * (10 + treble * 14);
-      const rightArm = Math.sin(t * 2.4 + Math.PI) * (10 + treble * 14);
-      const leftLeg = Math.sin(t * 1.8) * (16 + bass * 20);
-      const rightLeg = Math.sin(t * 1.8 + Math.PI) * (16 + bass * 20);
-
-      function drawOne(bounds, targetCenterX, bounce, sway, armSwing, legSwing, tilt, glowShift) {
-        const bw = bounds.maxX - bounds.minX + 1;
-        const bh = bounds.maxY - bounds.minY + 1;
-        const desiredH = Math.min(h * 0.62, bh * (0.58 + zoom * 0.34));
-        const scale = desiredH / bh;
-        const dw = bw * scale;
-        const dh = bh * scale;
-        const x = targetCenterX - dw / 2 + sway;
-        const y = floorY - dh - bounce;
-        ctx.save();
-        ctx.shadowBlur = 28 + volume * 18;
-        ctx.shadowColor = `hsla(${hue + glowShift}, 100%, 70%, 0.55)`;
-        ctx.translate(targetCenterX + sway, floorY - dh * 0.58 - bounce);
-        ctx.rotate(tilt);
-        ctx.translate(-(targetCenterX + sway), -(floorY - dh * 0.58 - bounce));
-        ctx.drawImage(duoCanvas, bounds.minX, bounds.minY, bw, bh, x, y, dw, dh);
-        ctx.strokeStyle = `hsla(${hue + glowShift + 30}, 100%, 72%, 0.75)`;
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(targetCenterX + sway, y + dh * 0.38);
-        ctx.lineTo(targetCenterX + sway - armSwing, y + dh * 0.56);
-        ctx.moveTo(targetCenterX + sway, y + dh * 0.4);
-        ctx.lineTo(targetCenterX + sway + armSwing, y + dh * 0.58);
-        ctx.moveTo(targetCenterX + sway - 10, y + dh * 0.72);
-        ctx.lineTo(targetCenterX + sway - 16 - legSwing, y + dh - 8);
-        ctx.moveTo(targetCenterX + sway + 10, y + dh * 0.72);
-        ctx.lineTo(targetCenterX + sway + 16 + legSwing, y + dh - 8);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      drawOne(duoLeftBounds, centerX - 130, leftBounce, leftSway, leftArm, leftLeg, Math.sin(t * 1.1) * 0.08, 0);
-      drawOne(duoRightBounds, centerX + 130, rightBounce, rightSway, rightArm, rightLeg, Math.sin(t * 1.1 + 0.7) * -0.08, 40);
-
-      ctx.strokeStyle = `hsla(${hue + 20}, 100%, 65%, 0.35)`;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(centerX - 320, floorY + 8);
-      ctx.lineTo(centerX + 320, floorY + 8);
-      ctx.stroke();
-    }
-
-    function drawDancer(m) {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const cx = w / 2;
-      const cy = h / 2 + 30;
-      const sens = Number(sensitivityEl.value);
-      const zoom = Number(zoomEl.value);
-      const bass = (m.bass / 255) * sens;
-      const mid = (m.mid / 255) * sens;
-      const treble = (m.treble / 255) * sens;
-      const volume = (m.volume / 255) * sens;
-      const t = performance.now() * 0.004;
-
-      danceTime += 0.04 + volume * 0.05;
-
-      const bodyScale = 0.9 + zoom * 0.55;
-      const torso = 90 * bodyScale;
-      const shoulderY = cy - 90 * bodyScale;
-      const hipY = cy;
-      const headR = 24 * bodyScale + bass * 5;
-      const sway = Math.sin(danceTime) * (18 + bass * 16);
-      const bounce = Math.abs(Math.sin(danceTime * 1.4)) * (18 + volume * 22);
-      const torsoLean = Math.sin(danceTime * 0.8) * 0.28;
-      const armSwingL = Math.sin(danceTime * 1.8 + 0.7) * (0.9 + treble * 0.9);
-      const armSwingR = Math.sin(danceTime * 1.8 + Math.PI) * (0.9 + treble * 0.9);
-      const legSwingL = Math.sin(danceTime * 1.6) * (0.8 + bass * 0.7);
-      const legSwingR = Math.sin(danceTime * 1.6 + Math.PI) * (0.8 + bass * 0.7);
-
-      const baseX = cx + sway;
-      const baseY = cy - bounce;
-      const shoulderWidth = 34 * bodyScale;
-      const hipWidth = 24 * bodyScale;
-      const upperArm = 48 * bodyScale;
-      const lowerArm = 42 * bodyScale;
-      const upperLeg = 58 * bodyScale;
-      const lowerLeg = 54 * bodyScale;
-
-      function joint(x, y, angle, len) {
-        return { x: x + Math.cos(angle) * len, y: y + Math.sin(angle) * len };
-      }
-
-      const neck = { x: baseX, y: baseY - torso + 6 };
-      const head = { x: neck.x, y: neck.y - headR - 8 };
-      const leftShoulder = { x: neck.x - shoulderWidth, y: shoulderY - bounce };
-      const rightShoulder = { x: neck.x + shoulderWidth, y: shoulderY - bounce };
-      const leftHip = { x: baseX - hipWidth, y: hipY - bounce };
-      const rightHip = { x: baseX + hipWidth, y: hipY - bounce };
-
-      const leftElbow = joint(leftShoulder.x, leftShoulder.y, Math.PI + armSwingL + torsoLean, upperArm);
-      const rightElbow = joint(rightShoulder.x, rightShoulder.y, armSwingR + torsoLean, upperArm);
-      const leftHand = joint(leftElbow.x, leftElbow.y, Math.PI / 2 + armSwingL * 0.8, lowerArm);
-      const rightHand = joint(rightElbow.x, rightElbow.y, Math.PI / 2 + armSwingR * 0.8, lowerArm);
-
-      const leftKnee = joint(leftHip.x, leftHip.y, Math.PI / 2 + legSwingL * 0.7, upperLeg);
-      const rightKnee = joint(rightHip.x, rightHip.y, Math.PI / 2 + legSwingR * 0.7, upperLeg);
-      const leftFoot = joint(leftKnee.x, leftKnee.y, Math.PI / 2 - legSwingL * 0.45, lowerLeg);
-      const rightFoot = joint(rightKnee.x, rightKnee.y, Math.PI / 2 - legSwingR * 0.45, lowerLeg);
-
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      const glowHue = (Date.now() / 20 + m.bass * 0.8) % 360;
-      ctx.shadowBlur = 24 + volume * 18;
-      ctx.shadowColor = `hsla(${glowHue}, 100%, 70%, 0.45)`;
-      ctx.strokeStyle = `hsla(${glowHue}, 100%, 78%, 0.95)`;
-      ctx.lineWidth = 8 + mid * 3;
-
-      for (let i = 0; i < 6; i++) {
-        const r = 70 + i * 28 + bass * 80;
-        ctx.beginPath();
-        ctx.arc(baseX, baseY - torso * 0.35, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(${glowHue + i * 18}, 100%, 60%, ${0.05 + i * 0.025})`;
-        ctx.lineWidth = 2 + i * 0.5;
-        ctx.stroke();
-      }
-
-      ctx.strokeStyle = `hsla(${glowHue}, 100%, 78%, 0.95)`;
-      ctx.lineWidth = 8 + mid * 3;
-
-      ctx.beginPath();
-      ctx.moveTo(neck.x, neck.y);
-      ctx.lineTo(leftShoulder.x, leftShoulder.y);
-      ctx.moveTo(neck.x, neck.y);
-      ctx.lineTo(rightShoulder.x, rightShoulder.y);
-      ctx.moveTo(baseX, baseY - torso);
-      ctx.lineTo(baseX, baseY);
-      ctx.moveTo(baseX, baseY);
-      ctx.lineTo(leftHip.x, leftHip.y);
-      ctx.moveTo(baseX, baseY);
-      ctx.lineTo(rightHip.x, rightHip.y);
-      ctx.moveTo(leftShoulder.x, leftShoulder.y);
-      ctx.lineTo(leftElbow.x, leftElbow.y);
-      ctx.lineTo(leftHand.x, leftHand.y);
-      ctx.moveTo(rightShoulder.x, rightShoulder.y);
-      ctx.lineTo(rightElbow.x, rightElbow.y);
-      ctx.lineTo(rightHand.x, rightHand.y);
-      ctx.moveTo(leftHip.x, leftHip.y);
-      ctx.lineTo(leftKnee.x, leftKnee.y);
-      ctx.lineTo(leftFoot.x, leftFoot.y);
-      ctx.moveTo(rightHip.x, rightHip.y);
-      ctx.lineTo(rightKnee.x, rightKnee.y);
-      ctx.lineTo(rightFoot.x, rightFoot.y);
-      ctx.stroke();
-
-      ctx.fillStyle = `hsla(${glowHue + 20}, 100%, 80%, 0.95)`;
-      ctx.beginPath();
-      ctx.arc(head.x, head.y, headR, 0, Math.PI * 2);
-      ctx.fill();
-
-      [leftShoulder, rightShoulder, leftElbow, rightElbow, leftHand, rightHand, leftHip, rightHip, leftKnee, rightKnee, leftFoot, rightFoot, neck].forEach((p, idx) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 4 + (idx % 3), 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${glowHue + idx * 8}, 100%, 72%, 0.9)`;
-        ctx.fill();
-      });
-
-      const floorY = Math.min(h - 40, baseY + 120 * bodyScale);
-      ctx.strokeStyle = `hsla(${glowHue + 40}, 100%, 60%, 0.35)`;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(baseX - 220, floorY);
-      ctx.lineTo(baseX + 220, floorY);
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
-    function render() {
-      const m = getMetrics();
-      const volume = Math.round(m.volume);
-      const bass = Math.round(m.bass);
-      const mid = Math.round(m.mid);
-      const treble = Math.round(m.treble);
-
-      volumeText.textContent = volume;
-      bassText.textContent = bass;
-      midText.textContent = mid;
-      trebleText.textContent = treble;
-
-      drawBackground(Number(trailEl.value));
-
-      switch (modeSelect.value) {
-        case 'wave': drawWave(m); break;
-        case 'spiral': drawSpiral(m); break;
-        case 'bars': drawBars(m); break;
-        case 'particles': drawParticles(m); break;
-        case 'dancer':
-          if (dancerSilhouetteReady) drawPhotoDancer(m);
-          else drawDancer(m);
-          break;
-        case 'duo':
-          if (duoDancerSilhouetteReady) drawDualPhotoDancers(m);
-          else if (dancerSilhouetteReady) drawPhotoDancer(m);
-          else drawDancer(m);
-          break;
-        default: drawRings(m); break;
-      }
-
-      animationId = requestAnimationFrame(render);
-    }
-
-    function startVisualization() {
-      cancelAnimationFrame(animationId);
-      render();
-    }
-
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (file) connectFileAudio(file);
-    });
-
-    micBtn.addEventListener('click', connectMic);
-
-    stopBtn.addEventListener('click', () => {
-      disconnectCurrentSource();
-      cancelAnimationFrame(animationId);
-    });
-
-    modeSelect.addEventListener('change', () => {
-      modeBadge.textContent = `Mode: ${modeSelect.options[modeSelect.selectedIndex].text}`;
-    });
-
-    saveBtn.addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = `music-pattern-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
-
-    function buildSilhouetteFromImage(img) {
-      const maxSide = 900;
-      const ratio = Math.min(1, maxSide / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
-      const w = Math.max(1, Math.round((img.naturalWidth || img.width) * ratio));
-      const h = Math.max(1, Math.round((img.naturalHeight || img.height) * ratio));
-      dancerCanvas.width = w;
-      dancerCanvas.height = h;
-      dancerCtx.clearRect(0, 0, w, h);
-      dancerCtx.drawImage(img, 0, 0, w, h);
-
-      const imageData = dancerCtx.getImageData(0, 0, w, h);
-      const d = imageData.data;
-      let sumR = 0, sumG = 0, sumB = 0, count = 0;
-      const sample = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[Math.floor(w/2),0],[0,Math.floor(h/2)],[w-1,Math.floor(h/2)]];
-      sample.forEach(([sx, sy]) => {
-        const i = (sy * w + sx) * 4;
-        sumR += d[i]; sumG += d[i + 1]; sumB += d[i + 2]; count++;
-      });
-      const bgR = sumR / count, bgG = sumG / count, bgB = sumB / count;
-
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          const i = (y * w + x) * 4;
-          const r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
-          const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
-          const brightness = (r + g + b) / 3;
-          const centerBias = 1 - Math.abs(x - w / 2) / (w / 2);
-          const keep = a > 0 && (dist > 55 || (centerBias > 0.2 && brightness < 215));
-          if (keep) {
-            d[i] = 10; d[i + 1] = 10; d[i + 2] = 16; d[i + 3] = 255;
-          } else {
-            d[i + 3] = 0;
+      if (semanticEnabled && q) {
+        const ok = await ensureSemantic();
+        if (ok) {
+          await ensureEmbeddings();
+          const qVec = await embedText(q);
+          for (const item of matches) {
+            item.semanticScore = cosine(qVec, item.post.embedding);
+            item.score = (item.keywordScore * 0.6) + (item.semanticScore * 100 * 0.4);
           }
+          matches = matches.filter(x => x.keywordScore > 0 || x.semanticScore > 0.15);
+        } else {
+          matches.forEach(x => x.score = x.keywordScore);
         }
+      } else {
+        matches.forEach(x => x.score = x.keywordScore);
       }
-      dancerCtx.putImageData(imageData, 0, 0);
-      dancerCtx.globalCompositeOperation = 'source-atop';
-      const glow = dancerCtx.createLinearGradient(0, 0, 0, h);
-      glow.addColorStop(0, 'rgba(255,255,255,0.18)');
-      glow.addColorStop(0.45, 'rgba(32,32,40,0.96)');
-      glow.addColorStop(1, 'rgba(0,0,0,1)');
-      dancerCtx.fillStyle = glow;
-      dancerCtx.fillRect(0, 0, w, h);
-      dancerCtx.globalCompositeOperation = 'source-over';
-      dancerSilhouetteReady = true;
-      modeSelect.value = 'dancer';
-      modeBadge.textContent = 'Mode: Human Dancer';
-      statusText.textContent = 'Solo silhouette loaded';
+
+      matches.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return (b.post.ts || 0) - (a.post.ts || 0);
+      });
+
+      return matches;
     }
 
-    function buildDualSilhouetteFromImage(img) {
-      const maxSide = 1200;
-      const ratio = Math.min(1, maxSide / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
-      const w = Math.max(1, Math.round((img.naturalWidth || img.width) * ratio));
-      const h = Math.max(1, Math.round((img.naturalHeight || img.height) * ratio));
-      duoCanvas.width = w;
-      duoCanvas.height = h;
-      duoCtx.clearRect(0, 0, w, h);
-      duoCtx.drawImage(img, 0, 0, w, h);
-      const imageData = duoCtx.getImageData(0, 0, w, h);
-      const d = imageData.data;
-      let sumR = 0, sumG = 0, sumB = 0, count = 0;
-      const sample = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[Math.floor(w/2),0],[0,Math.floor(h/2)],[w-1,Math.floor(h/2)]];
-      sample.forEach(([sx, sy]) => {
-        const i = (sy * w + sx) * 4;
-        sumR += d[i]; sumG += d[i + 1]; sumB += d[i + 2]; count++;
-      });
-      const bgR = sumR / count, bgG = sumG / count, bgB = sumB / count;
-      let minX = w, minY = h, maxX = 0, maxY = 0;
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          const i = (y * w + x) * 4;
-          const r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
-          const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
-          const brightness = (r + g + b) / 3;
-          const keep = a > 0 && (dist > 60 || brightness < 205);
-          if (keep) {
-            d[i] = 10; d[i + 1] = 10; d[i + 2] = 16; d[i + 3] = 255;
-            if (x < minX) minX = x;
-            if (y < minY) minY = y;
-            if (x > maxX) maxX = x;
-            if (y > maxY) maxY = y;
-          } else {
-            d[i + 3] = 0;
+    async function renderModalResults(query) {
+      resultsEl.innerHTML = "";
+
+      if (!query) {
+        modalCount.textContent = "0 results";
+        resultsEl.innerHTML = '<div class="empty">Enter a search term to see results.</div>';
+        return;
+      }
+
+      const matches = await searchPosts(query);
+      modalCount.textContent = matches.length + (matches.length === 1 ? " result" : " results");
+
+      if (!matches.length) {
+        resultsEl.innerHTML = '<div class="empty">No matching results found for <strong>' + escapeHtml(query) + '</strong>.</div>';
+        return;
+      }
+
+      let html = "";
+      for (const row of matches) {
+        const post = row.post;
+        const topLabels = post.labels.slice(0, 3);
+
+        const thumbHtml = post.thumbnail
+          ? '<img src="' + escapeHtml(post.thumbnail) + '" alt="' + escapeHtml(post.title) + '" loading="lazy" />'
+          : '<div class="thumb-fallback">PP</div>';
+
+        const tagsHtml = [
+          '<span class="tag">BLOG</span>',
+          ...topLabels.map(l => '<span class="tag">' + escapeHtml(l) + '</span>')
+        ].join("");
+
+        html += ''
+          + '<article class="result">'
+          + '  <div class="result-thumb">' + thumbHtml + '</div>'
+          + '  <div class="result-body">'
+          + '    <div class="result-top">'
+          + '      <div class="tags">' + tagsHtml + '</div>'
+          + '      <div class="score">Match score: ' + row.score.toFixed(2) + '</div>'
+          + '    </div>'
+          + '    <h3 class="result-title"><a href="' + escapeHtml(post.url) + '" target="_blank" rel="noopener">' + highlight(post.title, query) + '</a></h3>'
+          + '    <a class="result-url" href="' + escapeHtml(post.url) + '" target="_blank" rel="noopener">' + escapeHtml(post.url) + '</a>'
+          + '    <p class="result-desc">' + highlight(post.summary, query) + '</p>'
+          + '    <div class="result-meta">'
+          + (post.published ? '<span class="pill-mini">Published: ' + escapeHtml(post.published) + '</span>' : '')
+          + (semanticEnabled ? '<span class="pill-mini">Semantic: On</span>' : '<span class="pill-mini">Semantic: Off</span>')
+          + '    </div>'
+          + '  </div>'
+          + '</article>';
+      }
+      resultsEl.innerHTML = html;
+    }
+
+    function ensureFeedLoaded(callback) {
+      if (feedLoaded) {
+        callback();
+        return;
+      }
+
+      if (feedLoading) {
+        statusText.textContent = "Loading content...";
+        const waiter = setInterval(() => {
+          if (feedLoaded) {
+            clearInterval(waiter);
+            callback();
           }
-        }
-      }
-      duoCtx.putImageData(imageData, 0, 0);
-      duoCtx.globalCompositeOperation = 'source-atop';
-      const glow = duoCtx.createLinearGradient(0, 0, 0, h);
-      glow.addColorStop(0, 'rgba(255,255,255,0.16)');
-      glow.addColorStop(0.45, 'rgba(32,32,40,0.96)');
-      glow.addColorStop(1, 'rgba(0,0,0,1)');
-      duoCtx.fillStyle = glow;
-      duoCtx.fillRect(0, 0, w, h);
-      duoCtx.globalCompositeOperation = 'source-over';
-
-      if (minX >= maxX || minY >= maxY) {
-        duoDancerSilhouetteReady = false;
+        }, 150);
         return;
       }
-      const midX = Math.floor((minX + maxX) / 2);
-      duoLeftBounds = { minX, minY, maxX: midX, maxY };
-      duoRightBounds = { minX: midX + 1, minY, maxX, maxY };
-      duoDancerSilhouetteReady = true;
-      modeSelect.value = 'duo';
-      modeBadge.textContent = 'Mode: Dual Dancers';
-      statusText.textContent = 'Dual silhouette loaded';
+
+      feedLoading = true;
+      statusText.textContent = "Loading content...";
+
+      const old = document.getElementById("feedScript");
+      if (old) old.remove();
+
+      const script = document.createElement("script");
+      script.id = "feedScript";
+      script.src = BLOG_FEED + "&_=" + Date.now();
+      script.onerror = () => {
+        feedLoading = false;
+        statusText.textContent = "Could not load content right now.";
+      };
+      document.body.appendChild(script);
+
+      const waiter = setInterval(() => {
+        if (feedLoaded) {
+          clearInterval(waiter);
+          callback();
+        }
+      }, 150);
     }
 
-    photoInput.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const img = new Image();
-      img.onload = () => {
-        dancerImage = img;
-        buildSilhouetteFromImage(img);
-      };
-      img.src = URL.createObjectURL(file);
-    });
-
-    usePhotoBtn.addEventListener('click', () => {
-      if (!photoInput.files?.[0]) {
-        alert('Please upload a photo first.');
+    async function openSiteSearch(query) {
+      query = String(query || "").trim();
+      if (!query) {
+        queryInput.focus();
+        statusText.textContent = "Please enter a search term.";
         return;
       }
-      const img = new Image();
-      img.onload = () => {
-        dancerImage = img;
-        buildSilhouetteFromImage(img);
-      };
-      img.src = URL.createObjectURL(photoInput.files[0]);
-    });
 
-    duoPhotoInput.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const img = new Image();
-      img.onload = () => buildDualSilhouetteFromImage(img);
-      img.src = URL.createObjectURL(file);
-    });
+      activeQuery = query;
+      modalTitle.textContent = 'Programmer\'s Picnic Results for "' + query + '"';
+      modalQuery.textContent = 'Query: ' + query;
+      resultsEl.innerHTML = '<div class="empty">Loading results...</div>';
+      modalCount.textContent = "Loading...";
+      openModal();
+      statusText.textContent = 'Searching for "' + query + '"';
 
-    useDuoPhotoBtn.addEventListener('click', () => {
-      if (!duoPhotoInput.files?.[0]) {
-        alert('Please upload a photo with two people first.');
-        return;
-      }
-      const img = new Image();
-      img.onload = () => buildDualSilhouetteFromImage(img);
-      img.src = URL.createObjectURL(duoPhotoInput.files[0]);
-    });
-
-    saveSoloDefaultBtn.addEventListener('click', () => {
-      const file = photoInput.files?.[0];
-      if (!file) {
-        alert('Please choose a solo photo first.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        localStorage.setItem('pp_default_solo_image', reader.result);
-        statusText.textContent = 'Solo default saved';
-      };
-      reader.readAsDataURL(file);
-    });
-
-    saveDuoDefaultBtn.addEventListener('click', () => {
-      const file = duoPhotoInput.files?.[0];
-      if (!file) {
-        alert('Please choose a dual photo first.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        localStorage.setItem('pp_default_duo_image', reader.result);
-        statusText.textContent = 'Dual default saved';
-      };
-      reader.readAsDataURL(file);
-    });
-
-    window.addEventListener('resize', () => {
-      // Auto full-screen visualizer after 5 seconds
-    setTimeout(() => {
-      try {
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen();
-        }
-      } catch(e) {}
-      document.body.classList.add('visualizer-fullscreen');
-    }, 5000);
-
-    resizeCanvas();
-      initParticles();
-    });
-
-    function loadImageFromSrc(src) {
-      return new Promise((resolve, reject) => {
-        if (!src) {
-          reject(new Error('Missing image source'));
-          return;
-        }
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = src;
+      ensureFeedLoaded(async () => {
+        await renderModalResults(query);
+        statusText.textContent = 'Showing results for "' + query + '"';
       });
     }
 
-    async function tryLoadBuiltInDefaults() {
-      try {
-        if (DEFAULT_SOLO_IMAGE) {
-          const soloImg = await loadImageFromSrc(DEFAULT_SOLO_IMAGE);
-          dancerImage = soloImg;
-          buildSilhouetteFromImage(soloImg);
-        }
-      } catch (_) {}
+    window.ppSearchFeedCallback = function (feedData) {
+      const entries = (feedData && feedData.feed && feedData.feed.entry) ? feedData.feed.entry : [];
+      posts = [];
 
-      try {
-        if (DEFAULT_DUO_IMAGE) {
-          const duoImg = await loadImageFromSrc(DEFAULT_DUO_IMAGE);
-          buildDualSilhouetteFromImage(duoImg);
+      for (const e of entries) {
+        const labels = Array.isArray(e.category) ? e.category.map(c => c.term).filter(Boolean) : [];
+        let html = "";
+        if (e.content?.$t) html = e.content.$t;
+        else if (e.summary?.$t) html = e.summary.$t;
+
+        const rawPublished = e.published?.$t || "";
+        const ts = rawPublished ? new Date(rawPublished).getTime() : 0;
+
+        posts.push({
+          title: e.title?.$t || "Untitled Post",
+          url: getPostLink(e),
+          summary: summarize(html, 220),
+          rawText: stripHtml(html),
+          labels,
+          thumbnail: getThumbnail(e, html),
+          published: getPublishedDate(e),
+          ts: isNaN(ts) ? 0 : ts,
+          embedding: null
+        });
+      }
+
+      feedLoaded = true;
+      feedLoading = false;
+    };
+
+    searchForm.addEventListener("submit", e => {
+      e.preventDefault();
+      openGoogle(queryInput.value);
+    });
+
+    siteBtn.addEventListener("click", () => openSiteSearch(queryInput.value));
+    modalGoogleBtn.addEventListener("click", () => openGoogle(activeQuery || queryInput.value));
+    modalCloseBtn.addEventListener("click", closeModal);
+    resultsModal.addEventListener("click", e => {
+      if (e.target === resultsModal) closeModal();
+    });
+
+    chips.addEventListener("click", e => {
+      const btn = e.target.closest("[data-q]");
+      if (!btn) return;
+      const q = btn.getAttribute("data-q") || "";
+      queryInput.value = q;
+      updatePreview();
+      openSiteSearch(q);
+    });
+
+    document.querySelectorAll(".mini").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const q = btn.getAttribute("data-q") || "";
+        queryInput.value = q;
+        updatePreview();
+        openSiteSearch(q);
+      });
+    });
+
+    themeToggle.addEventListener("click", () => {
+      const next = document.body.classList.contains("light") ? "dark" : "light";
+      applyTheme(next);
+    });
+
+    layoutToggle.addEventListener("click", () => {
+      const next = modalBody.classList.contains("grid-layout") ? "list" : "grid";
+      applyLayout(next);
+    });
+
+    listBtn.addEventListener("click", () => applyLayout("list"));
+    gridBtn.addEventListener("click", () => applyLayout("grid"));
+
+    semanticToggle.addEventListener("click", async () => {
+      const next = !semanticEnabled;
+      setSemantic(next);
+      if (next) {
+        await ensureSemantic();
+      } else {
+        semanticStatus.textContent = semanticReady ? "Semantic search ready" : "Semantic search unavailable";
+      }
+    });
+
+    queryInput.addEventListener("input", updatePreview);
+
+    clearBtn.addEventListener("click", () => {
+      queryInput.value = "";
+      updatePreview();
+      queryInput.focus();
+      statusText.textContent = "Cleared.";
+    });
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      voiceBtn.addEventListener("click", () => {
+        try {
+          statusText.textContent = "Listening...";
+          recognition.start();
+        } catch {
+          statusText.textContent = "Voice search could not start.";
         }
-      } catch (_) {}
+      });
+
+      recognition.addEventListener("result", async event => {
+        const transcript = event.results?.[0]?.[0]?.transcript || "";
+        queryInput.value = transcript;
+        updatePreview();
+        await openSiteSearch(transcript);
+      });
+
+      recognition.addEventListener("error", () => {
+        statusText.textContent = "Voice search failed. Please try again.";
+      });
+    } else {
+      voiceBtn.disabled = true;
+      voiceBtn.style.opacity = ".5";
+      semanticStatus.textContent = "Voice search unavailable in this browser";
     }
 
-    resizeCanvas();
-    initParticles();
-    drawBackground(1);
-    tryLoadBuiltInDefaults();
-  </script></body>
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && resultsModal.classList.contains("show")) {
+        closeModal();
+      }
+      if (e.key === "/" && document.activeElement !== queryInput) {
+        e.preventDefault();
+        queryInput.focus();
+        queryInput.select();
+      }
+    });
+
+    const initial = getQueryFromUrl();
+    if (initial) queryInput.value = initial;
+    updatePreview();
+
+    applyTheme(getStored(themeKey, "dark"));
+    applyLayout(getStored(layoutKey, "list"));
+    setSemantic(getStored(semanticKey, "off") === "on");
+  </script>
+</body>
 </html>
