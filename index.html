@@ -1,133 +1,1395 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="980" viewBox="0 0 1100 980">
-  <defs>
-    <style>
-      .bg { fill: #fffaf3; }
-      .box { fill: #ffffff; stroke: #d97706; stroke-width: 2.2; rx: 14; ry: 14; }
-      .decision { fill: #fff; stroke: #b45309; stroke-width: 2.2; }
-      .term { fill: #ffedd5; stroke: #c2410c; stroke-width: 2.4; rx: 24; ry: 24; }
-      .io { fill: #fff7ed; stroke: #ea580c; stroke-width: 2.2; }
-      .line { stroke: #7c2d12; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
-      .label { font: 20px Arial, sans-serif; fill: #431407; font-weight: 600; }
-      .small { font: 17px Arial, sans-serif; fill: #431407; }
-      .tiny { font: 15px Arial, sans-serif; fill: #7c2d12; }
-    </style>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Programmer's Picnic API Studio — Champak Roy</title>
+  <meta
+    name="description"
+    content="A VS Code inspired API making and testing tool by Programmer's Picnic and Champak Roy. Build requests, test APIs, inspect responses, save collections, export/import JSON, and copy cURL."
+  />
+  <meta name="theme-color" content="#1e1e1e" />
+  <style>
+    :root{
+      --bg:#0f1115;
+      --bg2:#151922;
+      --panel:#1c2230;
+      --panel2:#222b3a;
+      --card:#10151e;
+      --text:#e8edf5;
+      --muted:#9aa7b6;
+      --line:#303a4b;
+      --accent:#f59e0b;
+      --accent2:#fbbf24;
+      --green:#10b981;
+      --red:#ef4444;
+      --blue:#60a5fa;
+      --purple:#a78bfa;
+      --shadow:0 12px 28px rgba(0,0,0,.28);
+      --radius:16px;
+      --radius-sm:10px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      --top-h: 53vh;
+    }
+    body.light{
+      --bg:#fff8ef;
+      --bg2:#fff3df;
+      --panel:#ffffff;
+      --panel2:#fffaf2;
+      --card:#fffdf9;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#eadfcd;
+      --accent:#d97706;
+      --accent2:#f59e0b;
+      --green:#059669;
+      --red:#dc2626;
+      --blue:#2563eb;
+      --purple:#7c3aed;
+      --shadow:0 10px 24px rgba(217,119,6,.12);
+    }
 
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 Z" fill="#7c2d12"/>
-    </marker>
-  </defs>
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(245,158,11,.12), transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      overflow:hidden;
+    }
 
-  <rect class="bg" x="0" y="0" width="1100" height="980"/>
+    .app{
+      display:grid;
+      grid-template-columns: 290px 1fr;
+      height:100vh;
+    }
 
-  <!-- Start -->
-  <rect class="term" x="410" y="30" width="280" height="60"/>
-  <text class="label" x="550" y="68" text-anchor="middle">Start</text>
+    .sidebar{
+      border-right:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      display:flex;
+      flex-direction:column;
+      min-width:240px;
+      overflow:hidden;
+    }
 
-  <!-- Input -->
-  <polygon class="io" points="340,125 760,125 720,185 300,185"/>
-  <text class="label" x="530" y="162" text-anchor="middle">Input string s</text>
+    .brand{
+      padding:18px 16px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:14px;
+      background:
+        linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#111;
+      font-weight:900;
+      display:grid;
+      place-items:center;
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand h1{
+      margin:0;
+      font-size:16px;
+      line-height:1.2;
+    }
+    .brand .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+    }
 
-  <!-- Init -->
-  <rect class="box" x="340" y="220" width="420" height="72"/>
-  <text class="label" x="550" y="250" text-anchor="middle">Initialize</text>
-  <text class="small" x="550" y="277" text-anchor="middle">i = 0, j = length(s) - 1</text>
+    .side-actions{
+      padding:12px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      border-bottom:1px solid var(--line);
+    }
 
-  <!-- Loop condition -->
-  <polygon class="decision" points="550,325 710,390 550,455 390,390"/>
-  <text class="label" x="550" y="385" text-anchor="middle">i &lt; j ?</text>
+    .btn, button, select, input, textarea{
+      font:inherit;
+    }
 
-  <!-- Compare -->
-  <polygon class="decision" points="550,500 740,570 550,640 360,570"/>
-  <text class="label" x="550" y="562" text-anchor="middle">s[i] == s[j] ?</text>
+    .btn{
+      border:1px solid var(--line);
+      background:var(--panel);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .btn:hover{transform:translateY(-1px); border-color:var(--accent)}
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#111;
+      border:none;
+      font-weight:800;
+    }
+    .btn.ghost{
+      background:transparent;
+    }
+    .btn.small{
+      padding:7px 10px;
+      border-radius:10px;
+      font-size:13px;
+    }
+    .btn.full{width:100%}
+    .btn.danger:hover{border-color:var(--red)}
+    .btn.success:hover{border-color:var(--green)}
 
-  <!-- Move inward -->
-  <rect class="box" x="790" y="535" width="230" height="70"/>
-  <text class="small" x="905" y="565" text-anchor="middle">i = i + 1</text>
-  <text class="small" x="905" y="592" text-anchor="middle">j = j - 1</text>
+    .side-section{
+      padding:12px;
+      border-bottom:1px solid var(--line);
+    }
+    .side-section h3{
+      margin:0 0 10px;
+      font-size:13px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
 
-  <!-- Check skip left -->
-  <polygon class="decision" points="320,690 500,755 320,820 140,755"/>
-  <text class="small" x="320" y="748" text-anchor="middle">Is s[i+1 ... j]</text>
-  <text class="small" x="320" y="772" text-anchor="middle">a palindrome?</text>
+    .search{
+      width:100%;
+      background:var(--card);
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
 
-  <!-- Remove left -->
-  <rect class="box" x="40" y="860" width="250" height="74"/>
-  <text class="small" x="165" y="892" text-anchor="middle">Yes → one char missing</text>
-  <text class="small" x="165" y="918" text-anchor="middle">Remove s[i]</text>
+    .list{
+      overflow:auto;
+      padding:8px 8px 18px;
+      flex:1;
+    }
+    .item{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      border-radius:14px;
+      padding:10px;
+      margin:8px 0;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .item:hover{border-color:var(--accent); transform:translateY(-1px)}
+    .item .top{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      margin-bottom:6px;
+    }
+    .pill{
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      color:#111;
+      white-space:nowrap;
+    }
+    .m-get{background:#93c5fd}
+    .m-post{background:#86efac}
+    .m-put{background:#fde68a}
+    .m-patch{background:#c4b5fd}
+    .m-delete{background:#fca5a5}
+    .m-other{background:#d1d5db}
+    .item .name{
+      font-weight:700;
+      font-size:14px;
+      line-height:1.3;
+    }
+    .item .meta{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      word-break:break-all;
+    }
 
-  <!-- Check skip right -->
-  <polygon class="decision" points="610,690 790,755 610,820 430,755"/>
-  <text class="small" x="610" y="748" text-anchor="middle">Is s[i ... j-1]</text>
-  <text class="small" x="610" y="772" text-anchor="middle">a palindrome?</text>
+    .main{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
 
-  <!-- Remove right -->
-  <rect class="box" x="490" y="860" width="250" height="74"/>
-  <text class="small" x="615" y="892" text-anchor="middle">Yes → one char missing</text>
-  <text class="small" x="615" y="918" text-anchor="middle">Remove s[j]</text>
+    .topbar{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:rgba(255,255,255,.02);
+    }
+    .topbar .left,
+    .topbar .right{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .topbar .title{
+      font-weight:800;
+      letter-spacing:.02em;
+    }
 
-  <!-- Not possible -->
-  <rect class="box" x="820" y="720" width="220" height="70"/>
-  <text class="small" x="930" y="748" text-anchor="middle">No</text>
-  <text class="small" x="930" y="774" text-anchor="middle">Not possible</text>
+    .workspace{
+      display:grid;
+      grid-template-rows: var(--top-h) 8px 1fr;
+      height:calc(100vh - 70px);
+    }
 
-  <!-- Already palindrome -->
-  <rect class="box" x="790" y="340" width="250" height="70"/>
-  <text class="small" x="915" y="368" text-anchor="middle">Loop ended</text>
-  <text class="small" x="915" y="395" text-anchor="middle">Already palindrome</text>
+    .request-pane,.response-pane{
+      min-height:0;
+      overflow:auto;
+      padding:14px;
+    }
 
-  <!-- End -->
-  <rect class="term" x="805" y="885" width="250" height="60"/>
-  <text class="label" x="930" y="922" text-anchor="middle">End</text>
+    .resizer{
+      background:
+        linear-gradient(180deg, transparent 0%, rgba(255,255,255,.08) 50%, transparent 100%);
+      cursor:row-resize;
+      position:relative;
+    }
+    .resizer::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:62px;
+      height:4px;
+      border-radius:999px;
+      background:var(--accent);
+      opacity:.9;
+    }
 
-  <!-- Arrows -->
-  <path class="line" d="M550 90 L550 125"/>
-  <path class="line" d="M550 185 L550 220"/>
-  <path class="line" d="M550 292 L550 325"/>
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+      margin-bottom:14px;
+    }
 
-  <!-- i < j ? yes -->
-  <path class="line" d="M550 455 L550 500"/>
-  <text class="tiny" x="565" y="482">Yes</text>
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .row.stretch > *{flex:1}
+    .grow{flex:1}
+    .nowrap{flex-wrap:nowrap}
 
-  <!-- i < j ? no -->
-  <path class="line" d="M710 390 L790 390"/>
-  <text class="tiny" x="735" y="378">No</text>
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      font-weight:700;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
 
-  <!-- compare yes -->
-  <path class="line" d="M740 570 L790 570"/>
-  <text class="tiny" x="754" y="557">Yes</text>
+    .input, .select, .textarea{
+      width:100%;
+      background:var(--card);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:11px 12px;
+      outline:none;
+    }
+    .input:focus,.select:focus,.textarea:focus,.search:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(245,158,11,.12);
+    }
+    .textarea{
+      min-height:150px;
+      resize:vertical;
+      font-family:var(--mono);
+      line-height:1.55;
+    }
 
-  <!-- move inward back to loop -->
-  <path class="line" d="M905 535 L905 300 L550 300 L550 325"/>
-  <text class="tiny" x="916" y="430">repeat</text>
+    .method{
+      min-width:120px;
+      font-weight:800;
+    }
 
-  <!-- compare no to skip left -->
-  <path class="line" d="M420 612 L320 690"/>
-  <text class="tiny" x="375" y="650">No</text>
+    .url{
+      font-family:var(--mono);
+      font-size:14px;
+    }
 
-  <!-- skip left yes -->
-  <path class="line" d="M230 805 L190 860"/>
-  <text class="tiny" x="205" y="836">Yes</text>
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .tab{
+      padding:9px 12px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+    }
+    .tab.active{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#111;
+      border-color:transparent;
+    }
 
-  <!-- skip left no to skip right -->
-  <path class="line" d="M500 755 L430 755"/>
-  <text class="tiny" x="455" y="742">No</text>
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
 
-  <!-- skip right yes -->
-  <path class="line" d="M610 820 L615 860"/>
-  <text class="tiny" x="625" y="842">Yes</text>
+    .kv-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .kv-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap:8px;
+      align-items:center;
+    }
+    .kv-row.api{
+      grid-template-columns: 34px 1fr 1fr auto auto;
+    }
+    .check{
+      width:18px;height:18px;
+      accent-color:var(--accent);
+    }
 
-  <!-- skip right no -->
-  <path class="line" d="M790 755 L820 755"/>
-  <text class="tiny" x="800" y="742">No</text>
+    .mini{
+      font-size:12px;
+      color:var(--muted);
+    }
 
-  <!-- to end -->
-  <path class="line" d="M290 897 L805 915"/>
-  <path class="line" d="M740 897 L805 915"/>
-  <path class="line" d="M1040 755 L1040 915 L1055 915"/>
-  <path class="line" d="M915 410 L915 885"/>
+    .hint{
+      background:rgba(245,158,11,.08);
+      color:var(--text);
+      border:1px dashed rgba(245,158,11,.35);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      line-height:1.5;
+    }
 
-  <!-- Title -->
-  <text class="label" x="550" y="965" text-anchor="middle">
-    Flowchart: Check whether string can become palindrome by removing one character
-  </text>
-</svg>
+    .split{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+
+    .statusbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .metric{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      background:var(--panel);
+      min-width:120px;
+    }
+    .metric .k{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:4px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+    .metric .v{
+      font-weight:800;
+      font-size:14px;
+      font-family:var(--mono);
+    }
+
+    .codebox{
+      background:#0a0d13;
+      color:#dbeafe;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      overflow:auto;
+      font-family:var(--mono);
+      line-height:1.55;
+      min-height:280px;
+    }
+    body.light .codebox{
+      background:#fffefb;
+      color:#172554;
+    }
+
+    .footer-note{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      padding:0 2px;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .section-head h2{
+      margin:0;
+      font-size:16px;
+    }
+
+    .mono{font-family:var(--mono)}
+    .hidden{display:none !important}
+    .center-empty{
+      display:grid;
+      place-items:center;
+      min-height:180px;
+      color:var(--muted);
+      text-align:center;
+      padding:20px;
+      border:1px dashed var(--line);
+      border-radius:16px;
+    }
+
+    @media (max-width: 980px){
+      .app{grid-template-columns:1fr}
+      .sidebar{
+        display:none;
+        position:fixed;
+        inset:0 auto 0 0;
+        width:min(88vw,330px);
+        z-index:60;
+        background:var(--bg);
+      }
+      .sidebar.open{display:flex}
+      .workspace{height:calc(100vh - 72px)}
+      .split{grid-template-columns:1fr}
+      .kv-row,.kv-row.api{grid-template-columns:1fr}
+      .nowrap{flex-wrap:wrap}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo">API</div>
+        <div>
+          <h1>Programmer's Picnic API Studio</h1>
+          <div class="sub">By Champak Roy · Build and test APIs</div>
+        </div>
+      </div>
+
+      <div class="side-actions">
+        <button class="btn primary" id="newRequestBtn">New Request</button>
+        <button class="btn" id="toggleThemeBtn">Toggle Theme</button>
+      </div>
+
+      <div class="side-section">
+        <h3>Search Saved Requests</h3>
+        <input id="searchSaved" class="search" placeholder="Search collections or history..." />
+      </div>
+
+      <div class="side-section">
+        <h3>Collections</h3>
+        <div class="row">
+          <button class="btn small" id="saveRequestBtn">Save Current</button>
+          <button class="btn small" id="exportBtn">Export</button>
+          <button class="btn small" id="importBtn">Import</button>
+          <input id="importFile" type="file" accept=".json,application/json" class="hidden" />
+        </div>
+      </div>
+
+      <div class="list" id="savedList"></div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="left">
+          <button class="btn small" id="menuBtn">☰</button>
+          <div class="title">API Request Builder</div>
+        </div>
+        <div class="right">
+          <button class="btn small" id="copyCurlBtn">Copy cURL</button>
+          <button class="btn small" id="clearHistoryBtn">Clear History</button>
+          <button class="btn primary small" id="sendBtn">Send Request</button>
+        </div>
+      </div>
+
+      <div class="workspace" id="workspace">
+        <section class="request-pane">
+          <div class="card">
+            <div class="section-head">
+              <h2>Request</h2>
+              <div class="mini">Version 1 · Single-file API tool</div>
+            </div>
+
+            <div class="row nowrap">
+              <select id="method" class="select method">
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>PATCH</option>
+                <option>DELETE</option>
+              </select>
+              <input id="url" class="input url grow" placeholder="https://api.example.com/users" />
+              <button class="btn primary" id="sendBtn2">Send</button>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="tabs" id="requestTabs">
+              <button class="tab active" data-tab="params">Params</button>
+              <button class="tab" data-tab="headers">Headers</button>
+              <button class="tab" data-tab="auth">Auth</button>
+              <button class="tab" data-tab="body">Body</button>
+              <button class="tab" data-tab="notes">Notes</button>
+            </div>
+
+            <div class="tab-panel active" data-panel="params">
+              <div class="section-head">
+                <h2>Query Parameters</h2>
+                <button class="btn small" id="addParamBtn">+ Add Param</button>
+              </div>
+              <div class="kv-list" id="paramsList"></div>
+            </div>
+
+            <div class="tab-panel" data-panel="headers">
+              <div class="section-head">
+                <h2>Headers</h2>
+                <div class="row">
+                  <button class="btn small" id="addHeaderBtn">+ Add Header</button>
+                  <button class="btn small" id="jsonHeaderBtn">JSON Header</button>
+                </div>
+              </div>
+              <div class="kv-list" id="headersList"></div>
+            </div>
+
+            <div class="tab-panel" data-panel="auth">
+              <div class="split">
+                <div>
+                  <div class="label">Authorization Type</div>
+                  <select id="authType" class="select">
+                    <option value="none">None</option>
+                    <option value="bearer">Bearer Token</option>
+                    <option value="basic">Basic Auth</option>
+                    <option value="apikey">API Key</option>
+                  </select>
+
+                  <div style="height:12px"></div>
+
+                  <div id="authNone" class="hint">
+                    No authentication will be added automatically.
+                  </div>
+
+                  <div id="authBearer" class="hidden">
+                    <div class="label">Bearer Token</div>
+                    <input id="bearerToken" class="input mono" placeholder="Paste your token here" />
+                  </div>
+
+                  <div id="authBasic" class="hidden">
+                    <div class="label">Username</div>
+                    <input id="basicUser" class="input" placeholder="Username" />
+                    <div style="height:10px"></div>
+                    <div class="label">Password</div>
+                    <input id="basicPass" class="input" type="password" placeholder="Password" />
+                  </div>
+
+                  <div id="authApiKey" class="hidden">
+                    <div class="label">API Key Name</div>
+                    <input id="apiKeyName" class="input" placeholder="x-api-key" />
+                    <div style="height:10px"></div>
+                    <div class="label">API Key Value</div>
+                    <input id="apiKeyValue" class="input mono" placeholder="Enter API key value" />
+                    <div style="height:10px"></div>
+                    <div class="label">Add To</div>
+                    <select id="apiKeyLocation" class="select">
+                      <option value="header">Header</option>
+                      <option value="query">Query Param</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="hint">
+                    Supported auth in Version 1:
+                    <br><br>
+                    • Bearer → adds <span class="mono">Authorization: Bearer ...</span>
+                    <br>
+                    • Basic → adds a base64 Authorization header
+                    <br>
+                    • API Key → sends key in header or query string
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-panel" data-panel="body">
+              <div class="label">Request Body (raw)</div>
+              <textarea id="bodyInput" class="textarea" placeholder='{"name":"Champak Roy","tool":"Programmer\'s Picnic API Studio"}'></textarea>
+              <div style="height:10px"></div>
+              <div class="row">
+                <button class="btn small" id="formatJsonBtn">Format JSON</button>
+                <button class="btn small" id="clearBodyBtn">Clear Body</button>
+              </div>
+            </div>
+
+            <div class="tab-panel" data-panel="notes">
+              <div class="label">Request Name</div>
+              <input id="requestName" class="input" placeholder="Example: Get Users List" />
+              <div style="height:10px"></div>
+              <div class="label">Description / Notes</div>
+              <textarea id="requestNotes" class="textarea" placeholder="Write notes about this API request..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <div class="resizer" id="resizer"></div>
+
+        <section class="response-pane">
+          <div class="card">
+            <div class="section-head">
+              <h2>Response</h2>
+              <div class="row">
+                <button class="btn small" id="prettyBtn">Pretty</button>
+                <button class="btn small" id="rawBtn">Raw</button>
+                <button class="btn small" id="respHeadersBtn">Headers</button>
+              </div>
+            </div>
+
+            <div class="statusbar">
+              <div class="metric">
+                <div class="k">Status</div>
+                <div class="v" id="statusOut">—</div>
+              </div>
+              <div class="metric">
+                <div class="k">Time</div>
+                <div class="v" id="timeOut">—</div>
+              </div>
+              <div class="metric">
+                <div class="k">Size</div>
+                <div class="v" id="sizeOut">—</div>
+              </div>
+              <div class="metric">
+                <div class="k">Content-Type</div>
+                <div class="v" id="typeOut">—</div>
+              </div>
+            </div>
+
+            <div id="responseEmpty" class="center-empty">
+              Send a request to see the response here.
+            </div>
+
+            <pre id="responseBox" class="codebox hidden"></pre>
+
+            <div style="height:12px"></div>
+
+            <div class="footer-note">
+              Note: Browsers block some cross-origin requests because of CORS. If an API does not allow browser access, test it through your own backend proxy or a CORS-enabled endpoint.
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const els = {
+      body: document.body,
+      sidebar: document.getElementById('sidebar'),
+      menuBtn: document.getElementById('menuBtn'),
+      toggleThemeBtn: document.getElementById('toggleThemeBtn'),
+      method: document.getElementById('method'),
+      url: document.getElementById('url'),
+      sendBtn: document.getElementById('sendBtn'),
+      sendBtn2: document.getElementById('sendBtn2'),
+      addParamBtn: document.getElementById('addParamBtn'),
+      addHeaderBtn: document.getElementById('addHeaderBtn'),
+      jsonHeaderBtn: document.getElementById('jsonHeaderBtn'),
+      paramsList: document.getElementById('paramsList'),
+      headersList: document.getElementById('headersList'),
+      authType: document.getElementById('authType'),
+      authNone: document.getElementById('authNone'),
+      authBearer: document.getElementById('authBearer'),
+      authBasic: document.getElementById('authBasic'),
+      authApiKey: document.getElementById('authApiKey'),
+      bearerToken: document.getElementById('bearerToken'),
+      basicUser: document.getElementById('basicUser'),
+      basicPass: document.getElementById('basicPass'),
+      apiKeyName: document.getElementById('apiKeyName'),
+      apiKeyValue: document.getElementById('apiKeyValue'),
+      apiKeyLocation: document.getElementById('apiKeyLocation'),
+      bodyInput: document.getElementById('bodyInput'),
+      formatJsonBtn: document.getElementById('formatJsonBtn'),
+      clearBodyBtn: document.getElementById('clearBodyBtn'),
+      requestName: document.getElementById('requestName'),
+      requestNotes: document.getElementById('requestNotes'),
+      saveRequestBtn: document.getElementById('saveRequestBtn'),
+      newRequestBtn: document.getElementById('newRequestBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      importBtn: document.getElementById('importBtn'),
+      importFile: document.getElementById('importFile'),
+      savedList: document.getElementById('savedList'),
+      searchSaved: document.getElementById('searchSaved'),
+      clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+      copyCurlBtn: document.getElementById('copyCurlBtn'),
+      statusOut: document.getElementById('statusOut'),
+      timeOut: document.getElementById('timeOut'),
+      sizeOut: document.getElementById('sizeOut'),
+      typeOut: document.getElementById('typeOut'),
+      responseEmpty: document.getElementById('responseEmpty'),
+      responseBox: document.getElementById('responseBox'),
+      prettyBtn: document.getElementById('prettyBtn'),
+      rawBtn: document.getElementById('rawBtn'),
+      respHeadersBtn: document.getElementById('respHeadersBtn'),
+      workspace: document.getElementById('workspace'),
+      resizer: document.getElementById('resizer')
+    };
+
+    const STORAGE_KEYS = {
+      theme: 'pp_api_theme',
+      saved: 'pp_api_saved_requests_v1',
+      history: 'pp_api_history_v1'
+    };
+
+    let responseState = {
+      rawText: '',
+      prettyText: '',
+      headersText: '',
+      mode: 'pretty'
+    };
+
+    function uid() {
+      return Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    function escapeHtml(str='') {
+      return str
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;');
+    }
+
+    function bytesToSize(bytes) {
+      if (!bytes && bytes !== 0) return '—';
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      if (bytes === 0) return '0 B';
+      const i = Math.floor(Math.log(bytes) / Math.log(1024));
+      return (bytes / Math.pow(1024, i)).toFixed(i ? 2 : 0) + ' ' + sizes[i];
+    }
+
+    function methodClass(method='GET'){
+      const m = method.toUpperCase();
+      if (m === 'GET') return 'm-get';
+      if (m === 'POST') return 'm-post';
+      if (m === 'PUT') return 'm-put';
+      if (m === 'PATCH') return 'm-patch';
+      if (m === 'DELETE') return 'm-delete';
+      return 'm-other';
+    }
+
+    function loadJSON(key, fallback){
+      try{
+        const v = JSON.parse(localStorage.getItem(key));
+        return v ?? fallback;
+      }catch{
+        return fallback;
+      }
+    }
+
+    function saveJSON(key, value){
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function setTheme(theme){
+      if(theme === 'light') els.body.classList.add('light');
+      else els.body.classList.remove('light');
+      localStorage.setItem(STORAGE_KEYS.theme, theme);
+    }
+
+    function initTheme(){
+      const stored = localStorage.getItem(STORAGE_KEYS.theme);
+      if(stored) return setTheme(stored);
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      setTheme(prefersLight ? 'light' : 'dark');
+    }
+
+    function createKVRow(type='normal', data={enabled:true,key:'',value:''}){
+      const row = document.createElement('div');
+      row.className = type === 'api' ? 'kv-row api' : 'kv-row';
+
+      if(type === 'api'){
+        const check = document.createElement('input');
+        check.type = 'checkbox';
+        check.className = 'check enabled';
+        check.checked = data.enabled ?? true;
+        row.appendChild(check);
+      }
+
+      const key = document.createElement('input');
+      key.className = 'input key';
+      key.placeholder = 'Key';
+      key.value = data.key || '';
+
+      const value = document.createElement('input');
+      value.className = 'input value';
+      value.placeholder = 'Value';
+      value.value = data.value || '';
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn small';
+      addBtn.textContent = '+';
+      addBtn.title = 'Add row';
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn small danger';
+      delBtn.textContent = '✕';
+      delBtn.title = 'Delete row';
+
+      addBtn.addEventListener('click', () => {
+        const parent = row.parentElement;
+        parent.appendChild(createKVRow(type, { enabled:true, key:'', value:'' }));
+      });
+
+      delBtn.addEventListener('click', () => row.remove());
+
+      row.append(key, value, addBtn, delBtn);
+      return row;
+    }
+
+    function addDefaultRows(){
+      if(!els.paramsList.children.length){
+        els.paramsList.appendChild(createKVRow('api'));
+      }
+      if(!els.headersList.children.length){
+        els.headersList.appendChild(createKVRow('api'));
+      }
+    }
+
+    function getKVData(container){
+      return [...container.children].map(row => {
+        const enabled = row.querySelector('.enabled')?.checked ?? true;
+        const key = row.querySelector('.key')?.value?.trim() || '';
+        const value = row.querySelector('.value')?.value ?? '';
+        return { enabled, key, value };
+      }).filter(item => item.key || item.value);
+    }
+
+    function setKVData(container, items){
+      container.innerHTML = '';
+      if(items && items.length){
+        items.forEach(item => container.appendChild(createKVRow('api', item)));
+      }else{
+        container.appendChild(createKVRow('api'));
+      }
+    }
+
+    function updateAuthUI(){
+      const type = els.authType.value;
+      els.authNone.classList.toggle('hidden', type !== 'none');
+      els.authBearer.classList.toggle('hidden', type !== 'bearer');
+      els.authBasic.classList.toggle('hidden', type !== 'basic');
+      els.authApiKey.classList.toggle('hidden', type !== 'apikey');
+    }
+
+    function getRequestState(){
+      return {
+        id: uid(),
+        name: els.requestName.value.trim() || 'Untitled Request',
+        notes: els.requestNotes.value,
+        method: els.method.value,
+        url: els.url.value.trim(),
+        params: getKVData(els.paramsList),
+        headers: getKVData(els.headersList),
+        auth: {
+          type: els.authType.value,
+          bearerToken: els.bearerToken.value,
+          basicUser: els.basicUser.value,
+          basicPass: els.basicPass.value,
+          apiKeyName: els.apiKeyName.value,
+          apiKeyValue: els.apiKeyValue.value,
+          apiKeyLocation: els.apiKeyLocation.value
+        },
+        body: els.bodyInput.value,
+        savedAt: new Date().toISOString()
+      };
+    }
+
+    function applyRequestState(req){
+      els.requestName.value = req.name || '';
+      els.requestNotes.value = req.notes || '';
+      els.method.value = req.method || 'GET';
+      els.url.value = req.url || '';
+      setKVData(els.paramsList, req.params || []);
+      setKVData(els.headersList, req.headers || []);
+      els.authType.value = req.auth?.type || 'none';
+      els.bearerToken.value = req.auth?.bearerToken || '';
+      els.basicUser.value = req.auth?.basicUser || '';
+      els.basicPass.value = req.auth?.basicPass || '';
+      els.apiKeyName.value = req.auth?.apiKeyName || '';
+      els.apiKeyValue.value = req.auth?.apiKeyValue || '';
+      els.apiKeyLocation.value = req.auth?.apiKeyLocation || 'header';
+      els.bodyInput.value = req.body || '';
+      updateAuthUI();
+    }
+
+    function getSavedRequests(){
+      return loadJSON(STORAGE_KEYS.saved, []);
+    }
+
+    function getHistory(){
+      return loadJSON(STORAGE_KEYS.history, []);
+    }
+
+    function renderSavedList(){
+      const q = els.searchSaved.value.trim().toLowerCase();
+      const saved = getSavedRequests();
+      const history = getHistory();
+
+      const blocks = [];
+
+      if(saved.length){
+        blocks.push(`<div class="side-section" style="padding:0;border:none;margin-bottom:4px;"><h3 style="padding:0 4px;">Saved Requests</h3></div>`);
+        saved
+          .filter(item => [item.name, item.url, item.method, item.notes].join(' ').toLowerCase().includes(q))
+          .forEach(item => {
+            blocks.push(`
+              <div class="item" data-type="saved" data-id="${item.id}">
+                <div class="top">
+                  <span class="pill ${methodClass(item.method)}">${item.method}</span>
+                  <button class="btn small danger delete-saved" data-id="${item.id}">Delete</button>
+                </div>
+                <div class="name">${escapeHtml(item.name || 'Untitled Request')}</div>
+                <div class="meta">${escapeHtml(item.url || 'No URL')}</div>
+              </div>
+            `);
+          });
+      }
+
+      if(history.length){
+        blocks.push(`<div class="side-section" style="padding:8px 0 0;border:none;margin-top:8px;"><h3 style="padding:0 4px;">Recent History</h3></div>`);
+        history
+          .filter(item => [item.name, item.url, item.method, item.notes].join(' ').toLowerCase().includes(q))
+          .forEach(item => {
+            blocks.push(`
+              <div class="item" data-type="history" data-id="${item.id}">
+                <div class="top">
+                  <span class="pill ${methodClass(item.method)}">${item.method}</span>
+                  <span class="mini">${new Date(item.savedAt || Date.now()).toLocaleString()}</span>
+                </div>
+                <div class="name">${escapeHtml(item.name || 'Untitled Request')}</div>
+                <div class="meta">${escapeHtml(item.url || 'No URL')}</div>
+              </div>
+            `);
+          });
+      }
+
+      els.savedList.innerHTML = blocks.length ? blocks.join('') : `
+        <div class="center-empty">
+          No saved requests yet.<br><br>
+          Save your current request to build a reusable collection.
+        </div>
+      `;
+
+      [...els.savedList.querySelectorAll('.item[data-type]')].forEach(node => {
+        node.addEventListener('click', (e) => {
+          if(e.target.closest('.delete-saved')) return;
+          const type = node.dataset.type;
+          const id = node.dataset.id;
+          const arr = type === 'saved' ? getSavedRequests() : getHistory();
+          const found = arr.find(x => x.id === id);
+          if(found) {
+            applyRequestState(found);
+            if(window.innerWidth <= 980) els.sidebar.classList.remove('open');
+          }
+        });
+      });
+
+      [...els.savedList.querySelectorAll('.delete-saved')].forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.dataset.id;
+          const saved = getSavedRequests().filter(x => x.id !== id);
+          saveJSON(STORAGE_KEYS.saved, saved);
+          renderSavedList();
+        });
+      });
+    }
+
+    function saveCurrentRequest(){
+      const req = getRequestState();
+      const saved = getSavedRequests();
+      const existingIndex = saved.findIndex(x =>
+        x.name === req.name && x.url === req.url && x.method === req.method
+      );
+
+      if(existingIndex >= 0){
+        req.id = saved[existingIndex].id;
+        saved[existingIndex] = req;
+      }else{
+        saved.unshift(req);
+      }
+      saveJSON(STORAGE_KEYS.saved, saved);
+      renderSavedList();
+      alert('Request saved.');
+    }
+
+    function pushHistory(req){
+      const history = getHistory();
+      history.unshift({ ...req, id: uid(), savedAt: new Date().toISOString() });
+      saveJSON(STORAGE_KEYS.history, history.slice(0, 30));
+      renderSavedList();
+    }
+
+    function clearForm(){
+      els.requestName.value = '';
+      els.requestNotes.value = '';
+      els.method.value = 'GET';
+      els.url.value = '';
+      els.bodyInput.value = '';
+      els.authType.value = 'none';
+      els.bearerToken.value = '';
+      els.basicUser.value = '';
+      els.basicPass.value = '';
+      els.apiKeyName.value = '';
+      els.apiKeyValue.value = '';
+      els.apiKeyLocation.value = 'header';
+      setKVData(els.paramsList, []);
+      setKVData(els.headersList, []);
+      updateAuthUI();
+    }
+
+    function formatBodyAsJson(){
+      const txt = els.bodyInput.value.trim();
+      if(!txt) return;
+      try{
+        const obj = JSON.parse(txt);
+        els.bodyInput.value = JSON.stringify(obj, null, 2);
+      }catch{
+        alert('Body is not valid JSON.');
+      }
+    }
+
+    function buildFinalRequest(){
+      const method = els.method.value.toUpperCase();
+      const baseUrl = els.url.value.trim();
+      if(!baseUrl) throw new Error('Please enter a URL.');
+
+      const urlObj = new URL(baseUrl);
+
+      const params = getKVData(els.paramsList);
+      params.forEach(({enabled,key,value}) => {
+        if(enabled && key) urlObj.searchParams.set(key, value);
+      });
+
+      const headers = new Headers();
+      getKVData(els.headersList).forEach(({enabled,key,value}) => {
+        if(enabled && key) headers.set(key, value);
+      });
+
+      const authType = els.authType.value;
+      if(authType === 'bearer' && els.bearerToken.value.trim()){
+        headers.set('Authorization', `Bearer ${els.bearerToken.value.trim()}`);
+      } else if(authType === 'basic'){
+        const user = els.basicUser.value || '';
+        const pass = els.basicPass.value || '';
+        headers.set('Authorization', 'Basic ' + btoa(`${user}:${pass}`));
+      } else if(authType === 'apikey'){
+        const name = els.apiKeyName.value.trim();
+        const value = els.apiKeyValue.value;
+        if(name){
+          if(els.apiKeyLocation.value === 'header') headers.set(name, value);
+          else urlObj.searchParams.set(name, value);
+        }
+      }
+
+      const options = { method, headers };
+      const bodyText = els.bodyInput.value;
+
+      if(!['GET','HEAD'].includes(method) && bodyText.trim()){
+        options.body = bodyText;
+      }
+
+      return { method, url: urlObj.toString(), headers, options };
+    }
+
+    function headersToObject(headers){
+      const obj = {};
+      headers.forEach((value,key) => obj[key] = value);
+      return obj;
+    }
+
+    function setResponseMetrics({status='—', time='—', size='—', type='—'}){
+      els.statusOut.textContent = status;
+      els.timeOut.textContent = time;
+      els.sizeOut.textContent = size;
+      els.typeOut.textContent = type;
+      if(String(status).startsWith('2')) els.statusOut.style.color = 'var(--green)';
+      else if(String(status).startsWith('4') || String(status).startsWith('5')) els.statusOut.style.color = 'var(--red)';
+      else els.statusOut.style.color = 'var(--text)';
+    }
+
+    function renderResponse(mode='pretty'){
+      responseState.mode = mode;
+      els.responseEmpty.classList.add('hidden');
+      els.responseBox.classList.remove('hidden');
+
+      if(mode === 'pretty'){
+        els.responseBox.textContent = responseState.prettyText || responseState.rawText || '';
+      } else if(mode === 'raw'){
+        els.responseBox.textContent = responseState.rawText || '';
+      } else {
+        els.responseBox.textContent = responseState.headersText || '';
+      }
+    }
+
+    async function sendRequest(){
+      let built;
+      try{
+        built = buildFinalRequest();
+      }catch(err){
+        alert(err.message);
+        return;
+      }
+
+      const start = performance.now();
+      setResponseMetrics({status:'Loading...', time:'—', size:'—', type:'—'});
+      els.responseEmpty.classList.add('hidden');
+      els.responseBox.classList.remove('hidden');
+      els.responseBox.textContent = 'Sending request...';
+
+      try{
+        const res = await fetch(built.url, built.options);
+        const end = performance.now();
+        const rawText = await res.text();
+        const time = `${Math.round(end - start)} ms`;
+        const size = bytesToSize(new TextEncoder().encode(rawText).length);
+        const type = res.headers.get('content-type') || 'unknown';
+
+        let prettyText = rawText;
+        if(type.includes('application/json') || rawText.trim().startsWith('{') || rawText.trim().startsWith('[')){
+          try{
+            prettyText = JSON.stringify(JSON.parse(rawText), null, 2);
+          }catch{}
+        }
+
+        const headersText = JSON.stringify(headersToObject(res.headers), null, 2);
+
+        responseState = { rawText, prettyText, headersText, mode:'pretty' };
+        setResponseMetrics({
+          status: `${res.status} ${res.statusText}`,
+          time,
+          size,
+          type
+        });
+        renderResponse('pretty');
+        pushHistory(getRequestState());
+      }catch(err){
+        const end = performance.now();
+        responseState = {
+          rawText: String(err),
+          prettyText: `Request failed.\n\n${String(err)}`,
+          headersText: '{}',
+          mode:'pretty'
+        };
+        setResponseMetrics({
+          status: 'Error',
+          time: `${Math.round(end - start)} ms`,
+          size: '—',
+          type: '—'
+        });
+        renderResponse('pretty');
+      }
+    }
+
+    function copyCurl(){
+      try{
+        const { method, url, headers, options } = buildFinalRequest();
+        let curl = `curl -X ${method} "${url}"`;
+        headers.forEach((value,key) => {
+          curl += ` \\\n  -H "${key}: ${String(value).replaceAll('"','\\"')}"`;
+        });
+        if(options.body){
+          curl += ` \\\n  --data '${String(options.body).replaceAll("'", "'\\''")}'`;
+        }
+        navigator.clipboard.writeText(curl);
+        alert('cURL copied to clipboard.');
+      }catch(err){
+        alert(err.message);
+      }
+    }
+
+    function exportSaved(){
+      const payload = {
+        app: "Programmer's Picnic API Studio",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        requests: getSavedRequests()
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'pp-api-collection.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importSavedFile(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const json = JSON.parse(reader.result);
+          const incoming = Array.isArray(json) ? json : (json.requests || []);
+          if(!Array.isArray(incoming)) throw new Error('Invalid file');
+          const saved = getSavedRequests();
+          const merged = [...incoming, ...saved].map(item => ({...item, id: item.id || uid()}));
+          saveJSON(STORAGE_KEYS.saved, merged);
+          renderSavedList();
+          alert('Collection imported.');
+        }catch{
+          alert('Invalid collection JSON.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function setupTabs(){
+      const tabs = document.querySelectorAll('#requestTabs .tab');
+      const panels = document.querySelectorAll('.tab-panel');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          panels.forEach(p => p.classList.remove('active'));
+          tab.classList.add('active');
+          document.querySelector(`.tab-panel[data-panel="${tab.dataset.tab}"]`)?.classList.add('active');
+        });
+      });
+    }
+
+    function setupResponseModeButtons(){
+      els.prettyBtn.addEventListener('click', () => renderResponse('pretty'));
+      els.rawBtn.addEventListener('click', () => renderResponse('raw'));
+      els.respHeadersBtn.addEventListener('click', () => renderResponse('headers'));
+    }
+
+    function setupResizer(){
+      let dragging = false;
+
+      els.resizer.addEventListener('mousedown', () => dragging = true);
+      window.addEventListener('mouseup', () => dragging = false);
+      window.addEventListener('mousemove', (e) => {
+        if(!dragging) return;
+        const topbarH = document.querySelector('.topbar').offsetHeight;
+        const y = e.clientY - topbarH;
+        const h = window.innerHeight - topbarH;
+        let pct = (y / h) * 100;
+        pct = Math.max(22, Math.min(78, pct));
+        document.documentElement.style.setProperty('--top-h', pct + '%');
+      });
+    }
+
+    function bindEvents(){
+      els.menuBtn.addEventListener('click', () => els.sidebar.classList.toggle('open'));
+      els.toggleThemeBtn.addEventListener('click', () => {
+        setTheme(els.body.classList.contains('light') ? 'dark' : 'light');
+      });
+
+      els.addParamBtn.addEventListener('click', () => els.paramsList.appendChild(createKVRow('api')));
+      els.addHeaderBtn.addEventListener('click', () => els.headersList.appendChild(createKVRow('api')));
+
+      els.jsonHeaderBtn.addEventListener('click', () => {
+        const rows = getKVData(els.headersList);
+        const exists = rows.some(x => x.key.toLowerCase() === 'content-type');
+        if(!exists){
+          els.headersList.appendChild(createKVRow('api', { enabled:true, key:'Content-Type', value:'application/json' }));
+        }
+      });
+
+      els.authType.addEventListener('change', updateAuthUI);
+      els.formatJsonBtn.addEventListener('click', formatBodyAsJson);
+      els.clearBodyBtn.addEventListener('click', () => els.bodyInput.value = '');
+      els.sendBtn.addEventListener('click', sendRequest);
+      els.sendBtn2.addEventListener('click', sendRequest);
+      els.copyCurlBtn.addEventListener('click', copyCurl);
+      els.saveRequestBtn.addEventListener('click', saveCurrentRequest);
+      els.newRequestBtn.addEventListener('click', clearForm);
+      els.exportBtn.addEventListener('click', exportSaved);
+      els.importBtn.addEventListener('click', () => els.importFile.click());
+
+      els.importFile.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if(file) importSavedFile(file);
+        e.target.value = '';
+      });
+
+      els.searchSaved.addEventListener('input', renderSavedList);
+
+      els.clearHistoryBtn.addEventListener('click', () => {
+        if(confirm('Clear recent history?')){
+          saveJSON(STORAGE_KEYS.history, []);
+          renderSavedList();
+        }
+      });
+
+      els.url.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') sendRequest();
+      });
+    }
+
+    function initDemoData(){
+      if(!getSavedRequests().length){
+        const demo = {
+          id: uid(),
+          name: 'JSON Placeholder — Get Posts',
+          notes: 'Demo request to test the tool quickly.',
+          method: 'GET',
+          url: 'https://jsonplaceholder.typicode.com/posts',
+          params: [{enabled:true,key:'_limit',value:'5'}],
+          headers: [],
+          auth: { type:'none', bearerToken:'', basicUser:'', basicPass:'', apiKeyName:'', apiKeyValue:'', apiKeyLocation:'header' },
+          body: '',
+          savedAt: new Date().toISOString()
+        };
+        saveJSON(STORAGE_KEYS.saved, [demo]);
+      }
+    }
+
+    function init(){
+      initTheme();
+      setupTabs();
+      setupResponseModeButtons();
+      setupResizer();
+      bindEvents();
+      initDemoData();
+      addDefaultRows();
+      updateAuthUI();
+      renderSavedList();
+    }
+
+    init();
+  </script>
+</body>
+</html>
