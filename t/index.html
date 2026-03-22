@@ -3,1291 +3,533 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Programmer's Picnic — AI Editor Helper</title>
-  <meta
-    name="description"
-    content="A VS Code inspired Programmer's Picnic editor with an AI sidebar for explaining code, giving hints, debugging errors, and generating test cases."
-  />
-  <meta name="theme-color" content="#f59e0b" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
-    rel="stylesheet"
-  />
-
+  <title>3 Husbands and Wives River Crossing</title>
   <style>
     :root{
       --bg:#fff8ef;
-      --bg2:#fff3dc;
+      --bg2:#fff2dc;
       --panel:#ffffff;
-      --panel2:#fffaf1;
-      --line:#ead9b7;
-      --soft:#f5e7cb;
-      --text:#1f2937;
+      --ink:#1f2937;
       --muted:#6b7280;
-      --accent:#d97706;
-      --accent2:#f59e0b;
-      --accent3:#fbbf24;
-      --good:#0f766e;
+      --brand:#d97706;
+      --brand2:#f59e0b;
+      --line:rgba(217,119,6,.18);
+      --good:#15803d;
       --bad:#b91c1c;
-      --shadow:0 12px 30px rgba(102, 69, 0, .10);
-      --radius:18px;
-      --radius-sm:12px;
-      --editor-bg:#fffdf8;
-      --editor-line:#f3ead7;
-      --code:#111827;
-      --tab:#f8ecd2;
-      --tab-active:#ffffff;
-      --sidebar-width:390px;
-      --status:#fff1cc;
+      --river1:#93c5fd;
+      --river2:#60a5fa;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+
     body{
       margin:0;
-      font-family:"DM Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
       background:
-        radial-gradient(circle at top right, rgba(245,158,11,.18), transparent 22rem),
-        radial-gradient(circle at bottom left, rgba(217,119,6,.10), transparent 22rem),
-        linear-gradient(180deg,var(--bg),var(--bg2));
+        radial-gradient(circle at top right, rgba(245,158,11,.10), transparent 24%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
     }
 
-    button,input,select,textarea{
-      font:inherit;
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px;
     }
 
-    .app{
-      height:100vh;
-      display:grid;
-      grid-template-rows:56px 1fr 34px;
+    h1{
+      margin:0 0 8px;
+      text-align:center;
+      color:var(--brand);
+      font-size:clamp(28px,4vw,42px);
     }
 
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:10px 16px;
-      background:rgba(255,250,241,.92);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line);
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
-
-    .logo{
-      width:34px;
-      height:34px;
-      border-radius:10px;
-      display:grid;
-      place-items:center;
-      color:white;
-      font-weight:800;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:var(--shadow);
-      flex:0 0 auto;
-    }
-
-    .brand-text{
-      min-width:0;
-    }
-
-    .brand-text .title{
-      font-size:15px;
-      font-weight:800;
-      line-height:1.1;
-      letter-spacing:.2px;
-    }
-
-    .brand-text .sub{
-      font-size:12px;
+    .subtitle{
+      text-align:center;
       color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .top-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .select,
-    .input,
-    .btn,
-    .chip{
-      border:1px solid var(--line);
-      background:var(--panel);
-      color:var(--text);
-      border-radius:12px;
-    }
-
-    .select,
-    .input{
-      height:38px;
-      padding:0 12px;
-      outline:none;
-    }
-
-    .input{width:220px}
-    .select{min-width:130px}
-
-    .btn{
-      height:38px;
-      padding:0 14px;
-      cursor:pointer;
-      transition:.2s ease;
-      box-shadow:0 4px 12px rgba(0,0,0,.04);
-      font-weight:700;
-    }
-
-    .btn:hover{
-      transform:translateY(-1px);
-      border-color:#d6b981;
-    }
-
-    .btn.primary{
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#fff;
-      border-color:transparent;
-    }
-
-    .btn.ghost{
-      background:var(--panel2);
-    }
-
-    .workspace{
-      min-height:0;
-      display:grid;
-      grid-template-columns: 1fr var(--sidebar-width);
-    }
-
-    .editor-pane{
-      min-width:0;
-      border-right:1px solid var(--line);
-      display:grid;
-      grid-template-rows:auto auto 1fr auto;
-      background:linear-gradient(180deg,rgba(255,255,255,.50),rgba(255,255,255,.18));
-    }
-
-    .editor-tabs{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      background:rgba(255,255,255,.42);
-      overflow:auto;
-    }
-
-    .tab{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      border:1px solid var(--line);
-      background:var(--tab);
-      color:var(--text);
-      border-radius:12px;
-      padding:8px 12px;
-      white-space:nowrap;
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .tab.active{
-      background:var(--tab-active);
-      box-shadow:var(--shadow);
-    }
-
-    .editor-toolbar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      background:rgba(255,255,255,.55);
-    }
-
-    .editor-toolbar .group{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .editor-wrap{
-      min-height:0;
-      padding:12px;
-    }
-
-    .editor-shell{
-      height:100%;
-      min-height:360px;
-      background:var(--editor-bg);
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      display:grid;
-      grid-template-rows:40px 1fr;
-    }
-
-    .editor-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 14px;
-      border-bottom:1px solid var(--editor-line);
-      background:linear-gradient(180deg,#fff9ee,#fff4de);
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-    }
-
-    .editor-main{
-      display:grid;
-      grid-template-columns:58px 1fr;
-      min-height:0;
-    }
-
-    .gutter{
-      margin:0;
-      padding:12px 0;
-      background:#fff9ef;
-      border-right:1px solid var(--editor-line);
-      color:#9ca3af;
-      font:13px/1.85 "JetBrains Mono",monospace;
-      text-align:right;
-      user-select:none;
-      overflow:hidden;
-    }
-
-    .gutter span{
-      display:block;
-      padding-right:12px;
-      height:24px;
-    }
-
-    textarea.code{
-      width:100%;
-      height:100%;
-      border:0;
-      outline:none;
-      resize:none;
-      background:var(--editor-bg);
-      color:var(--code);
-      padding:12px 14px;
-      font:14px/1.7 "JetBrains Mono",monospace;
-      tab-size:2;
-      white-space:pre;
-    }
-
-    .bottom-panel{
-      border-top:1px solid var(--line);
-      background:rgba(255,255,255,.52);
-      padding:10px 12px 12px;
-      display:grid;
-      gap:10px;
-    }
-
-    .meta-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:16px;
-      box-shadow:0 6px 18px rgba(0,0,0,.04);
-      overflow:hidden;
-    }
-
-    .card .card-head{
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.25px;
-      color:var(--muted);
-      background:var(--panel2);
-      text-transform:uppercase;
-    }
-
-    .card .card-body{
-      padding:12px;
-    }
-
-    textarea.small,
-    .text-input{
-      width:100%;
-      min-height:92px;
-      padding:12px;
-      border:1px solid var(--line);
-      outline:none;
-      resize:vertical;
-      border-radius:12px;
-      background:#fffdf9;
-      color:var(--text);
-      font-family:inherit;
-    }
-
-    .text-input{
-      min-height:auto;
-      height:42px;
-      resize:none;
-    }
-
-    .sidebar{
-      min-width:0;
-      display:grid;
-      grid-template-rows:auto auto 1fr auto;
-      background:linear-gradient(180deg,rgba(255,255,255,.56),rgba(255,255,255,.2));
-    }
-
-    .sidebar-head{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--line);
-      background:rgba(255,255,255,.55);
-    }
-
-    .sidebar-head h2{
-      margin:0 0 6px;
-      font-size:18px;
-      line-height:1.2;
-    }
-
-    .sidebar-head p{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
+      max-width:860px;
+      margin:0 auto 18px;
       line-height:1.5;
     }
 
-    .sidebar-tabs{
+    .layout{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      padding:12px;
-      border-bottom:1px solid var(--line);
-      background:rgba(255,255,255,.42);
+      grid-template-columns:1fr 260px 1fr;
+      gap:16px;
+      align-items:stretch;
     }
 
-    .side-tab{
+    .bank{
+      background:rgba(255,255,255,.92);
       border:1px solid var(--line);
-      background:var(--tab);
-      color:var(--text);
-      border-radius:12px;
-      min-height:42px;
-      padding:8px 6px;
-      cursor:pointer;
-      font-size:12px;
-      font-weight:800;
-      transition:.2s ease;
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 14px 40px rgba(0,0,0,.06);
+      min-height:360px;
     }
 
-    .side-tab.active{
-      background:#fff;
-      box-shadow:var(--shadow);
-      border-color:#e3c686;
+    .bank h2{
+      margin:0 0 12px;
+      color:#9a6708;
+      font-size:22px;
+      text-align:center;
     }
 
-    .side-content{
-      min-height:0;
-      overflow:auto;
-      padding:12px;
+    .people{
       display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
       gap:12px;
     }
 
-    .panel{
-      display:none;
-      gap:12px;
-    }
-
-    .panel.active{
-      display:grid;
-    }
-
-    .helper-box{
-      border:1px solid var(--line);
-      background:var(--panel);
+    .person{
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff7ed;
       border-radius:16px;
-      overflow:hidden;
-      box-shadow:0 6px 18px rgba(0,0,0,.04);
+      padding:12px 10px;
+      text-align:center;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+      user-select:none;
+      box-shadow:0 8px 18px rgba(0,0,0,.05);
     }
 
-    .helper-box .head{
+    .person:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 24px rgba(0,0,0,.08);
+    }
+
+    .person.selected{
+      background:#fde68a;
+      outline:3px solid rgba(245,158,11,.22);
+    }
+
+    .person.locked{
+      opacity:.55;
+      cursor:not-allowed;
+      background:#f9fafb;
+    }
+
+    .emoji{
+      font-size:28px;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    .meta{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+      font-weight:600;
+    }
+
+    .river{
+      border-radius:24px;
+      background:linear-gradient(180deg,var(--river1),var(--river2));
+      box-shadow:inset 0 0 28px rgba(255,255,255,.28);
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      background:var(--panel2);
+      padding:18px 12px;
+      min-height:360px;
     }
 
-    .helper-box .head strong{
-      font-size:13px;
+    .riverTitle{
+      color:#0f3f79;
+      font-weight:800;
+      letter-spacing:.4px;
     }
 
-    .helper-box .body{
-      padding:12px;
-      color:var(--text);
+    .boatWrap{
+      width:100%;
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
 
-    .helper-box .body p:first-child{margin-top:0}
-    .helper-box .body p:last-child{margin-bottom:0}
-    .helper-box .body pre{
-      margin:10px 0 0;
-      padding:12px;
-      background:#fffaf0;
-      border:1px solid var(--line);
-      border-radius:12px;
-      overflow:auto;
-      font:13px/1.6 "JetBrains Mono",monospace;
-    }
-    .helper-box .body code{
-      font-family:"JetBrains Mono",monospace;
+    .boat{
+      width:190px;
+      max-width:100%;
+      background:#7c4a17;
+      color:#fff7ed;
+      border-radius:999px 999px 18px 18px;
+      border:3px solid rgba(255,255,255,.22);
+      padding:14px 12px 10px;
+      box-shadow:0 14px 24px rgba(0,0,0,.22);
+      text-align:center;
     }
 
-    .actions{
+    .boat h3{
+      margin:0 0 8px;
+      font-size:16px;
+    }
+
+    .boatPassengers{
+      min-height:68px;
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .controls{
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .statusbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      justify-content:center;
       gap:10px;
-      padding:0 12px;
-      background:var(--status);
-      border-top:1px solid var(--line);
-      font-size:12px;
-      color:#704c08;
+      margin:18px 0 8px;
     }
 
-    .statusbar .left,
-    .statusbar .right{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-      overflow:auto;
-      white-space:nowrap;
+    button{
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:800;
+      cursor:pointer;
+      background:var(--brand);
+      color:#fff;
+      box-shadow:0 10px 22px rgba(217,119,6,.24);
     }
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:7px 10px;
-      border-radius:999px;
-      background:#fff7e8;
+    button:hover{
+      filter:brightness(1.03);
+    }
+
+    .status{
+      max-width:1000px;
+      margin:0 auto;
+      background:rgba(255,255,255,.8);
       border:1px solid var(--line);
-      font-size:12px;
+      border-radius:18px;
+      padding:14px 16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.04);
+    }
+
+    .message{
+      min-height:24px;
       font-weight:700;
-      color:#8a5b0e;
+      color:#5b4630;
+      text-align:center;
     }
 
-    .muted{
-      color:var(--muted);
+    .message.good{ color:var(--good); }
+    .message.bad{ color:var(--bad); }
+
+    .info{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      color:#5b4630;
+      font-size:14px;
     }
 
-    .loading{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:700;
+    .card{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:14px;
+      padding:12px 14px;
     }
 
-    .spinner{
-      width:14px;
-      height:14px;
-      border-radius:50%;
-      border:2px solid #e8d3a3;
-      border-top-color:var(--accent);
-      animation:spin .8s linear infinite;
+    .card strong{
+      color:#9a6708;
     }
 
-    @keyframes spin{
-      to{transform:rotate(360deg)}
+    .steps{
+      margin-top:6px;
+      line-height:1.7;
+      max-height:220px;
+      overflow:auto;
+      white-space:pre-line;
     }
 
-    @media (max-width: 1100px){
-      .workspace{
+    @media (max-width: 900px){
+      .layout{
         grid-template-columns:1fr;
       }
-      .sidebar{
-        border-top:1px solid var(--line);
+      .river{
+        min-height:180px;
       }
-      .editor-pane{
-        border-right:0;
-      }
-    }
-
-    @media (max-width: 700px){
-      .topbar{
-        padding:10px;
-      }
-      .input{
-        width:100%;
-      }
-      .top-actions{
-        width:100%;
-        justify-content:flex-start;
-      }
-      .meta-grid{
+      .info{
         grid-template-columns:1fr;
-      }
-      .sidebar-tabs{
-        grid-template-columns:repeat(2,1fr);
       }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">PP</div>
-        <div class="brand-text">
-          <div class="title">Programmer's Picnic — AI Editor Helper</div>
-          <div class="sub">Champak Roy • Explain code • Give hints • Fix errors • Generate test cases</div>
-        </div>
-      </div>
+  <div class="wrap">
+    <h1>3 Husbands and Wives River Crossing</h1>
+    <p class="subtitle">
+      Rule: No wife may stay on a bank with another husband unless her own husband is also on that bank.
+      The boat carries at most 2 people and needs at least 1 person to move.
+    </p>
 
-      <div class="top-actions">
-        <select id="language" class="select" aria-label="Language">
-          <option value="python">Python</option>
-          <option value="javascript">JavaScript</option>
-          <option value="sql">SQL</option>
-          <option value="html">HTML</option>
-          <option value="json">JSON</option>
-        </select>
+    <div class="layout">
+      <section class="bank">
+        <h2>Left Bank</h2>
+        <div class="people" id="leftBank"></div>
+      </section>
 
-        <select id="level" class="select" aria-label="Learning level">
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
-          <option value="interview">Interview</option>
-        </select>
-
-        <input
-          id="filename"
-          class="input"
-          type="text"
-          value="main.py"
-          aria-label="File name"
-        />
-
-        <button class="btn ghost" id="sampleBtn">Load Sample</button>
-        <button class="btn primary" id="runCurrentActionBtn">Run Current AI Action</button>
-      </div>
-    </header>
-
-    <main class="workspace">
-      <section class="editor-pane">
-        <div class="editor-tabs">
-          <div class="tab active" id="fileTab">● main.py</div>
-          <div class="pill">VS Code inspired layout</div>
-          <div class="pill">Light saffron theme</div>
-          <div class="pill">Backend ready</div>
-        </div>
-
-        <div class="editor-toolbar">
-          <div class="group">
-            <button class="btn ghost" id="copyBtn">Copy Code</button>
-            <button class="btn ghost" id="clearBtn">Clear</button>
-            <button class="btn ghost" id="formatBtn">Format Lightly</button>
-          </div>
-
-          <div class="group">
-            <span class="pill" id="lineCountPill">Lines: 1</span>
-            <span class="pill" id="charCountPill">Chars: 0</span>
-          </div>
-        </div>
-
-        <div class="editor-wrap">
-          <div class="editor-shell">
-            <div class="editor-head">
-              <span id="editorTitle">main.py — ready</span>
-              <span id="editorState">No backend connected</span>
-            </div>
-
-            <div class="editor-main">
-              <pre class="gutter" id="gutter"><span>1</span></pre>
-              <textarea id="codeEditor" class="code" spellcheck="false">a = int(input())
-b = int(input())
-c = int(input())
-
-if a >= b and a >= c:
-    max_value = a
-elif b >= c:
-    max_value = b
-else:
-    max_value = c
-
-print("Max =", max_value)</textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="bottom-panel">
-          <div class="meta-grid">
-            <div class="card">
-              <div class="card-head">Question / prompt</div>
-              <div class="card-body">
-                <textarea id="questionInput" class="small" placeholder="Example: Write a program to find the maximum of three numbers.">Write a program to find the maximum of three input numbers.</textarea>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-head">Error message</div>
-              <div class="card-body">
-                <textarea id="errorInput" class="small" placeholder="Paste runtime or syntax errors here if any.">NameError: name 'maxvalue' is not defined</textarea>
-              </div>
-            </div>
+      <section class="river">
+        <div class="riverTitle">River</div>
+        <div class="boatWrap">
+          <div class="boat">
+            <h3 id="boatTitle">Boat: Left Bank</h3>
+            <div class="boatPassengers" id="boatPassengers">No one selected</div>
           </div>
         </div>
       </section>
 
-      <aside class="sidebar">
-        <div class="sidebar-head">
-          <h2>AI Assistant</h2>
-          <p>Use focused AI actions for learning instead of a giant chatbot. This layout is ready for your Programmer's Picnic editors.</p>
-        </div>
+      <section class="bank">
+        <h2>Right Bank</h2>
+        <div class="people" id="rightBank"></div>
+      </section>
+    </div>
 
-        <div class="sidebar-tabs">
-          <button class="side-tab active" data-panel="explain">Explain</button>
-          <button class="side-tab" data-panel="hint">Hints</button>
-          <button class="side-tab" data-panel="debug">Debug</button>
-          <button class="side-tab" data-panel="tests">Test Cases</button>
-        </div>
+    <div class="controls">
+      <button onclick="crossRiver()">Move Boat</button>
+      <button onclick="undoMove()">Undo</button>
+      <button onclick="resetGame()">Reset</button>
+      <button onclick="autoSolve()">Auto Solve</button>
+    </div>
 
-        <div class="side-content">
-          <section class="panel active" id="panel-explain">
-            <div class="actions">
-              <button class="btn primary" data-action="explain_code">Explain Selected / Full Code</button>
-              <button class="btn ghost" data-action="line_by_line">Line-by-Line</button>
-            </div>
-
-            <div class="helper-box">
-              <div class="head">
-                <strong>Explain result</strong>
-                <span class="muted" id="explainStatus">Ready</span>
-              </div>
-              <div class="body" id="explainResult">
-                <p>Select code or place the cursor inside the editor, then click an explain button.</p>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel" id="panel-hint">
-            <div class="actions">
-              <button class="btn primary" data-action="hint_1">Hint 1</button>
-              <button class="btn ghost" data-action="hint_2">Hint 2</button>
-              <button class="btn ghost" data-action="hint_3">Hint 3</button>
-            </div>
-
-            <div class="helper-box">
-              <div class="head">
-                <strong>Hints</strong>
-                <span class="muted" id="hintStatus">Ready</span>
-              </div>
-              <div class="body" id="hintResult">
-                <p>Hints should guide the student without immediately revealing the full solution.</p>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel" id="panel-debug">
-            <div class="actions">
-              <button class="btn primary" data-action="fix_error">Explain Error</button>
-              <button class="btn ghost" data-action="correct_code">Suggest Corrected Code</button>
-            </div>
-
-            <div class="helper-box">
-              <div class="head">
-                <strong>Debug result</strong>
-                <span class="muted" id="debugStatus">Ready</span>
-              </div>
-              <div class="body" id="debugResult">
-                <p>Paste an error message below the editor and ask the assistant to explain or fix it.</p>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel" id="panel-tests">
-            <div class="actions">
-              <button class="btn primary" data-action="generate_test_cases">Generate Test Cases</button>
-              <button class="btn ghost" data-action="edge_cases">Edge Cases</button>
-            </div>
-
-            <div class="helper-box">
-              <div class="head">
-                <strong>Test cases</strong>
-                <span class="muted" id="testsStatus">Ready</span>
-              </div>
-              <div class="body" id="testsResult">
-                <p>Generate normal, tricky, and boundary test cases for coding questions.</p>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <div style="padding:12px;border-top:1px solid var(--line);background:rgba(255,255,255,.52)">
-          <div class="card">
-            <div class="card-head">API Mode</div>
-            <div class="card-body" style="display:grid;gap:10px">
-              <label style="display:flex;align-items:center;gap:10px">
-                <input id="useMockMode" type="checkbox" checked />
-                <span>Use demo responses locally</span>
-              </label>
-              <input
-                id="apiEndpoint"
-                class="text-input"
-                type="text"
-                value="/api/ai"
-                placeholder="/api/ai"
-              />
-              <div class="muted" style="font-size:12px;line-height:1.5">
-                Uncheck demo mode to use your real backend endpoint.
-              </div>
-            </div>
+    <div class="status">
+      <div class="message" id="message">Select 1 or 2 people from the bank where the boat is.</div>
+      <div class="info">
+        <div class="card">
+          <strong>Rules</strong>
+          <div class="steps">
+1. Boat capacity = 2
+2. At least 1 person must be in the boat
+3. A wife cannot stay with another husband unless her own husband is present
           </div>
         </div>
-      </aside>
-    </main>
-
-    <footer class="statusbar">
-      <div class="left">
-        <span>Programmer's Picnic</span>
-        <span>AI editor helper</span>
-        <span id="statusMessage">Ready</span>
+        <div class="card">
+          <strong>Move Log</strong>
+          <div class="steps" id="log">No moves yet.</div>
+        </div>
       </div>
-      <div class="right">
-        <span id="activeActionLabel">Active panel: Explain</span>
-        <span id="backendLabel">Mode: Demo</span>
-      </div>
-    </footer>
+    </div>
   </div>
 
   <script>
-    const editor = document.getElementById("codeEditor");
-    const gutter = document.getElementById("gutter");
-    const filenameInput = document.getElementById("filename");
-    const fileTab = document.getElementById("fileTab");
-    const editorTitle = document.getElementById("editorTitle");
-    const editorState = document.getElementById("editorState");
-    const languageSelect = document.getElementById("language");
-    const levelSelect = document.getElementById("level");
-    const questionInput = document.getElementById("questionInput");
-    const errorInput = document.getElementById("errorInput");
-    const lineCountPill = document.getElementById("lineCountPill");
-    const charCountPill = document.getElementById("charCountPill");
-    const statusMessage = document.getElementById("statusMessage");
-    const backendLabel = document.getElementById("backendLabel");
-    const activeActionLabel = document.getElementById("activeActionLabel");
-    const apiEndpointInput = document.getElementById("apiEndpoint");
-    const useMockMode = document.getElementById("useMockMode");
-    const sideTabs = [...document.querySelectorAll(".side-tab")];
-    const panels = [...document.querySelectorAll(".panel")];
-    const actionButtons = [...document.querySelectorAll("[data-action]")];
-    const runCurrentActionBtn = document.getElementById("runCurrentActionBtn");
+    const PEOPLE = [
+      { id: "H1", name: "Husband 1", spouse: "W1", type: "H", emoji: "🤵" },
+      { id: "W1", name: "Wife 1",    spouse: "H1", type: "W", emoji: "👰" },
+      { id: "H2", name: "Husband 2", spouse: "W2", type: "H", emoji: "🤵" },
+      { id: "W2", name: "Wife 2",    spouse: "H2", type: "W", emoji: "👰" },
+      { id: "H3", name: "Husband 3", spouse: "W3", type: "H", emoji: "🤵" },
+      { id: "W3", name: "Wife 3",    spouse: "H3", type: "W", emoji: "👰" }
+    ];
 
-    let activePanel = "explain";
-    let lastAction = "explain_code";
+    const personMap = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
 
-    const outputMap = {
-      explain: {
-        status: document.getElementById("explainStatus"),
-        result: document.getElementById("explainResult")
-      },
-      hint: {
-        status: document.getElementById("hintStatus"),
-        result: document.getElementById("hintResult")
-      },
-      debug: {
-        status: document.getElementById("debugStatus"),
-        result: document.getElementById("debugResult")
-      },
-      tests: {
-        status: document.getElementById("testsStatus"),
-        result: document.getElementById("testsResult")
-      }
-    };
+    let state;
 
-    const samples = {
-      python: {
-        filename: "main.py",
-        question: "Write a program to find the maximum of three input numbers.",
-        code: `a = int(input())
-b = int(input())
-c = int(input())
-
-if a >= b and a >= c:
-    max_value = a
-elif b >= c:
-    max_value = b
-else:
-    max_value = c
-
-print("Max =", max_value)`,
-        error: `NameError: name 'maxvalue' is not defined`
-      },
-      javascript: {
-        filename: "main.js",
-        question: "Read three numbers and print the largest one.",
-        code: `const a = Number(prompt("Enter a"));
-const b = Number(prompt("Enter b"));
-const c = Number(prompt("Enter c"));
-
-let maxValue;
-if (a >= b && a >= c) {
-  maxValue = a;
-} else if (b >= c) {
-  maxValue = b;
-} else {
-  maxValue = c;
-}
-
-console.log("Max =", maxValue);`,
-        error: `ReferenceError: maxvalue is not defined`
-      },
-      sql: {
-        filename: "query.sql",
-        question: "Show employees earning more than the average salary.",
-        code: `SELECT name, salary
-FROM employees
-WHERE salary > (SELECT AVG(salary) FROM employees);`,
-        error: `near "FROMM": syntax error`
-      },
-      html: {
-        filename: "index.html",
-        question: "Create a card with a heading and a button.",
-        code: `<!doctype html>
-<html>
-<head>
-  <title>Card Demo</title>
-</head>
-<body>
-  <div class="card">
-    <h1>Hello</h1>
-    <button>Click me</button>
-  </div>
-</body>
-</html>`,
-        error: `Unexpected token '<'`
-      },
-      json: {
-        filename: "data.json",
-        question: "Store student data in valid JSON.",
-        code: `{
-  "name": "Aman",
-  "class": 10,
-  "marks": [88, 91, 79]
-}`,
-        error: `Unexpected token ] in JSON at position 48`
-      }
-    };
-
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function nl2br(str) {
-      return escapeHtml(str).replace(/\n/g, "<br>");
-    }
-
-    function updateCounts() {
-      const text = editor.value;
-      const lines = text.split("\n").length;
-      const chars = text.length;
-      lineCountPill.textContent = `Lines: ${lines}`;
-      charCountPill.textContent = `Chars: ${chars}`;
-      gutter.innerHTML = Array.from({ length: lines }, (_, i) => `<span>${i + 1}</span>`).join("");
-      fileTab.textContent = `● ${filenameInput.value || "untitled"}`;
-      editorTitle.textContent = `${filenameInput.value || "untitled"} — ready`;
-    }
-
-    function syncGutterScroll() {
-      gutter.scrollTop = editor.scrollTop;
-    }
-
-    function setActivePanel(name) {
-      activePanel = name;
-      sideTabs.forEach(btn => btn.classList.toggle("active", btn.dataset.panel === name));
-      panels.forEach(panel => panel.classList.toggle("active", panel.id === `panel-${name}`));
-      const label = name.charAt(0).toUpperCase() + name.slice(1);
-      activeActionLabel.textContent = `Active panel: ${label}`;
-      if (name === "explain") lastAction = "explain_code";
-      if (name === "hint") lastAction = "hint_1";
-      if (name === "debug") lastAction = "fix_error";
-      if (name === "tests") lastAction = "generate_test_cases";
-    }
-
-    function getSelectedCode() {
-      const start = editor.selectionStart;
-      const end = editor.selectionEnd;
-      const selected = editor.value.slice(start, end).trim();
-      return selected || editor.value;
-    }
-
-    function setPanelLoading(panelName, message = "Working...") {
-      const panel = outputMap[panelName];
-      panel.status.innerHTML = `<span class="loading"><span class="spinner"></span>${message}</span>`;
-    }
-
-    function setPanelReady(panelName, text = "Done") {
-      outputMap[panelName].status.textContent = text;
-    }
-
-    function renderResult(panelName, html) {
-      outputMap[panelName].result.innerHTML = html;
-    }
-
-    function getPanelForAction(action) {
-      if (action === "explain_code" || action === "line_by_line") return "explain";
-      if (action === "hint_1" || action === "hint_2" || action === "hint_3") return "hint";
-      if (action === "fix_error" || action === "correct_code") return "debug";
-      return "tests";
-    }
-
-    function buildPayload(action) {
+    function initialState(){
       return {
-        feature: action,
-        language: languageSelect.value,
-        level: levelSelect.value,
-        filename: filenameInput.value.trim() || "untitled",
-        code: getSelectedCode(),
-        full_code: editor.value,
-        question: questionInput.value.trim(),
-        error: errorInput.value.trim()
+        left: ["H1","W1","H2","W2","H3","W3"],
+        right: [],
+        boat: "left",
+        selected: [],
+        history: [],
+        log: []
       };
     }
 
-    function makePrompt(payload) {
-      const base = `Language: ${payload.language}
-Level: ${payload.level}
-Filename: ${payload.filename}
-
-Question:
-${payload.question || "(none)"}
-
-Code:
-${payload.code}
-
-Error:
-${payload.error || "(none)"}`;
-
-      switch (payload.feature) {
-        case "explain_code":
-          return `Explain this code for a ${payload.level} learner in a clear, friendly way.\n\n${base}`;
-        case "line_by_line":
-          return `Explain this code line by line for a ${payload.level} learner.\n\n${base}`;
-        case "hint_1":
-          return `Give only the first hint for solving this problem. Do not reveal the full solution.\n\n${base}`;
-        case "hint_2":
-          return `Give the second hint. Be a little more direct, but still do not reveal the complete solution.\n\n${base}`;
-        case "hint_3":
-          return `Give the third hint. Show a strong approach outline, but avoid giving the full final answer unless absolutely necessary.\n\n${base}`;
-        case "fix_error":
-          return `Explain the error and describe how to fix it.\n\n${base}`;
-        case "correct_code":
-          return `Explain the error and provide a corrected version of the code.\n\n${base}`;
-        case "generate_test_cases":
-          return `Generate useful test cases with expected output.\n\n${base}`;
-        case "edge_cases":
-          return `Generate important edge cases and explain why each matters.\n\n${base}`;
-        default:
-          return base;
-      }
+    function clone(x){
+      return JSON.parse(JSON.stringify(x));
     }
 
-    function mockAiResponse(payload) {
-      const code = payload.code || "";
-      const question = payload.question || "";
-      const error = payload.error || "";
-      const lang = payload.language;
-
-      if (payload.feature === "explain_code") {
-        return `
-          <p><strong>Goal:</strong> This program solves the problem: <em>${escapeHtml(question || "No question provided")}</em>.</p>
-          <p><strong>What the code does:</strong> It reads input values, compares them, stores the largest one in a variable, and prints the result.</p>
-          <p><strong>Main idea:</strong> Use conditional logic to decide which value is greatest.</p>
-          <pre>${escapeHtml(code)}</pre>
-          <p><strong>Learning note:</strong> This is a good example of decision making with <code>if / elif / else</code>.</p>
-        `;
-      }
-
-      if (payload.feature === "line_by_line") {
-        const lines = code.split("\n").map((line, i) => {
-          const clean = line.trim() || "(blank line)";
-          return `<p><strong>Line ${i + 1}:</strong> <code>${escapeHtml(clean)}</code><br>This line is part of the program flow and contributes to reading input, comparing values, or printing output.</p>`;
-        }).join("");
-        return lines || "<p>No code found to explain.</p>";
-      }
-
-      if (payload.feature === "hint_1") {
-        return `
-          <p><strong>Hint 1:</strong> Focus on the problem statement first.</p>
-          <p>Think about what exactly needs to be printed and what inputs are available.</p>
-          <p>Do not code immediately. First decide the comparison steps.</p>
-        `;
-      }
-
-      if (payload.feature === "hint_2") {
-        return `
-          <p><strong>Hint 2:</strong> Compare values in stages.</p>
-          <p>You can begin by checking whether the first value is greater than or equal to the other two. If not, compare the remaining ones.</p>
-        `;
-      }
-
-      if (payload.feature === "hint_3") {
-        return `
-          <p><strong>Hint 3:</strong> A strong structure is:</p>
-          <pre>1. Read inputs
-2. Use if / elif / else
-3. Store the answer in a variable
-4. Print the variable</pre>
-          <p>You are very close to the full solution now.</p>
-        `;
-      }
-
-      if (payload.feature === "fix_error") {
-        return `
-          <p><strong>Error received:</strong> <code>${escapeHtml(error || "No error message provided")}</code></p>
-          <p><strong>Likely reason:</strong> A variable name may be misspelled, used before definition, or does not match the name assigned earlier.</p>
-          <p><strong>How to fix:</strong> Check naming consistency carefully. For example, <code>max_value</code> and <code>maxvalue</code> are different names.</p>
-        `;
-      }
-
-      if (payload.feature === "correct_code") {
-        let corrected = code;
-        corrected = corrected.replaceAll("maxvalue", "max_value");
-        corrected = corrected.replaceAll("maxValue", "max_value");
-        return `
-          <p><strong>Correction summary:</strong> I normalized the variable naming and kept the structure clear.</p>
-          <pre>${escapeHtml(corrected)}</pre>
-        `;
-      }
-
-      if (payload.feature === "generate_test_cases") {
-        return `
-          <p><strong>Suggested test cases:</strong></p>
-          <pre>1) Input: 1 2 3
-Expected: 3
-
-2) Input: 9 4 7
-Expected: 9
-
-3) Input: 5 5 2
-Expected: 5
-
-4) Input: -1 -4 -2
-Expected: -1
-
-5) Input: 6 6 6
-Expected: 6</pre>
-        `;
-      }
-
-      if (payload.feature === "edge_cases") {
-        return `
-          <p><strong>Important edge cases:</strong></p>
-          <pre>1) All values equal
-Why: Checks tie handling
-
-2) Two largest values equal
-Why: Confirms >= logic
-
-3) All negative values
-Why: Avoids assumptions about positivity
-
-4) Very large numbers
-Why: Good for robustness testing</pre>
-        `;
-      }
-
-      return `<p>No mock response available for <code>${escapeHtml(payload.feature)}</code>.</p>`;
+    function setMessage(text, type = ""){
+      const el = document.getElementById("message");
+      el.textContent = text;
+      el.className = "message" + (type ? " " + type : "");
     }
 
-    async function callAi(action) {
-      lastAction = action;
-      const panelName = getPanelForAction(action);
-      const payload = buildPayload(action);
+    function updateLog(){
+      const el = document.getElementById("log");
+      el.textContent = state.log.length ? state.log.join("\n") : "No moves yet.";
+    }
 
-      statusMessage.textContent = `Running ${action}...`;
-      setPanelLoading(panelName, "Generating response...");
-      editorState.textContent = useMockMode.checked ? "Using demo mode" : "Contacting backend";
+    function render(){
+      renderBank("left");
+      renderBank("right");
+      document.getElementById("boatTitle").textContent =
+        "Boat: " + (state.boat === "left" ? "Left Bank" : "Right Bank");
 
-      try {
-        let html = "";
+      const passengerText = state.selected.length
+        ? state.selected.map(id => `${personMap[id].emoji} ${personMap[id].id}`).join("<br>")
+        : "No one selected";
 
-        if (useMockMode.checked) {
-          await new Promise(resolve => setTimeout(resolve, 450));
-          html = mockAiResponse(payload);
-          backendLabel.textContent = "Mode: Demo";
-        } else {
-          backendLabel.textContent = "Mode: API";
-          const res = await fetch(apiEndpointInput.value.trim() || "/api/ai", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...payload,
-              prompt: makePrompt(payload)
-            })
-          });
+      document.getElementById("boatPassengers").innerHTML = passengerText;
 
-          if (!res.ok) {
-            throw new Error(`Request failed with status ${res.status}`);
-          }
+      if(state.right.length === 6){
+        setMessage("Solved. Everyone crossed safely.", "good");
+      }
 
-          const data = await res.json();
+      updateLog();
+    }
 
-          if (data.html) {
-            html = data.html;
-          } else if (data.answer) {
-            html = `<p>${nl2br(String(data.answer))}</p>`;
-          } else if (data.result) {
-            html = `<p>${nl2br(String(data.result))}</p>`;
-          } else {
-            html = `<p>Backend responded, but no <code>html</code>, <code>answer</code>, or <code>result</code> field was found.</p>`;
-          }
+    function renderBank(side){
+      const host = document.getElementById(side === "left" ? "leftBank" : "rightBank");
+      host.innerHTML = "";
+
+      state[side].forEach(id => {
+        const p = personMap[id];
+        const div = document.createElement("div");
+        div.className = "person";
+
+        const onBoatSide = side === state.boat;
+        if(!onBoatSide) div.classList.add("locked");
+        if(state.selected.includes(id)) div.classList.add("selected");
+
+        div.innerHTML = `
+          <span class="emoji">${p.emoji}</span>
+          <div>${p.id}</div>
+          <div class="meta">${p.name}</div>
+        `;
+
+        div.onclick = () => toggleSelect(id, side);
+        host.appendChild(div);
+      });
+    }
+
+    function toggleSelect(id, side){
+      if(side !== state.boat){
+        setMessage("Select only from the bank where the boat is.", "bad");
+        return;
+      }
+
+      const idx = state.selected.indexOf(id);
+      if(idx >= 0){
+        state.selected.splice(idx, 1);
+      } else {
+        if(state.selected.length >= 2){
+          setMessage("Boat can carry at most 2 people.", "bad");
+          return;
         }
-
-        renderResult(panelName, html);
-        setPanelReady(panelName, "Done");
-        statusMessage.textContent = `${action} completed`;
-        editorState.textContent = useMockMode.checked ? "Demo response shown" : "Backend response shown";
-      } catch (err) {
-        renderResult(panelName, `
-          <p><strong>Request failed.</strong></p>
-          <p>${escapeHtml(err.message)}</p>
-          <p>Switch to demo mode or connect a backend endpoint that accepts this payload.</p>
-          <pre>${escapeHtml(JSON.stringify({
-            endpoint: apiEndpointInput.value.trim() || "/api/ai",
-            payload: {
-              ...payload,
-              prompt: makePrompt(payload)
-            }
-          }, null, 2))}</pre>
-        `);
-        setPanelReady(panelName, "Failed");
-        statusMessage.textContent = "AI request failed";
-        editorState.textContent = "Backend error";
+        state.selected.push(id);
       }
+      render();
     }
 
-    function loadSampleForLanguage() {
-      const s = samples[languageSelect.value];
-      filenameInput.value = s.filename;
-      editor.value = s.code;
-      questionInput.value = s.question;
-      errorInput.value = s.error;
-      updateCounts();
-      editor.scrollTop = 0;
-      syncGutterScroll();
+    function isBankSafe(bank){
+      const ids = new Set(bank);
+      for(const wife of PEOPLE.filter(p => p.type === "W")){
+        const wifeHere = ids.has(wife.id);
+        const husbandHere = ids.has(wife.spouse);
+        if(!wifeHere || husbandHere) continue;
+
+        for(const otherHusband of PEOPLE.filter(p => p.type === "H" && p.id !== wife.spouse)){
+          if(ids.has(otherHusband.id)) return false;
+        }
+      }
+      return true;
     }
 
-    function lightlyFormatCode() {
-      const lang = languageSelect.value;
-      let text = editor.value.replace(/\t/g, "  ");
-
-      if (lang === "python" || lang === "javascript" || lang === "html" || lang === "json") {
-        text = text
-          .split("\n")
-          .map(line => line.replace(/\s+$/g, ""))
-          .join("\n")
-          .replace(/\n{3,}/g, "\n\n");
-      }
-
-      editor.value = text;
-      updateCounts();
-      statusMessage.textContent = "Code lightly formatted";
+    function isValidState(s){
+      return isBankSafe(s.left) && isBankSafe(s.right);
     }
 
-    sideTabs.forEach(btn => {
-      btn.addEventListener("click", () => setActivePanel(btn.dataset.panel));
-    });
-
-    actionButtons.forEach(btn => {
-      btn.addEventListener("click", () => callAi(btn.dataset.action));
-    });
-
-    runCurrentActionBtn.addEventListener("click", () => callAi(lastAction));
-
-    document.getElementById("sampleBtn").addEventListener("click", loadSampleForLanguage);
-
-    document.getElementById("copyBtn").addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(editor.value);
-        statusMessage.textContent = "Code copied";
-      } catch {
-        statusMessage.textContent = "Copy failed";
+    function crossRiver(){
+      if(state.selected.length < 1){
+        setMessage("Select at least 1 person to move the boat.", "bad");
+        return;
       }
-    });
 
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      editor.value = "";
-      updateCounts();
-      statusMessage.textContent = "Editor cleared";
-    });
+      const from = state.boat;
+      const to = from === "left" ? "right" : "left";
 
-    document.getElementById("formatBtn").addEventListener("click", lightlyFormatCode);
+      const next = clone(state);
+      next.history.push(clone({
+        left: state.left,
+        right: state.right,
+        boat: state.boat,
+        selected: state.selected,
+        log: state.log
+      }));
 
-    languageSelect.addEventListener("change", () => {
-      const extMap = {
-        python: "main.py",
-        javascript: "main.js",
-        sql: "query.sql",
-        html: "index.html",
-        json: "data.json"
+      for(const id of state.selected){
+        const idx = next[from].indexOf(id);
+        if(idx === -1){
+          setMessage("Selected person is not on the boat side.", "bad");
+          return;
+        }
+        next[from].splice(idx, 1);
+        next[to].push(id);
+      }
+
+      next.boat = to;
+      const moveText = `${state.selected.join(" + ")} crossed to ${to}`;
+      next.log.push(moveText);
+      next.selected = [];
+
+      if(!isValidState(next)){
+        setMessage("Invalid move. A wife is left with another husband without her own husband.", "bad");
+        return;
+      }
+
+      state = next;
+      setMessage("Move completed.", "good");
+      render();
+    }
+
+    function undoMove(){
+      if(!state.history.length){
+        setMessage("Nothing to undo.", "bad");
+        return;
+      }
+      const prev = state.history.pop();
+      state = {
+        left: prev.left,
+        right: prev.right,
+        boat: prev.boat,
+        selected: [],
+        history: state.history,
+        log: prev.log
       };
-      filenameInput.value = extMap[languageSelect.value] || "main.txt";
-      loadSampleForLanguage();
-    });
+      setMessage("Last move undone.", "good");
+      render();
+    }
 
-    filenameInput.addEventListener("input", updateCounts);
-    editor.addEventListener("input", updateCounts);
-    editor.addEventListener("scroll", syncGutterScroll);
+    function resetGame(){
+      state = initialState();
+      setMessage("Game reset.");
+      render();
+    }
 
-    useMockMode.addEventListener("change", () => {
-      backendLabel.textContent = useMockMode.checked ? "Mode: Demo" : "Mode: API";
-      statusMessage.textContent = useMockMode.checked ? "Demo mode enabled" : "API mode enabled";
-      editorState.textContent = useMockMode.checked ? "No backend connected" : "Backend mode ready";
-    });
+    function sleep(ms){
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-    updateCounts();
-    loadSampleForLanguage();
-    setActivePanel("explain");
+    async function autoSolve(){
+      resetGame();
+
+      const solution = [
+        ["W1","W2"],
+        ["W1"],
+        ["W1","W3"],
+        ["W1"],
+        ["H2","H3"],
+        ["H2","W2"],
+        ["H1","H2"],
+        ["W3"],
+        ["W1","W2"],
+        ["H3"],
+        ["H2","H3"]
+      ];
+
+      for(const step of solution){
+        state.selected = [...step];
+        render();
+        await sleep(650);
+        crossRiver();
+        await sleep(650);
+      }
+    }
+
+    resetGame();
   </script>
 </body>
 </html>
