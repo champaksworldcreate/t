@@ -1,680 +1,96 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tic Tac Toe via Hash Share</title>
-  <meta name="theme-color" content="#d97706" />
-  <style>
-    :root{
-      --bg:#fff8eb;
-      --panel:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --line:#f3d9a4;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --good:#166534;
-      --bad:#b91c1c;
-      --shadow:0 20px 50px rgba(217,119,6,.12);
-      --radius:22px;
-    }
-
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(circle at top left, #fff3d6 0%, #fff8eb 35%, #fffdf7 100%);
-      color:var(--ink);
-      min-height:100vh;
-    }
-
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-      padding:24px 16px 50px;
-    }
-
-    .hero{
-      background:linear-gradient(135deg, rgba(217,119,6,.08), rgba(245,158,11,.12));
-      border:1px solid rgba(217,119,6,.15);
-      border-radius:28px;
-      padding:24px;
-      box-shadow:var(--shadow);
-      margin-bottom:20px;
-    }
-
-    .eyebrow{
-      display:inline-block;
-      padding:6px 12px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.04em;
-      color:#92400e;
-      background:#ffedd5;
-      border:1px solid #fed7aa;
-      margin-bottom:12px;
-    }
-
-    h1{
-      margin:0 0 10px;
-      font-size:clamp(28px,4vw,44px);
-      line-height:1.1;
-    }
-
-    .sub{
-      margin:0;
-      color:var(--muted);
-      max-width:780px;
-      line-height:1.6;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:20px;
-      align-items:start;
-    }
-
-    @media (max-width: 860px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid rgba(217,119,6,.14);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .cardHead{
-      padding:16px 18px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .cardHead h2{
-      margin:0;
-      font-size:18px;
-    }
-
-    .cardBody{
-      padding:18px;
-    }
-
-    .boardWrap{
-      display:grid;
-      place-items:center;
-      padding:10px 0 6px;
-    }
-
-    .board{
-      width:min(92vw, 420px);
-      aspect-ratio:1/1;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-    }
-
-    .cell{
-      border:none;
-      border-radius:22px;
-      background:linear-gradient(180deg, #fffaf1, #fff1d6);
-      box-shadow: inset 0 0 0 1px rgba(217,119,6,.18), 0 10px 20px rgba(217,119,6,.08);
-      font-size:clamp(42px,8vw,72px);
-      font-weight:800;
-      color:#92400e;
-      cursor:pointer;
-      transition:transform .12s ease, box-shadow .15s ease, background .2s ease;
-    }
-
-    .cell:hover{
-      transform:translateY(-1px);
-      box-shadow: inset 0 0 0 1px rgba(217,119,6,.22), 0 16px 30px rgba(217,119,6,.12);
-      background:linear-gradient(180deg, #fff8ea, #ffe8be);
-    }
-
-    .cell:disabled{
-      cursor:not-allowed;
-      opacity:.92;
-    }
-
-    .cell.win{
-      background:linear-gradient(180deg, #dcfce7, #bbf7d0);
-      color:#166534;
-      box-shadow: inset 0 0 0 1px rgba(22,101,52,.18), 0 14px 28px rgba(22,101,52,.12);
-    }
-
-    .status{
-      margin-top:16px;
-      padding:14px 16px;
-      border-radius:18px;
-      background:#fffbf3;
-      border:1px solid var(--line);
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .statusText{
-      font-weight:700;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:#fff7ed;
-      border:1px solid #fed7aa;
-      color:#9a3412;
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    @media (max-width:560px){
-      .row{grid-template-columns:1fr}
-    }
-
-    label{
-      display:block;
-      font-size:13px;
-      font-weight:700;
-      margin-bottom:8px;
-      color:#7c2d12;
-    }
-
-    input, textarea{
-      width:100%;
-      border:1px solid #f3d9a4;
-      background:#fffdf8;
-      color:var(--ink);
-      border-radius:16px;
-      padding:12px 14px;
-      font:inherit;
-      outline:none;
-    }
-
-    input:focus, textarea:focus{
-      border-color:#f59e0b;
-      box-shadow:0 0 0 4px rgba(245,158,11,.14);
-    }
-
-    .btns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    button.btn, a.btn{
-      appearance:none;
-      border:none;
-      text-decoration:none;
-      cursor:pointer;
-      padding:12px 16px;
-      border-radius:16px;
-      font:inherit;
-      font-weight:800;
-      transition:transform .12s ease, opacity .15s ease, box-shadow .15s ease;
-    }
-
-    button.btn:hover, a.btn:hover{
-      transform:translateY(-1px);
-    }
-
-    .primary{
-      background:linear-gradient(135deg, var(--brand), var(--brand2));
-      color:white;
-      box-shadow:0 14px 28px rgba(217,119,6,.22);
-    }
-
-    .soft{
-      background:#fff7ed;
-      color:#9a3412;
-      border:1px solid #fed7aa;
-    }
-
-    .ghost{
-      background:#fff;
-      color:#92400e;
-      border:1px solid #f3d9a4;
-    }
-
-    .muted{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.6;
-    }
-
-    .log{
-      background:#0f172a;
-      color:#e5e7eb;
-      padding:14px;
-      border-radius:18px;
-      overflow:auto;
-      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size:13px;
-      line-height:1.55;
-      white-space:pre-wrap;
-      word-break:break-word;
-    }
-
-    .tiny{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .footer{
-      margin-top:22px;
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .success{color:var(--good);font-weight:700}
-    .danger{color:var(--bad);font-weight:700}
-  </style>
+<meta charset="utf-8">
+<title>Code Quest - Programmer's Picnic</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#fff8eb;
+}
+.topbar{
+  background:#d97706;
+  color:white;
+  padding:10px;
+  font-weight:bold;
+}
+.container{
+  display:flex;
+  height:calc(100vh - 50px);
+}
+.left{
+  width:35%;
+  padding:15px;
+  border-right:1px solid #eee;
+  overflow:auto;
+}
+.right{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+iframe{
+  flex:1;
+  border:none;
+}
+.bottom{
+  padding:10px;
+  border-top:1px solid #eee;
+}
+button{
+  background:#f59e0b;
+  border:none;
+  padding:10px 15px;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div class="eyebrow">Programmer's Picnic • Share by #</div>
-      <h1>Tic Tac Toe Online via URL Hash</h1>
-      <p class="sub">
-        Make a move, then send the updated link. The game state is stored in the URL hash, so both players can continue the same match by sharing the latest link.
-      </p>
-    </section>
 
-    <div class="grid">
-      <section class="card">
-        <div class="cardHead">
-          <h2>Game Board</h2>
-          <div class="pill" id="turnPill">Turn: X</div>
-        </div>
-        <div class="cardBody">
-          <div class="boardWrap">
-            <div class="board" id="board"></div>
-          </div>
+<div class="topbar">🎮 Code Quest — Fix to Win</div>
 
-          <div class="status">
-            <div class="statusText" id="statusText">Loading game...</div>
-            <div class="btns">
-              <button class="btn soft" id="resetBtn">New Game</button>
-              <button class="btn ghost" id="undoBtn">Undo</button>
-            </div>
-          </div>
-        </div>
-      </section>
+<div class="container">
 
-      <aside class="card">
-        <div class="cardHead">
-          <h2>Share Controls</h2>
-        </div>
-        <div class="cardBody">
-          <div class="row">
-            <div>
-              <label for="xName">Player X Name</label>
-              <input id="xName" type="text" placeholder="Player X" maxlength="30" />
-            </div>
-            <div>
-              <label for="oName">Player O Name</label>
-              <input id="oName" type="text" placeholder="Player O" maxlength="30" />
-            </div>
-          </div>
+<div class="left">
+  <h3 id="title"></h3>
+  <p id="desc"></p>
+</div>
 
-          <div style="height:12px"></div>
+<div class="right">
+  <iframe id="editor"
+    src="https://editor.learnwithchampak.live/python-starter/editor/super/?tmode=0">
+  </iframe>
 
-          <label for="shareLink">Current Game Link</label>
-          <textarea id="shareLink" rows="5" readonly></textarea>
-
-          <div style="height:12px"></div>
-
-          <div class="btns">
-            <button class="btn primary" id="copyBtn">Copy Link</button>
-            <button class="btn soft" id="shareBtn">Share Current Position</button>
-            <button class="btn ghost" id="openFreshBtn">Fresh Link</button>
-          </div>
-
-          <div style="height:16px"></div>
-
-          <p class="muted">
-            Suggested flow: Player X makes a move, taps <b>Share Current Position</b>, sends it on WhatsApp, and Player O opens that link to continue.
-          </p>
-
-          <div style="height:12px"></div>
-
-          <label>Move History</label>
-          <div class="log" id="moveLog">No moves yet.</div>
-
-          <div style="height:12px"></div>
-          <div class="tiny">
-            State stored in hash format only. No server, login, or database required.
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <div class="footer">
-      Built as a static shareable Tic Tac Toe game using URL hash.
-    </div>
+  <div class="bottom">
+    <button onclick="check()">Check Answer</button>
+    <span id="result"></span>
   </div>
+</div>
 
-  <script>
-    (function(){
-      "use strict";
+</div>
 
-      const boardEl = document.getElementById("board");
-      const statusText = document.getElementById("statusText");
-      const turnPill = document.getElementById("turnPill");
-      const resetBtn = document.getElementById("resetBtn");
-      const undoBtn = document.getElementById("undoBtn");
-      const copyBtn = document.getElementById("copyBtn");
-      const shareBtn = document.getElementById("shareBtn");
-      const openFreshBtn = document.getElementById("openFreshBtn");
-      const shareLink = document.getElementById("shareLink");
-      const xNameInput = document.getElementById("xName");
-      const oNameInput = document.getElementById("oName");
-      const moveLog = document.getElementById("moveLog");
+<script>
 
-      const WIN_LINES = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
+const level = {
+  title: "Fix Indentation",
+  desc: "Print numbers from 1 to 5",
+  expected: "1\n2\n3\n4\n5"
+};
 
-      function defaultState(){
-        return {
-          v: 1,
-          board: ["","","","","","","","",""],
-          turn: "X",
-          xName: "Player X",
-          oName: "Player O",
-          winner: "",
-          winningLine: [],
-          draw: false,
-          history: []
-        };
-      }
+document.getElementById("title").innerText = level.title;
+document.getElementById("desc").innerText = level.desc;
 
-      function encodeState(state){
-        const json = JSON.stringify(state);
-        return "#" + encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
-      }
+function check(){
+  // Placeholder: later connect with editor output
+  document.getElementById("result").innerText =
+    "⚠️ Output checking coming in V2";
+}
 
-      function decodeState(hash){
-        try{
-          if(!hash || hash === "#") return defaultState();
-          const raw = hash.slice(1);
-          const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
-          const parsed = JSON.parse(json);
+</script>
 
-          if(!parsed || !Array.isArray(parsed.board) || parsed.board.length !== 9){
-            return defaultState();
-          }
-
-          return {
-            v: 1,
-            board: parsed.board.map(v => (v === "X" || v === "O") ? v : ""),
-            turn: parsed.turn === "O" ? "O" : "X",
-            xName: safeName(parsed.xName, "Player X"),
-            oName: safeName(parsed.oName, "Player O"),
-            winner: parsed.winner === "X" || parsed.winner === "O" ? parsed.winner : "",
-            winningLine: Array.isArray(parsed.winningLine) ? parsed.winningLine.filter(n => Number.isInteger(n) && n >= 0 && n < 9) : [],
-            draw: !!parsed.draw,
-            history: Array.isArray(parsed.history) ? parsed.history.slice(0, 9) : []
-          };
-        }catch(e){
-          return defaultState();
-        }
-      }
-
-      function safeName(value, fallback){
-        const s = String(value || "").trim();
-        return s ? s.slice(0,30) : fallback;
-      }
-
-      function playerLabel(symbol, state){
-        return symbol === "X" ? state.xName : state.oName;
-      }
-
-      function checkWinner(board){
-        for(const line of WIN_LINES){
-          const [a,b,c] = line;
-          if(board[a] && board[a] === board[b] && board[a] === board[c]){
-            return { winner: board[a], winningLine: line, draw: false };
-          }
-        }
-        if(board.every(Boolean)){
-          return { winner: "", winningLine: [], draw: true };
-        }
-        return { winner: "", winningLine: [], draw: false };
-      }
-
-      function getState(){
-        return decodeState(location.hash);
-      }
-
-      function setState(state, replace){
-        const hash = encodeState(state);
-        if(replace){
-          history.replaceState(null, "", location.pathname + location.search + hash);
-        }else{
-          location.hash = hash;
-        }
-        render();
-      }
-
-      function buildCells(state){
-        boardEl.innerHTML = "";
-        state.board.forEach((value, index) => {
-          const btn = document.createElement("button");
-          btn.className = "cell";
-          if(state.winningLine.includes(index)) btn.classList.add("win");
-          btn.type = "button";
-          btn.textContent = value;
-          btn.disabled = !!value || !!state.winner || state.draw;
-          btn.setAttribute("aria-label", "Cell " + (index + 1));
-          btn.addEventListener("click", () => makeMove(index));
-          boardEl.appendChild(btn);
-        });
-      }
-
-      function makeMove(index){
-        const state = getState();
-        if(state.board[index] || state.winner || state.draw) return;
-
-        state.board[index] = state.turn;
-        state.history.push({
-          player: state.turn,
-          index,
-          stamp: new Date().toISOString()
-        });
-
-        const result = checkWinner(state.board);
-        state.winner = result.winner;
-        state.winningLine = result.winningLine;
-        state.draw = result.draw;
-
-        if(!state.winner && !state.draw){
-          state.turn = state.turn === "X" ? "O" : "X";
-        }
-
-        setState(state, false);
-      }
-
-      function renderStatus(state){
-        if(state.winner){
-          const winnerName = playerLabel(state.winner, state);
-          statusText.innerHTML = '<span class="success">' + escapeHtml(winnerName) + " (" + state.winner + ')</span> wins!';
-          turnPill.textContent = "Winner: " + state.winner;
-          return;
-        }
-        if(state.draw){
-          statusText.innerHTML = '<span class="danger">Draw game.</span> Start a new match or undo the last move.';
-          turnPill.textContent = "Draw";
-          return;
-        }
-        const currentName = playerLabel(state.turn, state);
-        statusText.textContent = currentName + " (" + state.turn + ") to play";
-        turnPill.textContent = "Turn: " + state.turn;
-      }
-
-      function renderLink(state){
-        const full = location.origin + location.pathname + location.search + encodeState(state);
-        shareLink.value = full;
-      }
-
-      function renderInputs(state){
-        if(document.activeElement !== xNameInput) xNameInput.value = state.xName;
-        if(document.activeElement !== oNameInput) oNameInput.value = state.oName;
-      }
-
-      function renderHistory(state){
-        if(!state.history.length){
-          moveLog.textContent = "No moves yet.";
-          return;
-        }
-        const lines = state.history.map((m, i) => {
-          const row = Math.floor(m.index / 3) + 1;
-          const col = (m.index % 3) + 1;
-          const name = m.player === "X" ? state.xName : state.oName;
-          return (i + 1) + ". " + name + " (" + m.player + ") → row " + row + ", col " + col;
-        });
-        moveLog.textContent = lines.join("\\n");
-      }
-
-      function render(){
-        const state = getState();
-        buildCells(state);
-        renderStatus(state);
-        renderInputs(state);
-        renderLink(state);
-        renderHistory(state);
-      }
-
-      function updateNames(){
-        const state = getState();
-        state.xName = safeName(xNameInput.value, "Player X");
-        state.oName = safeName(oNameInput.value, "Player O");
-        setState(state, true);
-      }
-
-      function newGame(){
-        const current = getState();
-        const fresh = defaultState();
-        fresh.xName = current.xName || "Player X";
-        fresh.oName = current.oName || "Player O";
-        setState(fresh, false);
-      }
-
-      function undo(){
-        const state = getState();
-        if(!state.history.length) return;
-
-        const last = state.history.pop();
-        state.board[last.index] = "";
-        state.turn = last.player;
-        state.winner = "";
-        state.winningLine = [];
-        state.draw = false;
-
-        const result = checkWinner(state.board);
-        state.winner = result.winner;
-        state.winningLine = result.winningLine;
-        state.draw = result.draw;
-
-        setState(state, false);
-      }
-
-      async function copyCurrentLink(){
-        try{
-          await navigator.clipboard.writeText(shareLink.value);
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => copyBtn.textContent = "Copy Link", 1200);
-        }catch(e){
-          shareLink.select();
-          document.execCommand("copy");
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => copyBtn.textContent = "Copy Link", 1200);
-        }
-      }
-
-      async function shareCurrent(){
-        const url = shareLink.value;
-        const state = getState();
-        const text =
-          "Tic Tac Toe move shared\\n" +
-          state.xName + " (X) vs " + state.oName + " (O)\\n" +
-          (state.winner
-            ? ("Winner: " + playerLabel(state.winner, state) + " (" + state.winner + ")")
-            : state.draw
-              ? "Current status: Draw"
-              : ("Next turn: " + playerLabel(state.turn, state) + " (" + state.turn + ")")
-          ) +
-          "\\n\\nOpen this link:";
-
-        if(navigator.share){
-          try{
-            await navigator.share({
-              title: "Tic Tac Toe via Hash",
-              text,
-              url
-            });
-            return;
-          }catch(e){}
-        }
-
-        window.open(
-          "https://wa.me/?text=" + encodeURIComponent(text + "\\n" + url),
-          "_blank"
-        );
-      }
-
-      function openFresh(){
-        const clean = location.origin + location.pathname + location.search;
-        window.open(clean, "_blank");
-      }
-
-      function escapeHtml(str){
-        return String(str)
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#39;");
-      }
-
-      xNameInput.addEventListener("input", updateNames);
-      oNameInput.addEventListener("input", updateNames);
-      resetBtn.addEventListener("click", newGame);
-      undoBtn.addEventListener("click", undo);
-      copyBtn.addEventListener("click", copyCurrentLink);
-      shareBtn.addEventListener("click", shareCurrent);
-      openFreshBtn.addEventListener("click", openFresh);
-      window.addEventListener("hashchange", render);
-
-      if(!location.hash){
-        setState(defaultState(), true);
-      }else{
-        render();
-      }
-    })();
-  </script>
 </body>
 </html>
