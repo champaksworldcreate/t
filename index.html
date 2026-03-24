@@ -1,401 +1,543 @@
 <!doctype html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Man Goat Tiger Grass Puzzle</title>
-<style>
-:root{
-  --saffron:#d97706;
-  --bg:#fff8ef;
-  --panel:#ffffff;
-  --line:#f1c27d;
-  --river1:#93c5fd;
-  --river2:#60a5fa;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  background:linear-gradient(180deg,#fffaf3 0%,#fff3df 100%);
-  color:#2b2b2b;
-  text-align:center;
-}
-h1{
-  margin:14px 0 8px;
-  color:var(--saffron);
-}
-.subtitle{
-  margin:0 12px 14px;
-  color:#7c5a24;
-  font-size:14px;
-}
-.scene{
-  display:grid;
-  grid-template-columns:1fr 240px 1fr;
-  gap:14px;
-  align-items:stretch;
-  padding:14px;
-  max-width:1100px;
-  margin:0 auto;
-}
-.bank{
-  min-height:320px;
-  background:rgba(255,255,255,.9);
-  border:2px dashed var(--line);
-  border-radius:18px;
-  padding:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.05);
-}
-.bank h3{
-  margin-top:0;
-  color:#9a6708;
-}
-.items{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-  align-items:flex-start;
-}
-.river{
-  border-radius:20px;
-  min-height:320px;
-  background:linear-gradient(180deg,var(--river1),var(--river2));
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:space-between;
-  padding:18px 10px;
-  box-shadow:inset 0 0 20px rgba(255,255,255,.25);
-}
-.riverTitle{
-  color:#083b78;
-  font-weight:700;
-  letter-spacing:.4px;
-}
-.boatWrap{
-  flex:1;
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.boat{
-  width:180px;
-  max-width:90%;
-  background:#7c4a17;
-  color:#fff7ed;
-  border-radius:999px 999px 18px 18px;
-  padding:14px 12px 10px;
-  box-shadow:0 12px 22px rgba(0,0,0,.2);
-  border:3px solid rgba(255,255,255,.25);
-}
-.boat h4{
-  margin:0 0 8px;
-  font-size:15px;
-}
-.boatPassengers{
-  font-size:14px;
-  line-height:1.5;
-  min-height:44px;
-}
-.item{
-  min-width:110px;
-  padding:12px 14px;
-  border-radius:14px;
-  background:#fde68a;
-  border:1px solid rgba(0,0,0,.06);
-  cursor:pointer;
-  user-select:none;
-  font-weight:700;
-  box-shadow:0 8px 18px rgba(0,0,0,.06);
-  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-}
-.item:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 24px rgba(0,0,0,.09);
-}
-.item.selected{
-  background:#fbbf24;
-  outline:3px solid rgba(217,119,6,.18);
-}
-.item.locked{
-  opacity:.55;
-  cursor:not-allowed;
-}
-.controls{
-  margin:4px auto 0;
-  padding:0 14px 18px;
-}
-button{
-  padding:11px 16px;
-  margin:5px;
-  border:none;
-  border-radius:12px;
-  background:var(--saffron);
-  color:white;
-  cursor:pointer;
-  font-weight:700;
-  box-shadow:0 8px 18px rgba(217,119,6,.22);
-}
-button:hover{
-  filter:brightness(1.03);
-}
-.status{
-  max-width:980px;
-  margin:0 auto 18px;
-  padding:0 14px;
-}
-.log{
-  margin-top:10px;
-  min-height:26px;
-  font-size:15px;
-  color:#5b4a2f;
-}
-.win{
-  color:#0f8a38;
-  font-weight:800;
-}
-.rules{
-  max-width:980px;
-  margin:0 auto 18px;
-  text-align:left;
-  background:rgba(255,255,255,.75);
-  border:1px solid rgba(217,119,6,.15);
-  border-radius:16px;
-  padding:14px 16px;
-  color:#5c4930;
-}
-.rules strong{
-  color:#9a6708;
-}
-@media (max-width:900px){
-  .scene{
-    grid-template-columns:1fr;
-  }
-  .river{
-    min-height:160px;
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purchase Order Creator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#fff8eb;
+      --bg2:#fff1d6;
+      --panel:rgba(255,255,255,.82);
+      --line:rgba(217,119,6,.16);
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --brand:#d97706;
+      --brand2:#f59e0b;
+      --ok:#166534;
+      --danger:#b91c1c;
+      --shadow:0 20px 60px rgba(15,23,42,.10);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Inter","Noto Sans","Noto Sans Devanagari",system-ui,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(245,158,11,.20), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(217,119,6,.15), transparent 30%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      min-height:100vh;
+    }
+    .devanagari{font-family:"Noto Sans Devanagari","Noto Sans","Inter",sans-serif}
+    .wrap{max-width:1240px;margin:0 auto;padding:22px}
+    .hero{
+      display:flex;gap:18px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .hero-card,.panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .hero-card{padding:22px;flex:1 1 650px}
+    h1{margin:0 0 10px;font-size:clamp(1.8rem,3vw,3rem);line-height:1.05}
+    .sub{color:var(--muted);font-size:1rem;max-width:760px}
+    .pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{
+      border:1px solid rgba(217,119,6,.18);
+      background:rgba(255,255,255,.75);
+      border-radius:999px;padding:9px 14px;font-size:.92rem;font-weight:600
+    }
+    .layout{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    @media (max-width: 980px){.layout{grid-template-columns:1fr}}
+    .panel{padding:18px}
+    .panel h2{margin:0 0 14px;font-size:1.1rem}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media (max-width: 720px){.grid,.grid-3{grid-template-columns:1fr}}
+    label{display:block;font-size:.88rem;font-weight:700;margin-bottom:6px}
+    input,textarea,select{
+      width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(148,163,184,.35);
+      background:rgba(255,255,255,.92);font:inherit;color:inherit;outline:none
+    }
+    textarea{min-height:100px;resize:vertical}
+    input:focus,textarea:focus,select:focus{border-color:rgba(217,119,6,.55);box-shadow:0 0 0 4px rgba(245,158,11,.12)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button{
+      appearance:none;border:0;border-radius:16px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer;
+      transition:.2s transform,.2s box-shadow,.2s opacity
+    }
+    button:hover{transform:translateY(-1px)}
+    .primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 12px 30px rgba(217,119,6,.25)}
+    .secondary{background:#fff;color:var(--ink);border:1px solid rgba(148,163,184,.32)}
+    .danger{background:#fff1f2;color:var(--danger);border:1px solid rgba(185,28,28,.16)}
+    .mini{padding:9px 12px;border-radius:12px;font-size:.92rem}
+    .status{
+      margin-top:12px;padding:11px 13px;border-radius:14px;background:#fff;border:1px dashed rgba(148,163,184,.35);font-size:.95rem;color:var(--muted)
+    }
+    .items-head,.item-row{
+      display:grid;grid-template-columns:2.2fr .8fr 1fr auto;gap:10px;align-items:end
+    }
+    .items-head{font-size:.8rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+    .item-row{margin-bottom:10px}
+    @media (max-width: 720px){.items-head{display:none}.item-row{grid-template-columns:1fr}}
+    .item-card{padding:12px;border:1px solid rgba(148,163,184,.22);border-radius:18px;background:rgba(255,255,255,.72);margin-bottom:10px}
+    .voice-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+    .voice-dot{width:10px;height:10px;border-radius:999px;background:#d1d5db}
+    .voice-dot.live{background:#ef4444;box-shadow:0 0 0 7px rgba(239,68,68,.12)}
+    .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .stat{padding:16px;border-radius:18px;background:rgba(255,255,255,.72);border:1px solid rgba(148,163,184,.22)}
+    .stat small{display:block;color:var(--muted);margin-bottom:6px}
+    .stat strong{font-size:1.4rem}
+    @media (max-width:720px){.summary{grid-template-columns:1fr}}
+    .po-sheet{
+      background:white;border-radius:24px;padding:24px;border:1px solid rgba(148,163,184,.2);
+    }
+    .po-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px dashed rgba(148,163,184,.3);padding-bottom:16px;margin-bottom:16px}
+    .po-title{font-size:1.8rem;font-weight:800;margin:0 0 6px}
+    .muted{color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin-top:16px}
+    th,td{padding:12px 10px;border-bottom:1px solid rgba(148,163,184,.22);text-align:left;vertical-align:top}
+    th{font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+    .total-row td{font-weight:800}
+    .footer-note{margin-top:18px;padding-top:14px;border-top:1px dashed rgba(148,163,184,.3)}
+    .hint{font-size:.85rem;color:var(--muted);margin-top:6px}
+    .hidden{display:none !important}
+    @media print{
+      body{background:#fff}
+      .no-print{display:none !important}
+      .wrap{max-width:none;padding:0}
+      .layout{display:block}
+      .panel{box-shadow:none;border:none;background:#fff;padding:0}
+      .po-sheet{border:none;padding:0}
+    }
+  </style>
 </head>
 <body>
-
-<h1>Man, Goat, Tiger, Grass Puzzle</h1>
-<p class="subtitle">Click one item on the same bank as the man. The man always rows the boat and may take one selected item with him.</p>
-
-<div class="scene">
-  <section class="bank">
-    <h3>Left Bank</h3>
-    <div class="items" id="leftItems"></div>
-  </section>
-
-  <section class="river">
-    <div class="riverTitle">River</div>
-    <div class="boatWrap">
-      <div class="boat">
-        <h4 id="boatSideLabel">Boat: Left Bank</h4>
-        <div class="boatPassengers" id="boatPassengers"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-card">
+        <h1>Purchase Order Creator</h1>
+        <div class="sub">Create a simple household purchase order or required-items list with typing, voice entry, and read-aloud support. The fonts support both English and Hindi input.</div>
+        <div class="pills">
+          <div class="pill">Hindi + English font support</div>
+          <div class="pill">Voice entry</div>
+          <div class="pill">Read out order</div>
+          <div class="pill">Print / PDF ready</div>
+        </div>
       </div>
+    </div><div class="layout">
+  <section class="panel no-print">
+    <h2>Order Details</h2>
+    <div class="grid">
+      <div>
+        <label for="familyName">Prepared By</label>
+        <input id="familyName" placeholder="Name" />
+      </div>
+      <div>
+        <label for="orderFor">Order For</label>
+        <input id="orderFor" placeholder="Home / Kitchen / Shop / Office" />
+      </div>
+      <div>
+        <label for="poNumber">Order No.</label>
+        <input id="poNumber" placeholder="PO-001" />
+      </div>
+      <div>
+        <label for="orderDate">Date</label>
+        <input id="orderDate" type="date" />
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <label for="supplier">Supplier / Store</label>
+      <input id="supplier" placeholder="Store name" />
+    </div>
+
+    <div style="margin-top:14px">
+      <label for="notes">Notes</label>
+      <textarea id="notes" class="devanagari" placeholder="Extra instructions, brand preference, packing notes, delivery notes"></textarea>
+      <div class="hint">You can type in English or Hindi. Example voice phrase: “Sugar 2 kg, Tea 1 packet, Detergent 3 packs”.</div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="items-head">
+        <div>Item Name</div>
+        <div>Qty</div>
+        <div>Unit</div>
+        <div>Action</div>
+      </div>
+      <div id="items"></div>
+      <button id="addItemBtn" class="secondary mini" type="button">+ Add Item</button>
+    </div>
+
+    <div class="panel" style="margin-top:16px;padding:16px;background:rgba(255,255,255,.55)">
+      <h2 style="margin-bottom:10px">Voice Tools</h2>
+      <div>
+        <label for="voiceTarget">Voice target</label>
+        <select id="voiceTarget">
+          <option value="notes">Notes field</option>
+          <option value="items">Item list parser</option>
+        </select>
+      </div>
+      <div class="voice-bar">
+        <button id="startVoiceBtn" class="primary mini" type="button">Start Voice Entry</button>
+        <button id="stopVoiceBtn" class="secondary mini" type="button">Stop</button>
+        <button id="speakBtn" class="secondary mini" type="button">Read Out Order</button>
+        <button id="stopSpeakBtn" class="secondary mini" type="button">Stop Reading</button>
+        <div class="voice-dot" id="voiceDot"></div>
+        <span id="voiceState" class="muted">Voice idle</span>
+      </div>
+      <div class="hint">Best supported in Chrome/Edge on Android, desktop, and other browsers with Speech Recognition / Speech Synthesis support.</div>
+      <div id="status" class="status">Ready.</div>
+    </div>
+
+    <div class="toolbar">
+      <button id="previewBtn" class="primary" type="button">Refresh Preview</button>
+      <button id="printBtn" class="secondary" type="button">Print / Save PDF</button>
+      <button id="downloadBtn" class="secondary" type="button">Download JSON</button>
+      <button id="loadDemoBtn" class="secondary" type="button">Load Demo</button>
+      <button id="clearBtn" class="danger" type="button">Clear All</button>
     </div>
   </section>
 
-  <section class="bank">
-    <h3>Right Bank</h3>
-    <div class="items" id="rightItems"></div>
+  <section class="panel">
+    <h2 class="no-print">Live Purchase Order</h2>
+    <div class="summary no-print" style="margin-bottom:14px">
+      <div class="stat"><small>Total Items</small><strong id="statItems">0</strong></div>
+      <div class="stat"><small>Total Quantity</small><strong id="statQty">0</strong></div>
+      <div class="stat"><small>Language Ready</small><strong>EN + HI</strong></div>
+    </div>
+
+    <div id="poPreview" class="po-sheet devanagari"></div>
   </section>
 </div>
 
-<div class="controls">
-  <button onclick="moveBoat()">Move</button>
-  <button onclick="undoMove()">Undo</button>
-  <button onclick="resetGame()">Reset</button>
-  <button onclick="autoPlay()">Auto Play</button>
-</div>
+  </div>  <script>
+    const $ = (id) => document.getElementById(id);
+    const itemsWrap = $('items');
+    const statusEl = $('status');
+    const voiceDot = $('voiceDot');
+    const voiceState = $('voiceState');
 
-<div class="status">
-  <div class="log" id="log"></div>
-</div>
+    let recognition = null;
+    let isListening = false;
+    let itemId = 0;
 
-<div class="rules">
-  <strong>Rules:</strong> The man must always be in the boat. He may take only one item with him. Never leave the goat alone with the grass, and never leave the tiger alone with the goat, unless the man is present on that bank.
-</div>
+    function setStatus(msg){ statusEl.textContent = msg; }
+    function todayISO(){ return new Date().toISOString().slice(0,10); }
 
-<script>
-const LABELS = {
-  man: "👨 Man",
-  goat: "🐐 Goat",
-  tiger: "🐯 Tiger",
-  grass: "🌿 Grass"
-};
-
-let state;
-
-function initialState(){
-  return {
-    left: ["man","goat","tiger","grass"],
-    right: [],
-    boat: "left",
-    selected: null,
-    history: [],
-    autoplay: false
-  };
-}
-
-function clone(obj){
-  return JSON.parse(JSON.stringify(obj));
-}
-
-function getManSide(s){
-  return s.left.includes("man") ? "left" : "right";
-}
-
-function render(){
-  renderBank("left");
-  renderBank("right");
-
-  const boatSide = getManSide(state);
-  document.getElementById("boatSideLabel").textContent =
-    "Boat: " + (boatSide === "left" ? "Left Bank" : "Right Bank");
-
-  const passengers = ["man"];
-  if(state.selected) passengers.push(state.selected);
-  document.getElementById("boatPassengers").innerHTML =
-    passengers.map(x => LABELS[x]).join("<br>");
-
-  checkWin();
-}
-
-function renderBank(side){
-  const host = document.getElementById(side + "Items");
-  host.innerHTML = "";
-
-  const manSide = getManSide(state);
-
-  state[side].forEach(item => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.textContent = LABELS[item];
-
-    if(item === state.selected) div.classList.add("selected");
-
-    const selectable =
-      item !== "man" &&
-      side === manSide;
-
-    if(!selectable) div.classList.add("locked");
-
-    div.onclick = () => {
-      if(!selectable) return;
-      state.selected = state.selected === item ? null : item;
-      render();
-    };
-
-    host.appendChild(div);
-  });
-}
-
-function moveBoat(){
-  const from = getManSide(state);
-  const to = from === "left" ? "right" : "left";
-
-  const next = clone(state);
-
-  // move man
-  next[from] = next[from].filter(x => x !== "man");
-  next[to].push("man");
-
-  // move selected passenger if any
-  if(next.selected){
-    const passenger = next.selected;
-    if(!next[from].includes(passenger)){
-      log("❌ Selected item is not on the same side as the man.");
-      return;
+    function createItemRow(data = {}){
+      itemId += 1;
+      const row = document.createElement('div');
+      row.className = 'item-card';
+      row.dataset.itemId = itemId;
+      row.innerHTML = `
+        <div class="item-row">
+          <div>
+            <label>Item Name</label>
+            <input class="item-name devanagari" placeholder="Rice / चावल" value="${escapeHtml(data.name || '')}" />
+          </div>
+          <div>
+            <label>Qty</label>
+            <input class="item-qty" type="number" min="0" step="0.01" placeholder="1" value="${escapeHtml(data.qty || '')}" />
+          </div>
+          <div>
+            <label>Unit</label>
+            <input class="item-unit devanagari" placeholder="kg / pcs / packet" value="${escapeHtml(data.unit || '')}" />
+          </div>
+          <div>
+            <button class="danger mini remove-item" type="button">Remove</button>
+          </div>
+        </div>
+      `;
+      row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', renderPreview));
+      row.querySelector('.remove-item').addEventListener('click', ()=>{ row.remove(); renderPreview(); });
+      itemsWrap.appendChild(row);
+      renderPreview();
+      return row;
     }
-    next[from] = next[from].filter(x => x !== passenger);
-    next[to].push(passenger);
-  }
 
-  next.selected = null;
+    function escapeHtml(v){
+      return String(v)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;');
+    }
 
-  if(!isValid(next)){
-    log("❌ Invalid move. Someone gets eaten.");
-    return;
-  }
+    function getItems(){
+      return [...itemsWrap.querySelectorAll('.item-card')].map(card => ({
+        name: card.querySelector('.item-name').value.trim(),
+        qty: card.querySelector('.item-qty').value.trim(),
+        unit: card.querySelector('.item-unit').value.trim()
+      })).filter(x => x.name || x.qty || x.unit);
+    }
 
-  state.history.push(clone(state));
-  state = next;
-  log("✅ Boat crossed.");
-  render();
-}
+    function gatherData(){
+      return {
+        preparedBy: $('familyName').value.trim(),
+        orderFor: $('orderFor').value.trim(),
+        poNumber: $('poNumber').value.trim(),
+        date: $('orderDate').value.trim(),
+        supplier: $('supplier').value.trim(),
+        notes: $('notes').value.trim(),
+        items: getItems()
+      };
+    }
 
-function isUnsafe(bank){
-  const hasMan = bank.includes("man");
-  if(hasMan) return false;
-  if(bank.includes("goat") && bank.includes("grass")) return true;
-  if(bank.includes("tiger") && bank.includes("goat")) return true;
-  return false;
-}
+    function renderPreview(){
+      const data = gatherData();
+      const totalItems = data.items.length;
+      const totalQty = data.items.reduce((sum, item) => sum + (parseFloat(item.qty) || 0), 0);
+      $('statItems').textContent = totalItems;
+      $('statQty').textContent = Number.isInteger(totalQty) ? String(totalQty) : totalQty.toFixed(2);
 
-function isValid(s){
-  return !isUnsafe(s.left) && !isUnsafe(s.right);
-}
+      const rows = data.items.length ? data.items.map((item, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td>${escapeHtml(item.name || '-')}</td>
+          <td>${escapeHtml(item.qty || '-')}</td>
+          <td>${escapeHtml(item.unit || '-')}</td>
+        </tr>
+      `).join('') : `
+        <tr><td colspan="4" class="muted">No items added yet.</td></tr>
+      `;
 
-function undoMove(){
-  if(!state.history.length){
-    log("Nothing to undo.");
-    return;
-  }
-  state = state.history.pop();
-  log("↩️ Last move undone.");
-  render();
-}
+      $('poPreview').innerHTML = `
+        <div class="po-top">
+          <div>
+            <div class="po-title">Purchase Order</div>
+            <div class="muted">Required items list for home use or quick ordering</div>
+          </div>
+          <div>
+            <div><strong>Order No.:</strong> ${escapeHtml(data.poNumber || '—')}</div>
+            <div><strong>Date:</strong> ${escapeHtml(data.date || '—')}</div>
+          </div>
+        </div>
 
-function resetGame(){
-  state = initialState();
-  log("Game reset.");
-  render();
-}
+        <div class="grid">
+          <div>
+            <strong>Prepared By</strong>
+            <div class="muted">${escapeHtml(data.preparedBy || '—')}</div>
+          </div>
+          <div>
+            <strong>Order For</strong>
+            <div class="muted">${escapeHtml(data.orderFor || '—')}</div>
+          </div>
+          <div>
+            <strong>Supplier / Store</strong>
+            <div class="muted">${escapeHtml(data.supplier || '—')}</div>
+          </div>
+          <div>
+            <strong>Total Item Lines</strong>
+            <div class="muted">${totalItems}</div>
+          </div>
+        </div>
 
-function checkWin(){
-  if(state.right.length === 4){
-    document.getElementById("log").innerHTML =
-      "<span class='win'>🎉 Solved! Everyone reached the right bank safely.</span>";
-  }
-}
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            <tr class="total-row">
+              <td colspan="2">Total</td>
+              <td>${Number.isInteger(totalQty) ? String(totalQty) : totalQty.toFixed(2)}</td>
+              <td>All</td>
+            </tr>
+          </tbody>
+        </table>
 
-function log(message){
-  document.getElementById("log").textContent = message;
-}
+        <div class="footer-note">
+          <strong>Notes</strong>
+          <div class="muted" style="white-space:pre-wrap;margin-top:6px">${escapeHtml(data.notes || '—')}</div>
+        </div>
+      `;
+    }
 
-function sleep(ms){
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+    function setupDefaults(){
+      $('orderDate').value = todayISO();
+      $('poNumber').value = 'PO-' + new Date().toISOString().slice(0,10).replaceAll('-','');
+      createItemRow();
+      createItemRow();
+      renderPreview();
+    }
 
-async function autoPlay(){
-  resetGame();
+    function bindBasics(){
+      ['familyName','orderFor','poNumber','orderDate','supplier','notes'].forEach(id => {
+        $(id).addEventListener('input', renderPreview);
+      });
+      $('addItemBtn').addEventListener('click', ()=>createItemRow());
+      $('previewBtn').addEventListener('click', renderPreview);
+      $('printBtn').addEventListener('click', ()=>window.print());
+      $('downloadBtn').addEventListener('click', downloadJSON);
+      $('loadDemoBtn').addEventListener('click', loadDemo);
+      $('clearBtn').addEventListener('click', clearAll);
+      $('startVoiceBtn').addEventListener('click', startListening);
+      $('stopVoiceBtn').addEventListener('click', stopListening);
+      $('speakBtn').addEventListener('click', speakOrder);
+      $('stopSpeakBtn').addEventListener('click', ()=>window.speechSynthesis.cancel());
+    }
 
-  const steps = [
-    "goat",
-    null,
-    "tiger",
-    "goat",
-    "grass",
-    null,
-    "goat"
-  ];
+    function clearAll(){
+      $('familyName').value = '';
+      $('orderFor').value = '';
+      $('supplier').value = '';
+      $('notes').value = '';
+      $('orderDate').value = todayISO();
+      $('poNumber').value = 'PO-' + new Date().toISOString().slice(0,10).replaceAll('-','');
+      itemsWrap.innerHTML = '';
+      createItemRow();
+      renderPreview();
+      setStatus('Cleared all fields.');
+    }
 
-  for(const step of steps){
-    state.selected = step;
-    render();
-    await sleep(700);
-    moveBoat();
-    await sleep(700);
-  }
-}
+    function loadDemo(){
+      $('familyName').value = 'Family Order';
+      $('orderFor').value = 'Kitchen Restock';
+      $('supplier').value = 'Nearby Grocery Store';
+      $('notes').value = 'Preferred fresh items. Check packet dates before buying.';
+      $('poNumber').value = 'PO-DEMO-001';
+      $('orderDate').value = todayISO();
+      itemsWrap.innerHTML = '';
+      [
+        {name:'Rice / चावल', qty:'10', unit:'kg'},
+        {name:'Sugar / चीनी', qty:'2', unit:'kg'},
+        {name:'Tea / चाय', qty:'4', unit:'packet'},
+        {name:'Detergent / डिटर्जेंट', qty:'3', unit:'pack'}
+      ].forEach(createItemRow);
+      renderPreview();
+      setStatus('Demo order loaded.');
+    }
 
-resetGame();
-</script>
-</body>
+    function downloadJSON(){
+      const data = gatherData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (data.poNumber || 'purchase-order').replace(/[^a-z0-9\-_]+/gi,'-') + '.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      setStatus('JSON downloaded.');
+    }
+
+    function parseVoiceItems(text){
+      const parts = text.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);
+      if(!parts.length){
+        $('notes').value = ($('notes').value + '\n' + text).trim();
+        renderPreview();
+        return;
+      }
+      parts.forEach(part => {
+        const m = part.match(/(.+?)\s+(\d+(?:\.\d+)?)\s*([\p{L}a-zA-Z]+)?$/u);
+        if(m){
+          createItemRow({name:m[1].trim(), qty:m[2].trim(), unit:(m[3] || '').trim()});
+        } else {
+          createItemRow({name:part, qty:'', unit:''});
+        }
+      });
+      setStatus('Voice entry added to item list.');
+    }
+
+    function getRecognition(){
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SR) return null;
+      const recog = new SR();
+      recog.lang = 'hi-IN';
+      recog.interimResults = true;
+      recog.continuous = true;
+      recog.onstart = ()=>{
+        isListening = true;
+        voiceDot.classList.add('live');
+        voiceState.textContent = 'Listening...';
+        setStatus('Listening for voice input...');
+      };
+      recog.onend = ()=>{
+        isListening = false;
+        voiceDot.classList.remove('live');
+        voiceState.textContent = 'Voice idle';
+      };
+      recog.onerror = (e)=>{
+        setStatus('Voice error: ' + (e.error || 'unknown'));
+      };
+      recog.onresult = (event)=>{
+        let transcript = '';
+        for(let i = event.resultIndex; i < event.results.length; i++){
+          transcript += event.results[i][0].transcript;
+        }
+        const target = $('voiceTarget').value;
+        if(target === 'notes'){
+          $('notes').value = transcript.trim();
+          renderPreview();
+          setStatus('Voice captured into notes.');
+        } else {
+          if(event.results[event.results.length - 1].isFinal){
+            parseVoiceItems(transcript.trim());
+            renderPreview();
+          } else {
+            setStatus('Listening for item list...');
+          }
+        }
+      };
+      return recog;
+    }
+
+    function startListening(){
+      if(!recognition) recognition = getRecognition();
+      if(!recognition){
+        setStatus('Speech recognition is not supported in this browser.');
+        return;
+      }
+      if(isListening) return;
+      recognition.start();
+    }
+
+    function stopListening(){
+      if(recognition && isListening){
+        recognition.stop();
+        setStatus('Voice stopped.');
+      }
+    }
+
+    function speakOrder(){
+      const synth = window.speechSynthesis;
+      if(!synth){
+        setStatus('Speech synthesis is not supported in this browser.');
+        return;
+      }
+      synth.cancel();
+      const data = gatherData();
+      const lines = [
+        `Purchase order number ${data.poNumber || ''}`,
+        data.orderFor ? `Order for ${data.orderFor}.` : '',
+        data.supplier ? `Supplier ${data.supplier}.` : '',
+        'Items are:',
+        ...data.items.map((item, i) => `${i+1}. ${item.name || 'item'} ${item.qty || ''} ${item.unit || ''}`),
+        data.notes ? `Notes: ${data.notes}` : ''
+      ].filter(Boolean).join(' ');
+
+      const utter = new SpeechSynthesisUtterance(lines);
+      utter.lang = /[\u0900-\u097F]/.test(lines) ? 'hi-IN' : 'en-IN';
+      utter.rate = 1;
+      utter.pitch = 1;
+      synth.speak(utter);
+      setStatus('Reading out the order.');
+    }
+
+    setupDefaults();
+    bindBasics();
+  </script></body>
 </html>
