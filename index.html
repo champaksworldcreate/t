@@ -7,7 +7,11 @@
   <style>
     :root {
       --bg: #fffaf0;
-      --panel: #ffffff;
+      --bg-grad-1: #fff7e6;
+      --bg-grad-2: #fffaf0;
+      --bg-grad-3: #fef3c7;
+      --panel: rgba(255,255,255,0.88);
+      --panel-solid: #ffffff;
       --border: #e8dcc0;
       --text: #2f2418;
       --muted: #6b5a46;
@@ -21,32 +25,80 @@
       --grid: #f3e8d2;
       --empty: #fffdf8;
       --shadow: 0 10px 30px rgba(120, 80, 20, 0.12);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 12px;
+      --backdrop: blur(10px);
+    }
+
+    body.dark-theme {
+      --bg: #0f172a;
+      --bg-grad-1: #111827;
+      --bg-grad-2: #0f172a;
+      --bg-grad-3: #1e293b;
+      --panel: rgba(17,24,39,0.88);
+      --panel-solid: #111827;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --accent: #f59e0b;
+      --accent-2: #fbbf24;
+      --wall: #94a3b8;
+      --start: #22c55e;
+      --end: #ef4444;
+      --visited: #334155;
+      --path: #f59e0b;
+      --grid: #243041;
+      --empty: #0b1220;
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    body.sharp-design {
+      --radius-xl: 8px;
+      --radius-lg: 6px;
+      --radius-md: 4px;
+      --radius-sm: 3px;
+      --backdrop: blur(0px);
     }
 
     * { box-sizing: border-box; }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at top left, #fff7e6 0%, #fffaf0 45%, #fef3c7 100%);
+        radial-gradient(circle at top left, var(--bg-grad-1) 0%, var(--bg-grad-2) 45%, var(--bg-grad-3) 100%);
       color: var(--text);
+      min-height: 100%;
+    }
+
+    body {
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     .app {
       max-width: 1400px;
       margin: 0 auto;
       padding: 18px;
+      transition: max-width 0.2s ease, padding 0.2s ease;
+    }
+
+    body.fullscreen-mode .app {
+      max-width: 100%;
+      padding: 10px;
     }
 
     .topbar {
-      background: rgba(255,255,255,0.88);
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 22px;
+      border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
       padding: 18px;
       margin-bottom: 18px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: var(--backdrop);
+      transition: border-radius 0.2s ease, background 0.2s ease;
     }
 
     .title {
@@ -60,7 +112,7 @@
     .logo {
       width: 52px;
       height: 52px;
-      border-radius: 16px;
+      border-radius: calc(var(--radius-lg) - 2px);
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       display: grid;
       place-items: center;
@@ -81,6 +133,13 @@
       font-size: 14px;
     }
 
+    .quick-toggles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
     .controls {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -88,10 +147,11 @@
     }
 
     .card {
-      background: var(--panel);
+      background: var(--panel-solid);
       border: 1px solid var(--border);
-      border-radius: 18px;
+      border-radius: var(--radius-lg);
       padding: 14px;
+      transition: border-radius 0.2s ease, background 0.2s ease;
     }
 
     .card h3 {
@@ -113,17 +173,17 @@
 
     select, button {
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius-sm);
       padding: 11px 12px;
       font-size: 14px;
-      background: #fff;
+      background: var(--panel-solid);
       color: var(--text);
     }
 
     button {
       cursor: pointer;
       font-weight: 700;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-radius 0.2s ease;
     }
 
     button:hover:not(:disabled) {
@@ -138,7 +198,13 @@
     }
 
     button.secondary {
-      background: #fffaf0;
+      background: var(--panel-solid);
+    }
+
+    button.toggle-on,
+    .mode-btn.active {
+      background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(251,191,36,0.18));
+      border-color: var(--accent);
     }
 
     button:disabled {
@@ -152,15 +218,15 @@
       gap: 8px;
     }
 
-    .mode-buttons {
+    .mode-buttons,
+    .toggle-buttons {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
 
-    .mode-btn.active {
-      background: linear-gradient(135deg, #ffedd5, #fde68a);
-      border-color: #f59e0b;
+    .mode-buttons.three {
+      grid-template-columns: repeat(3, 1fr);
     }
 
     .stats {
@@ -171,9 +237,9 @@
     }
 
     .stat {
-      background: #fffdf8;
+      background: var(--panel-solid);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: var(--radius-md);
       padding: 12px;
     }
 
@@ -189,13 +255,18 @@
     }
 
     .board-wrap {
-      background: rgba(255,255,255,0.88);
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
       padding: 18px;
       overflow: auto;
-      backdrop-filter: blur(10px);
+      backdrop-filter: var(--backdrop);
+      transition: border-radius 0.2s ease, background 0.2s ease;
+    }
+
+    body.fullscreen-mode .board-wrap {
+      min-height: calc(100vh - 220px);
     }
 
     .legend {
@@ -209,7 +280,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: #fffdf8;
+      background: var(--panel-solid);
       border: 1px solid var(--border);
       border-radius: 999px;
       padding: 8px 12px;
@@ -231,6 +302,7 @@
       width: max-content;
       user-select: none;
       touch-action: none;
+      margin-inline: auto;
     }
 
     .cell {
@@ -261,6 +333,7 @@
       margin-top: 12px;
       color: var(--muted);
       font-size: 13px;
+      text-align: center;
     }
 
     @media (max-width: 900px) {
@@ -274,7 +347,7 @@
     }
   </style>
 </head>
-<body>
+<body class="light-theme soft-design">
   <div class="app">
     <div class="topbar">
       <div class="title">
@@ -282,6 +355,29 @@
         <div>
           <h1>Shortest Path Visualizer</h1>
           <div class="subtitle">Visualize BFS, Dijkstra, and A* on a grid</div>
+        </div>
+      </div>
+
+      <div class="quick-toggles">
+        <div class="card">
+          <h3>Theme Toggle</h3>
+          <div class="toggle-buttons">
+            <button id="lightThemeBtn" class="toggle-on">Light</button>
+            <button id="darkThemeBtn">Dark</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Design Toggle</h3>
+          <div class="toggle-buttons">
+            <button id="softDesignBtn" class="toggle-on">Soft</button>
+            <button id="sharpDesignBtn">Sharp</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Full Screen</h3>
+          <button id="fullScreenBtn" class="secondary">Enter Full Screen</button>
         </div>
       </div>
 
@@ -298,7 +394,7 @@
 
         <div class="card">
           <h3>Drawing Mode</h3>
-          <div class="mode-buttons">
+          <div class="mode-buttons three">
             <button class="mode-btn active" data-mode="wall">Wall</button>
             <button class="mode-btn" data-mode="start">Start</button>
             <button class="mode-btn" data-mode="end">End</button>
@@ -379,6 +475,12 @@
     const currentModeLabelEl = document.getElementById("currentModeLabel");
     const modeButtons = [...document.querySelectorAll(".mode-btn")];
 
+    const lightThemeBtn = document.getElementById("lightThemeBtn");
+    const darkThemeBtn = document.getElementById("darkThemeBtn");
+    const softDesignBtn = document.getElementById("softDesignBtn");
+    const sharpDesignBtn = document.getElementById("sharpDesignBtn");
+    const fullScreenBtn = document.getElementById("fullScreenBtn");
+
     let currentMode = "wall";
     let mouseDown = false;
     let isAnimating = false;
@@ -406,13 +508,17 @@
 
     let grid = [];
 
+    function setGridColumns() {
+      gridEl.style.gridTemplateColumns =
+        window.innerWidth <= 900
+          ? `repeat(${COLS}, 20px)`
+          : `repeat(${COLS}, 24px)`;
+    }
+
     function initGrid() {
       grid = [];
       gridEl.innerHTML = "";
-      gridEl.style.gridTemplateColumns = `repeat(${COLS}, 24px)`;
-      if (window.innerWidth <= 900) {
-        gridEl.style.gridTemplateColumns = `repeat(${COLS}, 20px)`;
-      }
+      setGridColumns();
 
       for (let r = 0; r < ROWS; r++) {
         const row = [];
@@ -764,6 +870,11 @@
       algorithmEl.disabled = disabled;
       speedEl.disabled = disabled;
       modeButtons.forEach(btn => btn.disabled = disabled);
+
+      lightThemeBtn.disabled = disabled;
+      darkThemeBtn.disabled = disabled;
+      softDesignBtn.disabled = disabled;
+      sharpDesignBtn.disabled = disabled;
     }
 
     function randomMaze() {
@@ -781,19 +892,78 @@
       renderGrid();
     }
 
+    function activateButton(activeBtn, group) {
+      group.forEach(btn => btn.classList.remove("toggle-on"));
+      activeBtn.classList.add("toggle-on");
+    }
+
+    function setTheme(theme) {
+      if (theme === "dark") {
+        document.body.classList.add("dark-theme");
+        activateButton(darkThemeBtn, [lightThemeBtn, darkThemeBtn]);
+      } else {
+        document.body.classList.remove("dark-theme");
+        activateButton(lightThemeBtn, [lightThemeBtn, darkThemeBtn]);
+      }
+    }
+
+    function setDesign(design) {
+      if (design === "sharp") {
+        document.body.classList.add("sharp-design");
+        activateButton(sharpDesignBtn, [softDesignBtn, sharpDesignBtn]);
+      } else {
+        document.body.classList.remove("sharp-design");
+        activateButton(softDesignBtn, [softDesignBtn, sharpDesignBtn]);
+      }
+    }
+
+    async function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        try {
+          await document.documentElement.requestFullscreen();
+        } catch (err) {
+          document.body.classList.toggle("fullscreen-mode");
+          updateFullScreenButton();
+        }
+      } else {
+        try {
+          await document.exitFullscreen();
+        } catch (err) {
+          document.body.classList.toggle("fullscreen-mode");
+          updateFullScreenButton();
+        }
+      }
+    }
+
+    function updateFullScreenButton() {
+      const isFs = !!document.fullscreenElement || document.body.classList.contains("fullscreen-mode");
+      fullScreenBtn.textContent = isFs ? "Exit Full Screen" : "Enter Full Screen";
+      fullScreenBtn.classList.toggle("toggle-on", isFs);
+      document.body.classList.toggle("fullscreen-mode", isFs);
+      setGridColumns();
+    }
+
+    lightThemeBtn.addEventListener("click", () => setTheme("light"));
+    darkThemeBtn.addEventListener("click", () => setTheme("dark"));
+    softDesignBtn.addEventListener("click", () => setDesign("soft"));
+    sharpDesignBtn.addEventListener("click", () => setDesign("sharp"));
+    fullScreenBtn.addEventListener("click", toggleFullScreen);
+
     visualizeBtn.addEventListener("click", visualize);
     mazeBtn.addEventListener("click", randomMaze);
     clearPathBtn.addEventListener("click", clearSearchOnly);
     clearBoardBtn.addEventListener("click", clearBoard);
 
+    document.addEventListener("fullscreenchange", updateFullScreenButton);
+
     window.addEventListener("resize", () => {
-      gridEl.style.gridTemplateColumns =
-        window.innerWidth <= 900
-          ? `repeat(${COLS}, 20px)`
-          : `repeat(${COLS}, 24px)`;
+      setGridColumns();
     });
 
     initGrid();
+    setTheme("light");
+    setDesign("soft");
+    updateFullScreenButton();
   </script>
 </body>
 </html>
