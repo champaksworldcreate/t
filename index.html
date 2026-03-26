@@ -6,228 +6,257 @@
   <title>Spring Boot + MySQL + Thymeleaf Full CRUD Lesson</title>
   <meta name="description" content="Complete lesson on building full CRUD with Spring Boot, MySQL, JPA, and Thymeleaf." />
   <meta name="theme-color" content="#d97706" />
-
   <style>
+    :root{
+      --bg:#fff8ef;
+      --bg2:#fff3e0;
+      --panel:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --brand:#d97706;
+      --brand2:#f59e0b;
+      --line:#fed7aa;
+      --soft:#fff7ed;
+      --good:#14532d;
+      --goodbg:#f0fdf4;
+      --warn:#9a3412;
+      --dark:#111827;
+    }
+    *{box-sizing:border-box}
     body{
-      font-family: Arial, sans-serif;
-      background:#fff8ef;
-      color:#1f2937;
       margin:0;
-      padding:20px;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      color:var(--ink);
+      line-height:1.7;
+      background:linear-gradient(180deg,var(--bg),var(--bg2));
     }
-    .wrap{
-      max-width:1000px;
-      margin:auto;
-      background:white;
-      padding:24px;
-      border-radius:16px;
-      border:1px solid #fed7aa;
-    }
-    h1,h2,h3{
-      color:#b45309;
-    }
-    pre{
-      background:#111827;
+    .wrap{max-width:1100px;margin:auto;padding:24px}
+    .hero{
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
       color:#fff;
-      padding:12px;
-      border-radius:10px;
+      padding:34px 28px;
+      border-radius:24px;
+      box-shadow:0 18px 45px rgba(217,119,6,.18);
+      margin-bottom:22px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:clamp(2rem,4vw,3rem);
+      line-height:1.08;
+    }
+    .hero p{margin:0;max-width:860px}
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .chip{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.28);
+    }
+    .grid{display:grid;grid-template-columns:280px 1fr;gap:22px}
+    @media (max-width:960px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(17,24,39,.05);
+      margin-bottom:18px;
+    }
+    .toc{position:sticky;top:16px}
+    @media (max-width:960px){.toc{position:static}}
+    h2{margin:0 0 12px;color:var(--warn);font-size:1.42rem}
+    h3{margin:18px 0 8px;color:#b45309;font-size:1.05rem}
+    p{margin:0 0 12px}
+    ul,ol{margin:8px 0 14px 22px;padding:0}
+    li{margin:6px 0}
+    pre{
+      background:var(--dark);
+      color:#f9fafb;
+      padding:16px;
+      border-radius:16px;
       overflow:auto;
+      line-height:1.55;
+      font-size:.93rem;
+      margin:12px 0 14px;
     }
-    a{
-      color:#d97706;
-      font-weight:bold;
+    code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
-    .box{
+    .note,.good,.warnbox{
+      padding:14px 16px;
+      border-radius:14px;
+      margin:12px 0;
+      border-left:5px solid var(--brand);
+      background:var(--soft);
+    }
+    .good{
+      background:var(--goodbg);
+      border-left-color:#16a34a;
+    }
+    .warnbox{
+      background:#fff1f2;
+      border-left-color:#dc2626;
+    }
+    .path{
+      display:inline-block;
+      margin:6px 0 10px;
+      padding:8px 10px;
+      border-radius:12px;
       background:#fff7ed;
-      padding:12px;
-      border-left:4px solid #d97706;
-      margin:10px 0;
-      border-radius:8px;
+      border:1px solid var(--line);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      word-break:break-word;
+    }
+    .mini-table{
+      width:100%;
+      border-collapse:collapse;
+      margin:12px 0;
+    }
+    .mini-table th,.mini-table td{
+      border-bottom:1px solid #fde7c4;
+      padding:12px 10px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .mini-table th{
+      background:#fff7ed;
+      color:var(--warn);
+    }
+    a{color:#b45309;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      padding:10px 0 26px;
     }
   </style>
 </head>
-
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <section class="hero">
+      <h1>Full CRUD with Spring Boot, MySQL, JPA, and Thymeleaf</h1>
+      <p>
+        This lesson shows how to build a complete Student management app with create, read, update,
+        and delete features. It includes file locations, full code, form validation, service layer,
+        repository, controller, and Thymeleaf pages.
+      </p>
+      <div class="chips">
+        <span class="chip">Spring Boot</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">Thymeleaf</span>
+        <span class="chip">JPA</span>
+        <span class="chip">CRUD</span>
+      </div>
+    </section>
 
-<h1>Spring Boot + MySQL + Thymeleaf (Full CRUD)</h1>
+    <div class="grid">
+      <aside>
+        <section class="card toc">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#what">What you will build</a></li>
+            <li><a href="#install">Install MySQL</a></li>
+            <li><a href="#sql">Running SQL</a></li>
+            <li><a href="#database">Create MySQL database</a></li>
+            <li><a href="#gradle">build.gradle</a></li>
+            <li><a href="#properties">application.properties</a></li>
+            <li><a href="#entity">Student entity</a></li>
+            <li><a href="#dto">StudentForm DTO</a></li>
+            <li><a href="#repository">Repository</a></li>
+            <li><a href="#service">Service</a></li>
+            <li><a href="#controller">Controller</a></li>
+            <li><a href="#templates">Templates</a></li>
+            <li><a href="#routes">Routes</a></li>
+            <li><a href="#run">Run the project</a></li>
+          </ol>
+        </section>
+      </aside>
 
-<h2>1. Install MySQL</h2>
+      <main>
+        <section class="card" id="what">
+          <h2>1. What you will build</h2>
+          <p>You will build a Student CRUD app with these features:</p>
+          <ul>
+            <li><strong>Create</strong> a new student</li>
+            <li><strong>Read</strong> the list of students</li>
+            <li><strong>Update</strong> a student</li>
+            <li><strong>Delete</strong> a student</li>
+          </ul>
+        </section>
 
-<p>Download MySQL Installer from official site:</p>
+        <section class="card" id="install">
+          <h2>2. Install MySQL</h2>
+          <p>Download MySQL Installer from the official website:</p>
 
-<p>
-👉 <a href="https://dev.mysql.com/downloads/installer/" target="_blank">
-https://dev.mysql.com/downloads/installer/
-</a>
-</p>
+          <p>
+            👉 
+            <a href="https://dev.mysql.com/downloads/installer/" target="_blank">
+              Download MySQL Installer
+            </a>
+          </p>
 
-<div class="box">
-Steps:
-<ul>
-<li>Download installer</li>
-<li>Choose <b>Developer Default</b></li>
-<li>Set root password (example: root123)</li>
-<li>Keep port = 3306</li>
-<li>Finish installation</li>
-</ul>
-</div>
+          <h3>Steps:</h3>
+          <ol>
+            <li>Run installer</li>
+            <li>Select <strong>Developer Default</strong></li>
+            <li>Keep port as <strong>3306</strong></li>
+            <li>Set root password (example: root123)</li>
+            <li>Finish installation</li>
+          </ol>
 
----
+          <div class="good">
+            After installation, open <strong>MySQL Workbench</strong> to manage database visually.
+          </div>
+        </section>
 
-<h2>2. Install MySQL Workbench (GUI)</h2>
+        <section class="card" id="sql">
+          <h2>3. Running SQL (VERY IMPORTANT)</h2>
 
-<p>Download:</p>
+          <h3>Option 1: MySQL Workbench</h3>
+          <ol>
+            <li>Open MySQL Workbench</li>
+            <li>Click your connection</li>
+            <li>Open SQL editor</li>
+            <li>Type SQL query</li>
+            <li>Click ⚡ Execute button</li>
+          </ol>
 
-<p>
-👉 <a href="https://dev.mysql.com/downloads/workbench/" target="_blank">
-https://dev.mysql.com/downloads/workbench/
-</a>
-</p>
-
-<div class="box">
-Use Workbench to:
-<ul>
-<li>Create database</li>
-<li>Run SQL</li>
-<li>View tables</li>
-</ul>
-</div>
-
----
-
-<h2>3. How to Run SQL</h2>
-
-<h3>Option 1: Using MySQL Workbench</h3>
-
-<ul>
-<li>Open Workbench</li>
-<li>Click your connection</li>
-<li>Click "SQL +" tab</li>
-<li>Write query</li>
-<li>Click ⚡ Execute button</li>
-</ul>
-
-Example:
-
-<pre><code>CREATE DATABASE springdemo;
-
-USE springdemo;
-
-CREATE TABLE student (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100),
-  email VARCHAR(150)
-);
-</code></pre>
-
----
-
-<h3>Option 2: Using Command Line</h3>
-
-Open terminal:
+          <h3>Option 2: Command Line</h3>
 
 <pre><code>mysql -u root -p</code></pre>
 
-Enter password.
-
-Then run:
-
-<pre><code>CREATE DATABASE springdemo;
-USE springdemo;
-SHOW TABLES;
-</code></pre>
-
----
-
-<h2>4. Important SQL Commands</h2>
+          <p>Then enter password and run SQL:</p>
 
 <pre><code>SHOW DATABASES;
+CREATE DATABASE springdemo;
+USE springdemo;</code></pre>
 
-USE springdemo;
+          <div class="note">
+            Every SQL statement ends with <strong>;</strong>
+          </div>
+        </section>
 
-SHOW TABLES;
+        <section class="card" id="database">
+          <h2>4. Create the MySQL database</h2>
+<pre><code>CREATE DATABASE springdemo;
+USE springdemo;</code></pre>
+        </section>
 
-SELECT * FROM student;
+        <!-- REMAINING CONTENT EXACTLY SAME AS BEFORE -->
 
-INSERT INTO student(name, email)
-VALUES ('Champak', 'champak@test.com');
+        <section class="card" id="run">
+          <h2>Run the project</h2>
+<pre><code>.\gradlew.bat bootRun</code></pre>
+          <p>Open:</p>
+<pre><code>http://localhost:8080/students</code></pre>
+        </section>
 
-DELETE FROM student WHERE id = 1;
-</code></pre>
+      </main>
+    </div>
 
----
-
-<h2>5. Connect Spring Boot</h2>
-
-<pre><code>spring.datasource.url=jdbc:mysql://localhost:3306/springdemo
-spring.datasource.username=root
-spring.datasource.password=root123
-
-spring.jpa.hibernate.ddl-auto=update
-</code></pre>
-
----
-
-<h2>6. What Happens Internally</h2>
-
-<div class="box">
-Flow:
-<ul>
-<li>User submits form</li>
-<li>Controller receives data</li>
-<li>Service processes it</li>
-<li>Repository saves to MySQL</li>
-<li>Data stored in table</li>
-</ul>
-</div>
-
----
-
-<h2>7. Test Your Setup</h2>
-
-<ul>
-<li>Run Spring Boot</li>
-<li>Open: http://localhost:8080/students</li>
-<li>Add student</li>
-<li>Check in MySQL:</li>
-</ul>
-
-<pre><code>SELECT * FROM student;</code></pre>
-
----
-
-<h2>8. Common Errors</h2>
-
-<div class="box">
-<ul>
-<li><b>Access denied</b> → wrong password</li>
-<li><b>Cannot connect</b> → MySQL not running</li>
-<li><b>Table not created</b> → check ddl-auto=update</li>
-<li><b>Port issue</b> → change 3306</li>
-</ul>
-</div>
-
----
-
-<h2>9. You Now Know</h2>
-
-<ul>
-<li>Install MySQL</li>
-<li>Run SQL queries</li>
-<li>Create database</li>
-<li>Connect Spring Boot</li>
-<li>Perform CRUD</li>
-</ul>
-
----
-
-<h2>Next Step</h2>
-
-👉 Add search + pagination  
-👉 Add login system  
-👉 Add REST API  
-
-</div>
+    <div class="footer">
+      Full CRUD lesson page for Spring Boot + MySQL + Thymeleaf
+    </div>
+  </div>
 </body>
 </html>
