@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spring Boot + MySQL + Thymeleaf Full CRUD Lesson</title>
-  <meta name="description" content="Complete lesson on building full CRUD with Spring Boot, MySQL, JPA, and Thymeleaf." />
+  <title>Complete Lesson: URL Mapping, GET and POST Parameters, JSON Input and JSON Output in Spring Boot</title>
+  <meta name="description" content="A complete beginner-friendly lesson on URL mapping in Spring Boot, including GET parameters, POST parameters, path variables, JSON input, JSON output, and controller examples." />
   <meta name="theme-color" content="#d97706" />
   <style>
     :root{
       --bg:#fff8ef;
-      --bg2:#fff3e0;
+      --bg2:#fff4e6;
       --panel:#ffffff;
       --ink:#1f2937;
       --muted:#6b7280;
@@ -17,74 +17,119 @@
       --brand2:#f59e0b;
       --line:#fed7aa;
       --soft:#fff7ed;
+      --dark:#111827;
       --good:#14532d;
       --goodbg:#f0fdf4;
       --warn:#9a3412;
-      --dark:#111827;
+      --badbg:#fff1f2;
+      --shadow:0 14px 40px rgba(217,119,6,.12);
+      --radius:22px;
     }
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:Inter,system-ui,Arial,sans-serif;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--ink);
+      background:
+        radial-gradient(circle at top left, #fffaf4 0%, transparent 28%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
       line-height:1.7;
-      background:linear-gradient(180deg,var(--bg),var(--bg2));
     }
-    .wrap{max-width:1100px;margin:auto;padding:24px}
+    a{color:#b45309;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1120px;margin:0 auto;padding:22px}
     .hero{
       background:linear-gradient(135deg,var(--brand),var(--brand2));
       color:#fff;
       padding:34px 28px;
-      border-radius:24px;
-      box-shadow:0 18px 45px rgba(217,119,6,.18);
-      margin-bottom:22px;
+      border-radius:28px;
+      box-shadow:0 20px 50px rgba(217,119,6,.22);
+      margin:10px 0 24px;
     }
     .hero h1{
-      margin:0 0 10px;
-      font-size:clamp(2rem,4vw,3rem);
+      margin:0 0 12px;
+      font-size:clamp(2rem, 3.5vw, 3.2rem);
       line-height:1.08;
+      letter-spacing:-.02em;
     }
-    .hero p{margin:0;max-width:860px}
-    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .hero p{
+      margin:0;
+      max-width:920px;
+      font-size:1.04rem;
+      opacity:.98;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
     .chip{
       padding:8px 12px;
       border-radius:999px;
-      background:rgba(255,255,255,.18);
       border:1px solid rgba(255,255,255,.28);
+      background:rgba(255,255,255,.16);
+      font-size:.93rem;
+      backdrop-filter:blur(4px);
     }
-    .grid{display:grid;grid-template-columns:280px 1fr;gap:22px}
-    @media (max-width:960px){.grid{grid-template-columns:1fr}}
+    .layout{
+      display:grid;
+      grid-template-columns:280px minmax(0,1fr);
+      gap:22px;
+      align-items:start;
+    }
+    @media (max-width: 940px){
+      .layout{grid-template-columns:1fr}
+      .toc{position:static}
+    }
     .card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:22px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .toc{
+      position:sticky;
+      top:16px;
+      padding:18px;
+    }
+    .toc h2{
+      margin:0 0 10px;
+      color:var(--warn);
+      font-size:1.1rem;
+    }
+    .toc ol{
+      margin:0;
+      padding-left:20px;
+    }
+    .toc li{margin:7px 0}
+    .toc a{font-weight:600}
+    .content{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    section.lesson{
       padding:22px;
-      box-shadow:0 10px 30px rgba(17,24,39,.05);
-      margin-bottom:18px;
     }
-    .toc{position:sticky;top:16px}
-    @media (max-width:960px){.toc{position:static}}
-    h2{margin:0 0 12px;color:var(--warn);font-size:1.42rem}
-    h3{margin:18px 0 8px;color:#b45309;font-size:1.05rem}
+    h2{
+      margin:0 0 12px;
+      font-size:1.45rem;
+      color:var(--warn);
+      letter-spacing:-.01em;
+    }
+    h3{
+      margin:18px 0 10px;
+      color:#b45309;
+      font-size:1.08rem;
+    }
     p{margin:0 0 12px}
-    ul,ol{margin:8px 0 14px 22px;padding:0}
+    ul,ol{margin:10px 0 14px 22px;padding:0}
     li{margin:6px 0}
-    pre{
-      background:var(--dark);
-      color:#f9fafb;
-      padding:16px;
-      border-radius:16px;
-      overflow:auto;
-      line-height:1.55;
-      font-size:.93rem;
-      margin:12px 0 14px;
-    }
-    code{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    }
-    .note,.good,.warnbox{
+    .note, .good, .warnbox{
       padding:14px 16px;
-      border-radius:14px;
+      border-radius:16px;
       margin:12px 0;
       border-left:5px solid var(--brand);
       background:var(--soft);
@@ -94,168 +139,762 @@
       border-left-color:#16a34a;
     }
     .warnbox{
-      background:#fff1f2;
+      background:var(--badbg);
       border-left-color:#dc2626;
     }
     .path{
       display:inline-block;
-      margin:6px 0 10px;
       padding:8px 10px;
       border-radius:12px;
       background:#fff7ed;
       border:1px solid var(--line);
       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.94rem;
+      margin:6px 0 10px;
       word-break:break-word;
+    }
+    pre{
+      margin:12px 0 14px;
+      background:var(--dark);
+      color:#f9fafb;
+      padding:16px;
+      border-radius:18px;
+      overflow:auto;
+      font-size:.93rem;
+      line-height:1.58;
+      box-shadow:0 10px 24px rgba(17,24,39,.16);
+    }
+    code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.95em;
     }
     .mini-table{
       width:100%;
       border-collapse:collapse;
-      margin:12px 0;
+      margin:10px 0 6px;
+      overflow:hidden;
+      border-radius:16px;
     }
     .mini-table th,.mini-table td{
-      border-bottom:1px solid #fde7c4;
-      padding:12px 10px;
       text-align:left;
+      padding:12px 10px;
+      border-bottom:1px solid #fde7c4;
       vertical-align:top;
     }
     .mini-table th{
       background:#fff7ed;
       color:var(--warn);
     }
-    a{color:#b45309;text-decoration:none}
-    a:hover{text-decoration:underline}
+    .badge{
+      display:inline-block;
+      margin:0 6px 6px 0;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff7ed;
+      border:1px solid var(--line);
+      font-size:.88rem;
+      font-weight:700;
+      color:#9a3412;
+    }
     .footer{
       text-align:center;
       color:var(--muted);
-      padding:10px 0 26px;
+      padding:18px 0 34px;
+      font-size:.95rem;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <section class="hero">
-      <h1>Full CRUD with Spring Boot, MySQL, JPA, and Thymeleaf</h1>
+    <header class="hero">
+      <h1>Complete Lesson: URL Mapping, GET and POST Parameters, JSON Input and JSON Output in Spring Boot</h1>
       <p>
-        This lesson shows how to build a complete Student management app with create, read, update,
-        and delete features. It includes file locations, full code, form validation, service layer,
-        repository, controller, and Thymeleaf pages.
+        This lesson explains how Spring Boot maps URLs to controller methods, how GET and POST requests
+        work, how to read query parameters, path variables, form values, JSON input, and how to return JSON
+        responses cleanly from your APIs.
       </p>
       <div class="chips">
-        <span class="chip">Spring Boot</span>
-        <span class="chip">MySQL</span>
-        <span class="chip">Thymeleaf</span>
-        <span class="chip">JPA</span>
-        <span class="chip">CRUD</span>
+        <span class="chip">URL Mapping</span>
+        <span class="chip">GET</span>
+        <span class="chip">POST</span>
+        <span class="chip">Path Variables</span>
+        <span class="chip">Request Params</span>
+        <span class="chip">JSON Input</span>
+        <span class="chip">JSON Output</span>
       </div>
-    </section>
+    </header>
 
-    <div class="grid">
-      <aside>
-        <section class="card toc">
-          <h2>Contents</h2>
-          <ol>
-            <li><a href="#what">What you will build</a></li>
-            <li><a href="#install">Install MySQL</a></li>
-            <li><a href="#sql">Running SQL</a></li>
-            <li><a href="#database">Create MySQL database</a></li>
-            <li><a href="#gradle">build.gradle</a></li>
-            <li><a href="#properties">application.properties</a></li>
-            <li><a href="#entity">Student entity</a></li>
-            <li><a href="#dto">StudentForm DTO</a></li>
-            <li><a href="#repository">Repository</a></li>
-            <li><a href="#service">Service</a></li>
-            <li><a href="#controller">Controller</a></li>
-            <li><a href="#templates">Templates</a></li>
-            <li><a href="#routes">Routes</a></li>
-            <li><a href="#run">Run the project</a></li>
-          </ol>
-        </section>
+    <div class="layout">
+      <aside class="card toc">
+        <h2>Lesson Outline</h2>
+        <ol>
+          <li><a href="#what">What URL mapping means</a></li>
+          <li><a href="#request-parts">Parts of a request</a></li>
+          <li><a href="#mapping-annotations">Mapping annotations</a></li>
+          <li><a href="#class-method-mapping">Class-level and method-level mapping</a></li>
+          <li><a href="#get">GET requests</a></li>
+          <li><a href="#request-param">GET query parameters</a></li>
+          <li><a href="#path-variable">Path variables</a></li>
+          <li><a href="#get-vs-path">Query parameter vs path variable</a></li>
+          <li><a href="#post">POST requests</a></li>
+          <li><a href="#post-form">POST form parameters</a></li>
+          <li><a href="#model-attribute">Form binding with objects</a></li>
+          <li><a href="#request-body">Reading JSON with @RequestBody</a></li>
+          <li><a href="#return-json">Returning JSON</a></li>
+          <li><a href="#json-in-json-out">Read JSON and return JSON</a></li>
+          <li><a href="#response-entity">Using ResponseEntity</a></li>
+          <li><a href="#validation">Validation with JSON input</a></li>
+          <li><a href="#controller-types">@Controller vs @RestController</a></li>
+          <li><a href="#common-mistakes">Common mistakes</a></li>
+          <li><a href="#summary">Final summary</a></li>
+        </ol>
       </aside>
 
-      <main>
-        <section class="card" id="what">
-          <h2>1. What you will build</h2>
-          <p>You will build a Student CRUD app with these features:</p>
+      <main class="content">
+        <section class="card lesson" id="what">
+          <h2>1. What URL mapping means</h2>
+          <p>
+            URL mapping means deciding <strong>which Java method should run for a particular request URL</strong>.
+          </p>
+          <p>Example request:</p>
+<pre><code>GET /about</code></pre>
+          <p>Matching controller method:</p>
+<pre><code>@GetMapping("/about")
+public String about() {
+    return "about";
+}</code></pre>
+          <div class="good">
+            When the browser requests <code>/about</code>, Spring Boot calls the <code>about()</code> method.
+          </div>
+        </section>
+
+        <section class="card lesson" id="request-parts">
+          <h2>2. Parts of a web request</h2>
+          <p>A request usually contains these pieces:</p>
           <ul>
-            <li><strong>Create</strong> a new student</li>
-            <li><strong>Read</strong> the list of students</li>
-            <li><strong>Update</strong> a student</li>
-            <li><strong>Delete</strong> a student</li>
+            <li><strong>HTTP method</strong>: GET, POST, PUT, DELETE</li>
+            <li><strong>URL path</strong>: <code>/hello</code>, <code>/users/10</code></li>
+            <li><strong>query parameters</strong>: <code>?name=Champak&amp;city=Lucknow</code></li>
+            <li><strong>headers</strong></li>
+            <li><strong>body</strong>: form data or JSON</li>
+          </ul>
+          <div class="note">
+            Spring looks at these parts and decides which controller method should handle the request.
+          </div>
+        </section>
+
+        <section class="card lesson" id="mapping-annotations">
+          <h2>3. Main mapping annotations</h2>
+          <p>The most common annotations are:</p>
+<pre><code>@RequestMapping(...)
+@GetMapping(...)
+@PostMapping(...)
+@PutMapping(...)
+@DeleteMapping(...)
+@PatchMapping(...)</code></pre>
+
+          <h3>General style with @RequestMapping</h3>
+<pre><code>@RequestMapping(value = "/hello", method = RequestMethod.GET)
+public String hello() {
+    return "Hello";
+}</code></pre>
+
+          <h3>Shorter style with @GetMapping</h3>
+<pre><code>@GetMapping("/hello")
+public String hello() {
+    return "Hello";
+}</code></pre>
+
+          <h3>POST example</h3>
+<pre><code>@PostMapping("/submit")
+public String submit() {
+    return "Submitted";
+}</code></pre>
+
+          <div class="good">
+            For most projects, use <code>@GetMapping</code>, <code>@PostMapping</code>, <code>@PutMapping</code>, and <code>@DeleteMapping</code> directly.
+          </div>
+        </section>
+
+        <section class="card lesson" id="class-method-mapping">
+          <h2>4. Class-level and method-level mapping</h2>
+          <p>You can put part of the URL on the class and the rest on each method.</p>
+<pre><code>@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @GetMapping
+    public String allUsers() {
+        return "All users";
+    }
+
+    @GetMapping("/active")
+    public String activeUsers() {
+        return "Active users";
+    }
+}</code></pre>
+          <p>This creates these routes:</p>
+          <ul>
+            <li><code>GET /api/users</code></li>
+            <li><code>GET /api/users/active</code></li>
+          </ul>
+          <div class="note">
+            This helps keep controllers clean and organized.
+          </div>
+        </section>
+
+        <section class="card lesson" id="get">
+          <h2>5. GET requests</h2>
+          <p>GET is usually used for:</p>
+          <ul>
+            <li>reading data</li>
+            <li>showing pages</li>
+            <li>searching or filtering</li>
+          </ul>
+          <p>Examples:</p>
+          <div>
+            <span class="badge">GET /products</span>
+            <span class="badge">GET /products/10</span>
+            <span class="badge">GET /search?q=spring</span>
+          </div>
+        </section>
+
+        <section class="card lesson" id="request-param">
+          <h2>6. GET query parameters with @RequestParam</h2>
+          <p>Example URL:</p>
+<pre><code>/hello?name=Champak</code></pre>
+          <p>The query parameter is:</p>
+          <ul>
+            <li>key = <code>name</code></li>
+            <li>value = <code>Champak</code></li>
+          </ul>
+
+          <h3>Basic example</h3>
+<pre><code>@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello(@RequestParam String name) {
+        return "Hello " + name + "!";
+    }
+}</code></pre>
+
+          <h3>Default value</h3>
+<pre><code>@GetMapping("/hello")
+public String hello(@RequestParam(defaultValue = "World") String name) {
+    return "Hello " + name + "!";
+}</code></pre>
+
+          <p>Now:</p>
+          <ul>
+            <li><code>/hello</code> → <code>Hello World!</code></li>
+            <li><code>/hello?name=Champak</code> → <code>Hello Champak!</code></li>
+          </ul>
+
+          <h3>Optional parameter</h3>
+<pre><code>@GetMapping("/hello")
+public String hello(@RequestParam(required = false) String name) {
+    if (name == null || name.isBlank()) {
+        return "Hello Guest!";
+    }
+    return "Hello " + name + "!";
+}</code></pre>
+
+          <h3>Multiple GET parameters</h3>
+<pre><code>@GetMapping("/search")
+public String search(@RequestParam String keyword,
+                     @RequestParam String city) {
+    return "Searching for " + keyword + " in " + city;
+}</code></pre>
+        </section>
+
+        <section class="card lesson" id="path-variable">
+          <h2>7. Path variables with @PathVariable</h2>
+          <p>Sometimes the value is part of the URL path itself.</p>
+          <p>Example:</p>
+<pre><code>/users/10</code></pre>
+          <p>Use <code>@PathVariable</code> to read it.</p>
+
+<pre><code>@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable int id) {
+        return "User id = " + id;
+    }
+}</code></pre>
+
+          <h3>Multiple path variables</h3>
+<pre><code>@GetMapping("/{userId}/orders/{orderId}")
+public String getOrder(@PathVariable int userId,
+                       @PathVariable int orderId) {
+    return "User " + userId + ", Order " + orderId;
+}</code></pre>
+        </section>
+
+        <section class="card lesson" id="get-vs-path">
+          <h2>8. Query parameter vs path variable</h2>
+          <table class="mini-table">
+            <tr>
+              <th>Use case</th>
+              <th>Best choice</th>
+            </tr>
+            <tr>
+              <td>Specific resource</td>
+              <td><code>/users/10</code> → <code>@PathVariable</code></td>
+            </tr>
+            <tr>
+              <td>Filter or optional value</td>
+              <td><code>/products?category=books</code> → <code>@RequestParam</code></td>
+            </tr>
+            <tr>
+              <td>Sorting/searching</td>
+              <td><code>/search?q=spring</code> → <code>@RequestParam</code></td>
+            </tr>
+          </table>
+          <div class="good">
+            <strong>Rule:</strong> identify resources with path variables, filter and search with query parameters.
+          </div>
+        </section>
+
+        <section class="card lesson" id="post">
+          <h2>9. POST requests</h2>
+          <p>POST is usually used for:</p>
+          <ul>
+            <li>submitting forms</li>
+            <li>creating new records</li>
+            <li>sending JSON in request bodies</li>
+          </ul>
+          <p>POST data can come from:</p>
+          <ul>
+            <li>form fields</li>
+            <li>request body</li>
+            <li>JSON payload</li>
           </ul>
         </section>
 
-        <section class="card" id="install">
-          <h2>2. Install MySQL</h2>
-          <p>Download MySQL Installer from the official website:</p>
+        <section class="card lesson" id="post-form">
+          <h2>10. POST form parameters with @RequestParam</h2>
+          <p>Suppose your HTML form looks like this:</p>
+<pre><code>&lt;form action="/submit" method="post"&gt;
+  &lt;input name="name" /&gt;
+  &lt;input name="city" /&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
 
-          <p>
-            👉 
-            <a href="https://dev.mysql.com/downloads/installer/" target="_blank">
-              Download MySQL Installer
-            </a>
-          </p>
+          <p>Read the values like this:</p>
+<pre><code>@Controller
+public class FormController {
 
-          <h3>Steps:</h3>
-          <ol>
-            <li>Run installer</li>
-            <li>Select <strong>Developer Default</strong></li>
-            <li>Keep port as <strong>3306</strong></li>
-            <li>Set root password (example: root123)</li>
-            <li>Finish installation</li>
-          </ol>
+    @PostMapping("/submit")
+    public String submit(@RequestParam String name,
+                         @RequestParam String city,
+                         Model model) {
+        model.addAttribute("message", "Hello " + name + " from " + city);
+        return "result";
+    }
+}</code></pre>
+          <div class="note">
+            This is good for small forms, but larger forms are cleaner with object binding.
+          </div>
+        </section>
+
+        <section class="card lesson" id="model-attribute">
+          <h2>11. Form binding with objects using @ModelAttribute</h2>
+          <p>Create a form DTO:</p>
+<pre><code>public class UserForm {
+    private String name;
+    private String city;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+}</code></pre>
+
+          <p>Use it in the controller:</p>
+<pre><code>@Controller
+public class FormController {
+
+    @GetMapping("/form")
+    public String form(Model model) {
+        model.addAttribute("userForm", new UserForm());
+        return "form";
+    }
+
+    @PostMapping("/form")
+    public String submit(@ModelAttribute UserForm userForm, Model model) {
+        model.addAttribute("message",
+                "Hello " + userForm.getName() + " from " + userForm.getCity());
+        return "result";
+    }
+}</code></pre>
+
+          <p>Thymeleaf form:</p>
+<pre><code>&lt;form th:action="@{/form}" th:object="${userForm}" method="post"&gt;
+  &lt;input type="text" th:field="*{name}" /&gt;
+  &lt;input type="text" th:field="*{city}" /&gt;
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+        </section>
+
+        <section class="card lesson" id="request-body">
+          <h2>12. Reading JSON input with @RequestBody</h2>
+          <p>This is very important for APIs.</p>
+          <p>Suppose the client sends this JSON:</p>
+<pre><code>{
+  "name": "Champak",
+  "city": "Lucknow"
+}</code></pre>
+
+          <h3>DTO class</h3>
+<pre><code>public class UserRequest {
+    private String name;
+    private String city;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+}</code></pre>
+
+          <h3>Controller</h3>
+<pre><code>@RestController
+@RequestMapping("/api/users")
+public class UserApiController {
+
+    @PostMapping
+    public String createUser(@RequestBody UserRequest request) {
+        return "Received " + request.getName() + " from " + request.getCity();
+    }
+}</code></pre>
+
+          <h3>Request example</h3>
+<pre><code>POST /api/users
+Content-Type: application/json
+
+{
+  "name": "Champak",
+  "city": "Lucknow"
+}</code></pre>
 
           <div class="good">
-            After installation, open <strong>MySQL Workbench</strong> to manage database visually.
+            Spring automatically converts JSON into a Java object when you use <code>@RequestBody</code>.
           </div>
         </section>
 
-        <section class="card" id="sql">
-          <h2>3. Running SQL (VERY IMPORTANT)</h2>
+        <section class="card lesson" id="return-json">
+          <h2>13. Returning JSON</h2>
+          <p>
+            When you use <code>@RestController</code>, Spring automatically converts Java objects into JSON.
+          </p>
 
-          <h3>Option 1: MySQL Workbench</h3>
-          <ol>
-            <li>Open MySQL Workbench</li>
-            <li>Click your connection</li>
-            <li>Open SQL editor</li>
-            <li>Type SQL query</li>
-            <li>Click ⚡ Execute button</li>
-          </ol>
+          <h3>Response DTO</h3>
+<pre><code>public class UserResponse {
+    private String message;
+    private String status;
 
-          <h3>Option 2: Command Line</h3>
+    public UserResponse(String message, String status) {
+        this.message = message;
+        this.status = status;
+    }
 
-<pre><code>mysql -u root -p</code></pre>
+    public String getMessage() {
+        return message;
+    }
 
-          <p>Then enter password and run SQL:</p>
+    public String getStatus() {
+        return status;
+    }
+}</code></pre>
 
-<pre><code>SHOW DATABASES;
-CREATE DATABASE springdemo;
-USE springdemo;</code></pre>
+          <h3>Controller method</h3>
+<pre><code>@RestController
+@RequestMapping("/api/users")
+public class UserApiController {
+
+    @GetMapping("/sample")
+    public UserResponse sample() {
+        return new UserResponse("User fetched", "success");
+    }
+}</code></pre>
+
+          <h3>JSON response</h3>
+<pre><code>{
+  "message": "User fetched",
+  "status": "success"
+}</code></pre>
+        </section>
+
+        <section class="card lesson" id="json-in-json-out">
+          <h2>14. Read JSON and return JSON</h2>
+          <p>This is one of the most common API patterns.</p>
+
+          <h3>Request DTO</h3>
+<pre><code>public class GreetingRequest {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}</code></pre>
+
+          <h3>Response DTO</h3>
+<pre><code>public class GreetingResponse {
+    private String message;
+
+    public GreetingResponse(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+}</code></pre>
+
+          <h3>Controller</h3>
+<pre><code>@RestController
+@RequestMapping("/api")
+public class GreetingApiController {
+
+    @PostMapping("/greet")
+    public GreetingResponse greet(@RequestBody GreetingRequest request) {
+        String name = request.getName();
+
+        if (name == null || name.isBlank()) {
+            name = "World";
+        }
+
+        return new GreetingResponse("Hello " + name + "!");
+    }
+}</code></pre>
+
+          <h3>Request JSON</h3>
+<pre><code>{
+  "name": "Champak"
+}</code></pre>
+
+          <h3>Response JSON</h3>
+<pre><code>{
+  "message": "Hello Champak!"
+}</code></pre>
+        </section>
+
+        <section class="card lesson" id="response-entity">
+          <h2>15. Using ResponseEntity for more control</h2>
+          <p>
+            <code>ResponseEntity</code> lets you control the status code, headers, and body.
+          </p>
+
+<pre><code>@RestController
+@RequestMapping("/api")
+public class DemoApiController {
+
+    @PostMapping("/greet")
+    public ResponseEntity&lt;GreetingResponse&gt; greet(@RequestBody GreetingRequest request) {
+        String name = request.getName();
+
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.badRequest()
+                    .body(new GreetingResponse("Name is required"));
+        }
+
+        return ResponseEntity.ok(new GreetingResponse("Hello " + name + "!"));
+    }
+}</code></pre>
+
+          <p>This allows responses like:</p>
+          <ul>
+            <li><code>200 OK</code></li>
+            <li><code>400 Bad Request</code></li>
+            <li>custom headers when needed</li>
+          </ul>
+        </section>
+
+        <section class="card lesson" id="validation">
+          <h2>16. Validation with JSON input</h2>
+          <p>Add validation annotations to the request DTO.</p>
+
+<pre><code>import jakarta.validation.constraints.NotBlank;
+
+public class GreetingRequest {
+
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}</code></pre>
+
+          <p>Then validate it in the controller:</p>
+<pre><code>@PostMapping("/greet")
+public GreetingResponse greet(@Valid @RequestBody GreetingRequest request) {
+    return new GreetingResponse("Hello " + request.getName() + "!");
+}</code></pre>
+
+          <div class="good">
+            Validation helps make sure the API receives proper input before the method continues.
+          </div>
+        </section>
+
+        <section class="card lesson" id="controller-types">
+          <h2>17. @Controller vs @RestController</h2>
+          <table class="mini-table">
+            <tr>
+              <th>Annotation</th>
+              <th>Use for</th>
+            </tr>
+            <tr>
+              <td><code>@Controller</code></td>
+              <td>HTML pages, Thymeleaf templates</td>
+            </tr>
+            <tr>
+              <td><code>@RestController</code></td>
+              <td>APIs, JSON, text responses</td>
+            </tr>
+          </table>
+
+          <h3>Template example</h3>
+<pre><code>@Controller
+public class PageController {
+
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+}</code></pre>
+
+          <h3>API example</h3>
+<pre><code>@RestController
+public class ApiController {
+
+    @GetMapping("/api/hello")
+    public String hello() {
+        return "Hello API";
+    }
+}</code></pre>
+        </section>
+
+        <section class="card lesson" id="common-mistakes">
+          <h2>18. Common mistakes</h2>
+
+          <h3>Mistake 1: Using @RestController for Thymeleaf pages</h3>
+<pre><code>@RestController
+public class PageController {
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+}</code></pre>
+          <p>This returns the text <code>index</code> instead of rendering the page.</p>
+
+          <h3>Mistake 2: Duplicate route mappings</h3>
+<pre><code>@GetMapping("/")
+public String one() { ... }
+
+@GetMapping("/")
+public String two() { ... }</code></pre>
+          <p>This causes an ambiguous mapping error.</p>
+
+          <h3>Mistake 3: Using @RequestParam for JSON body</h3>
+          <p>If the client sends JSON, use <code>@RequestBody</code>, not <code>@RequestParam</code>.</p>
+
+          <h3>Mistake 4: Forgetting getters and setters in DTOs</h3>
+          <p>Spring needs them to map JSON properly.</p>
+
+          <div class="warnbox">
+            <strong>Rule:</strong> use <code>@PathVariable</code> for path values, <code>@RequestParam</code> for query/form values, and <code>@RequestBody</code> for JSON body input.
+          </div>
+        </section>
+
+        <section class="card lesson" id="summary">
+          <h2>19. Final summary</h2>
+          <table class="mini-table">
+            <tr>
+              <th>Case</th>
+              <th>Example</th>
+              <th>Annotation</th>
+            </tr>
+            <tr>
+              <td>Path value</td>
+              <td><code>/users/10</code></td>
+              <td><code>@PathVariable</code></td>
+            </tr>
+            <tr>
+              <td>Query value</td>
+              <td><code>/hello?name=Champak</code></td>
+              <td><code>@RequestParam</code></td>
+            </tr>
+            <tr>
+              <td>Form POST value</td>
+              <td><code>name=Champak</code></td>
+              <td><code>@RequestParam</code> or <code>@ModelAttribute</code></td>
+            </tr>
+            <tr>
+              <td>JSON request body</td>
+              <td><code>{ "name": "Champak" }</code></td>
+              <td><code>@RequestBody</code></td>
+            </tr>
+            <tr>
+              <td>JSON response</td>
+              <td>returning a Java object from API</td>
+              <td>automatic with <code>@RestController</code></td>
+            </tr>
+          </table>
 
           <div class="note">
-            Every SQL statement ends with <strong>;</strong>
+            <strong>Best mental model:</strong>
+            <br />
+            <code>@PathVariable</code> → value from URL path
+            <br />
+            <code>@RequestParam</code> → value from query string or form fields
+            <br />
+            <code>@RequestBody</code> → value from JSON body
+            <br />
+            returning object from <code>@RestController</code> → JSON output
           </div>
+
+          <p>
+            Once you understand these patterns, you can build both HTML-based web apps and JSON-based APIs much more confidently in Spring Boot.
+          </p>
         </section>
-
-        <section class="card" id="database">
-          <h2>4. Create the MySQL database</h2>
-<pre><code>CREATE DATABASE springdemo;
-USE springdemo;</code></pre>
-        </section>
-
-        <!-- REMAINING CONTENT EXACTLY SAME AS BEFORE -->
-
-        <section class="card" id="run">
-          <h2>Run the project</h2>
-<pre><code>.\gradlew.bat bootRun</code></pre>
-          <p>Open:</p>
-<pre><code>http://localhost:8080/students</code></pre>
-        </section>
-
       </main>
     </div>
 
     <div class="footer">
-      Full CRUD lesson page for Spring Boot + MySQL + Thymeleaf
+      Complete Spring Boot URL mapping lesson • ready to publish or adapt into your learning pages
     </div>
   </div>
 </body>
