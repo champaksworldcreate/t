@@ -1,969 +1,1118 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shortest Path Visualizer</title>
-  <style>
-    :root {
-      --bg: #fffaf0;
-      --bg-grad-1: #fff7e6;
-      --bg-grad-2: #fffaf0;
-      --bg-grad-3: #fef3c7;
-      --panel: rgba(255,255,255,0.88);
-      --panel-solid: #ffffff;
-      --border: #e8dcc0;
-      --text: #2f2418;
-      --muted: #6b5a46;
-      --accent: #d97706;
-      --accent-2: #f59e0b;
-      --wall: #2f2418;
-      --start: #16a34a;
-      --end: #dc2626;
-      --visited: #fde68a;
-      --path: #f59e0b;
-      --grid: #f3e8d2;
-      --empty: #fffdf8;
-      --shadow: 0 10px 30px rgba(120, 80, 20, 0.12);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
-      --radius-sm: 12px;
-      --backdrop: blur(10px);
-    }
-
-    body.dark-theme {
-      --bg: #0f172a;
-      --bg-grad-1: #111827;
-      --bg-grad-2: #0f172a;
-      --bg-grad-3: #1e293b;
-      --panel: rgba(17,24,39,0.88);
-      --panel-solid: #111827;
-      --border: #334155;
-      --text: #f8fafc;
-      --muted: #cbd5e1;
-      --accent: #f59e0b;
-      --accent-2: #fbbf24;
-      --wall: #94a3b8;
-      --start: #22c55e;
-      --end: #ef4444;
-      --visited: #334155;
-      --path: #f59e0b;
-      --grid: #243041;
-      --empty: #0b1220;
-      --shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-    }
-
-    body.sharp-design {
-      --radius-xl: 8px;
-      --radius-lg: 6px;
-      --radius-md: 4px;
-      --radius-sm: 3px;
-      --backdrop: blur(0px);
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top left, var(--bg-grad-1) 0%, var(--bg-grad-2) 45%, var(--bg-grad-3) 100%);
-      color: var(--text);
-      min-height: 100%;
-    }
-
-    body {
-      transition: background 0.25s ease, color 0.25s ease;
-    }
-
-    .app {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 18px;
-      transition: max-width 0.2s ease, padding 0.2s ease;
-    }
-
-    body.fullscreen-mode .app {
-      max-width: 100%;
-      padding: 10px;
-    }
-
-    .topbar {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      margin-bottom: 18px;
-      backdrop-filter: var(--backdrop);
-      transition: border-radius 0.2s ease, background 0.2s ease;
-    }
-
-    .title {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .logo {
-      width: 52px;
-      height: 52px;
-      border-radius: calc(var(--radius-lg) - 2px);
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 700;
-      font-size: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      margin-top: 4px;
-      font-size: 14px;
-    }
-
-    .quick-toggles {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-    }
-
-    .card {
-      background: var(--panel-solid);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-      transition: border-radius 0.2s ease, background 0.2s ease;
-    }
-
-    .card h3 {
-      margin: 0 0 10px 0;
-      font-size: 15px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-
-    select, input[type="range"], button {
-      width: 100%;
-    }
-
-    select, button {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 11px 12px;
-      font-size: 14px;
-      background: var(--panel-solid);
-      color: var(--text);
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-radius 0.2s ease;
-    }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: white;
-      border: none;
-    }
-
-    button.secondary {
-      background: var(--panel-solid);
-    }
-
-    button.toggle-on,
-    .mode-btn.active {
-      background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(251,191,36,0.18));
-      border-color: var(--accent);
-    }
-
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    .row2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .mode-buttons,
-    .toggle-buttons {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    .mode-buttons.three {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .stat {
-      background: var(--panel-solid);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-    }
-
-    .stat .label {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 6px;
-    }
-
-    .stat .value {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .board-wrap {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      overflow: auto;
-      backdrop-filter: var(--backdrop);
-      transition: border-radius 0.2s ease, background 0.2s ease;
-    }
-
-    body.fullscreen-mode .board-wrap {
-      min-height: calc(100vh - 220px);
-    }
-
-    .legend {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--panel-solid);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 13px;
-    }
-
-    .dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 5px;
-      border: 1px solid rgba(0,0,0,0.08);
-    }
-
-    .grid {
-      display: grid;
-      gap: 1px;
-      background: var(--grid);
-      border: 1px solid var(--grid);
-      width: max-content;
-      user-select: none;
-      touch-action: none;
-      margin-inline: auto;
-    }
-
-    .cell {
-      width: 24px;
-      height: 24px;
-      background: var(--empty);
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-
-    .cell.start { background: var(--start); }
-    .cell.end { background: var(--end); }
-    .cell.wall { background: var(--wall); }
-    .cell.visited {
-      background: var(--visited);
-      animation: popIn 0.18s ease;
-    }
-    .cell.path {
-      background: var(--path);
-      animation: popIn 0.18s ease;
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.65); opacity: 0.7; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .footer-note {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-    }
-
-    @media (max-width: 900px) {
-      .cell {
-        width: 20px;
-        height: 20px;
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>
+      Face Recognition Project Guide — index.html, capture.html, recognize.html,
+      Django, Flutter, and Tkinter
+    </title>
+    <meta
+      name="description"
+      content="A comprehensive explanation of the Face Recognition Hub project, including index.html, capture.html, recognize.html, Django app structure, Flutter app structure, and Tkinter desktop app structure."
+    />
+    <meta name="theme-color" content="#f59e0b" />
+    <style>
+      :root {
+        --bg: #fff7e6;
+        --bg2: #fff1d6;
+        --card: rgba(255, 255, 255, 0.92);
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --brand: #d97706;
+        --brand2: #f59e0b;
+        --border: #eadcc5;
+        --ok: #166534;
+        --warn: #92400e;
+        --shadow: 0 18px 40px rgba(31, 41, 55, 0.14);
+        --r: 20px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
       }
-      h1 {
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(
+            900px 520px at 15% 10%,
+            rgba(245, 158, 11, 0.22),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 520px at 85% 0%,
+            rgba(217, 119, 6, 0.18),
+            transparent 60%
+          ),
+          linear-gradient(180deg, var(--bg), var(--bg2));
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .wrap {
+        max-width: 1200px;
+        margin: auto;
+        padding: 16px;
+      }
+
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 10px 12px;
+        border-radius: 999px;
+        background: rgba(255, 247, 230, 0.76);
+        border: 1px solid rgba(234, 220, 197, 0.95);
+        box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: 0 12px 26px rgba(217, 119, 6, 0.28);
+      }
+
+      .top h1,
+      .top p,
+      h2,
+      h3,
+      h4,
+      p {
+        margin: 0;
+      }
+
+      .nav {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .nav a {
+        text-decoration: none;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(234, 220, 197, 0.95);
+        background: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        box-shadow: 0 10px 22px rgba(31, 41, 55, 0.08);
+      }
+
+      .hero {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 16px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(234, 220, 197, 0.95);
+        border-radius: var(--r);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .card-h {
+        padding: 14px 16px 10px;
+        border-bottom: 1px solid rgba(234, 220, 197, 0.8);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .card-b {
+        padding: 16px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: max-content;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(245, 158, 11, 0.16);
+        border: 1px solid rgba(217, 119, 6, 0.22);
+        color: #92400e;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .headline {
+        font-size: clamp(28px, 4vw, 46px);
+        line-height: 1.05;
+        font-weight: 900;
+        margin-top: 14px;
+      }
+
+      .lead {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .pill {
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(245, 158, 11, 0.16);
+        border: 1px solid rgba(217, 119, 6, 0.22);
+        color: #92400e;
+        white-space: nowrap;
+      }
+
+      .section {
+        margin-top: 16px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .mini {
+        padding: 14px;
+        border-radius: 16px;
+        background: #fff;
+        border: 1px solid rgba(234, 220, 197, 0.95);
+      }
+
+      .mini h3 {
+        font-size: 17px;
+        margin-bottom: 8px;
+      }
+
+      .mini p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .content h3 {
         font-size: 22px;
+        margin-bottom: 10px;
       }
-    }
-  </style>
-</head>
-<body class="light-theme soft-design">
-  <div class="app">
-    <div class="topbar">
-      <div class="title">
-        <div class="logo">SP</div>
-        <div>
-          <h1>Shortest Path Visualizer</h1>
-          <div class="subtitle">Visualize BFS, Dijkstra, and A* on a grid</div>
+
+      .content h4 {
+        font-size: 16px;
+        margin: 18px 0 8px;
+      }
+
+      .content p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #273142;
+        margin-top: 10px;
+      }
+
+      .content ul {
+        margin: 10px 0 0 18px;
+        padding: 0;
+      }
+
+      .content li {
+        margin: 8px 0;
+        line-height: 1.65;
+        color: #273142;
+      }
+
+      .code,
+      code {
+        font-family: var(--mono);
+      }
+
+      .codeblock {
+        margin-top: 12px;
+        background: #fffaf0;
+        border: 1px solid rgba(234, 220, 197, 0.95);
+        border-radius: 16px;
+        padding: 14px;
+        overflow: auto;
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.65;
+        white-space: pre-wrap;
+      }
+
+      .note {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: var(--warn);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .good {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(22, 101, 52, 0.22);
+        color: var(--ok);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .table-wrap {
+        overflow: auto;
+        margin-top: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border: 1px solid rgba(234, 220, 197, 0.95);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid rgba(234, 220, 197, 0.8);
+        padding: 12px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      th {
+        background: #fff7ea;
+        font-size: 13px;
+      }
+
+      .footer {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(234, 220, 197, 0.95);
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 14px;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1 style="font-size: 15px; line-height: 1.15">
+              Face Recognition Project — Comprehensive Guide
+            </h1>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 2px">
+              index.html, capture.html, recognize.html, Django, Flutter, and
+              Tkinter explained in detail
+            </p>
+          </div>
+        </div>
+        <div class="nav">
+          <a href="#overview">Overview</a>
+          <a href="#index">index.html</a>
+          <a href="#capture">capture.html</a>
+          <a href="#recognize">recognize.html</a>
+          <a href="#django">Django</a>
+          <a href="#flutter">Flutter</a>
+          <a href="#tkinter">Tkinter</a>
         </div>
       </div>
 
-      <div class="quick-toggles">
+      <section class="hero" id="overview">
         <div class="card">
-          <h3>Theme Toggle</h3>
-          <div class="toggle-buttons">
-            <button id="lightThemeBtn" class="toggle-on">Light</button>
-            <button id="darkThemeBtn">Dark</button>
+          <div class="card-b">
+            <span class="eyebrow">Project architecture</span>
+            <div class="headline">
+              One idea, multiple implementations, each serving a different
+              purpose.
+            </div>
+            <p class="lead">
+              This project is centered around a browser-based and app-based face
+              workflow. The user first captures face images for different people,
+              stores or exports those training samples, and then runs a
+              recognition system that compares live camera faces with the stored
+              training set. The same broad idea has been implemented in multiple
+              forms: plain HTML pages, a Django web app, a Flutter app, and a
+              Tkinter desktop app.
+            </p>
+            <p class="lead">
+              The plain HTML version is the simplest and most direct. It is good
+              for static hosting and quick demos. The Django version turns the
+              project into a proper web application with server-side storage and
+              API endpoints. The Flutter version aims at mobile or cross-platform
+              app development with local persistence in SQLite. The Tkinter
+              version turns the same concept into a Python desktop application
+              where data can be stored locally in JSON files.
+            </p>
           </div>
         </div>
 
         <div class="card">
-          <h3>Design Toggle</h3>
-          <div class="toggle-buttons">
-            <button id="softDesignBtn" class="toggle-on">Soft</button>
-            <button id="sharpDesignBtn">Sharp</button>
+          <div class="card-h">
+            <div>
+              <h2 style="font-size: 18px">Main parts</h2>
+              <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+                What each part contributes to the overall system.
+              </p>
+            </div>
+            <span class="pill">6 components</span>
+          </div>
+          <div class="card-b grid-3">
+            <div class="mini">
+              <h3>index.html</h3>
+              <p>The hub page and entry point for the static web version.</p>
+            </div>
+            <div class="mini">
+              <h3>capture.html</h3>
+              <p>The page used for collecting training face images.</p>
+            </div>
+            <div class="mini">
+              <h3>recognize.html</h3>
+              <p>The page used for live face detection and recognition.</p>
+            </div>
+            <div class="mini">
+              <h3>Django app</h3>
+              <p>Server-backed web application with database integration.</p>
+            </div>
+            <div class="mini">
+              <h3>Flutter app</h3>
+              <p>Cross-platform mobile-style app with SQLite data storage.</p>
+            </div>
+            <div class="mini">
+              <h3>Tkinter app</h3>
+              <p>Python desktop app storing its data in JSON files locally.</p>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="card">
-          <h3>Full Screen</h3>
-          <button id="fullScreenBtn" class="secondary">Enter Full Screen</button>
-        </div>
-      </div>
-
-      <div class="controls">
-        <div class="card">
-          <h3>Algorithm</h3>
-          <label for="algorithm">Choose algorithm</label>
-          <select id="algorithm">
-            <option value="bfs">BFS</option>
-            <option value="dijkstra">Dijkstra</option>
-            <option value="astar">A*</option>
-          </select>
-        </div>
-
-        <div class="card">
-          <h3>Drawing Mode</h3>
-          <div class="mode-buttons three">
-            <button class="mode-btn active" data-mode="wall">Wall</button>
-            <button class="mode-btn" data-mode="start">Start</button>
-            <button class="mode-btn" data-mode="end">End</button>
+      <section class="section card content" id="index">
+        <div class="card-h">
+          <div>
+            <h3>Understanding <span class="code">index.html</span></h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              The hub page for the browser version of the project.
+            </p>
           </div>
+          <span class="pill">Landing page</span>
         </div>
+        <div class="card-b">
+          <p>
+            The <code>index.html</code> file acts as the landing page or hub of
+            the web version. It does not do face capture or recognition itself.
+            Instead, its job is to organize the project, explain the workflow,
+            and guide the user to the correct page. This is very important in a
+            multi-page system, because users can otherwise get confused about
+            where to start and what each page does.
+          </p>
 
-        <div class="card">
-          <h3>Animation Speed</h3>
-          <label for="speed">Delay: <span id="speedValue">20</span> ms</label>
-          <input id="speed" type="range" min="0" max="100" value="20" />
-        </div>
+          <p>
+            The hub page typically presents the project in a clean and friendly
+            way. It introduces the overall system, explains that there is a
+            training/capture step and a recognition step, and then offers clear
+            buttons or links to open the appropriate tools. In your case, the
+            two main linked pages are <code>capture.html</code> and
+            <code>recognize.html</code>. This page also explains the expected
+            folder structure, such as where to place
+            <code>data/faces.json</code> and where the face images should be
+            stored.
+          </p>
 
-        <div class="card">
-          <h3>Actions</h3>
-          <div class="row2">
-            <button id="visualizeBtn" class="primary">Visualize</button>
-            <button id="mazeBtn" class="secondary">Random Maze</button>
+          <h4>Main purpose of index.html</h4>
+          <ul>
+            <li>Provide a clean entry point to the project.</li>
+            <li>Explain the workflow before users start using the tools.</li>
+            <li>Reduce confusion between capture and recognition pages.</li>
+            <li>Act as a setup guide and documentation layer.</li>
+            <li>Improve presentation quality for publishing or sharing.</li>
+          </ul>
+
+          <h4>Typical contents of index.html</h4>
+          <ul>
+            <li>Project title and short explanation.</li>
+            <li>Quick links to the capture and recognition pages.</li>
+            <li>Step-by-step workflow instructions.</li>
+            <li>Folder structure and file expectations.</li>
+            <li>Common troubleshooting checks.</li>
+            <li>Help section for beginners.</li>
+          </ul>
+
+          <div class="good">
+            A good <code>index.html</code> does not need complex logic. Its real
+            strength is clarity, navigation, and presentation.
           </div>
-          <div class="row2" style="margin-top:8px;">
-            <button id="clearPathBtn" class="secondary">Clear Path</button>
-            <button id="clearBoardBtn" class="secondary">Clear Board</button>
-          </div>
-        </div>
-      </div>
 
-      <div class="stats">
-        <div class="stat">
-          <div class="label">Visited Nodes</div>
-          <div class="value" id="visitedCount">0</div>
+          <h4>Why index.html matters so much</h4>
+          <p>
+            Even when the interesting technical work happens elsewhere, the hub
+            page has a strong architectural role. It changes the project from
+            “a collection of files” into “a product with a clear entry point.”
+            That makes it easier for users, testers, teachers, students, and
+            even future developers to understand what the system is supposed to
+            do.
+          </p>
         </div>
-        <div class="stat">
-          <div class="label">Path Length</div>
-          <div class="value" id="pathLength">0</div>
+      </section>
+
+      <section class="section card content" id="capture">
+        <div class="card-h">
+          <div>
+            <h3>Understanding <span class="code">capture.html</span></h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              The training image collection tool.
+            </p>
+          </div>
+          <span class="pill">Capture stage</span>
         </div>
-        <div class="stat">
-          <div class="label">Grid Size</div>
-          <div class="value" id="gridSize">25 × 45</div>
+        <div class="card-b">
+          <p>
+            The <code>capture.html</code> page is responsible for collecting the
+            face images that will later be used for recognition. It is the data
+            preparation page. In face recognition systems, the quality of the
+            training data matters a lot. That means this page is not just a
+            camera viewer. It is a structured tool for building a useful
+            training set.
+          </p>
+
+          <p>
+            The user typically enters a person’s name, starts the camera, waits
+            until the face is detected, and then saves multiple cropped face
+            images for that person. These saved images are usually stored
+            locally, downloaded, or prepared for later upload. The tool may
+            also export a grouped JSON file that maps each person name to the
+            related image file paths.
+          </p>
+
+          <h4>Main responsibilities of capture.html</h4>
+          <ul>
+            <li>Open the device camera.</li>
+            <li>Detect a face from the camera feed.</li>
+            <li>Draw a rectangle around the detected face.</li>
+            <li>Crop the face region from the video frame.</li>
+            <li>Save the cropped image with a useful filename.</li>
+            <li>Associate saved images with a person’s name.</li>
+            <li>Prepare grouped training data such as <code>faces.json</code>.</li>
+          </ul>
+
+          <h4>How capture.html usually works internally</h4>
+          <p>
+            The page loads a face detection library such as
+            <code>face-api.js</code>. It requests access to the user’s webcam
+            through browser camera APIs. Once the camera feed becomes available,
+            the page runs detection repeatedly, often at short intervals. When a
+            face is found, the detected box coordinates are used to crop the
+            face from the video frame. The cropped result is then saved as an
+            image.
+          </p>
+
+          <p>
+            In your earlier version, the app also stored cropped images in
+            browser local storage and displayed them in a gallery. This is very
+            useful for demo purposes, though local storage has limitations when
+            storing many large images. A stronger version would use IndexedDB or
+            server upload, but for a simple HTML workflow this local approach is
+            easy to understand.
+          </p>
+
+          <h4>Why multiple images are important</h4>
+          <p>
+            A single face image is usually not enough for good recognition.
+            Multiple images of the same person, ideally with small differences in
+            angle, expression, and lighting, help the recognition system build a
+            better understanding of that person’s face. This is why the workflow
+            often recommends saving three to five clear images per person.
+          </p>
+
+          <div class="note">
+            The capture page is all about data quality. If this page saves poor,
+            blurry, badly cropped, or inconsistent images, the recognition page
+            will struggle no matter how good the later code is.
+          </div>
+
+          <h4>Typical outputs from capture.html</h4>
+          <ul>
+            <li>Face crop image files such as JPEGs.</li>
+            <li>
+              Grouped JSON metadata such as:
+              <code>[{ "name": "Champak", "files": ["images/faces/a.jpg"] }]</code>
+            </li>
+            <li>A visual gallery of saved training samples.</li>
+            <li>Person-wise counts or summary information.</li>
+          </ul>
         </div>
-        <div class="stat">
-          <div class="label">Current Mode</div>
-          <div class="value" id="currentModeLabel">Wall</div>
+      </section>
+
+      <section class="section card content" id="recognize">
+        <div class="card-h">
+          <div>
+            <h3>Understanding <span class="code">recognize.html</span></h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              The live detection and recognition page. You wrote “recognitize,”
+              but the intended filename is usually <code>recognize.html</code>.
+            </p>
+          </div>
+          <span class="pill">Recognition stage</span>
         </div>
+        <div class="card-b">
+          <p>
+            The <code>recognize.html</code> page is the live recognition tool.
+            This is the page that uses previously saved training data and tries
+            to identify faces visible in the camera feed. It is the operational
+            side of the system, whereas <code>capture.html</code> is the data
+            preparation side.
+          </p>
+
+          <p>
+            Typically, this page loads a face detection model, a landmarks model,
+            and a recognition model. It then loads training data from a file such
+            as <code>data/faces.json</code>, fetches each listed training image,
+            extracts a face descriptor from each training image, and builds a
+            matcher. Once that matcher is ready, live camera faces can be
+            compared against the stored descriptors.
+          </p>
+
+          <h4>Main responsibilities of recognize.html</h4>
+          <ul>
+            <li>Start the live camera feed.</li>
+            <li>Detect all visible faces in the frame.</li>
+            <li>Draw boxes around detected faces.</li>
+            <li>Load training data from JSON and images.</li>
+            <li>Extract descriptors from training images.</li>
+            <li>Build a face matcher from known people.</li>
+            <li>Attempt to label each live face.</li>
+            <li>Show debug logs and recognition status.</li>
+          </ul>
+
+          <h4>What “recognition” means here</h4>
+          <p>
+            In this context, recognition means comparing a mathematical face
+            representation from the live camera feed with mathematical face
+            representations from the training images. A match is not based on
+            filename, direct image equality, or simple pixel comparison. Instead,
+            the model generates a descriptor or embedding for each face and
+            checks how close two descriptors are.
+          </p>
+
+          <p>
+            If the distance between the live descriptor and a known person’s
+            descriptor set is low enough, the system can label that face with the
+            person’s name. If no close match is found, the system usually labels
+            the face as unknown.
+          </p>
+
+          <h4>Typical UI elements in recognize.html</h4>
+          <ul>
+            <li>Start Camera button.</li>
+            <li>Stop Camera button.</li>
+            <li>Reload JSON and Reload Training buttons.</li>
+            <li>Live face count display.</li>
+            <li>Mode indicator such as detect or recognize.</li>
+            <li>Recognized names output field.</li>
+            <li>Debug and error log panel.</li>
+          </ul>
+
+          <div class="good">
+            The debug log area is especially useful. It helps explain why the app
+            is showing only “Unknown,” whether images are missing, whether JSON
+            paths are wrong, or whether training images do not contain usable
+            faces.
+          </div>
+
+          <h4>Common failure reasons in recognize.html</h4>
+          <ul>
+            <li>The training JSON file is missing or invalid.</li>
+            <li>The training image paths are wrong.</li>
+            <li>The images exist but no face is detectable in them.</li>
+            <li>The camera permission is blocked.</li>
+            <li>The detection models failed to load.</li>
+            <li>The similarity threshold is too strict or too loose.</li>
+          </ul>
+
+          <h4>Why this page is more complex than capture.html</h4>
+          <p>
+            The capture page mainly needs to detect and crop a face. The
+            recognition page has to handle model loading, JSON loading, training
+            image loading, descriptor extraction, matcher construction, live
+            detection, label generation, and a lot of debugging. That makes it
+            the more technically demanding page in the browser workflow.
+          </p>
+        </div>
+      </section>
+
+      <section class="section card content" id="django">
+        <div class="card-h">
+          <div>
+            <h3>Understanding the Django + MySQL app</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              Turning the browser idea into a proper server-backed web
+              application.
+            </p>
+          </div>
+          <span class="pill">Web framework version</span>
+        </div>
+        <div class="card-b">
+          <p>
+            The Django version takes the static HTML workflow and moves it into a
+            structured web application. In the plain HTML version, the browser is
+            responsible for almost everything: data collection, local storage,
+            file download, and live recognition. In the Django version, the
+            browser still handles live recognition in many implementations, but
+            the training data storage and project structure become much stronger.
+          </p>
+
+          <p>
+            Django provides routing, templates, views, models, forms, database
+            access, media file handling, and APIs. MySQL provides durable
+            relational storage. Together, this allows the face collection process
+            to store image references and person data in a proper database,
+            rather than depending only on temporary browser storage.
+          </p>
+
+          <h4>What the Django version typically adds</h4>
+          <ul>
+            <li>Centralized server-side data storage.</li>
+            <li>Database-backed records for people and their images.</li>
+            <li>Media upload handling.</li>
+            <li>API endpoints for training data export.</li>
+            <li>Cleaner project organization.</li>
+            <li>Potential for authentication and admin access later.</li>
+          </ul>
+
+          <h4>How the Django app is usually structured</h4>
+          <div class="codeblock">project_root/
+├── manage.py
+├── requirements.txt
+├── README.md
+├── config/
+│   ├── settings.py
+│   ├── urls.py
+│   └── ...
+├── facehub/
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── admin.py
+│   └── ...
+├── templates/
+│   ├── index.html
+│   ├── capture.html
+│   └── recognize.html
+├── media/
+│   └── faces/
+└── static/</div>
+
+          <h4>Role of Django models</h4>
+          <p>
+            A Django model defines the structure of stored data. For example, a
+            model like <code>FaceImage</code> can store a person name, image
+            path, upload timestamp, and other metadata. This gives the project
+            a formal schema. Instead of a loose browser-only collection of images,
+            the system now has structured records in MySQL.
+          </p>
+
+          <h4>Role of Django views and APIs</h4>
+          <p>
+            Views are the functions or classes that respond to web requests. In
+            your app, some views render the HTML pages and others behave like
+            APIs. For example, one API may accept an uploaded cropped face image,
+            another may return grouped JSON for recognition, and another may list
+            saved images or summarize people counts.
+          </p>
+
+          <h4>How Django changes the workflow</h4>
+          <p>
+            In the static version, the user captures faces, downloads images, and
+            manually places files in expected folders. In the Django version, the
+            user can capture and upload directly to the server. The server stores
+            the data, and the recognition page can request the grouped training
+            JSON directly from a Django endpoint. This removes much of the manual
+            file movement.
+          </p>
+
+          <div class="note">
+            Django does not automatically perform face recognition by itself. It
+            mainly improves structure, persistence, APIs, and data management.
+            The live recognition logic may still run in the browser using
+            JavaScript libraries.
+          </div>
+
+          <h4>Why MySQL is useful here</h4>
+          <ul>
+            <li>Persistent structured storage.</li>
+            <li>Good for many records and future scaling.</li>
+            <li>Supports filtering, grouping, and reporting.</li>
+            <li>Fits well with Django ORM and admin tools.</li>
+          </ul>
+
+          <h4>When Django is the right choice</h4>
+          <p>
+            Django is the right choice when the project needs shared data, multi-
+            user management, administration, structured storage, or deployment as
+            a proper web platform. It is stronger than the static HTML version
+            when the system starts to behave like a real application rather than
+            a self-contained browser demo.
+          </p>
+        </div>
+      </section>
+
+      <section class="section card content" id="flutter">
+        <div class="card-h">
+          <div>
+            <h3>Understanding the Flutter app with JSON data in SQLite</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              A mobile-style cross-platform version using local database storage.
+            </p>
+          </div>
+          <span class="pill">Cross-platform app version</span>
+        </div>
+        <div class="card-b">
+          <p>
+            Flutter is used when you want a richer app-style experience on
+            Android, iOS, desktop, or multiple platforms from a single codebase.
+            In this project, the Flutter version stores grouped JSON-like data in
+            SQLite. That means the records are still logically similar to the
+            browser JSON structure, but they are stored in a local database on
+            the device.
+          </p>
+
+          <p>
+            SQLite is a lightweight local database. It is excellent for mobile
+            apps because it allows persistent structured storage without needing
+            a remote server. In this project, each person can be stored as a row,
+            and the list of associated face image file paths can be stored as a
+            JSON array string inside SQLite. This design combines database
+            structure with flexible JSON-style data.
+          </p>
+
+          <h4>What the Flutter version usually includes</h4>
+          <ul>
+            <li>Material-based app UI.</li>
+            <li>Pages or screens for dashboard, people, and details.</li>
+            <li>SQLite-based local persistence.</li>
+            <li>Camera or gallery image selection.</li>
+            <li>Import and export of grouped JSON.</li>
+            <li>Add, edit, delete, and search features.</li>
+          </ul>
+
+          <h4>Typical data model in the Flutter app</h4>
+          <div class="codeblock">{
+  "name": "Champak",
+  "files": [
+    "images/faces/champak-1.jpg",
+    "images/faces/champak-2.jpg"
+  ],
+  "notes": "Training set for recognition",
+  "createdAt": "...",
+  "updatedAt": "..."
+}</div>
+
+          <p>
+            Although the logical shape looks like JSON, the app stores this
+            information in SQLite. For example, the <code>files</code> list can
+            be encoded into a JSON string and saved in one database column, while
+            <code>name</code>, <code>notes</code>, and timestamps remain in their
+            own structured columns.
+          </p>
+
+          <h4>Why Flutter is a strong choice here</h4>
+          <ul>
+            <li>Better mobile experience than a simple browser page.</li>
+            <li>Can use camera and gallery plugins naturally.</li>
+            <li>Good local storage with SQLite.</li>
+            <li>Can grow into a polished mobile product.</li>
+            <li>Supports import/export and offline use.</li>
+          </ul>
+
+          <h4>How Flutter differs from Django</h4>
+          <p>
+            Django is server-centered. Flutter is device-centered. Django is
+            ideal for shared centralized data and web deployment. Flutter is
+            ideal for local app experience, mobile deployment, and richer app UI.
+            If the goal is a user’s personal face data manager on their own
+            phone, Flutter can be a great choice. If the goal is a central web
+            system used by many people, Django is usually the better fit.
+          </p>
+
+          <h4>How Flutter differs from the static HTML version</h4>
+          <p>
+            The static HTML version is easy to host but limited by browser
+            constraints and manual file workflow. Flutter offers a more
+            app-like structure, better local storage patterns, and stronger UI
+            organization. It is also more suitable when the project is intended
+            to become a mobile app rather than only a browser demo.
+          </p>
+        </div>
+      </section>
+
+      <section class="section card content" id="tkinter">
+        <div class="card-h">
+          <div>
+            <h3>Understanding the Tkinter app with JSON files</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              A Python desktop application with local file-based persistence.
+            </p>
+          </div>
+          <span class="pill">Desktop version</span>
+        </div>
+        <div class="card-b">
+          <p>
+            Tkinter is the standard GUI toolkit commonly used with Python for
+            simple desktop interfaces. In this project, the Tkinter version takes
+            the same core idea of face capture, person-wise storage, and
+            recognition, and moves it into a local desktop application.
+          </p>
+
+          <p>
+            Unlike the Django version, which uses a server and database, the
+            Tkinter version is usually fully local. Images are stored in a folder
+            such as <code>images/faces/</code>, while metadata is stored in a
+            JSON file such as <code>data/faces.json</code>. This makes the app
+            simple to run and easy to understand, especially for Python learners.
+          </p>
+
+          <h4>What the Tkinter version usually includes</h4>
+          <ul>
+            <li>Desktop window with tabs or panels.</li>
+            <li>Capture page or capture frame using webcam.</li>
+            <li>Recognition page or recognition frame.</li>
+            <li>Data management page for JSON records.</li>
+            <li>Local gallery of saved images.</li>
+            <li>Import/export and delete operations.</li>
+          </ul>
+
+          <h4>Why JSON files fit well with Tkinter</h4>
+          <p>
+            JSON files are human-readable, easy to inspect, and easy to generate
+            from Python dictionaries and lists. For a local desktop app, this is
+            often good enough. It avoids the extra complexity of setting up a
+            full database. For small to medium local projects, JSON storage can
+            be perfectly practical.
+          </p>
+
+          <h4>Typical local file arrangement</h4>
+          <div class="codeblock">app.py
+data/
+  faces.json
+images/
+  faces/
+    champak-1.jpg
+    champak-2.jpg
+    danish-1.jpg</div>
+
+          <h4>Strengths of the Tkinter version</h4>
+          <ul>
+            <li>Easy for Python users to run locally.</li>
+            <li>No web server required.</li>
+            <li>JSON data is simple and transparent.</li>
+            <li>Good for demos, teaching, and local utility use.</li>
+            <li>Can use Python libraries directly for capture and recognition.</li>
+          </ul>
+
+          <h4>Limitations of the Tkinter version</h4>
+          <ul>
+            <li>Less modern UI compared with Flutter or web apps.</li>
+            <li>Harder to distribute to phones.</li>
+            <li>Can become messy if the project grows a lot.</li>
+            <li>JSON file storage is weaker than a real database for large scale.</li>
+          </ul>
+
+          <div class="good">
+            The Tkinter version is especially good for learning, quick internal
+            tools, and fully local workflows where Python is already available.
+          </div>
+
+          <h4>When Tkinter is the right choice</h4>
+          <p>
+            Tkinter is a good choice when the audience is desktop users, the
+            system should run locally without much setup, and simplicity matters
+            more than fancy UI. It is also a good educational choice because the
+            code is usually direct and readable.
+          </p>
+        </div>
+      </section>
+
+      <section class="section card content">
+        <div class="card-h">
+          <div>
+            <h3>Comparing all versions</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              Which implementation is best depends on your goal.
+            </p>
+          </div>
+          <span class="pill">Comparison</span>
+        </div>
+        <div class="card-b">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Best for</th>
+                  <th>Storage style</th>
+                  <th>Main strength</th>
+                  <th>Main limitation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>index.html</code> + static pages</td>
+                  <td>Quick demos, static hosting, simple workflows</td>
+                  <td>Browser/local files/manual placement</td>
+                  <td>Easy to host and easy to understand</td>
+                  <td>Weaker persistence and more manual setup</td>
+                </tr>
+                <tr>
+                  <td><code>capture.html</code></td>
+                  <td>Collecting training face images</td>
+                  <td>Local browser storage or downloaded files</td>
+                  <td>Simple and direct data preparation</td>
+                  <td>Storage limits and browser dependence</td>
+                </tr>
+                <tr>
+                  <td><code>recognize.html</code></td>
+                  <td>Live browser-based recognition</td>
+                  <td>Reads JSON and images</td>
+                  <td>Immediate live feedback and debugging</td>
+                  <td>Dependent on model loading and training quality</td>
+                </tr>
+                <tr>
+                  <td>Django + MySQL</td>
+                  <td>Proper web app deployment</td>
+                  <td>Database + media storage</td>
+                  <td>Structured, scalable, server-backed</td>
+                  <td>More setup and deployment complexity</td>
+                </tr>
+                <tr>
+                  <td>Flutter + SQLite</td>
+                  <td>Mobile/cross-platform local app</td>
+                  <td>Local SQLite with JSON-style fields</td>
+                  <td>App-like UX and good local persistence</td>
+                  <td>More app development complexity</td>
+                </tr>
+                <tr>
+                  <td>Tkinter + JSON</td>
+                  <td>Python desktop utility and teaching</td>
+                  <td>JSON files + local image folders</td>
+                  <td>Simple local Python workflow</td>
+                  <td>Less modern UI and weaker scaling</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Which one should be chosen first</h4>
+          <p>
+            If the goal is to understand the workflow, start with the HTML
+            version. If the goal is to deploy a proper website with shared data,
+            choose Django. If the goal is a mobile-style local app, choose
+            Flutter. If the goal is a local Python desktop utility or teaching
+            project, choose Tkinter.
+          </p>
+        </div>
+      </section>
+
+      <section class="section card content">
+        <div class="card-h">
+          <div>
+            <h3>Complete workflow in simple words</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 4px">
+              How all the pieces connect conceptually.
+            </p>
+          </div>
+          <span class="pill">End-to-end view</span>
+        </div>
+        <div class="card-b">
+          <p>
+            The full system can be understood as a two-stage process. First,
+            collect and organize training data. Second, run recognition using
+            that training data. The exact technology changes from version to
+            version, but the underlying workflow is similar.
+          </p>
+
+          <div class="codeblock">1. Open the project entry point.
+2. Go to the capture tool.
+3. Enter a person's name.
+4. Capture several clear face crops for that person.
+5. Save those crops and record their file paths.
+6. Build grouped data linking people to image files.
+7. Open the recognition tool.
+8. Load training data and training images.
+9. Build a matcher from known face descriptors.
+10. Start the live camera.
+11. Detect faces in the frame.
+12. Compare live faces to stored descriptors.
+13. Show labels for matching people.
+14. Show "Unknown" where no strong match exists.</div>
+
+          <p>
+            This workflow remains valid whether the project is browser-based,
+            server-backed, mobile, or desktop. What changes is mainly the user
+            interface, storage mechanism, and deployment model.
+          </p>
+        </div>
+      </section>
+
+      <div class="footer">
+        This HTML page is intended as comprehensive documentation for the full
+        project family. It explains the role of the hub page, the capture page,
+        the recognition page, and the three app approaches: Django, Flutter, and
+        Tkinter. A very practical next step would be to add screenshots, folder
+        diagrams, and sample JSON examples from your own project files so the
+        page becomes both documentation and a user guide.
       </div>
     </div>
-
-    <div class="board-wrap">
-      <div class="legend">
-        <div class="legend-item"><span class="dot" style="background: var(--start);"></span> Start</div>
-        <div class="legend-item"><span class="dot" style="background: var(--end);"></span> End</div>
-        <div class="legend-item"><span class="dot" style="background: var(--wall);"></span> Wall</div>
-        <div class="legend-item"><span class="dot" style="background: var(--visited);"></span> Visited</div>
-        <div class="legend-item"><span class="dot" style="background: var(--path);"></span> Shortest Path</div>
-      </div>
-
-      <div id="grid" class="grid"></div>
-
-      <div class="footer-note">
-        Drag on the grid to draw walls. Switch mode to move the start or end node.
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const ROWS = 25;
-    const COLS = 45;
-
-    const gridEl = document.getElementById("grid");
-    const algorithmEl = document.getElementById("algorithm");
-    const speedEl = document.getElementById("speed");
-    const speedValueEl = document.getElementById("speedValue");
-    const visualizeBtn = document.getElementById("visualizeBtn");
-    const mazeBtn = document.getElementById("mazeBtn");
-    const clearPathBtn = document.getElementById("clearPathBtn");
-    const clearBoardBtn = document.getElementById("clearBoardBtn");
-    const visitedCountEl = document.getElementById("visitedCount");
-    const pathLengthEl = document.getElementById("pathLength");
-    const gridSizeEl = document.getElementById("gridSize");
-    const currentModeLabelEl = document.getElementById("currentModeLabel");
-    const modeButtons = [...document.querySelectorAll(".mode-btn")];
-
-    const lightThemeBtn = document.getElementById("lightThemeBtn");
-    const darkThemeBtn = document.getElementById("darkThemeBtn");
-    const softDesignBtn = document.getElementById("softDesignBtn");
-    const sharpDesignBtn = document.getElementById("sharpDesignBtn");
-    const fullScreenBtn = document.getElementById("fullScreenBtn");
-
-    let currentMode = "wall";
-    let mouseDown = false;
-    let isAnimating = false;
-
-    let start = { row: 12, col: 8 };
-    let end = { row: 12, col: 36 };
-
-    gridSizeEl.textContent = `${ROWS} × ${COLS}`;
-
-    function createNode(row, col) {
-      return {
-        row,
-        col,
-        isStart: row === start.row && col === start.col,
-        isEnd: row === end.row && col === end.col,
-        isWall: false,
-        visited: false,
-        path: false,
-        distance: Infinity,
-        f: Infinity,
-        g: Infinity,
-        previous: null
-      };
-    }
-
-    let grid = [];
-
-    function setGridColumns() {
-      gridEl.style.gridTemplateColumns =
-        window.innerWidth <= 900
-          ? `repeat(${COLS}, 20px)`
-          : `repeat(${COLS}, 24px)`;
-    }
-
-    function initGrid() {
-      grid = [];
-      gridEl.innerHTML = "";
-      setGridColumns();
-
-      for (let r = 0; r < ROWS; r++) {
-        const row = [];
-        for (let c = 0; c < COLS; c++) {
-          const node = createNode(r, c);
-          row.push(node);
-
-          const cell = document.createElement("div");
-          cell.className = "cell";
-          cell.dataset.row = r;
-          cell.dataset.col = c;
-
-          cell.addEventListener("mousedown", handlePointerDown);
-          cell.addEventListener("mouseenter", handlePointerEnter);
-          cell.addEventListener("touchstart", handleTouch, { passive: false });
-          cell.addEventListener("touchmove", handleTouch, { passive: false });
-
-          gridEl.appendChild(cell);
-        }
-        grid.push(row);
-      }
-
-      renderGrid();
-    }
-
-    function renderGrid() {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const cell = getCellEl(r, c);
-          const node = grid[r][c];
-          cell.className = "cell";
-
-          if (node.isWall) cell.classList.add("wall");
-          if (node.visited) cell.classList.add("visited");
-          if (node.path) cell.classList.add("path");
-          if (node.isStart) cell.classList.add("start");
-          if (node.isEnd) cell.classList.add("end");
-        }
-      }
-    }
-
-    function getCellEl(row, col) {
-      return gridEl.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-    }
-
-    function handlePointerDown(e) {
-      if (isAnimating) return;
-      mouseDown = true;
-      const row = Number(e.target.dataset.row);
-      const col = Number(e.target.dataset.col);
-      applyMode(row, col);
-    }
-
-    function handlePointerEnter(e) {
-      if (!mouseDown || isAnimating) return;
-      const row = Number(e.target.dataset.row);
-      const col = Number(e.target.dataset.col);
-      applyMode(row, col);
-    }
-
-    function handleTouch(e) {
-      if (isAnimating) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (!el || !el.classList.contains("cell")) return;
-
-      const row = Number(el.dataset.row);
-      const col = Number(el.dataset.col);
-      applyMode(row, col);
-    }
-
-    document.addEventListener("mouseup", () => {
-      mouseDown = false;
-    });
-
-    document.addEventListener("touchend", () => {
-      mouseDown = false;
-    });
-
-    function applyMode(row, col) {
-      const node = grid[row][col];
-
-      if (currentMode === "wall") {
-        if (node.isStart || node.isEnd) return;
-        node.isWall = !node.isWall;
-      } else if (currentMode === "start") {
-        if (node.isEnd || node.isWall) return;
-        grid[start.row][start.col].isStart = false;
-        start = { row, col };
-        node.isStart = true;
-      } else if (currentMode === "end") {
-        if (node.isStart || node.isWall) return;
-        grid[end.row][end.col].isEnd = false;
-        end = { row, col };
-        node.isEnd = true;
-      }
-
-      renderGrid();
-    }
-
-    modeButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        modeButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentMode = btn.dataset.mode;
-        currentModeLabelEl.textContent =
-          currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
-      });
-    });
-
-    speedEl.addEventListener("input", () => {
-      speedValueEl.textContent = speedEl.value;
-    });
-
-    function clearSearchOnly() {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const node = grid[r][c];
-          node.visited = false;
-          node.path = false;
-          node.distance = Infinity;
-          node.f = Infinity;
-          node.g = Infinity;
-          node.previous = null;
-        }
-      }
-      visitedCountEl.textContent = "0";
-      pathLengthEl.textContent = "0";
-      renderGrid();
-    }
-
-    function clearBoard() {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          grid[r][c] = createNode(r, c);
-        }
-      }
-      visitedCountEl.textContent = "0";
-      pathLengthEl.textContent = "0";
-      renderGrid();
-    }
-
-    function neighbors(node) {
-      const dirs = [
-        [-1, 0],
-        [1, 0],
-        [0, -1],
-        [0, 1]
-      ];
-
-      const result = [];
-      for (const [dr, dc] of dirs) {
-        const nr = node.row + dr;
-        const nc = node.col + dc;
-        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
-          result.push(grid[nr][nc]);
-        }
-      }
-      return result;
-    }
-
-    function heuristic(a, b) {
-      return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
-    }
-
-    function reconstructPath(endNode) {
-      const path = [];
-      let cur = endNode;
-      while (cur) {
-        path.unshift(cur);
-        cur = cur.previous;
-      }
-      return path;
-    }
-
-    function bfs() {
-      const startNode = grid[start.row][start.col];
-      const endNode = grid[end.row][end.col];
-
-      const queue = [startNode];
-      const visitedOrder = [];
-      const seen = new Set([`${startNode.row},${startNode.col}`]);
-
-      while (queue.length) {
-        const node = queue.shift();
-        if (node.isWall) continue;
-
-        visitedOrder.push(node);
-        if (node === endNode) break;
-
-        for (const nb of neighbors(node)) {
-          const key = `${nb.row},${nb.col}`;
-          if (nb.isWall || seen.has(key)) continue;
-          seen.add(key);
-          nb.previous = node;
-          queue.push(nb);
-        }
-      }
-
-      const path = endNode.previous || endNode === startNode
-        ? reconstructPath(endNode)
-        : [];
-
-      return { visitedOrder, path };
-    }
-
-    function dijkstra() {
-      const startNode = grid[start.row][start.col];
-      const endNode = grid[end.row][end.col];
-      const unvisited = [];
-      const visitedOrder = [];
-
-      startNode.distance = 0;
-
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          unvisited.push(grid[r][c]);
-        }
-      }
-
-      while (unvisited.length) {
-        unvisited.sort((a, b) => a.distance - b.distance);
-        const closest = unvisited.shift();
-
-        if (closest.isWall) continue;
-        if (closest.distance === Infinity) break;
-
-        visitedOrder.push(closest);
-        if (closest === endNode) break;
-
-        for (const nb of neighbors(closest)) {
-          if (nb.isWall) continue;
-          const newDist = closest.distance + 1;
-          if (newDist < nb.distance) {
-            nb.distance = newDist;
-            nb.previous = closest;
-          }
-        }
-      }
-
-      const path = endNode.previous || endNode === startNode
-        ? reconstructPath(endNode)
-        : [];
-
-      return { visitedOrder, path };
-    }
-
-    function astar() {
-      const startNode = grid[start.row][start.col];
-      const endNode = grid[end.row][end.col];
-
-      const openSet = [startNode];
-      const closed = new Set();
-      const visitedOrder = [];
-
-      startNode.g = 0;
-      startNode.f = heuristic(startNode, endNode);
-
-      while (openSet.length) {
-        openSet.sort((a, b) => a.f - b.f);
-        const current = openSet.shift();
-        const currentKey = `${current.row},${current.col}`;
-
-        if (closed.has(currentKey)) continue;
-        closed.add(currentKey);
-
-        if (current.isWall) continue;
-
-        visitedOrder.push(current);
-        if (current === endNode) break;
-
-        for (const nb of neighbors(current)) {
-          if (nb.isWall) continue;
-          const nbKey = `${nb.row},${nb.col}`;
-          if (closed.has(nbKey)) continue;
-
-          const tentativeG = current.g + 1;
-          if (tentativeG < nb.g) {
-            nb.previous = current;
-            nb.g = tentativeG;
-            nb.f = tentativeG + heuristic(nb, endNode);
-            openSet.push(nb);
-          }
-        }
-      }
-
-      const path = endNode.previous || endNode === startNode
-        ? reconstructPath(endNode)
-        : [];
-
-      return { visitedOrder, path };
-    }
-
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function animateResult(visitedOrder, path) {
-      const delay = Number(speedEl.value);
-      let visitedCount = 0;
-
-      for (const node of visitedOrder) {
-        if (!node.isStart && !node.isEnd) {
-          node.visited = true;
-        }
-        visitedCount++;
-        visitedCountEl.textContent = visitedCount;
-        renderGrid();
-        if (delay > 0) await sleep(delay);
-      }
-
-      let pathCount = 0;
-      for (const node of path) {
-        if (!node.isStart && !node.isEnd) {
-          node.path = true;
-        }
-        pathCount++;
-        pathLengthEl.textContent = Math.max(0, pathCount - 1);
-        renderGrid();
-        if (delay > 0) await sleep(Math.max(10, delay));
-      }
-    }
-
-    async function visualize() {
-      if (isAnimating) return;
-      isAnimating = true;
-      toggleControls(true);
-
-      clearSearchOnly();
-
-      let result;
-      const algo = algorithmEl.value;
-      if (algo === "bfs") result = bfs();
-      else if (algo === "dijkstra") result = dijkstra();
-      else result = astar();
-
-      await animateResult(result.visitedOrder, result.path);
-
-      isAnimating = false;
-      toggleControls(false);
-    }
-
-    function toggleControls(disabled) {
-      visualizeBtn.disabled = disabled;
-      mazeBtn.disabled = disabled;
-      clearPathBtn.disabled = disabled;
-      clearBoardBtn.disabled = disabled;
-      algorithmEl.disabled = disabled;
-      speedEl.disabled = disabled;
-      modeButtons.forEach(btn => btn.disabled = disabled);
-
-      lightThemeBtn.disabled = disabled;
-      darkThemeBtn.disabled = disabled;
-      softDesignBtn.disabled = disabled;
-      sharpDesignBtn.disabled = disabled;
-    }
-
-    function randomMaze() {
-      if (isAnimating) return;
-      clearBoard();
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const node = grid[r][c];
-          if (node.isStart || node.isEnd) continue;
-          if (Math.random() < 0.28) {
-            node.isWall = true;
-          }
-        }
-      }
-      renderGrid();
-    }
-
-    function activateButton(activeBtn, group) {
-      group.forEach(btn => btn.classList.remove("toggle-on"));
-      activeBtn.classList.add("toggle-on");
-    }
-
-    function setTheme(theme) {
-      if (theme === "dark") {
-        document.body.classList.add("dark-theme");
-        activateButton(darkThemeBtn, [lightThemeBtn, darkThemeBtn]);
-      } else {
-        document.body.classList.remove("dark-theme");
-        activateButton(lightThemeBtn, [lightThemeBtn, darkThemeBtn]);
-      }
-    }
-
-    function setDesign(design) {
-      if (design === "sharp") {
-        document.body.classList.add("sharp-design");
-        activateButton(sharpDesignBtn, [softDesignBtn, sharpDesignBtn]);
-      } else {
-        document.body.classList.remove("sharp-design");
-        activateButton(softDesignBtn, [softDesignBtn, sharpDesignBtn]);
-      }
-    }
-
-    async function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        try {
-          await document.documentElement.requestFullscreen();
-        } catch (err) {
-          document.body.classList.toggle("fullscreen-mode");
-          updateFullScreenButton();
-        }
-      } else {
-        try {
-          await document.exitFullscreen();
-        } catch (err) {
-          document.body.classList.toggle("fullscreen-mode");
-          updateFullScreenButton();
-        }
-      }
-    }
-
-    function updateFullScreenButton() {
-      const isFs = !!document.fullscreenElement || document.body.classList.contains("fullscreen-mode");
-      fullScreenBtn.textContent = isFs ? "Exit Full Screen" : "Enter Full Screen";
-      fullScreenBtn.classList.toggle("toggle-on", isFs);
-      document.body.classList.toggle("fullscreen-mode", isFs);
-      setGridColumns();
-    }
-
-    lightThemeBtn.addEventListener("click", () => setTheme("light"));
-    darkThemeBtn.addEventListener("click", () => setTheme("dark"));
-    softDesignBtn.addEventListener("click", () => setDesign("soft"));
-    sharpDesignBtn.addEventListener("click", () => setDesign("sharp"));
-    fullScreenBtn.addEventListener("click", toggleFullScreen);
-
-    visualizeBtn.addEventListener("click", visualize);
-    mazeBtn.addEventListener("click", randomMaze);
-    clearPathBtn.addEventListener("click", clearSearchOnly);
-    clearBoardBtn.addEventListener("click", clearBoard);
-
-    document.addEventListener("fullscreenchange", updateFullScreenButton);
-
-    window.addEventListener("resize", () => {
-      setGridColumns();
-    });
-
-    initGrid();
-    setTheme("light");
-    setDesign("soft");
-    updateFullScreenButton();
-  </script>
-</body>
+  </body>
 </html>
