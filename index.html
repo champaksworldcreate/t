@@ -1,812 +1,1978 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Travelling Salesman Visualizer — OpenStreetMap</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Direct Sell Buildcon — Premium Plot Search V2</title>
+  <meta
+    name="description"
+    content="Exquisite premium plot search experience with realistic buyer filters, OpenStreetMap location search, map view, corner plot filter, road width, size, budget, and WhatsApp enquiry."
+  />
+  <meta name="theme-color" content="#d97706" />
+
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
+
+  <style>
+    :root{
+      --bg:#fffaf3;
+      --bg-soft:#fff4e5;
+      --panel:rgba(255,255,255,.84);
+      --panel-2:rgba(255,255,255,.66);
+      --text:#172033;
+      --muted:#667085;
+      --line:rgba(217,119,6,.16);
+      --brand:#d97706;
+      --brand-2:#f59e0b;
+      --brand-3:#fb923c;
+      --ok:#0f766e;
+      --danger:#b91c1c;
+      --shadow:0 20px 60px rgba(217,119,6,.12);
+      --shadow-soft:0 12px 30px rgba(15,23,42,.08);
+      --radius:24px;
+      --radius-sm:16px;
+      --hero:
+        radial-gradient(circle at 0% 0%, rgba(245,158,11,.22), transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(251,146,60,.12), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,250,243,.98));
+      --leaflet-bg:#f8fafc;
+    }
+
+    body.dark{
+      --bg:#0b1220;
+      --bg-soft:#0f172a;
+      --panel:rgba(15,23,42,.84);
+      --panel-2:rgba(15,23,42,.68);
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --line:rgba(245,158,11,.18);
+      --brand:#f59e0b;
+      --brand-2:#fb923c;
+      --brand-3:#fdba74;
+      --shadow:0 22px 68px rgba(2,6,23,.44);
+      --shadow-soft:0 14px 36px rgba(2,6,23,.32);
+      --hero:
+        radial-gradient(circle at 0% 0%, rgba(245,158,11,.12), transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(251,146,60,.10), transparent 24%),
+        linear-gradient(180deg, rgba(15,23,42,.9), rgba(2,6,23,.98));
+      --leaflet-bg:#0f172a;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(245,158,11,.08), transparent 24%),
+        radial-gradient(circle at 85% 12%, rgba(251,146,60,.06), transparent 18%),
+        linear-gradient(180deg,var(--bg),var(--bg-soft));
+      min-height:100vh;
+    }
+
+    a{text-decoration:none;color:inherit}
+    button,input,select{font:inherit}
+
+    .container{
+      width:min(1340px, calc(100% - 28px));
+      margin-inline:auto;
+    }
+
+    .glass{
+      background:var(--panel);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:2000;
+      padding:12px 0;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), transparent);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+    body.dark .topbar{
+      background:linear-gradient(180deg, rgba(2,6,23,.3), transparent);
+    }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 18px;
+      border-radius:999px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      color:#fff;
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 12px 28px rgba(217,119,6,.22);
+      flex:0 0 auto;
+    }
+
+    .brand-title{
+      font-weight:900;
+      font-size:1rem;
+      line-height:1.1;
+      letter-spacing:-.01em;
+    }
+
+    .brand-sub{
+      font-size:.86rem;
+      color:var(--muted);
+      margin-top:4px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .nav-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn,.chip{
+      border:none;
+      border-radius:999px;
+      cursor:pointer;
+      transition:.22s ease;
+    }
+
+    .btn{
+      padding:12px 16px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      justify-content:center;
+      font-weight:800;
+    }
+
+    .btn-brand{
+      color:#fff;
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      box-shadow:0 14px 30px rgba(217,119,6,.22);
+    }
+
+    .btn-soft{
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .chip{
+      padding:10px 14px;
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:700;
+    }
+
+    .btn:hover,.chip:hover{
+      transform:translateY(-2px);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .hero{
+      padding:26px 0 18px;
+    }
+
+    .hero-card{
+      border-radius:34px;
+      padding:30px;
+      background:var(--hero);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:20px;
+      align-items:stretch;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.54);
+      border:1px solid var(--line);
+      color:var(--brand);
+      font-weight:800;
+      font-size:.88rem;
+    }
+    body.dark .eyebrow{background:rgba(15,23,42,.42)}
+
+    .hero h1{
+      margin:16px 0 12px;
+      font-size:clamp(2.1rem,4.1vw,4.2rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+      max-width:12ch;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:1.04rem;
+      max-width:64ch;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .hero-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .mini-badge{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.52);
+      border:1px solid var(--line);
+      font-size:.92rem;
+      font-weight:700;
+    }
+    body.dark .mini-badge{background:rgba(15,23,42,.42)}
+
+    .hero-side{
+      display:grid;
+      gap:14px;
+    }
+
+    .hero-panel{
+      border-radius:26px;
+      padding:18px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .hero-panel h3{
+      margin:0 0 10px;
+      font-size:1.04rem;
+    }
+
+    .hero-stat-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+
+    .hero-stat{
+      padding:14px;
+      border-radius:18px;
+      background:var(--panel-2);
+      border:1px solid var(--line);
+    }
+
+    .hero-stat small{
+      display:block;
+      color:var(--muted);
+      margin-bottom:5px;
+    }
+
+    .hero-stat strong{
+      display:block;
+      font-size:1rem;
+      line-height:1.35;
+    }
+
+    .layout{
+      padding:0 0 32px;
+    }
+
+    .section{
+      margin-top:18px;
+    }
+
+    .section-card{
+      border-radius:30px;
+      padding:22px;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .section-head h2{
+      margin:0;
+      font-size:clamp(1.4rem, 2.3vw, 2rem);
+      line-height:1.1;
+    }
+
+    .section-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.75;
+      max-width:74ch;
+    }
+
+    .search-layout{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .wizard-nav{
+      position:sticky;
+      top:92px;
+      border-radius:24px;
+      padding:16px;
+      background:var(--panel-2);
+      border:1px solid var(--line);
+    }
+
+    .wizard-nav h3{
+      margin:0;
+      font-size:1.05rem;
+    }
+
+    .wizard-nav p{
+      margin:8px 0 14px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:.93rem;
+    }
+
+    .progress{
+      height:10px;
+      border-radius:999px;
+      background:rgba(148,163,184,.18);
+      overflow:hidden;
+      margin-bottom:14px;
+    }
+
+    .progress > span{
+      display:block;
+      height:100%;
+      width:16.666%;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--brand),var(--brand-2));
+      transition:width .25s ease;
+    }
+
+    .step-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .step-item{
+      width:100%;
+      display:grid;
+      grid-template-columns:42px 1fr;
+      gap:12px;
+      align-items:start;
+      padding:12px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:transparent;
+      color:inherit;
+      cursor:pointer;
+      text-align:left;
+    }
+
+    .step-item.active{
+      background:linear-gradient(135deg, rgba(245,158,11,.10), rgba(251,146,60,.10));
+      box-shadow:var(--shadow-soft);
+    }
+
+    .step-no{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:var(--panel);
+      border:1px solid var(--line);
+      font-weight:900;
+    }
+
+    .step-item strong{
+      display:block;
+      line-height:1.25;
+    }
+
+    .step-item span{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.87rem;
+      line-height:1.55;
+    }
+
+    .wizard-nav-actions{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      flex-wrap:wrap;
+    }
+
+    .wizard-main{
+      display:grid;
+      gap:18px;
+    }
+
+    .question-card{
+      border-radius:24px;
+      padding:18px;
+      background:var(--panel-2);
+      border:1px solid var(--line);
+    }
+
+    .question-screen{display:none}
+    .question-screen.active{display:block}
+
+    .question-title{
+      margin:0;
+      font-size:1.18rem;
+      line-height:1.2;
+    }
+
+    .question-sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.75;
+    }
+
+    .option-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .option{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .option:hover{
+      transform:translateY(-2px);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .option.selected{
+      outline:2px solid rgba(245,158,11,.5);
+      background:linear-gradient(135deg, rgba(245,158,11,.11), rgba(251,146,60,.10));
+    }
+
+    .option b{
+      display:block;
+      font-size:1rem;
+      line-height:1.3;
+    }
+
+    .option span{
+      display:block;
+      margin-top:7px;
+      font-size:.92rem;
+      line-height:1.58;
+      color:var(--muted);
+    }
+
+    .range-grid{
+      display:grid;
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .range-box{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:var(--panel);
+    }
+
+    .range-box label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .range-box output{
+      color:var(--brand);
+      font-weight:900;
+    }
+
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--brand);
+      cursor:pointer;
+    }
+
+    .location-search{
+      margin-top:18px;
+      display:grid;
+      gap:14px;
+    }
+
+    .search-row{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:10px;
+    }
+
+    .search-row input{
+      width:100%;
+      min-width:0;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      color:var(--text);
+      outline:none;
+    }
+
+    .search-row input::placeholder{color:var(--muted)}
+
+    .location-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .pill{
+      border-radius:999px;
+      padding:10px 14px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      font-size:.9rem;
+      font-weight:700;
+    }
+
+    .map-card{
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:var(--panel);
+    }
+
+    #map{
+      height:440px;
+      width:100%;
+      background:var(--leaflet-bg);
+    }
+
+    .results-shell{
+      display:grid;
+      gap:14px;
+    }
+
+    .results-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .results-top-right{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .summary{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:16px;
+    }
+
+    .card{
+      border-radius:24px;
+      overflow:hidden;
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      display:flex;
+      flex-direction:column;
+      min-height:100%;
+    }
+
+    .card-top{
+      padding:18px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(255,255,255,.32), transparent 30%),
+        linear-gradient(135deg, rgba(217,119,6,.16), rgba(251,146,60,.14));
+      border-bottom:1px solid var(--line);
+    }
+
+    .card-top-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.38);
+      font-size:.82rem;
+      font-weight:900;
+      color:var(--brand);
+    }
+    body.dark .tag{background:rgba(15,23,42,.45)}
+
+    .price{
+      font-size:1.18rem;
+      font-weight:900;
+      color:var(--brand);
+      white-space:nowrap;
+    }
+
+    .card h3{
+      margin:10px 0 0;
+      font-size:1.16rem;
+      line-height:1.24;
+    }
+
+    .card-body{
+      padding:18px;
+      display:grid;
+      gap:14px;
+      flex:1;
+    }
+
+    .facts{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+
+    .fact{
+      padding:12px;
+      border-radius:16px;
+      background:var(--panel-2);
+      border:1px solid var(--line);
+    }
+
+    .fact small{
+      display:block;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+
+    .fact b{
+      display:block;
+      line-height:1.35;
+    }
+
+    .desc{
+      color:var(--muted);
+      line-height:1.72;
+      font-size:.95rem;
+    }
+
+    .card-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:auto;
+    }
+
+    .empty{
+      padding:28px;
+      border-radius:22px;
+      border:1px dashed var(--line);
+      background:var(--panel);
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .empty h3{
+      margin:0 0 8px;
+      color:var(--text);
+    }
+
+    .notes-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:16px;
+    }
+
+    .note-card{
+      padding:20px;
+      border-radius:24px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .note-card h3{
+      margin:0 0 10px;
+      font-size:1.06rem;
+    }
+
+    .note-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.75;
+    }
+
+    .cta-band{
+      margin-top:18px;
+      border-radius:28px;
+      padding:22px;
+      background:
+        linear-gradient(135deg, rgba(245,158,11,.13), rgba(251,146,60,.11)),
+        var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .cta-band h3{
+      margin:0;
+      font-size:1.3rem;
+      line-height:1.2;
+    }
+
+    .cta-band p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .footer{
+      padding:0 0 36px;
+    }
+
+    .footer-card{
+      border-radius:24px;
+      padding:18px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted);
+    }
+
+    .toast{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      z-index:3000;
+      max-width:min(430px, calc(100vw - 28px));
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:18px;
+      padding:14px 16px;
+      opacity:0;
+      transform:translateY(12px);
+      pointer-events:none;
+      transition:.22s ease;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:none;
+    }
+
+    .small{
+      font-size:.88rem;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .leaflet-container{
+      background:var(--leaflet-bg);
+    }
+
+    .custom-popup{
+      min-width:220px;
+    }
+
+    .custom-popup h4{
+      margin:0 0 6px;
+      font-size:1rem;
+    }
+
+    .custom-popup p{
+      margin:0;
+      color:#475569;
+      font-size:.92rem;
+      line-height:1.55;
+    }
+
+    @media (max-width:1120px){
+      .hero-grid,
+      .search-layout{
+        grid-template-columns:1fr;
+      }
+      .wizard-nav{
+        position:relative;
+        top:0;
+      }
+      .cards,
+      .notes-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:760px){
+      .container{
+        width:min(100% - 20px, 100%);
+      }
+      .nav{
+        border-radius:26px;
+      }
+      .hero-card{
+        border-radius:28px;
+        padding:20px;
+      }
+      .section-card{
+        padding:16px;
+        border-radius:22px;
+      }
+      .option-grid,
+      .facts,
+      .hero-stat-grid{
+        grid-template-columns:1fr;
+      }
+      .search-row{
+        grid-template-columns:1fr;
+      }
+      #map{
+        height:360px;
+      }
+      .brand-sub{
+        display:none;
+      }
+      .nav-actions{
+        width:100%;
+        justify-content:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="nav glass">
+        <div class="brand">
+          <div class="logo">DS</div>
+          <div>
+            <div class="brand-title">Direct Sell Buildcon — Premium Plot Search</div>
+            <div class="brand-sub">Realistic buyer journey • OpenStreetMap search • Better leads • WhatsApp-ready</div>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button class="chip" id="themeToggle" type="button">🌙 Dark</button>
+          <a class="btn btn-soft" href="#finder">Open finder</a>
+          <a class="btn btn-brand" id="navWaBtn" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-card">
+          <div class="hero-grid">
+            <div>
+              <div class="eyebrow">Exquisite V2 — now actually useful</div>
+              <h1>Search plots the way a real buyer actually thinks.</h1>
+              <p>
+                Start with location, budget, plot size, corner preference, road width, purpose, and possession timeline.
+                Search around a city or a precise locality using OpenStreetMap. The shortlist and WhatsApp enquiry text update live.
+              </p>
+
+              <div class="hero-actions">
+                <a class="btn btn-brand" href="#finder">Start guided search</a>
+                <a class="btn btn-soft" id="heroWaBtn" href="#" target="_blank" rel="noopener">Talk on WhatsApp</a>
+              </div>
+
+              <div class="hero-badges">
+                <div class="mini-badge">Location search</div>
+                <div class="mini-badge">Corner plot filter</div>
+                <div class="mini-badge">Road width filter</div>
+                <div class="mini-badge">Live map + cards</div>
+              </div>
+            </div>
+
+            <div class="hero-side">
+              <div class="hero-panel">
+                <h3>What changed in this version</h3>
+                <div class="hero-stat-grid">
+                  <div class="hero-stat">
+                    <small>Location</small>
+                    <strong>OSM + Nominatim search</strong>
+                  </div>
+                  <div class="hero-stat">
+                    <small>Choices</small>
+                    <strong>Real buyer priorities</strong>
+                  </div>
+                  <div class="hero-stat">
+                    <small>Filtering</small>
+                    <strong>Budget, size, corner, road</strong>
+                  </div>
+                  <div class="hero-stat">
+                    <small>Leads</small>
+                    <strong>Context-rich WhatsApp text</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-panel">
+                <h3>Suggested buyer flow</h3>
+                <p class="small">
+                  1) Search the target location. 2) Choose purpose. 3) Set budget. 4) Define size. 5) Choose corner preference. 6) Choose road width. Then review map and shortlist.
+                </p>
+                <div style="margin-top:14px">
+                  <a class="btn btn-brand" id="sideWaBtn" href="#" target="_blank" rel="noopener">Get assistance</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout" id="finder">
+      <div class="container">
+        <div class="section">
+          <div class="section-card glass">
+            <div class="section-head">
+              <div>
+                <h2>Step-based plot finder</h2>
+                <p>
+                  These filters are intentionally realistic: location, intended use, price range, plot size, corner plot, minimum road width, and possession preference. All questions and choices below actually affect the results.
+                </p>
+              </div>
+            </div>
+
+            <div class="search-layout">
+              <aside class="wizard-nav">
+                <h3>Buyer journey</h3>
+                <p>Jump to any step. Every answer updates the map, cards, and WhatsApp enquiry text.</p>
+
+                <div class="progress"><span id="progressBar"></span></div>
+
+                <div class="step-list" id="stepList">
+                  <button class="step-item active" data-step="0" type="button">
+                    <div class="step-no">1</div>
+                    <div><strong>Location</strong><span>Search city or locality on the map</span></div>
+                  </button>
+                  <button class="step-item" data-step="1" type="button">
+                    <div class="step-no">2</div>
+                    <div><strong>Purpose</strong><span>Residential, investment, commercial</span></div>
+                  </button>
+                  <button class="step-item" data-step="2" type="button">
+                    <div class="step-no">3</div>
+                    <div><strong>Budget</strong><span>Set your practical buying range</span></div>
+                  </button>
+                  <button class="step-item" data-step="3" type="button">
+                    <div class="step-no">4</div>
+                    <div><strong>Plot size</strong><span>Smaller, medium, or larger plots</span></div>
+                  </button>
+                  <button class="step-item" data-step="4" type="button">
+                    <div class="step-no">5</div>
+                    <div><strong>Corner plot</strong><span>Yes, no, or open to both</span></div>
+                  </button>
+                  <button class="step-item" data-step="5" type="button">
+                    <div class="step-no">6</div>
+                    <div><strong>Road width</strong><span>Pick your minimum preferred road</span></div>
+                  </button>
+                </div>
+
+                <div class="wizard-nav-actions">
+                  <button class="btn btn-soft" id="prevBtn" type="button">← Previous</button>
+                  <button class="btn btn-brand" id="nextBtn" type="button">Next →</button>
+                </div>
+              </aside>
+
+              <div class="wizard-main">
+                <div class="question-card">
+                  <div class="question-screen active" data-screen="0">
+                    <h3 class="question-title">Step 1 — Where do you want to search?</h3>
+                    <p class="question-sub">
+                      Search a city, locality, landmark, or area name. This uses OpenStreetMap geocoding through Nominatim. Matching projects are ranked by proximity to your searched point.
+                    </p>
+
+                    <div class="location-search">
+                      <div class="search-row">
+                        <input
+                          id="locationInput"
+                          type="text"
+                          placeholder="Search example: Patna, Muzaffarpur, Varanasi, Buxar, Gaya, Lanka Varanasi"
+                        />
+                        <button class="btn btn-soft" id="searchLocationBtn" type="button">Search location</button>
+                        <button class="btn btn-soft" id="useDefaultAreaBtn" type="button">Clear search</button>
+                      </div>
+
+                      <div class="location-meta" id="locationMeta"></div>
+
+                      <div class="map-card">
+                        <div id="map"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="question-screen" data-screen="1">
+                    <h3 class="question-title">Step 2 — What is your main purpose for buying?</h3>
+                    <p class="question-sub">
+                      This changes which projects appear first. Commercial buyers, for example, should not see the same shortlist as family-home buyers.
+                    </p>
+                    <div class="option-grid" id="purposeOptions"></div>
+                  </div>
+
+                  <div class="question-screen" data-screen="2">
+                    <h3 class="question-title">Step 3 — What is your comfortable budget range?</h3>
+                    <p class="question-sub">
+                      Use a realistic minimum and maximum. Results outside the range are excluded.
+                    </p>
+
+                    <div class="range-grid">
+                      <div class="range-box">
+                        <label for="minBudget">
+                          <span>Minimum budget</span>
+                          <output id="minBudgetOut">₹ 5 lakh</output>
+                        </label>
+                        <input id="minBudget" type="range" min="5" max="150" step="1" value="5" />
+                      </div>
+
+                      <div class="range-box">
+                        <label for="maxBudget">
+                          <span>Maximum budget</span>
+                          <output id="maxBudgetOut">₹ 60 lakh</output>
+                        </label>
+                        <input id="maxBudget" type="range" min="5" max="150" step="1" value="60" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="question-screen" data-screen="3">
+                    <h3 class="question-title">Step 4 — What plot size are you looking for?</h3>
+                    <p class="question-sub">
+                      Smaller plots suit tighter budgets, medium plots fit most homes, and larger plots support bigger houses or better frontage.
+                    </p>
+                    <div class="option-grid" id="sizeOptions"></div>
+                  </div>
+
+                  <div class="question-screen" data-screen="4">
+                    <h3 class="question-title">Step 5 — Do you specifically want a corner plot?</h3>
+                    <p class="question-sub">
+                      Corner plots often carry a premium because of better visibility, extra openness, and road access.
+                    </p>
+                    <div class="option-grid" id="cornerOptions"></div>
+                  </div>
+
+                  <div class="question-screen" data-screen="5">
+                    <h3 class="question-title">Step 6 — What is the minimum road width you want?</h3>
+                    <p class="question-sub">
+                      Buyers often care about frontage quality and accessibility. This filter removes plots below your chosen road width threshold.
+                    </p>
+                    <div class="option-grid" id="roadOptions"></div>
+                  </div>
+                </div>
+
+                <div class="results-shell">
+                  <div class="results-top">
+                    <div>
+                      <div class="summary" id="summaryPills"></div>
+                    </div>
+                    <div class="results-top-right">
+                      <div class="pill" id="resultCount">0 matching properties</div>
+                      <a class="btn btn-brand" id="resultsWaBtn" href="#" target="_blank" rel="noopener">WhatsApp shortlist</a>
+                    </div>
+                  </div>
+
+                  <div id="cardsWrap" class="cards"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-card glass">
+            <div class="section-head">
+              <div>
+                <h2>What makes this stronger</h2>
+                <p>
+                  This version behaves more like a serious property finder and less like a decorative landing page.
+                </p>
+              </div>
+            </div>
+
+            <div class="notes-grid">
+              <div class="note-card">
+                <h3>Real filters</h3>
+                <p>
+                  Every answer now matters. Purpose, price, size, corner preference, road width, and searched location all contribute to what the buyer sees.
+                </p>
+              </div>
+              <div class="note-card">
+                <h3>Map-first search</h3>
+                <p>
+                  Buyers often think in terms of area first. OpenStreetMap search gives a real place context and makes the experience feel modern and useful.
+                </p>
+              </div>
+              <div class="note-card">
+                <h3>Better lead handoff</h3>
+                <p>
+                  WhatsApp messages now carry the buyer’s actual preferences and, for each card, the exact property they clicked.
+                </p>
+              </div>
+            </div>
+
+            <div class="cta-band">
+              <div>
+                <h3>Ready to turn this into a production version?</h3>
+                <p>
+                  Replace the demo inventory with live project data from your backend or JSON feed, and set the correct WhatsApp number before publishing.
+                </p>
+              </div>
+              <a class="btn btn-brand" id="bottomWaBtn" href="#" target="_blank" rel="noopener">Open WhatsApp</a>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="footer-card glass">
+            <div>Direct Sell Buildcon — Premium Finder V2</div>
+            <div>Uses Leaflet + OpenStreetMap + Nominatim geocoding</div>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
-  <style>
-    :root {
-      --bg: #fff8eb;
-      --panel: rgba(255,255,255,.9);
-      --panel-2: rgba(255,248,230,.95);
-      --text: #1f2937;
-      --muted: #6b7280;
-      --line: #ead8b4;
-      --brand: #d97706;
-      --brand-2: #f59e0b;
-      --good: #166534;
-      --bad: #991b1b;
-      --shadow: 0 14px 40px rgba(180, 83, 9, .14);
-      --radius: 18px;
-    }* { box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: var(--text);
-  background:
-    radial-gradient(circle at top right, rgba(245,158,11,.16), transparent 28%),
-    radial-gradient(circle at left, rgba(217,119,6,.10), transparent 22%),
-    linear-gradient(180deg, #fffaf1 0%, #fff4df 100%);
-}
 
-.app {
-  display: grid;
-  grid-template-columns: 390px 1fr;
-  gap: 14px;
-  height: 100vh;
-  padding: 14px;
-}
+  <script>
+    const WHATSAPP_NUMBER = "919999999999";
 
-.panel {
-  background: var(--panel);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(234,216,180,.9);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
+    const INVENTORY = [
+      {
+        id: "patna-golden-avenue",
+        name: "Golden Avenue Patna",
+        area: "Patna",
+        locality: "Bihta Growth Belt",
+        lat: 25.5647,
+        lng: 84.8730,
+        purpose: ["residential", "investment"],
+        priceLakh: 22,
+        sizeSqft: 1000,
+        corner: true,
+        roadWidthFt: 30,
+        possession: "immediate",
+        badge: "Fast-selling plotted site",
+        desc: "A practical residential-and-investment option with healthy road width and strong future demand from expanding Patna-side growth.",
+      },
+      {
+        id: "patna-urban-front",
+        name: "Patna Urban Front",
+        area: "Patna",
+        locality: "Danapur Side",
+        lat: 25.6303,
+        lng: 85.0480,
+        purpose: ["residential", "commercial", "investment"],
+        priceLakh: 48,
+        sizeSqft: 1500,
+        corner: false,
+        roadWidthFt: 40,
+        possession: "soon",
+        badge: "Premium frontage option",
+        desc: "Well-suited for buyers seeking stronger access, city influence, better frontage, and mixed use potential.",
+      },
+      {
+        id: "muzaffarpur-green-estate",
+        name: "Muzaffarpur Green Estate",
+        area: "Muzaffarpur",
+        locality: "Suburban Connector Zone",
+        lat: 26.1209,
+        lng: 85.3647,
+        purpose: ["residential", "investment"],
+        priceLakh: 18,
+        sizeSqft: 900,
+        corner: false,
+        roadWidthFt: 24,
+        possession: "soon",
+        badge: "Value residential pick",
+        desc: "Designed for family-home buyers who want a softer entry price while still staying in a growing region.",
+      },
+      {
+        id: "muzaffarpur-corner-hub",
+        name: "Muzaffarpur Corner Hub",
+        area: "Muzaffarpur",
+        locality: "Growth Pocket East",
+        lat: 26.1336,
+        lng: 85.3561,
+        purpose: ["commercial", "investment"],
+        priceLakh: 32,
+        sizeSqft: 1200,
+        corner: true,
+        roadWidthFt: 35,
+        possession: "immediate",
+        badge: "Corner commercial pick",
+        desc: "Ideal for buyers prioritizing corner visibility, stronger approach roads, and better business-facing placement.",
+      },
+      {
+        id: "varanasi-lakeside-plots",
+        name: "Varanasi Lakeside Plots",
+        area: "Varanasi",
+        locality: "Lanka Expansion Zone",
+        lat: 25.2677,
+        lng: 82.9913,
+        purpose: ["residential", "investment"],
+        priceLakh: 36,
+        sizeSqft: 1100,
+        corner: true,
+        roadWidthFt: 30,
+        possession: "soon",
+        badge: "Balanced city-edge option",
+        desc: "A refined option for buyers who want better livability, reasonable access, and stronger medium-term appreciation prospects.",
+      },
+      {
+        id: "varanasi-business-edge",
+        name: "Varanasi Business Edge",
+        area: "Varanasi",
+        locality: "Road-linked trade corridor",
+        lat: 25.3176,
+        lng: 82.9739,
+        purpose: ["commercial", "investment"],
+        priceLakh: 58,
+        sizeSqft: 1400,
+        corner: false,
+        roadWidthFt: 45,
+        possession: "immediate",
+        badge: "Commercial high-road site",
+        desc: "Best for buyers who care more about access quality, frontage, and commercial use than pure low entry pricing.",
+      },
+      {
+        id: "gaya-family-enclave",
+        name: "Gaya Family Enclave",
+        area: "Gaya",
+        locality: "Quiet Residential Side",
+        lat: 24.7914,
+        lng: 85.0002,
+        purpose: ["residential"],
+        priceLakh: 14,
+        sizeSqft: 800,
+        corner: false,
+        roadWidthFt: 20,
+        possession: "flexible",
+        badge: "Budget family option",
+        desc: "Made for first-time buyers who want manageable ticket size and simple residential intent without overpaying.",
+      },
+      {
+        id: "gaya-invest-corner",
+        name: "Gaya Invest Corner",
+        area: "Gaya",
+        locality: "Emerging Outer Ring Side",
+        lat: 24.8059,
+        lng: 84.9914,
+        purpose: ["investment", "commercial"],
+        priceLakh: 21,
+        sizeSqft: 1000,
+        corner: true,
+        roadWidthFt: 28,
+        possession: "flexible",
+        badge: "Corner growth asset",
+        desc: "An investment-led plot choice for buyers who like corner advantage without jumping into top-tier pricing.",
+      },
+      {
+        id: "buxar-value-corridor",
+        name: "Buxar Value Corridor",
+        area: "Buxar",
+        locality: "Emerging Access Pocket",
+        lat: 25.5640,
+        lng: 83.9777,
+        purpose: ["investment", "residential"],
+        priceLakh: 11,
+        sizeSqft: 700,
+        corner: false,
+        roadWidthFt: 18,
+        possession: "flexible",
+        badge: "Low-entry opportunity",
+        desc: "A patient investor’s option for low initial outlay with long-horizon upside rather than instant premium positioning.",
+      },
+      {
+        id: "buxar-corner-gate",
+        name: "Buxar Corner Gate",
+        area: "Buxar",
+        locality: "Road-facing pocket",
+        lat: 25.5795,
+        lng: 83.9687,
+        purpose: ["residential", "investment"],
+        priceLakh: 16,
+        sizeSqft: 900,
+        corner: true,
+        roadWidthFt: 25,
+        possession: "immediate",
+        badge: "Affordable corner option",
+        desc: "A useful fit for buyers wanting corner benefit without moving too far upward in budget.",
+      }
+    ];
 
-.sidebar {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 0;
-}
-
-.section {
-  padding: 16px;
-  border-bottom: 1px solid var(--line);
-}
-
-.section:last-child { border-bottom: 0; }
-
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-h1 {
-  margin: 0;
-  font-size: 1.22rem;
-  line-height: 1.2;
-}
-
-.badge {
-  font-size: .74rem;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 999px;
-  color: #9a3412;
-  background: #ffedd5;
-  border: 1px solid #fdba74;
-  white-space: nowrap;
-}
-
-.sub {
-  color: var(--muted);
-  font-size: .92rem;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.controls {
-  overflow: auto;
-  min-height: 0;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.grid.one { grid-template-columns: 1fr; }
-
-.field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.field label {
-  font-size: .86rem;
-  font-weight: 700;
-  color: #7c2d12;
-}
-
-input[type="number"],
-select,
-input[type="range"] {
-  width: 100%;
-}
-
-input[type="number"], select {
-  border: 1px solid #e7c98d;
-  background: #fff;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: .95rem;
-  color: var(--text);
-  outline: none;
-}
-
-input[type="number"]:focus,
-select:focus {
-  border-color: var(--brand-2);
-  box-shadow: 0 0 0 4px rgba(245,158,11,.14);
-}
-
-input[type="range"] {
-  accent-color: var(--brand);
-}
-
-.row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-button {
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: .93rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-}
-
-button:hover { transform: translateY(-1px); }
-button:active { transform: translateY(0); }
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: white;
-  box-shadow: 0 10px 24px rgba(217,119,6,.24);
-}
-
-.btn-soft {
-  background: #fff7ed;
-  color: #9a3412;
-  border: 1px solid #fdba74;
-}
-
-.btn-dark {
-  background: #1f2937;
-  color: #fff;
-}
-
-.btn-good {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #86efac;
-}
-
-.btn-bad {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.stat {
-  background: var(--panel-2);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 12px;
-}
-
-.stat .k {
-  font-size: .78rem;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-.stat .v {
-  font-size: 1.05rem;
-  font-weight: 800;
-}
-
-.hint {
-  background: #fffbeb;
-  border: 1px dashed #f59e0b;
-  border-radius: 14px;
-  padding: 12px;
-  font-size: .88rem;
-  color: #92400e;
-  line-height: 1.55;
-}
-
-.steps {
-  max-height: 180px;
-  overflow: auto;
-  border: 1px solid var(--line);
-  background: #fffdf8;
-  border-radius: 14px;
-  padding: 8px;
-  display: grid;
-  gap: 6px;
-}
-
-.step {
-  border-radius: 10px;
-  padding: 8px 10px;
-  font-size: .86rem;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-}
-
-#map {
-  width: 100%;
-  height: calc(100vh - 28px);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.map-wrap {
-  position: relative;
-  min-width: 0;
-}
-
-.floating {
-  position: absolute;
-  z-index: 500;
-  top: 14px;
-  right: 14px;
-  background: rgba(255,255,255,.92);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 10px 12px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-width: 280px;
-}
-
-.floating strong { font-size: .92rem; }
-.floating span { font-size: .82rem; color: var(--muted); }
-
-.leaflet-popup-content-wrapper {
-  border-radius: 14px;
-}
-
-.node-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-  font-weight: 800;
-  border: 2px solid white;
-  box-shadow: 0 6px 16px rgba(217,119,6,.28);
-}
-
-@media (max-width: 980px) {
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 52vh;
-    height: auto;
-    min-height: 100vh;
-  }
-  #map {
-    height: 52vh;
-  }
-}
-
-  </style>
-</head>
-<body>
-  <div class="app">
-    <aside class="panel sidebar">
-      <div class="section">
-        <div class="title">
-          <h1>Travelling Salesman Visualizer</h1>
-          <span class="badge">OpenStreetMap</span>
-        </div>
-        <p class="sub">
-          Click on the map to add cities, drag them to new positions, generate random points,
-          and compare a <strong>Nearest Neighbor</strong> tour with an optional <strong>2-opt improvement</strong>.
-        </p>
-      </div><div class="section controls">
-    <div class="grid">
-      <div class="field">
-        <label for="randomCount">Random points</label>
-        <input id="randomCount" type="number" min="3" max="60" value="10" />
-      </div>
-      <div class="field">
-        <label for="animSpeed">Animation speed</label>
-        <input id="animSpeed" type="range" min="40" max="1200" step="20" value="260" />
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="field">
-        <label for="algo">Tour builder</label>
-        <select id="algo">
-          <option value="nearest">Nearest Neighbor</option>
-          <option value="nearest2opt">Nearest + 2-opt</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="startNode">Start node</label>
-        <select id="startNode">
-          <option value="0">Node 1</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row" style="margin-bottom:10px;">
-      <button class="btn-primary" id="solveBtn">Solve</button>
-      <button class="btn-good" id="animateBtn">Animate</button>
-      <button class="btn-dark" id="randomBtn">Random in view</button>
-      <button class="btn-soft" id="fitBtn">Fit points</button>
-    </div>
-
-    <div class="row" style="margin-bottom:14px;">
-      <button class="btn-soft" id="clearRouteBtn">Clear route</button>
-      <button class="btn-bad" id="clearAllBtn">Clear all</button>
-      <button class="btn-soft" id="sampleBtn">Load sample</button>
-    </div>
-
-    <div class="stats" style="margin-bottom:14px;">
-      <div class="stat">
-        <div class="k">Cities</div>
-        <div class="v" id="citiesStat">0</div>
-      </div>
-      <div class="stat">
-        <div class="k">Route length</div>
-        <div class="v" id="distanceStat">—</div>
-      </div>
-      <div class="stat">
-        <div class="k">Algorithm</div>
-        <div class="v" id="algoStat">—</div>
-      </div>
-      <div class="stat">
-        <div class="k">Improvement</div>
-        <div class="v" id="improvementStat">—</div>
-      </div>
-    </div>
-
-    <div class="hint" style="margin-bottom:14px;">
-      <strong>How to use:</strong><br />
-      1. Click on the map to add cities.<br />
-      2. Drag any city marker to reposition it.<br />
-      3. Press <strong>Solve</strong> to build a loop.<br />
-      4. Use <strong>Animate</strong> to watch the tour being drawn.<br />
-      5. Try <strong>Nearest + 2-opt</strong> to improve the path.
-    </div>
-
-    <div class="field">
-      <label>Algorithm steps</label>
-      <div class="steps" id="steps"></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <p class="sub" style="margin:0; font-size:.84rem;">
-      Distances here are straight-line geographic estimates using the Haversine formula,
-      so this visualizer is great for learning and experimentation.
-    </p>
-  </div>
-</aside>
-
-<section class="panel map-wrap">
-  <div id="map"></div>
-  <div class="floating">
-    <strong>Interactive TSP Lab</strong>
-    <span>Add, drag, solve, animate, compare.</span>
-    <span>Tip: random points are created inside the current map view.</span>
-  </div>
-</section>
-
-  </div>  <script>
-    const map = L.map('map', { zoomControl: true }).setView([25.3176, 82.9739], 12);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const state = {
-      markers: [],
-      routeOrder: [],
-      distances: { before: null, after: null },
-      polylines: [],
-      animating: false,
-      animationTimer: null
+    const OPTIONS = {
+      purpose: [
+        { value: "all", label: "No preference", hint: "Show residential, investment, and commercial plots." },
+        { value: "residential", label: "Residential", hint: "For building a family home or a future residence." },
+        { value: "investment", label: "Investment", hint: "For appreciation, future resale, or land banking." },
+        { value: "commercial", label: "Commercial", hint: "For shops, office use, frontage, or business visibility." }
+      ],
+      size: [
+        { value: "all", label: "Any size", hint: "Keep the full inventory open." },
+        { value: "small", label: "Small plot", hint: "Up to 900 sq ft. Good for tighter budgets." },
+        { value: "medium", label: "Medium plot", hint: "901 to 1200 sq ft. A common family-home range." },
+        { value: "large", label: "Large plot", hint: "Above 1200 sq ft. More flexibility and frontage." }
+      ],
+      corner: [
+        { value: "all", label: "Open to both", hint: "Do not exclude non-corner or corner plots." },
+        { value: "yes", label: "Yes, corner only", hint: "Only show corner plots." },
+        { value: "no", label: "No, non-corner only", hint: "Exclude corner plots from the shortlist." }
+      ],
+      road: [
+        { value: 0, label: "Any road width", hint: "Do not filter on road width." },
+        { value: 20, label: "At least 20 ft", hint: "A practical minimum for basic residential access." },
+        { value: 25, label: "At least 25 ft", hint: "Better comfort, movement, and frontage." },
+        { value: 30, label: "At least 30 ft", hint: "Preferred by many premium residential buyers." },
+        { value: 40, label: "At least 40 ft", hint: "Stronger road presence and commercial suitability." }
+      ]
     };
 
-    const citiesStat = document.getElementById('citiesStat');
-    const distanceStat = document.getElementById('distanceStat');
-    const algoStat = document.getElementById('algoStat');
-    const improvementStat = document.getElementById('improvementStat');
-    const stepsEl = document.getElementById('steps');
-    const startNodeEl = document.getElementById('startNode');
-    const algoEl = document.getElementById('algo');
-    const animSpeedEl = document.getElementById('animSpeed');
-    const randomCountEl = document.getElementById('randomCount');
+    const state = {
+      step: 0,
+      searchedLocation: null,
+      purpose: "all",
+      minBudget: 5,
+      maxBudget: 60,
+      size: "all",
+      corner: "all",
+      roadMin: 0
+    };
 
-    function formatKm(km) {
-      return `${km.toFixed(2)} km`;
+    const els = {
+      body: document.body,
+      themeToggle: document.getElementById("themeToggle"),
+      progressBar: document.getElementById("progressBar"),
+      stepItems: [...document.querySelectorAll(".step-item")],
+      screens: [...document.querySelectorAll(".question-screen")],
+      prevBtn: document.getElementById("prevBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      locationInput: document.getElementById("locationInput"),
+      searchLocationBtn: document.getElementById("searchLocationBtn"),
+      useDefaultAreaBtn: document.getElementById("useDefaultAreaBtn"),
+      locationMeta: document.getElementById("locationMeta"),
+      purposeOptions: document.getElementById("purposeOptions"),
+      sizeOptions: document.getElementById("sizeOptions"),
+      cornerOptions: document.getElementById("cornerOptions"),
+      roadOptions: document.getElementById("roadOptions"),
+      minBudget: document.getElementById("minBudget"),
+      maxBudget: document.getElementById("maxBudget"),
+      minBudgetOut: document.getElementById("minBudgetOut"),
+      maxBudgetOut: document.getElementById("maxBudgetOut"),
+      summaryPills: document.getElementById("summaryPills"),
+      resultCount: document.getElementById("resultCount"),
+      cardsWrap: document.getElementById("cardsWrap"),
+      toast: document.getElementById("toast"),
+      waBtns: [
+        document.getElementById("navWaBtn"),
+        document.getElementById("heroWaBtn"),
+        document.getElementById("sideWaBtn"),
+        document.getElementById("resultsWaBtn"),
+        document.getElementById("bottomWaBtn")
+      ]
+    };
+
+    const fmtMoney = lakh => `₹ ${Number(lakh).toLocaleString("en-IN")} lakh`;
+
+    function showToast(message){
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        els.toast.classList.remove("show");
+      }, 2200);
     }
 
-    function setSteps(lines) {
-      stepsEl.innerHTML = '';
-      const safeLines = lines.length ? lines : ['No steps yet.'];
-      safeLines.forEach(line => {
-        const div = document.createElement('div');
-        div.className = 'step';
-        div.textContent = line;
-        stepsEl.appendChild(div);
-      });
-      stepsEl.scrollTop = 0;
-    }
-
-    function updateStats() {
-      citiesStat.textContent = state.markers.length;
-      distanceStat.textContent = state.distances.after == null ? '—' : formatKm(state.distances.after);
-      algoStat.textContent = state.routeOrder.length ? algoEl.options[algoEl.selectedIndex].text : '—';
-
-      if (state.distances.before != null && state.distances.after != null) {
-        const diff = state.distances.before - state.distances.after;
-        const pct = state.distances.before > 0 ? (diff / state.distances.before) * 100 : 0;
-        if (Math.abs(diff) < 0.01) {
-          improvementStat.textContent = '0.00%';
-        } else {
-          improvementStat.textContent = `${pct.toFixed(2)}%`;
-        }
-      } else {
-        improvementStat.textContent = '—';
-      }
-    }
-
-    function updateStartNodeSelect() {
-      const oldValue = Number(startNodeEl.value || 0);
-      startNodeEl.innerHTML = '';
-      state.markers.forEach((_, i) => {
-        const opt = document.createElement('option');
-        opt.value = String(i);
-        opt.textContent = `Node ${i + 1}`;
-        startNodeEl.appendChild(opt);
-      });
-      if (state.markers.length) {
-        startNodeEl.value = String(Math.min(oldValue, state.markers.length - 1));
-      }
-    }
-
-    function markerHtml(index) {
-      return `<div class="node-pill">${index + 1}</div>`;
-    }
-
-    function refreshMarkerLabels() {
-      state.markers.forEach((entry, index) => {
-        entry.marker.setIcon(L.divIcon({
-          html: markerHtml(index),
-          className: '',
-          iconSize: [28, 28],
-          iconAnchor: [14, 14]
-        }));
-        entry.marker.bindPopup(`<strong>Node ${index + 1}</strong><br>Lat: ${entry.marker.getLatLng().lat.toFixed(5)}<br>Lng: ${entry.marker.getLatLng().lng.toFixed(5)}`);
-      });
-      updateStartNodeSelect();
-      updateStats();
-    }
-
-    function addMarker(latlng) {
-      const marker = L.marker(latlng, {
-        draggable: true,
-        icon: L.divIcon({ html: markerHtml(state.markers.length), className: '', iconSize: [28, 28], iconAnchor: [14, 14] })
-      }).addTo(map);
-
-      marker.on('dragend', () => {
-        clearRoute();
-        refreshMarkerLabels();
-        setSteps(['A node was moved. Solve again to recompute the tour.']);
-      });
-
-      marker.on('contextmenu', () => {
-        const idx = state.markers.findIndex(m => m.marker === marker);
-        if (idx >= 0) {
-          map.removeLayer(marker);
-          state.markers.splice(idx, 1);
-          clearRoute();
-          refreshMarkerLabels();
-          setSteps([`Removed Node ${idx + 1}. Right-click any marker to remove it.`]);
-        }
-      });
-
-      state.markers.push({ marker });
-      refreshMarkerLabels();
-    }
-
-    function latLngs() {
-      return state.markers.map(m => m.marker.getLatLng());
-    }
-
-    function haversine(a, b) {
+    function haversineKm(lat1, lon1, lat2, lon2) {
       const R = 6371;
-      const toRad = deg => deg * Math.PI / 180;
-      const dLat = toRad(b.lat - a.lat);
-      const dLng = toRad(b.lng - a.lng);
-      const s1 = Math.sin(dLat / 2);
-      const s2 = Math.sin(dLng / 2);
-      const aa = s1 * s1 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * s2 * s2;
-      const c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa));
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     }
 
-    function totalDistance(order, pts) {
-      if (order.length < 2) return 0;
-      let sum = 0;
-      for (let i = 0; i < order.length - 1; i++) {
-        sum += haversine(pts[order[i]], pts[order[i + 1]]);
+    function buildWhatsAppLink(message){
+      const clean = String(WHATSAPP_NUMBER || "").replace(/[^\d]/g, "");
+      return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+    }
+
+    function getLocationSummary(){
+      if (!state.searchedLocation) return "Any location";
+      return state.searchedLocation.name;
+    }
+
+    function getSizeLabel(){
+      const map = {
+        all: "Any size",
+        small: "Small",
+        medium: "Medium",
+        large: "Large"
+      };
+      return map[state.size] || "Any size";
+    }
+
+    function getCornerLabel(){
+      const map = {
+        all: "Open to both",
+        yes: "Corner only",
+        no: "Non-corner only"
+      };
+      return map[state.corner] || "Open to both";
+    }
+
+    function getRoadLabel(){
+      return state.roadMin ? `At least ${state.roadMin} ft road` : "Any road width";
+    }
+
+    function buildShortlistMessage(){
+      const lines = [
+        "Hello, I am looking for a plot.",
+        `Location: ${getLocationSummary()}`,
+        `Purpose: ${state.purpose === "all" ? "Open to suggestions" : state.purpose}`,
+        `Budget: ${fmtMoney(state.minBudget)} to ${fmtMoney(state.maxBudget)}`,
+        `Plot size: ${getSizeLabel()}`,
+        `Corner plot: ${getCornerLabel()}`,
+        `Road width: ${getRoadLabel()}`
+      ];
+      return lines.join("\n");
+    }
+
+    function setGlobalWhatsAppLinks(){
+      const msg = buildShortlistMessage();
+      els.waBtns.forEach(btn => btn.href = buildWhatsAppLink(msg));
+    }
+
+    function createOptionCards(container, options, stateKey, formatter = v => v){
+      container.innerHTML = options.map(opt => {
+        const selected = String(state[stateKey]) === String(opt.value);
+        return `
+          <button class="option ${selected ? "selected" : ""}" type="button" data-key="${stateKey}" data-value="${opt.value}">
+            <b>${opt.label}</b>
+            <span>${opt.hint}</span>
+          </button>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".option").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.key;
+          const rawValue = btn.dataset.value;
+          state[key] = formatter(rawValue);
+          createAllOptionCards();
+          renderAll();
+        });
+      });
+    }
+
+    function createAllOptionCards(){
+      createOptionCards(els.purposeOptions, OPTIONS.purpose, "purpose", v => v);
+      createOptionCards(els.sizeOptions, OPTIONS.size, "size", v => v);
+      createOptionCards(els.cornerOptions, OPTIONS.corner, "corner", v => v);
+      createOptionCards(els.roadOptions, OPTIONS.road, "roadMin", v => Number(v));
+    }
+
+    function renderWizard(){
+      els.screens.forEach((screen, i) => screen.classList.toggle("active", i === state.step));
+      els.stepItems.forEach((item, i) => item.classList.toggle("active", i === state.step));
+      els.progressBar.style.width = `${((state.step + 1) / 6) * 100}%`;
+      els.prevBtn.disabled = state.step === 0;
+      els.nextBtn.textContent = state.step === 5 ? "Finish ✓" : "Next →";
+    }
+
+    function renderSummary(){
+      const parts = [
+        `Location: ${getLocationSummary()}`,
+        `Purpose: ${state.purpose === "all" ? "Any" : state.purpose}`,
+        `Budget: ${fmtMoney(state.minBudget)} – ${fmtMoney(state.maxBudget)}`,
+        `Size: ${getSizeLabel()}`,
+        `Corner: ${getCornerLabel()}`,
+        `Road: ${getRoadLabel()}`
+      ];
+
+      els.summaryPills.innerHTML = parts.map(p => `<div class="pill">${p}</div>`).join("");
+    }
+
+    function sizeMatches(item){
+      if (state.size === "all") return true;
+      if (state.size === "small") return item.sizeSqft <= 900;
+      if (state.size === "medium") return item.sizeSqft >= 901 && item.sizeSqft <= 1200;
+      if (state.size === "large") return item.sizeSqft > 1200;
+      return true;
+    }
+
+    function cornerMatches(item){
+      if (state.corner === "all") return true;
+      if (state.corner === "yes") return item.corner === true;
+      if (state.corner === "no") return item.corner === false;
+      return true;
+    }
+
+    function getFilteredInventory(){
+      let list = INVENTORY.filter(item => {
+        const purposeOk = state.purpose === "all" || item.purpose.includes(state.purpose);
+        const budgetOk = item.priceLakh >= state.minBudget && item.priceLakh <= state.maxBudget;
+        const sizeOk = sizeMatches(item);
+        const cornerOk = cornerMatches(item);
+        const roadOk = item.roadWidthFt >= state.roadMin;
+        return purposeOk && budgetOk && sizeOk && cornerOk && roadOk;
+      });
+
+      if (state.searchedLocation) {
+        list = list.map(item => {
+          const distKm = haversineKm(
+            state.searchedLocation.lat,
+            state.searchedLocation.lng,
+            item.lat,
+            item.lng
+          );
+          return { ...item, distKm };
+        }).sort((a, b) => a.distKm - b.distKm);
+      } else {
+        list = list.map(item => ({ ...item, distKm: null }));
       }
-      sum += haversine(pts[order[order.length - 1]], pts[order[0]]);
-      return sum;
+
+      return list;
     }
 
-    function nearestNeighbor(start, pts) {
-      const n = pts.length;
-      const used = new Array(n).fill(false);
-      const order = [start];
-      const steps = [`Start at Node ${start + 1}.`];
-      used[start] = true;
-
-      while (order.length < n) {
-        const last = order[order.length - 1];
-        let best = -1;
-        let bestDist = Infinity;
-
-        for (let i = 0; i < n; i++) {
-          if (used[i]) continue;
-          const d = haversine(pts[last], pts[i]);
-          if (d < bestDist) {
-            bestDist = d;
-            best = i;
-          }
-        }
-
-        used[best] = true;
-        order.push(best);
-        steps.push(`From Node ${last + 1}, choose nearest unvisited Node ${best + 1} (${bestDist.toFixed(2)} km).`);
-      }
-
-      steps.push(`Return to Node ${start + 1} to complete the tour.`);
-      return { order, steps };
+    function propertyMessage(item){
+      const lines = [
+        `Hello, I am interested in: ${item.name}`,
+        `Area / locality: ${item.area} — ${item.locality}`,
+        `Price: ${fmtMoney(item.priceLakh)}`,
+        `Size: ${item.sizeSqft.toLocaleString("en-IN")} sq ft`,
+        `Corner plot: ${item.corner ? "Yes" : "No"}`,
+        `Road width: ${item.roadWidthFt} ft`,
+        `Buyer preference summary:`,
+        `• Location: ${getLocationSummary()}`,
+        `• Purpose: ${state.purpose === "all" ? "Open" : state.purpose}`,
+        `• Budget: ${fmtMoney(state.minBudget)} to ${fmtMoney(state.maxBudget)}`,
+        `• Plot size: ${getSizeLabel()}`,
+        `• Corner: ${getCornerLabel()}`,
+        `• Road: ${getRoadLabel()}`,
+        `Please share full details, exact location, and next steps.`
+      ];
+      return lines.join("\n");
     }
 
-    function twoOpt(order, pts) {
-      let best = order.slice();
-      let improved = true;
-      const steps = [];
-      let iterations = 0;
+    function renderCards(){
+      const list = getFilteredInventory();
+      els.resultCount.textContent = `${list.length} matching propert${list.length === 1 ? "y" : "ies"}`;
 
-      while (improved) {
-        improved = false;
-        iterations++;
-
-        for (let i = 1; i < best.length - 1; i++) {
-          for (let k = i + 1; k < best.length; k++) {
-            const candidate = twoOptSwap(best, i, k);
-            const oldDist = totalDistance(best, pts);
-            const newDist = totalDistance(candidate, pts);
-            if (newDist + 1e-9 < oldDist) {
-              steps.push(`2-opt improved the route by swapping segment ${i + 1} to ${k + 1}: ${oldDist.toFixed(2)} km → ${newDist.toFixed(2)} km.`);
-              best = candidate;
-              improved = true;
-            }
-          }
-        }
-
-        if (iterations > 100) break;
-      }
-
-      if (!steps.length) {
-        steps.push('2-opt found no further improvement.');
-      }
-
-      return { order: best, steps };
-    }
-
-    function twoOptSwap(route, i, k) {
-      return route.slice(0, i)
-        .concat(route.slice(i, k + 1).reverse())
-        .concat(route.slice(k + 1));
-    }
-
-    function clearDrawnPolylines() {
-      state.polylines.forEach(line => map.removeLayer(line));
-      state.polylines = [];
-    }
-
-    function clearAnimation() {
-      state.animating = false;
-      if (state.animationTimer) {
-        clearTimeout(state.animationTimer);
-        state.animationTimer = null;
-      }
-    }
-
-    function clearRoute() {
-      clearAnimation();
-      state.routeOrder = [];
-      state.distances.before = null;
-      state.distances.after = null;
-      clearDrawnPolylines();
-      updateStats();
-    }
-
-    function drawRoute(order, animated = false) {
-      clearAnimation();
-      clearDrawnPolylines();
-      if (!order.length) return;
-
-      const pts = latLngs();
-      const routeLatLngs = order.map(i => pts[i]);
-      routeLatLngs.push(pts[order[0]]);
-
-      if (!animated) {
-        const poly = L.polyline(routeLatLngs, {
-          color: '#2563eb',
-          weight: 5,
-          opacity: 0.88
-        }).addTo(map);
-        state.polylines.push(poly);
+      if (!list.length) {
+        els.cardsWrap.innerHTML = `
+          <div class="empty">
+            <h3>No exact match found</h3>
+            <p>Try widening the budget, removing the corner-only filter, lowering road-width preference, or clearing the searched location.</p>
+          </div>
+        `;
+        els.cardsWrap.className = "";
+        clearMapInventoryMarkers();
+        renderMapMarkers([]);
         return;
       }
 
-      let i = 0;
-      state.animating = true;
-      const speed = Number(animSpeedEl.value);
+      els.cardsWrap.className = "cards";
+      els.cardsWrap.innerHTML = list.map(item => `
+        <article class="card">
+          <div class="card-top">
+            <div class="card-top-row">
+              <div>
+                <div class="tag">${item.badge}</div>
+                <h3>${item.name}</h3>
+              </div>
+              <div class="price">${fmtMoney(item.priceLakh)}</div>
+            </div>
+          </div>
 
-      function nextSegment() {
-        if (!state.animating || i >= routeLatLngs.length - 1) {
-          state.animating = false;
+          <div class="card-body">
+            <div class="facts">
+              <div class="fact">
+                <small>Location</small>
+                <b>${item.area} — ${item.locality}</b>
+              </div>
+              <div class="fact">
+                <small>Plot size</small>
+                <b>${item.sizeSqft.toLocaleString("en-IN")} sq ft</b>
+              </div>
+              <div class="fact">
+                <small>Corner plot</small>
+                <b>${item.corner ? "Yes" : "No"}</b>
+              </div>
+              <div class="fact">
+                <small>Road width</small>
+                <b>${item.roadWidthFt} ft</b>
+              </div>
+              <div class="fact">
+                <small>Possession</small>
+                <b style="text-transform:capitalize">${item.possession}</b>
+              </div>
+              <div class="fact">
+                <small>Distance from search</small>
+                <b>${item.distKm == null ? "—" : `${item.distKm.toFixed(1)} km`}</b>
+              </div>
+            </div>
+
+            <div class="desc">${item.desc}</div>
+
+            <div class="card-actions">
+              <a class="btn btn-brand" href="${buildWhatsAppLink(propertyMessage(item))}" target="_blank" rel="noopener">WhatsApp enquiry</a>
+              <button class="btn btn-soft focus-map-btn" data-id="${item.id}" type="button">View on map</button>
+              <button class="btn btn-soft copy-btn" data-copy="${encodeURIComponent(propertyMessage(item))}" type="button">Copy enquiry text</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      els.cardsWrap.querySelectorAll(".copy-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          try{
+            await navigator.clipboard.writeText(decodeURIComponent(btn.dataset.copy));
+            showToast("Enquiry text copied.");
+          }catch{
+            showToast("Could not copy the text.");
+          }
+        });
+      });
+
+      els.cardsWrap.querySelectorAll(".focus-map-btn").forEach(btn => {
+        btn.addEventListener("click", () => focusPropertyOnMap(btn.dataset.id));
+      });
+
+      renderMapMarkers(list);
+    }
+
+    function syncBudget(){
+      if (+els.minBudget.value > +els.maxBudget.value) {
+        if (document.activeElement === els.minBudget) {
+          els.maxBudget.value = els.minBudget.value;
+        } else {
+          els.minBudget.value = els.maxBudget.value;
+        }
+      }
+
+      state.minBudget = +els.minBudget.value;
+      state.maxBudget = +els.maxBudget.value;
+      els.minBudgetOut.textContent = fmtMoney(state.minBudget);
+      els.maxBudgetOut.textContent = fmtMoney(state.maxBudget);
+      renderAll();
+    }
+
+    function initTheme(){
+      const saved = localStorage.getItem("directsell-premium-theme");
+      if (saved === "dark") {
+        els.body.classList.add("dark");
+      }
+      els.themeToggle.textContent = els.body.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
+
+      els.themeToggle.addEventListener("click", () => {
+        els.body.classList.toggle("dark");
+        const dark = els.body.classList.contains("dark");
+        localStorage.setItem("directsell-premium-theme", dark ? "dark" : "light");
+        els.themeToggle.textContent = dark ? "☀️ Light" : "🌙 Dark";
+      });
+    }
+
+    function initWizardNav(){
+      els.stepItems.forEach(item => {
+        item.addEventListener("click", () => {
+          state.step = +item.dataset.step;
+          renderWizard();
+        });
+      });
+
+      els.prevBtn.addEventListener("click", () => {
+        if (state.step > 0) {
+          state.step--;
+          renderWizard();
+        }
+      });
+
+      els.nextBtn.addEventListener("click", () => {
+        if (state.step < 5) {
+          state.step++;
+          renderWizard();
+        } else {
+          showToast("Your shortlist is ready.");
+          document.querySelector(".results-shell").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    }
+
+    function renderLocationMeta(){
+      if (!state.searchedLocation) {
+        els.locationMeta.innerHTML = `
+          <div class="pill">No searched location yet</div>
+          <div class="pill">Projects are shown without proximity ranking</div>
+        `;
+        return;
+      }
+
+      els.locationMeta.innerHTML = `
+        <div class="pill">Searched: ${state.searchedLocation.name}</div>
+        <div class="pill">Lat: ${state.searchedLocation.lat.toFixed(4)}</div>
+        <div class="pill">Lng: ${state.searchedLocation.lng.toFixed(4)}</div>
+        <div class="pill">Results are ranked by proximity</div>
+      `;
+    }
+
+    async function geocodeLocation(query){
+      const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`;
+      const res = await fetch(url, {
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+      if (!res.ok) throw new Error("Search failed");
+      const data = await res.json();
+      if (!Array.isArray(data) || !data.length) return null;
+      const first = data[0];
+      return {
+        name: first.display_name,
+        lat: Number(first.lat),
+        lng: Number(first.lon)
+      };
+    }
+
+    let map;
+    let searchMarker = null;
+    let inventoryLayer;
+    const propertyMarkersById = new Map();
+
+    function initMap(){
+      map = L.map("map", {
+        zoomControl: true
+      }).setView([25.6, 85.1], 6.5);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      inventoryLayer = L.layerGroup().addTo(map);
+      renderMapMarkers(getFilteredInventory());
+    }
+
+    function clearMapInventoryMarkers(){
+      propertyMarkersById.clear();
+      inventoryLayer.clearLayers();
+    }
+
+    function setSearchMarker(location){
+      if (searchMarker) {
+        searchMarker.remove();
+      }
+      if (!location) {
+        searchMarker = null;
+        return;
+      }
+      searchMarker = L.marker([location.lat, location.lng]).addTo(map);
+      searchMarker.bindPopup(`<div class="custom-popup"><h4>Search center</h4><p>${location.name}</p></div>`);
+    }
+
+    function renderMapMarkers(list){
+      clearMapInventoryMarkers();
+
+      list.forEach(item => {
+        const marker = L.marker([item.lat, item.lng]).addTo(inventoryLayer);
+        marker.bindPopup(`
+          <div class="custom-popup">
+            <h4>${item.name}</h4>
+            <p>${item.area} — ${item.locality}</p>
+            <p><strong>Price:</strong> ${fmtMoney(item.priceLakh)}<br>
+            <strong>Size:</strong> ${item.sizeSqft.toLocaleString("en-IN")} sq ft<br>
+            <strong>Corner:</strong> ${item.corner ? "Yes" : "No"}<br>
+            <strong>Road:</strong> ${item.roadWidthFt} ft</p>
+          </div>
+        `);
+        propertyMarkersById.set(item.id, marker);
+      });
+
+      const layers = [];
+      if (searchMarker) layers.push(searchMarker);
+      list.forEach(item => {
+        const marker = propertyMarkersById.get(item.id);
+        if (marker) layers.push(marker);
+      });
+
+      if (layers.length) {
+        const group = L.featureGroup(layers);
+        map.fitBounds(group.getBounds().pad(0.18), { animate: true });
+      }
+    }
+
+    function focusPropertyOnMap(id){
+      const marker = propertyMarkersById.get(id);
+      if (!marker) return;
+      map.setView(marker.getLatLng(), 13, { animate: true });
+      marker.openPopup();
+      document.getElementById("map").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    async function handleLocationSearch(){
+      const q = els.locationInput.value.trim();
+      if (!q) {
+        showToast("Please enter a location to search.");
+        return;
+      }
+
+      const originalText = els.searchLocationBtn.textContent;
+      els.searchLocationBtn.textContent = "Searching...";
+      els.searchLocationBtn.disabled = true;
+
+      try{
+        const result = await geocodeLocation(q);
+        if (!result) {
+          showToast("No location found. Try a clearer city or locality name.");
           return;
         }
 
-        const seg = L.polyline([routeLatLngs[i], routeLatLngs[i + 1]], {
-          color: i === routeLatLngs.length - 2 ? '#dc2626' : '#2563eb',
-          weight: 5,
-          opacity: 0.88
-        }).addTo(map);
-        state.polylines.push(seg);
-        i++;
-        state.animationTimer = setTimeout(nextSegment, speed);
+        state.searchedLocation = result;
+        setSearchMarker(result);
+        renderAll();
+        map.setView([result.lat, result.lng], 12, { animate: true });
+        if (searchMarker) searchMarker.openPopup();
+        showToast("Location updated.");
+      }catch(err){
+        showToast("Location search failed. Please try again.");
+      }finally{
+        els.searchLocationBtn.textContent = originalText;
+        els.searchLocationBtn.disabled = false;
       }
-
-      nextSegment();
     }
 
-    function solve(animated = false) {
-      if (state.markers.length < 3) {
-        setSteps(['Add at least 3 cities to solve the Travelling Salesman Problem.']);
-        return;
+    function clearLocationSearch(){
+      state.searchedLocation = null;
+      els.locationInput.value = "";
+      if (searchMarker) {
+        searchMarker.remove();
+        searchMarker = null;
       }
+      renderAll();
+      map.setView([25.6, 85.1], 6.5, { animate: true });
+      showToast("Location filter cleared.");
+    }
 
-      const pts = latLngs();
-      const start = Math.min(Number(startNodeEl.value || 0), pts.length - 1);
-      const nn = nearestNeighbor(start, pts);
-      let finalOrder = nn.order.slice();
-      let stepLines = nn.steps.slice();
-      const before = totalDistance(nn.order, pts);
-      let after = before;
+    function renderAll(){
+      renderSummary();
+      renderLocationMeta();
+      renderCards();
+      setGlobalWhatsAppLinks();
+    }
 
-      if (algoEl.value === 'nearest2opt') {
-        const improved = twoOpt(finalOrder, pts);
-        finalOrder = improved.order;
-        after = totalDistance(finalOrder, pts);
-        stepLines = stepLines.concat(improved.steps);
+    function init(){
+      initTheme();
+      initWizardNav();
+      initMap();
+      createAllOptionCards();
+
+      els.minBudget.addEventListener("input", syncBudget);
+      els.maxBudget.addEventListener("input", syncBudget);
+
+      els.searchLocationBtn.addEventListener("click", handleLocationSearch);
+      els.useDefaultAreaBtn.addEventListener("click", clearLocationSearch);
+
+      els.locationInput.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleLocationSearch();
+        }
+      });
+
+      syncBudget();
+      renderWizard();
+      renderAll();
+
+      if (String(WHATSAPP_NUMBER) === "919999999999") {
+        setTimeout(() => showToast("Replace the placeholder WhatsApp number before publishing."), 900);
       }
-
-      state.routeOrder = finalOrder;
-      state.distances.before = before;
-      state.distances.after = after;
-      updateStats();
-      setSteps(stepLines);
-      drawRoute(finalOrder, animated);
     }
 
-    function fitAll() {
-      if (!state.markers.length) return;
-      const group = L.featureGroup(state.markers.map(m => m.marker));
-      map.fitBounds(group.getBounds().pad(0.25));
-    }
-
-    function randomInView() {
-      clearRoute();
-      const count = Math.max(3, Math.min(60, Number(randomCountEl.value || 10)));
-      const bounds = map.getBounds();
-      const south = bounds.getSouth();
-      const north = bounds.getNorth();
-      const west = bounds.getWest();
-      const east = bounds.getEast();
-
-      for (let i = 0; i < count; i++) {
-        const lat = south + Math.random() * (north - south);
-        const lng = west + Math.random() * (east - west);
-        addMarker([lat, lng]);
-      }
-
-      setSteps([`Added ${count} random cities inside the current map view.`]);
-    }
-
-    function clearAll() {
-      clearRoute();
-      state.markers.forEach(m => map.removeLayer(m.marker));
-      state.markers = [];
-      refreshMarkerLabels();
-      setSteps(['Cleared all cities and routes.']);
-    }
-
-    function loadSample() {
-      clearAll();
-      const sample = [
-        [25.3176, 82.9739],
-        [25.3112, 82.9870],
-        [25.3280, 82.9650],
-        [25.3015, 82.9524],
-        [25.3395, 82.9892],
-        [25.2868, 82.9761],
-        [25.3492, 82.9440],
-        [25.3228, 83.0085]
-      ];
-      sample.forEach(p => addMarker(p));
-      fitAll();
-      setSteps(['Loaded a sample city set. Press Solve to visualize the tour.']);
-    }
-
-    map.on('click', e => {
-      addMarker(e.latlng);
-      clearRoute();
-      setSteps([`Added Node ${state.markers.length}. Click more points or press Solve.`]);
-    });
-
-    document.getElementById('solveBtn').addEventListener('click', () => solve(false));
-    document.getElementById('animateBtn').addEventListener('click', () => solve(true));
-    document.getElementById('clearRouteBtn').addEventListener('click', () => {
-      clearRoute();
-      setSteps(['Route cleared. Cities are still on the map.']);
-    });
-    document.getElementById('clearAllBtn').addEventListener('click', clearAll);
-    document.getElementById('fitBtn').addEventListener('click', fitAll);
-    document.getElementById('randomBtn').addEventListener('click', randomInView);
-    document.getElementById('sampleBtn').addEventListener('click', loadSample);
-    algoEl.addEventListener('change', () => {
-      if (state.routeOrder.length) solve(false);
-    });
-    startNodeEl.addEventListener('change', () => {
-      if (state.routeOrder.length) solve(false);
-    });
-
-    setSteps([
-      'Click on the map to place your first city.',
-      'Right-click a marker to remove it.',
-      'Drag markers to change the TSP layout.'
-    ]);
-  </script></body>
+    init();
+  </script>
+</body>
 </html>
