@@ -493,4 +493,853 @@
               Lambda functions, and API Gateway endpoints. Nothing here touches real AWS.
             </p>
           </div>
-        </div
+        </div>
+
+        <div class="actions">
+          <button class="btn brand" id="seedBtn">Load Demo Lab</button>
+          <button class="btn" id="saveBtn">Export State</button>
+          <button class="btn" id="importBtn">Import State</button>
+          <input type="file" id="importFile" accept="application/json" class="hidden" />
+          <button class="btn warn" id="resetBtn">Reset Lab</button>
+        </div>
+      </div>
+
+      <div class="badge-row">
+        <div class="badge">Practice environment only</div>
+        <div class="badge">AWS-style concepts</div>
+        <div class="badge">GitHub Pages friendly</div>
+        <div class="badge">JSON export/import supported</div>
+      </div>
+    </section>
+
+    <div class="main">
+      <aside class="sidebar">
+        <h3 class="side-title">Services</h3>
+        <div class="side-list">
+          <button class="nav-btn active" data-view="ec2">
+            <span>
+              <strong>EC2</strong>
+              <small>Instances, start/stop, terminate</small>
+            </span>
+            <span>🖥️</span>
+          </button>
+
+          <button class="nav-btn" data-view="s3">
+            <span>
+              <strong>S3</strong>
+              <small>Buckets and objects</small>
+            </span>
+            <span>🪣</span>
+          </button>
+
+          <button class="nav-btn" data-view="lambda">
+            <span>
+              <strong>Lambda</strong>
+              <small>Functions and test runs</small>
+            </span>
+            <span>⚡</span>
+          </button>
+
+          <button class="nav-btn" data-view="apigw">
+            <span>
+              <strong>API Gateway</strong>
+              <small>Endpoints and routes</small>
+            </span>
+            <span>🌐</span>
+          </button>
+
+          <button class="nav-btn" data-view="console">
+            <span>
+              <strong>Console</strong>
+              <small>Logs and lab state</small>
+            </span>
+            <span>🧾</span>
+          </button>
+        </div>
+
+        <div class="footer-note">
+          Tip: Use <strong>Load Demo Lab</strong> first, then explore each service.
+        </div>
+      </aside>
+
+      <section class="right">
+        <div class="stats">
+          <div class="stat">
+            <h3>EC2 Instances</h3>
+            <div class="num" id="statEC2">0</div>
+          </div>
+          <div class="stat">
+            <h3>S3 Buckets</h3>
+            <div class="num" id="statS3">0</div>
+          </div>
+          <div class="stat">
+            <h3>Lambda Functions</h3>
+            <div class="num" id="statLambda">0</div>
+          </div>
+          <div class="stat">
+            <h3>API Endpoints</h3>
+            <div class="num" id="statApi">0</div>
+          </div>
+        </div>
+
+        <div class="content-card view" id="view-ec2">
+          <div class="section-head">
+            <div>
+              <h2>EC2 Practice Area</h2>
+              <p>Create and manage fake virtual servers for learning purposes.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="ec2Name">Instance name</label>
+              <input id="ec2Name" placeholder="web-server-1" />
+            </div>
+            <div class="field">
+              <label for="ec2Type">Instance type</label>
+              <select id="ec2Type">
+                <option>t2.micro</option>
+                <option>t3.micro</option>
+                <option>t3.small</option>
+                <option>m5.large</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ec2Region">Region</label>
+              <select id="ec2Region">
+                <option>ap-south-1</option>
+                <option>us-east-1</option>
+                <option>eu-west-1</option>
+                <option>ap-southeast-1</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn brand" id="createEC2Btn">Create Instance</button>
+            <button class="btn" id="seedEC2Btn">Add Sample Instance</button>
+          </div>
+
+          <div class="resource-grid" id="ec2List"></div>
+        </div>
+
+        <div class="content-card view hidden" id="view-s3">
+          <div class="section-head">
+            <div>
+              <h2>S3 Practice Area</h2>
+              <p>Create buckets, upload fake objects, and understand storage organization.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field wide">
+              <label for="bucketName">Bucket name</label>
+              <input id="bucketName" placeholder="my-demo-bucket" />
+            </div>
+            <div class="field wide">
+              <label for="bucketRegion">Bucket region</label>
+              <select id="bucketRegion">
+                <option>ap-south-1</option>
+                <option>us-east-1</option>
+                <option>eu-west-1</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn brand" id="createBucketBtn">Create Bucket</button>
+          </div>
+
+          <div class="resource-grid" id="s3List"></div>
+        </div>
+
+        <div class="content-card view hidden" id="view-lambda">
+          <div class="section-head">
+            <div>
+              <h2>Lambda Practice Area</h2>
+              <p>Create fake functions and invoke them with test payloads.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="lambdaName">Function name</label>
+              <input id="lambdaName" placeholder="helloFunction" />
+            </div>
+            <div class="field">
+              <label for="lambdaRuntime">Runtime</label>
+              <select id="lambdaRuntime">
+                <option>nodejs20.x</option>
+                <option>python3.12</option>
+                <option>java21</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="lambdaMemory">Memory</label>
+              <select id="lambdaMemory">
+                <option>128 MB</option>
+                <option>256 MB</option>
+                <option>512 MB</option>
+                <option>1024 MB</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="lambdaCode">Pseudo code / notes</label>
+              <textarea id="lambdaCode" placeholder="exports.handler = async () => ({ statusCode: 200, body: 'Hello' });"></textarea>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn brand" id="createLambdaBtn">Create Function</button>
+          </div>
+
+          <div class="resource-grid" id="lambdaList"></div>
+        </div>
+
+        <div class="content-card view hidden" id="view-apigw">
+          <div class="section-head">
+            <div>
+              <h2>API Gateway Practice Area</h2>
+              <p>Create mock endpoints and connect them conceptually to Lambda functions.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="apiName">API name</label>
+              <input id="apiName" placeholder="student-api" />
+            </div>
+            <div class="field">
+              <label for="apiMethod">Method</label>
+              <select id="apiMethod">
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>DELETE</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="apiRoute">Route</label>
+              <input id="apiRoute" placeholder="/students" />
+            </div>
+            <div class="field full">
+              <label for="apiTarget">Connected Lambda function</label>
+              <select id="apiTarget">
+                <option value="">None</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn brand" id="createApiBtn">Create Endpoint</button>
+          </div>
+
+          <div class="resource-grid" id="apiList"></div>
+        </div>
+
+        <div class="content-card view hidden" id="view-console">
+          <div class="section-head">
+            <div>
+              <h2>Console and State Viewer</h2>
+              <p>See what is happening inside your dummy cloud lab.</p>
+            </div>
+            <div class="toolbar">
+              <button class="btn" id="clearLogsBtn">Clear Logs</button>
+              <button class="btn dark" id="refreshStateBtn">Refresh State</button>
+            </div>
+          </div>
+
+          <div class="two">
+            <div>
+              <label>Activity log</label>
+              <div class="terminal" id="terminal"></div>
+            </div>
+            <div>
+              <label>Current JSON state</label>
+              <div class="state-box" id="stateBox"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "pp_dummy_aws_lab_v1";
+
+      const state = loadState() || {
+        ec2: [],
+        s3: [],
+        lambda: [],
+        apis: [],
+        logs: []
+      };
+
+      const els = {
+        statEC2: document.getElementById("statEC2"),
+        statS3: document.getElementById("statS3"),
+        statLambda: document.getElementById("statLambda"),
+        statApi: document.getElementById("statApi"),
+
+        ec2Name: document.getElementById("ec2Name"),
+        ec2Type: document.getElementById("ec2Type"),
+        ec2Region: document.getElementById("ec2Region"),
+        createEC2Btn: document.getElementById("createEC2Btn"),
+        seedEC2Btn: document.getElementById("seedEC2Btn"),
+        ec2List: document.getElementById("ec2List"),
+
+        bucketName: document.getElementById("bucketName"),
+        bucketRegion: document.getElementById("bucketRegion"),
+        createBucketBtn: document.getElementById("createBucketBtn"),
+        s3List: document.getElementById("s3List"),
+
+        lambdaName: document.getElementById("lambdaName"),
+        lambdaRuntime: document.getElementById("lambdaRuntime"),
+        lambdaMemory: document.getElementById("lambdaMemory"),
+        lambdaCode: document.getElementById("lambdaCode"),
+        createLambdaBtn: document.getElementById("createLambdaBtn"),
+        lambdaList: document.getElementById("lambdaList"),
+
+        apiName: document.getElementById("apiName"),
+        apiMethod: document.getElementById("apiMethod"),
+        apiRoute: document.getElementById("apiRoute"),
+        apiTarget: document.getElementById("apiTarget"),
+        createApiBtn: document.getElementById("createApiBtn"),
+        apiList: document.getElementById("apiList"),
+
+        terminal: document.getElementById("terminal"),
+        stateBox: document.getElementById("stateBox"),
+        clearLogsBtn: document.getElementById("clearLogsBtn"),
+        refreshStateBtn: document.getElementById("refreshStateBtn"),
+
+        seedBtn: document.getElementById("seedBtn"),
+        saveBtn: document.getElementById("saveBtn"),
+        importBtn: document.getElementById("importBtn"),
+        importFile: document.getElementById("importFile"),
+        resetBtn: document.getElementById("resetBtn")
+      };
+
+      const navButtons = Array.from(document.querySelectorAll(".nav-btn"));
+      const views = Array.from(document.querySelectorAll(".view"));
+
+      function uid(prefix) {
+        return prefix + "_" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function nowString() {
+        return new Date().toLocaleString();
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function log(message) {
+        state.logs.unshift(`[${nowString()}] ${message}`);
+        state.logs = state.logs.slice(0, 300);
+        saveState();
+        renderConsole();
+      }
+
+      function setView(name) {
+        navButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.view === name));
+        views.forEach(view => view.classList.toggle("hidden", view.id !== `view-${name}`));
+      }
+
+      navButtons.forEach(btn => {
+        btn.addEventListener("click", () => setView(btn.dataset.view));
+      });
+
+      function renderStats() {
+        els.statEC2.textContent = state.ec2.length;
+        els.statS3.textContent = state.s3.length;
+        els.statLambda.textContent = state.lambda.length;
+        els.statApi.textContent = state.apis.length;
+      }
+
+      function renderEC2() {
+        if (!state.ec2.length) {
+          els.ec2List.innerHTML = `<div class="empty" style="grid-column:1/-1;">No instances yet. Create one to start practicing.</div>`;
+          return;
+        }
+
+        els.ec2List.innerHTML = state.ec2.map(item => `
+          <div class="resource-card">
+            <h3>${escapeHtml(item.name)}</h3>
+            <div class="pill-row">
+              <span class="pill">${escapeHtml(item.type)}</span>
+              <span class="pill">${escapeHtml(item.region)}</span>
+              <span class="pill">${escapeHtml(item.status)}</span>
+            </div>
+            <div class="meta">Instance ID: ${escapeHtml(item.id)}</div>
+            <div class="meta">Public IP: ${escapeHtml(item.ip)}</div>
+            <div class="meta">Created: ${escapeHtml(item.createdAt)}</div>
+            <div class="resource-actions">
+              <button class="btn good" data-ec2-action="start" data-id="${item.id}">Start</button>
+              <button class="btn warn" data-ec2-action="stop" data-id="${item.id}">Stop</button>
+              <button class="btn" data-ec2-action="reboot" data-id="${item.id}">Reboot</button>
+              <button class="btn" data-ec2-action="terminate" data-id="${item.id}">Terminate</button>
+            </div>
+          </div>
+        `).join("");
+
+        els.ec2List.querySelectorAll("[data-ec2-action]").forEach(btn => {
+          btn.addEventListener("click", () => handleEC2Action(btn.dataset.id, btn.dataset.ec2Action));
+        });
+      }
+
+      function handleEC2Action(id, action) {
+        const item = state.ec2.find(x => x.id === id);
+        if (!item) return;
+
+        if (action === "start") {
+          item.status = "running";
+          log(`EC2 instance "${item.name}" started.`);
+        } else if (action === "stop") {
+          item.status = "stopped";
+          log(`EC2 instance "${item.name}" stopped.`);
+        } else if (action === "reboot") {
+          item.status = "running";
+          log(`EC2 instance "${item.name}" rebooted.`);
+        } else if (action === "terminate") {
+          state.ec2 = state.ec2.filter(x => x.id !== id);
+          log(`EC2 instance "${item.name}" terminated.`);
+        }
+
+        saveState();
+        renderAll();
+      }
+
+      function renderS3() {
+        if (!state.s3.length) {
+          els.s3List.innerHTML = `<div class="empty" style="grid-column:1/-1;">No buckets yet. Create a bucket and add dummy objects.</div>`;
+          return;
+        }
+
+        els.s3List.innerHTML = state.s3.map(bucket => `
+          <div class="resource-card">
+            <h3>${escapeHtml(bucket.name)}</h3>
+            <div class="pill-row">
+              <span class="pill">${escapeHtml(bucket.region)}</span>
+              <span class="pill">${bucket.objects.length} object(s)</span>
+            </div>
+            <div class="meta">Bucket ID: ${escapeHtml(bucket.id)}</div>
+            <div class="meta">Created: ${escapeHtml(bucket.createdAt)}</div>
+            <div class="resource-actions">
+              <button class="btn good" data-s3-action="add-object" data-id="${bucket.id}">Add Object</button>
+              <button class="btn" data-s3-action="view" data-id="${bucket.id}">View Objects</button>
+              <button class="btn warn" data-s3-action="delete" data-id="${bucket.id}">Delete Bucket</button>
+            </div>
+          </div>
+        `).join("");
+
+        els.s3List.querySelectorAll("[data-s3-action]").forEach(btn => {
+          btn.addEventListener("click", () => handleS3Action(btn.dataset.id, btn.dataset.s3Action));
+        });
+      }
+
+      function handleS3Action(id, action) {
+        const bucket = state.s3.find(x => x.id === id);
+        if (!bucket) return;
+
+        if (action === "add-object") {
+          const count = bucket.objects.length + 1;
+          bucket.objects.push({
+            key: `file-${count}.txt`,
+            size: `${Math.floor(Math.random() * 90) + 10} KB`,
+            uploadedAt: nowString()
+          });
+          log(`Object "file-${count}.txt" added to bucket "${bucket.name}".`);
+        } else if (action === "view") {
+          const names = bucket.objects.length
+            ? bucket.objects.map(o => `${o.key} (${o.size})`).join(", ")
+            : "No objects yet";
+          alert(`Bucket: ${bucket.name}\n\nObjects:\n${names}`);
+        } else if (action === "delete") {
+          state.s3 = state.s3.filter(x => x.id !== id);
+          log(`Bucket "${bucket.name}" deleted.`);
+        }
+
+        saveState();
+        renderAll();
+      }
+
+      function renderLambda() {
+        if (!state.lambda.length) {
+          els.lambdaList.innerHTML = `<div class="empty" style="grid-column:1/-1;">No Lambda functions yet. Create one and invoke it.</div>`;
+          return;
+        }
+
+        els.lambdaList.innerHTML = state.lambda.map(fn => `
+          <div class="resource-card">
+            <h3>${escapeHtml(fn.name)}</h3>
+            <div class="pill-row">
+              <span class="pill">${escapeHtml(fn.runtime)}</span>
+              <span class="pill">${escapeHtml(fn.memory)}</span>
+              <span class="pill">${fn.invocations} invocation(s)</span>
+            </div>
+            <div class="meta">Function ID: ${escapeHtml(fn.id)}</div>
+            <div class="meta">Created: ${escapeHtml(fn.createdAt)}</div>
+            <div class="meta">Code notes: ${escapeHtml(shorten(fn.code || "No notes", 80))}</div>
+            <div class="resource-actions">
+              <button class="btn good" data-lambda-action="invoke" data-id="${fn.id}">Invoke</button>
+              <button class="btn" data-lambda-action="copy" data-id="${fn.id}">Copy ARN</button>
+              <button class="btn warn" data-lambda-action="delete" data-id="${fn.id}">Delete</button>
+            </div>
+          </div>
+        `).join("");
+
+        els.lambdaList.querySelectorAll("[data-lambda-action]").forEach(btn => {
+          btn.addEventListener("click", () => handleLambdaAction(btn.dataset.id, btn.dataset.lambdaAction));
+        });
+      }
+
+      function handleLambdaAction(id, action) {
+        const fn = state.lambda.find(x => x.id === id);
+        if (!fn) return;
+
+        if (action === "invoke") {
+          fn.invocations += 1;
+          log(`Lambda "${fn.name}" invoked. Simulated response: 200 OK.`);
+        } else if (action === "copy") {
+          const arn = `arn:aws:lambda:${fn.region || "ap-south-1"}:000000000000:function:${fn.name}`;
+          navigator.clipboard?.writeText(arn).catch(() => {});
+          log(`Lambda ARN copied for "${fn.name}".`);
+          alert(arn);
+        } else if (action === "delete") {
+          state.lambda = state.lambda.filter(x => x.id !== id);
+          state.apis = state.apis.map(api => api.targetId === id ? { ...api, targetId: "", targetName: "" } : api);
+          log(`Lambda "${fn.name}" deleted.`);
+        }
+
+        saveState();
+        renderAll();
+      }
+
+      function renderApis() {
+        if (!state.apis.length) {
+          els.apiList.innerHTML = `<div class="empty" style="grid-column:1/-1;">No endpoints yet. Create one to simulate API Gateway.</div>`;
+          return;
+        }
+
+        els.apiList.innerHTML = state.apis.map(api => `
+          <div class="resource-card">
+            <h3>${escapeHtml(api.name)}</h3>
+            <div class="pill-row">
+              <span class="pill">${escapeHtml(api.method)}</span>
+              <span class="pill">${escapeHtml(api.route)}</span>
+              <span class="pill">${api.requests} request(s)</span>
+            </div>
+            <div class="meta">Mock URL: https://dummy-api.local${escapeHtml(api.route)}</div>
+            <div class="meta">Connected Lambda: ${escapeHtml(api.targetName || "None")}</div>
+            <div class="meta">Created: ${escapeHtml(api.createdAt)}</div>
+            <div class="resource-actions">
+              <button class="btn good" data-api-action="test" data-id="${api.id}">Send Test Request</button>
+              <button class="btn" data-api-action="copy" data-id="${api.id}">Copy URL</button>
+              <button class="btn warn" data-api-action="delete" data-id="${api.id}">Delete</button>
+            </div>
+          </div>
+        `).join("");
+
+        els.apiList.querySelectorAll("[data-api-action]").forEach(btn => {
+          btn.addEventListener("click", () => handleApiAction(btn.dataset.id, btn.dataset.apiAction));
+        });
+      }
+
+      function handleApiAction(id, action) {
+        const api = state.apis.find(x => x.id === id);
+        if (!api) return;
+
+        if (action === "test") {
+          api.requests += 1;
+          const target = api.targetName ? ` Triggered Lambda "${api.targetName}".` : " No Lambda attached.";
+          log(`API ${api.method} ${api.route} received a simulated request.${target}`);
+        } else if (action === "copy") {
+          const url = `https://dummy-api.local${api.route}`;
+          navigator.clipboard?.writeText(url).catch(() => {});
+          alert(url);
+          log(`Mock API URL copied for "${api.name}".`);
+        } else if (action === "delete") {
+          state.apis = state.apis.filter(x => x.id !== id);
+          log(`API endpoint "${api.name}" deleted.`);
+        }
+
+        saveState();
+        renderAll();
+      }
+
+      function renderLambdaOptions() {
+        els.apiTarget.innerHTML = `<option value="">None</option>` +
+          state.lambda.map(fn => `<option value="${fn.id}">${escapeHtml(fn.name)}</option>`).join("");
+      }
+
+      function renderConsole() {
+        els.terminal.textContent = state.logs.length
+          ? state.logs.join("\n")
+          : "No activity yet. Start using the lab to generate logs.";
+        els.stateBox.textContent = JSON.stringify(state, null, 2);
+      }
+
+      function renderAll() {
+        renderStats();
+        renderEC2();
+        renderS3();
+        renderLambda();
+        renderApis();
+        renderLambdaOptions();
+        renderConsole();
+      }
+
+      function createEC2() {
+        const name = els.ec2Name.value.trim();
+        if (!name) return alert("Enter an instance name.");
+        const item = {
+          id: uid("i"),
+          name,
+          type: els.ec2Type.value,
+          region: els.ec2Region.value,
+          status: "running",
+          ip: `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+          createdAt: nowString()
+        };
+        state.ec2.unshift(item);
+        els.ec2Name.value = "";
+        log(`EC2 instance "${item.name}" created in ${item.region}.`);
+        saveState();
+        renderAll();
+      }
+
+      function createBucket() {
+        const name = els.bucketName.value.trim();
+        if (!name) return alert("Enter a bucket name.");
+        if (state.s3.some(b => b.name.toLowerCase() === name.toLowerCase())) {
+          return alert("Bucket name already exists in this dummy lab.");
+        }
+        const bucket = {
+          id: uid("bucket"),
+          name,
+          region: els.bucketRegion.value,
+          objects: [],
+          createdAt: nowString()
+        };
+        state.s3.unshift(bucket);
+        els.bucketName.value = "";
+        log(`S3 bucket "${bucket.name}" created.`);
+        saveState();
+        renderAll();
+      }
+
+      function createLambda() {
+        const name = els.lambdaName.value.trim();
+        if (!name) return alert("Enter a function name.");
+        const fn = {
+          id: uid("lambda"),
+          name,
+          runtime: els.lambdaRuntime.value,
+          memory: els.lambdaMemory.value,
+          code: els.lambdaCode.value.trim(),
+          region: "ap-south-1",
+          invocations: 0,
+          createdAt: nowString()
+        };
+        state.lambda.unshift(fn);
+        els.lambdaName.value = "";
+        els.lambdaCode.value = "";
+        log(`Lambda function "${fn.name}" created.`);
+        saveState();
+        renderAll();
+      }
+
+      function createApi() {
+        const name = els.apiName.value.trim();
+        const route = els.apiRoute.value.trim();
+        if (!name || !route) return alert("Enter API name and route.");
+        const targetId = els.apiTarget.value;
+        const targetFn = state.lambda.find(fn => fn.id === targetId);
+        const api = {
+          id: uid("api"),
+          name,
+          method: els.apiMethod.value,
+          route: route.startsWith("/") ? route : "/" + route,
+          targetId: targetFn?.id || "",
+          targetName: targetFn?.name || "",
+          requests: 0,
+          createdAt: nowString()
+        };
+        state.apis.unshift(api);
+        els.apiName.value = "";
+        els.apiRoute.value = "";
+        els.apiTarget.value = "";
+        log(`API endpoint "${api.name}" created for route ${api.method} ${api.route}.`);
+        saveState();
+        renderAll();
+      }
+
+      function seedDemo() {
+        state.ec2 = [
+          {
+            id: uid("i"),
+            name: "frontend-server",
+            type: "t2.micro",
+            region: "ap-south-1",
+            status: "running",
+            ip: "192.168.10.24",
+            createdAt: nowString()
+          },
+          {
+            id: uid("i"),
+            name: "db-server",
+            type: "t3.small",
+            region: "ap-south-1",
+            status: "stopped",
+            ip: "192.168.10.31",
+            createdAt: nowString()
+          }
+        ];
+
+        state.s3 = [
+          {
+            id: uid("bucket"),
+            name: "student-project-files",
+            region: "ap-south-1",
+            createdAt: nowString(),
+            objects: [
+              { key: "report.pdf", size: "240 KB", uploadedAt: nowString() },
+              { key: "logo.png", size: "88 KB", uploadedAt: nowString() }
+            ]
+          }
+        ];
+
+        state.lambda = [
+          {
+            id: uid("lambda"),
+            name: "helloFunction",
+            runtime: "nodejs20.x",
+            memory: "128 MB",
+            code: "Return a greeting from the dummy cloud lab.",
+            region: "ap-south-1",
+            invocations: 0,
+            createdAt: nowString()
+          }
+        ];
+
+        state.apis = [
+          {
+            id: uid("api"),
+            name: "hello-api",
+            method: "GET",
+            route: "/hello",
+            targetId: state.lambda[0].id,
+            targetName: state.lambda[0].name,
+            requests: 0,
+            createdAt: nowString()
+          }
+        ];
+
+        state.logs = [];
+        log("Demo lab loaded successfully.");
+        saveState();
+        renderAll();
+      }
+
+      function resetLab() {
+        if (!confirm("Reset the entire dummy AWS lab?")) return;
+        state.ec2 = [];
+        state.s3 = [];
+        state.lambda = [];
+        state.apis = [];
+        state.logs = [];
+        saveState();
+        renderAll();
+      }
+
+      function exportState() {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "dummy-aws-lab-state.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        log("Lab state exported as JSON.");
+      }
+
+      function importState(file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const incoming = JSON.parse(reader.result);
+            state.ec2 = Array.isArray(incoming.ec2) ? incoming.ec2 : [];
+            state.s3 = Array.isArray(incoming.s3) ? incoming.s3 : [];
+            state.lambda = Array.isArray(incoming.lambda) ? incoming.lambda : [];
+            state.apis = Array.isArray(incoming.apis) ? incoming.apis : [];
+            state.logs = Array.isArray(incoming.logs) ? incoming.logs : [];
+            log("Lab state imported from JSON.");
+            saveState();
+            renderAll();
+          } catch {
+            alert("Invalid JSON file.");
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function shorten(str, len) {
+        return str.length > len ? str.slice(0, len - 1) + "…" : str;
+      }
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, ch => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[ch]));
+      }
+
+      els.createEC2Btn.addEventListener("click", createEC2);
+      els.seedEC2Btn.addEventListener("click", () => {
+        els.ec2Name.value = "practice-instance";
+        createEC2();
+      });
+
+      els.createBucketBtn.addEventListener("click", createBucket);
+      els.createLambdaBtn.addEventListener("click", createLambda);
+      els.createApiBtn.addEventListener("click", createApi);
+
+      els.seedBtn.addEventListener("click", seedDemo);
+      els.resetBtn.addEventListener("click", resetLab);
+      els.saveBtn.addEventListener("click", exportState);
+      els.importBtn.addEventListener("click", () => els.importFile.click());
+      els.importFile.addEventListener("change", (e) => {
+        const file = e.target.files?.[0];
+        if (file) importState(file);
+        e.target.value = "";
+      });
+
+      els.clearLogsBtn.addEventListener("click", () => {
+        state.logs = [];
+        saveState();
+        renderConsole();
+      });
+
+      els.refreshStateBtn.addEventListener("click", renderConsole);
+
+      renderAll();
+      if (!state.logs.length) {
+        log("Dummy AWS Lab ready.");
+      }
+    })();
+  </script>
+</body>
+</html>
