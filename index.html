@@ -6,7 +6,7 @@
   <title>Direct Sell Buildcon — Premium Homepage + Plot Finder</title>
   <meta
     name="description"
-    content="Premium real estate homepage and intelligent plot finder with OpenStreetMap location search, realistic filters, featured projects, elegant UI, theme toggle, and WhatsApp enquiry."
+    content="Premium real estate homepage and intelligent plot finder with OpenStreetMap location search, realistic filters, featured projects, hero slides, videos, ticker, testimonials, blogs from JSON, and WhatsApp enquiry."
   />
   <meta name="theme-color" content="#d97706" />
 
@@ -165,7 +165,7 @@
       justify-content:flex-end;
     }
 
-    .chip,.btn{
+    .chip,.btn,.icon-btn{
       border:none;
       border-radius:999px;
       cursor:pointer;
@@ -189,6 +189,17 @@
       font-weight:800;
     }
 
+    .icon-btn{
+      width:42px;
+      height:42px;
+      display:grid;
+      place-items:center;
+      background:var(--panel);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-size:1rem;
+    }
+
     .btn-brand{
       color:#fff;
       background:linear-gradient(135deg,var(--brand),var(--brand-2));
@@ -201,13 +212,55 @@
       border:1px solid var(--line);
     }
 
-    .chip:hover,.btn:hover{
+    .chip:hover,.btn:hover,.icon-btn:hover{
       transform:translateY(-2px);
       box-shadow:var(--shadow-soft);
     }
 
+    .ticker-wrap{
+      padding:8px 0 0;
+    }
+
+    .ticker{
+      overflow:hidden;
+      border-radius:18px;
+      padding:12px 0;
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      position:relative;
+    }
+
+    .ticker-track{
+      display:flex;
+      width:max-content;
+      gap:18px;
+      animation:tickerMove 30s linear infinite;
+      padding-inline:16px;
+    }
+
+    .ticker:hover .ticker-track{
+      animation-play-state:paused;
+    }
+
+    .ticker-item{
+      white-space:nowrap;
+      padding:0 14px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .ticker-item strong{
+      color:var(--text);
+    }
+
+    @keyframes tickerMove{
+      from{transform:translateX(0)}
+      to{transform:translateX(-50%)}
+    }
+
     .hero{
-      padding:26px 0 18px;
+      padding:18px 0 18px;
     }
 
     .hero-card{
@@ -298,54 +351,67 @@
       gap:14px;
     }
 
-    .feature-visual{
-      min-height:280px;
+    .hero-slider{
+      min-height:320px;
       border-radius:24px;
       position:relative;
       overflow:hidden;
+      border:1px solid var(--line);
       background:
         radial-gradient(circle at 85% 15%, rgba(255,255,255,.45), transparent 18%),
         linear-gradient(135deg, rgba(217,119,6,.18), rgba(251,146,60,.18));
-      border:1px solid var(--line);
     }
 
-    .sky{
+    .slide{
       position:absolute;
       inset:0;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.12)),
-        linear-gradient(180deg, rgba(251,191,36,.22), rgba(255,237,213,.05));
+      padding:20px;
+      opacity:0;
+      transition:opacity .45s ease;
+      display:grid;
+      grid-template-rows:1fr auto;
     }
 
-    .sun{
-      position:absolute;
-      width:72px;
-      height:72px;
-      border-radius:50%;
-      top:24px;
-      right:26px;
-      background:radial-gradient(circle, rgba(255,255,255,.95), rgba(255,255,255,.42) 45%, transparent 70%);
-      box-shadow:0 0 60px rgba(255,255,255,.6);
+    .slide.active{
+      opacity:1;
     }
 
-    .city{
+    .slide h3{
+      margin:0;
+      font-size:1.25rem;
+    }
+
+    .slide p{
+      margin:10px 0 0;
+      color:rgba(23,32,51,.75);
+      line-height:1.7;
+      max-width:38ch;
+    }
+
+    body.dark .slide p{
+      color:rgba(248,250,252,.78);
+    }
+
+    .slide-art{
+      position:relative;
+      min-height:180px;
+    }
+
+    .slide-city{
       position:absolute;
       inset:auto 0 0 0;
-      height:56%;
-      background:
-        linear-gradient(180deg, transparent 0 25%, rgba(255,255,255,.12) 25% 100%),
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      height:60%;
     }
 
-    .block{
+    .slide-block{
       position:absolute;
       bottom:0;
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.76);
       border-radius:10px 10px 0 0;
       box-shadow:0 12px 24px rgba(0,0,0,.06);
     }
 
-    .block::before{
+    .slide-block::before{
       content:"";
       position:absolute;
       inset:10px 8px;
@@ -355,11 +421,10 @@
           rgba(217,119,6,.18) 0 8px,
           transparent 8px 16px
         );
-      opacity:.8;
       border-radius:6px;
     }
 
-    .road{
+    .slide-road{
       position:absolute;
       left:8%;
       right:8%;
@@ -370,7 +435,7 @@
       box-shadow:0 14px 24px rgba(0,0,0,.08);
     }
 
-    .pin{
+    .slide-pin{
       position:absolute;
       width:54px;
       height:54px;
@@ -379,8 +444,7 @@
       background:linear-gradient(135deg,var(--brand),var(--brand-2));
       box-shadow:0 16px 36px rgba(217,119,6,.28);
     }
-
-    .pin::after{
+    .slide-pin::after{
       content:"";
       position:absolute;
       inset:13px;
@@ -388,9 +452,33 @@
       background:#fff;
     }
 
-    .pin.one{left:18%; bottom:54px}
-    .pin.two{left:42%; bottom:88px}
-    .pin.three{right:16%; bottom:66px}
+    .slide-controls{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .dots{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .dot-btn{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      border:none;
+      background:rgba(148,163,184,.45);
+      cursor:pointer;
+    }
+
+    .dot-btn.active{
+      width:28px;
+      background:linear-gradient(90deg,var(--brand),var(--brand-2));
+    }
 
     .hero-list{
       display:grid;
@@ -450,13 +538,13 @@
       max-width:72ch;
     }
 
-    .projects{
+    .projects,.videos,.blogs{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:16px;
     }
 
-    .project{
+    .project,.video-card,.blog-card{
       border-radius:24px;
       overflow:hidden;
       background:var(--panel);
@@ -505,7 +593,7 @@
       background:rgba(255,255,255,.92);
     }
 
-    .project-body{
+    .project-body,.video-body,.blog-body{
       padding:18px;
       display:grid;
       gap:14px;
@@ -527,14 +615,14 @@
     }
     body.dark .tag{background:rgba(15,23,42,.45)}
 
-    .project-top{
+    .project-top,.card-top-row{
       display:flex;
       justify-content:space-between;
       gap:12px;
       align-items:flex-start;
     }
 
-    .project h3{
+    .project h3,.video-card h3,.blog-card h3{
       margin:10px 0 0;
       font-size:1.14rem;
       line-height:1.25;
@@ -577,7 +665,7 @@
       font-size:.95rem;
     }
 
-    .project-actions{
+    .project-actions,.video-actions,.blog-actions,.card-actions{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
@@ -918,7 +1006,7 @@
 
     .search-row{
       display:grid;
-      grid-template-columns:1fr auto auto;
+      grid-template-columns:1fr auto auto auto;
       gap:10px;
     }
 
@@ -935,7 +1023,7 @@
 
     .search-row input::placeholder{color:var(--muted)}
 
-    .location-meta{
+    .location-meta,.search-history{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
@@ -948,6 +1036,25 @@
       background:var(--panel);
       font-size:.9rem;
       font-weight:700;
+    }
+
+    .pill-btn{
+      background:var(--panel);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .history-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:4px;
     }
 
     .map-card{
@@ -1014,13 +1121,6 @@
       border-bottom:1px solid var(--line);
     }
 
-    .card-top-row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-    }
-
     .card h3{
       margin:10px 0 0;
       font-size:1.16rem;
@@ -1056,13 +1156,6 @@
     .fact b{
       display:block;
       line-height:1.35;
-    }
-
-    .card-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:auto;
     }
 
     .empty{
@@ -1170,13 +1263,46 @@
       line-height:1.55;
     }
 
+    .video-frame{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      overflow:hidden;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(135deg, rgba(217,119,6,.18), rgba(251,146,60,.18));
+    }
+
+    .video-frame iframe{
+      width:100%;
+      height:100%;
+      border:0;
+    }
+
+    .blog-cover{
+      height:160px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,.45), transparent 18%),
+        linear-gradient(135deg, rgba(217,119,6,.18), rgba(251,146,60,.18));
+      position:relative;
+      overflow:hidden;
+    }
+
+    .blog-cover::before{
+      content:"";
+      position:absolute;
+      inset:18px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.85);
+    }
+
     @media (max-width:1150px){
       .hero-grid,
       .split,
       .search-layout{
         grid-template-columns:1fr;
       }
-      .projects{
+      .projects,.videos,.blogs{
         grid-template-columns:repeat(2,minmax(0,1fr));
       }
       .benefits{
@@ -1203,7 +1329,7 @@
         padding:16px;
         border-radius:22px;
       }
-      .projects,
+      .projects,.videos,.blogs,
       .benefits,
       .meta,
       .hero-strip,
@@ -1244,6 +1370,8 @@
 
         <div class="nav-links">
           <a class="chip" href="#projects">Projects</a>
+          <a class="chip" href="#videos">Videos</a>
+          <a class="chip" href="#blogs">Blogs</a>
           <a class="chip" href="#benefits">Why Us</a>
           <a class="chip" href="#journey">Buyer Journey</a>
           <a class="chip" href="#finder">Plot Finder</a>
@@ -1254,6 +1382,14 @@
     </div>
   </header>
 
+  <div class="ticker-wrap">
+    <div class="container">
+      <div class="ticker">
+        <div class="ticker-track" id="tickerTrack"></div>
+      </div>
+    </div>
+  </div>
+
   <main>
     <section class="hero">
       <div class="container">
@@ -1263,13 +1399,15 @@
               <div class="eyebrow">Premium real-estate experience</div>
               <h1>Find the right plot with confidence, clarity, and elegance.</h1>
               <p>
-                Explore a refined property homepage, review featured opportunities, understand the buyer journey,
-                and then move into a realistic plot finder with OpenStreetMap search, budget, size, corner, and road-width filters.
+                Explore a refined property homepage, review featured opportunities, watch project videos,
+                read blog guidance, and then move into a realistic plot finder with OpenStreetMap search,
+                budget, size, corner, and road-width filters.
               </p>
 
               <div class="hero-actions">
                 <a class="btn btn-brand" href="#finder">Start plot search</a>
                 <a class="btn btn-soft" href="#projects">Explore projects</a>
+                <a class="btn btn-soft" href="#videos">Watch videos</a>
                 <a class="btn btn-soft" id="heroWaBtn" href="#" target="_blank" rel="noopener">Talk on WhatsApp</a>
               </div>
 
@@ -1288,26 +1426,76 @@
                 </div>
                 <div class="strip-card">
                   <small>Experience</small>
-                  <strong>Elegant light & dark mode</strong>
+                  <strong>Hero slides + blogs + videos</strong>
                 </div>
               </div>
             </div>
 
             <aside class="hero-panel">
-              <div class="feature-visual" aria-hidden="true">
-                <div class="sky"></div>
-                <div class="sun"></div>
-                <div class="city">
-                  <div class="block" style="left:8%; width:16%; height:48%;"></div>
-                  <div class="block" style="left:24%; width:18%; height:64%;"></div>
-                  <div class="block" style="left:46%; width:16%; height:54%;"></div>
-                  <div class="block" style="left:64%; width:13%; height:70%;"></div>
-                  <div class="block" style="left:80%; width:12%; height:42%;"></div>
+              <div class="hero-slider" id="heroSlider">
+                <div class="slide active">
+                  <div class="slide-art">
+                    <div class="slide-city">
+                      <div class="slide-block" style="left:8%; width:16%; height:48%;"></div>
+                      <div class="slide-block" style="left:24%; width:18%; height:64%;"></div>
+                      <div class="slide-block" style="left:46%; width:16%; height:54%;"></div>
+                      <div class="slide-block" style="left:64%; width:13%; height:70%;"></div>
+                      <div class="slide-block" style="left:80%; width:12%; height:42%;"></div>
+                    </div>
+                    <div class="slide-road"></div>
+                    <div class="slide-pin" style="left:18%; bottom:54px"></div>
+                    <div class="slide-pin" style="left:42%; bottom:88px"></div>
+                    <div class="slide-pin" style="right:16%; bottom:66px"></div>
+                  </div>
+                  <div>
+                    <h3>Search by area first</h3>
+                    <p>Start from the place the buyer already has in mind, then refine with practical plot filters.</p>
+                  </div>
                 </div>
-                <div class="road"></div>
-                <div class="pin one"></div>
-                <div class="pin two"></div>
-                <div class="pin three"></div>
+
+                <div class="slide">
+                  <div class="slide-art">
+                    <div class="slide-city">
+                      <div class="slide-block" style="left:10%; width:20%; height:42%;"></div>
+                      <div class="slide-block" style="left:32%; width:14%; height:70%;"></div>
+                      <div class="slide-block" style="left:49%; width:18%; height:58%;"></div>
+                      <div class="slide-block" style="left:70%; width:16%; height:48%;"></div>
+                    </div>
+                    <div class="slide-road"></div>
+                    <div class="slide-pin" style="left:26%; bottom:62px"></div>
+                    <div class="slide-pin" style="right:20%; bottom:70px"></div>
+                  </div>
+                  <div>
+                    <h3>Watch and compare</h3>
+                    <p>Combine project visuals, featured cards, and video sections to make the homepage feel rich and trustworthy.</p>
+                  </div>
+                </div>
+
+                <div class="slide">
+                  <div class="slide-art">
+                    <div class="slide-city">
+                      <div class="slide-block" style="left:12%; width:14%; height:60%;"></div>
+                      <div class="slide-block" style="left:30%; width:18%; height:52%;"></div>
+                      <div class="slide-block" style="left:52%; width:16%; height:72%;"></div>
+                      <div class="slide-block" style="left:72%; width:12%; height:46%;"></div>
+                    </div>
+                    <div class="slide-road"></div>
+                    <div class="slide-pin" style="left:20%; bottom:56px"></div>
+                    <div class="slide-pin" style="left:56%; bottom:92px"></div>
+                  </div>
+                  <div>
+                    <h3>Move into action</h3>
+                    <p>Every path leads naturally to WhatsApp so a serious buyer can enquire without friction.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <div style="display:flex; gap:10px;">
+                  <button class="icon-btn" id="prevSlideBtn" type="button">←</button>
+                  <button class="icon-btn" id="nextSlideBtn" type="button">→</button>
+                </div>
+                <div class="dots" id="slideDots"></div>
               </div>
 
               <div class="hero-list">
@@ -1346,12 +1534,47 @@
             <div>
               <h2>Featured projects</h2>
               <p>
-                A strong homepage should feel alive. These featured project cards help the page feel credible, premium, and conversion-friendly before the buyer enters the detailed finder.
+                A strong homepage should feel alive. These featured project cards help the page feel credible,
+                premium, and conversion-friendly before the buyer enters the detailed finder.
               </p>
             </div>
           </div>
 
           <div class="projects" id="featuredProjects"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="videos">
+      <div class="container">
+        <div class="section-card glass">
+          <div class="section-head">
+            <div>
+              <h2>Project videos</h2>
+              <p>
+                Add walkthroughs, introductions, and project explainers so buyers can understand the offering before they enquire.
+              </p>
+            </div>
+          </div>
+
+          <div class="videos" id="videosGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="blogs">
+      <div class="container">
+        <div class="section-card glass">
+          <div class="section-head">
+            <div>
+              <h2>Property blogs</h2>
+              <p>
+                Rendered from JSON so you can later replace the demo array with a real blog feed or external JSON file.
+              </p>
+            </div>
+          </div>
+
+          <div class="blogs" id="blogsGrid"></div>
         </div>
       </div>
     </section>
@@ -1446,20 +1669,7 @@
                 </div>
               </div>
 
-              <div class="testimonials">
-                <div class="testimonial">
-                  <p>“The site feels much more premium now. I could understand the kind of plots available before even starting the search.”</p>
-                  <b>— Residential buyer</b>
-                </div>
-                <div class="testimonial">
-                  <p>“The featured cards and WhatsApp approach make it easy to shortlist something quickly without confusion.”</p>
-                  <b>— Investor lead</b>
-                </div>
-                <div class="testimonial">
-                  <p>“The finder feels practical. The corner plot and road-width filters are actually useful.”</p>
-                  <b>— First-time land buyer</b>
-                </div>
-              </div>
+              <div class="testimonials" id="testimonialsList"></div>
             </div>
           </div>
 
@@ -1467,7 +1677,8 @@
             <div>
               <h3>Ready to search seriously?</h3>
               <p>
-                The section below combines OpenStreetMap location search with real buyer filters, premium property cards, map markers, and WhatsApp enquiry.
+                The section below combines OpenStreetMap location search with real buyer filters, premium property cards,
+                search history, map markers, and WhatsApp enquiry.
               </p>
             </div>
             <a class="btn btn-brand" href="#finder">Open plot finder</a>
@@ -1483,7 +1694,8 @@
             <div>
               <h2>Intelligent plot finder</h2>
               <p>
-                Search a location using OpenStreetMap, then filter by purpose, budget, plot size, corner preference, and road width. All choices below are live and affect both the cards and the map.
+                Search a location using OpenStreetMap, then filter by purpose, budget, plot size, corner preference, and road width.
+                All choices below are live and affect both the cards and the map.
               </p>
             </div>
           </div>
@@ -1525,6 +1737,7 @@
               <div class="wizard-nav-actions">
                 <button class="btn btn-soft" id="prevBtn" type="button">← Previous</button>
                 <button class="btn btn-brand" id="nextBtn" type="button">Next →</button>
+                <button class="btn btn-soft" id="clearAllBtn" type="button">Clear all</button>
               </div>
             </aside>
 
@@ -1533,7 +1746,8 @@
                 <div class="question-screen active" data-screen="0">
                   <h3 class="question-title">Step 1 — Where do you want to search?</h3>
                   <p class="question-sub">
-                    Search a city, locality, landmark, or area name. This uses OpenStreetMap geocoding through Nominatim. Matching projects are ranked by proximity to your searched point.
+                    Search a city, locality, landmark, or area name. This uses OpenStreetMap geocoding through Nominatim.
+                    Matching projects are ranked by proximity to your searched point.
                   </p>
 
                   <div class="location-search">
@@ -1544,10 +1758,17 @@
                         placeholder="Search example: Patna, Muzaffarpur, Varanasi, Buxar, Gaya, Lanka Varanasi"
                       />
                       <button class="btn btn-soft" id="searchLocationBtn" type="button">Search location</button>
-                      <button class="btn btn-soft" id="clearLocationBtn" type="button">Clear search</button>
+                      <button class="btn btn-soft" id="clearLocationBtn" type="button">Clear location</button>
+                      <button class="btn btn-soft" id="saveSearchBtn" type="button">Save search</button>
                     </div>
 
                     <div class="location-meta" id="locationMeta"></div>
+
+                    <div class="history-head">
+                      <strong>Previous searches</strong>
+                      <button class="pill-btn" id="clearHistoryBtn" type="button">Clear history</button>
+                    </div>
+                    <div class="search-history" id="searchHistory"></div>
 
                     <div class="map-card">
                       <div id="map"></div>
@@ -1662,6 +1883,7 @@
 
   <script>
     const WHATSAPP_NUMBER = "919999999999";
+    const SEARCH_HISTORY_KEY = "directsell_previous_searches_v1";
 
     const INVENTORY = [
       {
@@ -1826,6 +2048,73 @@
       }
     ];
 
+    const BLOGS_JSON = [
+      {
+        title: "How to choose the right plot for a family home",
+        excerpt: "Understand road width, corner preference, neighborhood growth, and budget discipline before buying.",
+        category: "Buyer Guide",
+        date: "April 2026",
+        url: "#"
+      },
+      {
+        title: "Corner plot vs regular plot: what really matters?",
+        excerpt: "Corner plots are attractive, but they are not always the best value. Compare premium, frontage, and use case carefully.",
+        category: "Comparison",
+        date: "April 2026",
+        url: "#"
+      },
+      {
+        title: "How to shortlist plots faster using location-first search",
+        excerpt: "Start with your preferred city or locality, then filter by budget, size, and road width to reduce noise quickly.",
+        category: "Search Strategy",
+        date: "March 2026",
+        url: "#"
+      }
+    ];
+
+    const VIDEOS = [
+      {
+        title: "Project overview and buyer introduction",
+        desc: "Use this slot for a company intro or flagship project walkthrough.",
+        embed: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      },
+      {
+        title: "How the plot finder works",
+        desc: "Explain the location search, price, corner, and road-width filters.",
+        embed: "https://www.youtube.com/embed/ysz5S6PUM-U"
+      },
+      {
+        title: "What to ask before buying a plot",
+        desc: "Share common buyer questions and build trust before enquiry.",
+        embed: "https://www.youtube.com/embed/tgbNymZ7vqY"
+      }
+    ];
+
+    const TESTIMONIALS = [
+      {
+        text: "The site feels much more premium now. I could understand the kind of plots available before even starting the search.",
+        author: "Residential buyer"
+      },
+      {
+        text: "The featured cards and WhatsApp approach make it easy to shortlist something quickly without confusion.",
+        author: "Investor lead"
+      },
+      {
+        text: "The finder feels practical. The corner plot and road-width filters are actually useful.",
+        author: "First-time land buyer"
+      }
+    ];
+
+    const TICKER_ITEMS = [
+      "Featured property discovery",
+      "Location-first plot search",
+      "Corner plot filtering",
+      "Road-width filtering",
+      "WhatsApp-ready enquiries",
+      "Videos and blogs integrated",
+      "Previous searches saved"
+    ];
+
     const featuredIds = [
       "patna-golden-avenue",
       "patna-urban-front",
@@ -1859,7 +2148,7 @@
       ]
     };
 
-    const state = {
+    const defaultState = () => ({
       step: 0,
       searchedLocation: null,
       purpose: "all",
@@ -1868,12 +2157,18 @@
       size: "all",
       corner: "all",
       roadMin: 0
-    };
+    });
+
+    const state = defaultState();
 
     const els = {
       body: document.body,
       themeToggle: document.getElementById("themeToggle"),
       featuredProjects: document.getElementById("featuredProjects"),
+      videosGrid: document.getElementById("videosGrid"),
+      blogsGrid: document.getElementById("blogsGrid"),
+      testimonialsList: document.getElementById("testimonialsList"),
+      tickerTrack: document.getElementById("tickerTrack"),
       navWaBtn: document.getElementById("navWaBtn"),
       heroWaBtn: document.getElementById("heroWaBtn"),
       resultsWaBtn: document.getElementById("resultsWaBtn"),
@@ -1883,10 +2178,14 @@
       screens: [...document.querySelectorAll(".question-screen")],
       prevBtn: document.getElementById("prevBtn"),
       nextBtn: document.getElementById("nextBtn"),
+      clearAllBtn: document.getElementById("clearAllBtn"),
       locationInput: document.getElementById("locationInput"),
       searchLocationBtn: document.getElementById("searchLocationBtn"),
       clearLocationBtn: document.getElementById("clearLocationBtn"),
+      saveSearchBtn: document.getElementById("saveSearchBtn"),
+      clearHistoryBtn: document.getElementById("clearHistoryBtn"),
       locationMeta: document.getElementById("locationMeta"),
+      searchHistory: document.getElementById("searchHistory"),
       purposeOptions: document.getElementById("purposeOptions"),
       sizeOptions: document.getElementById("sizeOptions"),
       cornerOptions: document.getElementById("cornerOptions"),
@@ -1898,7 +2197,11 @@
       summaryPills: document.getElementById("summaryPills"),
       resultCount: document.getElementById("resultCount"),
       cardsWrap: document.getElementById("cardsWrap"),
-      toast: document.getElementById("toast")
+      toast: document.getElementById("toast"),
+      heroSlider: document.getElementById("heroSlider"),
+      prevSlideBtn: document.getElementById("prevSlideBtn"),
+      nextSlideBtn: document.getElementById("nextSlideBtn"),
+      slideDots: document.getElementById("slideDots")
     };
 
     const fmtMoney = lakh => `₹ ${Number(lakh).toLocaleString("en-IN")} lakh`;
@@ -1923,21 +2226,12 @@
     }
 
     function getSizeLabel(){
-      const map = {
-        all: "Any size",
-        small: "Small",
-        medium: "Medium",
-        large: "Large"
-      };
+      const map = { all: "Any size", small: "Small", medium: "Medium", large: "Large" };
       return map[state.size] || "Any size";
     }
 
     function getCornerLabel(){
-      const map = {
-        all: "Open to both",
-        yes: "Corner only",
-        no: "Non-corner only"
-      };
+      const map = { all: "Open to both", yes: "Corner only", no: "Non-corner only" };
       return map[state.corner] || "Open to both";
     }
 
@@ -1963,6 +2257,13 @@
       els.heroWaBtn.href = waLink(generic);
       els.resultsWaBtn.href = waLink(buildShortlistMessage());
       els.bottomWaBtn.href = waLink(buildShortlistMessage());
+    }
+
+    function renderTicker(){
+      const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
+      els.tickerTrack.innerHTML = items.map(item => `
+        <div class="ticker-item">• <strong>${item}</strong></div>
+      `).join("");
     }
 
     function renderFeaturedProjects(){
@@ -2009,6 +2310,60 @@
             </div>
           </div>
         </article>
+      `).join("");
+    }
+
+    function renderVideos(){
+      els.videosGrid.innerHTML = VIDEOS.map(video => `
+        <article class="video-card">
+          <div class="video-frame">
+            <iframe
+              src="${video.embed}"
+              title="${video.title}"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="video-body">
+            <div>
+              <div class="tag">Video</div>
+              <h3>${video.title}</h3>
+            </div>
+            <div class="desc">${video.desc}</div>
+            <div class="video-actions">
+              <a class="btn btn-soft" href="#finder">Use finder after watching</a>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderBlogs(){
+      els.blogsGrid.innerHTML = BLOGS_JSON.map(blog => `
+        <article class="blog-card">
+          <div class="blog-cover"></div>
+          <div class="blog-body">
+            <div>
+              <div class="tag">${blog.category}</div>
+              <h3>${blog.title}</h3>
+            </div>
+            <div class="small">${blog.date}</div>
+            <div class="desc">${blog.excerpt}</div>
+            <div class="blog-actions">
+              <a class="btn btn-soft" href="${blog.url}">Read blog</a>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderTestimonials(){
+      els.testimonialsList.innerHTML = TESTIMONIALS.map(item => `
+        <div class="testimonial">
+          <p>“${item.text}”</p>
+          <b>— ${item.author}</b>
+        </div>
       `).join("");
     }
 
@@ -2276,6 +2631,8 @@
           document.querySelector(".results-shell").scrollIntoView({ behavior: "smooth", block: "start" });
         }
       });
+
+      els.clearAllBtn.addEventListener("click", clearAllFilters);
     }
 
     function renderLocationMeta(){
@@ -2424,6 +2781,103 @@
       showToast("Location filter cleared.");
     }
 
+    function clearAllFilters(){
+      const fresh = defaultState();
+      Object.assign(state, fresh);
+      els.locationInput.value = "";
+      els.minBudget.value = state.minBudget;
+      els.maxBudget.value = state.maxBudget;
+      if (searchMarker) {
+        searchMarker.remove();
+        searchMarker = null;
+      }
+      createAllOptionCards();
+      renderWizard();
+      renderAll();
+      map.setView([25.6, 85.1], 6.5, { animate: true });
+      showToast("All filters cleared.");
+    }
+
+    function getSearchHistory(){
+      try{
+        return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || "[]");
+      }catch{
+        return [];
+      }
+    }
+
+    function setSearchHistory(items){
+      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(items));
+    }
+
+    function saveCurrentSearch(){
+      const entry = {
+        locationInput: els.locationInput.value.trim(),
+        searchedLocation: state.searchedLocation,
+        purpose: state.purpose,
+        minBudget: state.minBudget,
+        maxBudget: state.maxBudget,
+        size: state.size,
+        corner: state.corner,
+        roadMin: state.roadMin,
+        savedAt: new Date().toLocaleString()
+      };
+
+      const current = getSearchHistory();
+      current.unshift(entry);
+      const trimmed = current.slice(0, 8);
+      setSearchHistory(trimmed);
+      renderSearchHistory();
+      showToast("Search saved.");
+    }
+
+    function applySavedSearch(entry){
+      state.purpose = entry.purpose;
+      state.minBudget = entry.minBudget;
+      state.maxBudget = entry.maxBudget;
+      state.size = entry.size;
+      state.corner = entry.corner;
+      state.roadMin = entry.roadMin;
+      state.searchedLocation = entry.searchedLocation || null;
+      els.locationInput.value = entry.locationInput || "";
+      els.minBudget.value = state.minBudget;
+      els.maxBudget.value = state.maxBudget;
+      if (state.searchedLocation) {
+        setSearchMarker(state.searchedLocation);
+        map.setView([state.searchedLocation.lat, state.searchedLocation.lng], 12, { animate: true });
+      } else {
+        if (searchMarker) {
+          searchMarker.remove();
+          searchMarker = null;
+        }
+      }
+      createAllOptionCards();
+      renderAll();
+      showToast("Saved search applied.");
+    }
+
+    function renderSearchHistory(){
+      const items = getSearchHistory();
+      if (!items.length) {
+        els.searchHistory.innerHTML = `<div class="pill">No saved searches yet</div>`;
+        return;
+      }
+
+      els.searchHistory.innerHTML = items.map((item, index) => `
+        <button class="pill-btn history-btn" type="button" data-index="${index}">
+          ${item.locationInput || "Any location"} • ${fmtMoney(item.minBudget)}-${fmtMoney(item.maxBudget)}
+        </button>
+      `).join("");
+
+      els.searchHistory.querySelectorAll(".history-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const items = getSearchHistory();
+          const entry = items[Number(btn.dataset.index)];
+          if (entry) applySavedSearch(entry);
+        });
+      });
+    }
+
     function renderAll(){
       renderSummary();
       renderLocationMeta();
@@ -2431,17 +2885,125 @@
       setGlobalWhatsAppLinks();
     }
 
+    function initHeroSlider(){
+      const slides = [...els.heroSlider.querySelectorAll(".slide")];
+      let current = 0;
+      let timer;
+
+      function renderDots(){
+        els.slideDots.innerHTML = slides.map((_, i) => `
+          <button class="dot-btn ${i === current ? "active" : ""}" type="button" data-index="${i}"></button>
+        `).join("");
+        els.slideDots.querySelectorAll(".dot-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            current = Number(btn.dataset.index);
+            showSlide(current);
+            restartTimer();
+          });
+        });
+      }
+
+      function showSlide(index){
+        slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+        renderDots();
+      }
+
+      function next(){
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      }
+
+      function prev(){
+        current = (current - 1 + slides.length) % slides.length;
+        showSlide(current);
+      }
+
+      function restartTimer(){
+        clearInterval(timer);
+        timer = setInterval(next, 4500);
+      }
+
+      els.nextSlideBtn.addEventListener("click", () => {
+        next();
+        restartTimer();
+      });
+
+      els.prevSlideBtn.addEventListener("click", () => {
+        prev();
+        restartTimer();
+      });
+
+      showSlide(current);
+      restartTimer();
+    }
+
+    function initTheme(){
+      const saved = localStorage.getItem("directsell-combined-theme");
+      if(saved === "dark"){
+        els.body.classList.add("dark");
+      }
+      els.themeToggle.textContent = els.body.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
+
+      els.themeToggle.addEventListener("click", () => {
+        els.body.classList.toggle("dark");
+        const dark = els.body.classList.contains("dark");
+        localStorage.setItem("directsell-combined-theme", dark ? "dark" : "light");
+        els.themeToggle.textContent = dark ? "☀️ Light" : "🌙 Dark";
+      });
+    }
+
+    function initWizardNav(){
+      els.stepItems.forEach(item => {
+        item.addEventListener("click", () => {
+          state.step = +item.dataset.step;
+          renderWizard();
+        });
+      });
+
+      els.prevBtn.addEventListener("click", () => {
+        if (state.step > 0) {
+          state.step--;
+          renderWizard();
+        }
+      });
+
+      els.nextBtn.addEventListener("click", () => {
+        if (state.step < 5) {
+          state.step++;
+          renderWizard();
+        } else {
+          showToast("Your shortlist is ready.");
+          document.querySelector(".results-shell").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+
+      els.clearAllBtn.addEventListener("click", clearAllFilters);
+    }
+
     function init(){
       initTheme();
+      renderTicker();
       renderFeaturedProjects();
+      renderVideos();
+      renderBlogs();
+      renderTestimonials();
+      initHeroSlider();
       initWizardNav();
       initMap();
       createAllOptionCards();
+      renderSearchHistory();
 
       els.minBudget.addEventListener("input", syncBudget);
       els.maxBudget.addEventListener("input", syncBudget);
       els.searchLocationBtn.addEventListener("click", handleLocationSearch);
       els.clearLocationBtn.addEventListener("click", clearLocationSearch);
+      els.saveSearchBtn.addEventListener("click", saveCurrentSearch);
+      els.clearHistoryBtn.addEventListener("click", () => {
+        localStorage.removeItem(SEARCH_HISTORY_KEY);
+        renderSearchHistory();
+        showToast("Saved search history cleared.");
+      });
+
       els.locationInput.addEventListener("keydown", e => {
         if (e.key === "Enter") {
           e.preventDefault();
