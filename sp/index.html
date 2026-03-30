@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Auto Speak + Scroll System</title>
+
+<meta name="theme-color" content="#f59e0b" />
+
+<style>
+:root{
+  --brand:#d97706;
+  --bg:#fff7e6;
+}
+
+body{
+  font-family:system-ui;
+  background:var(--bg);
+  margin:0;
+  padding:20px;
+  line-height:1.7;
+}
+
+.controls{
+  position:sticky;
+  top:0;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:15px;
+  display:flex;
+  gap:10px;
+}
+
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:var(--brand);
+  color:white;
+  cursor:pointer;
+}
+
+p{
+  margin:40px 0;
+  font-size:18px;
+  padding:10px;
+  border-radius:10px;
+  transition:0.3s;
+}
+
+.active{
+  background:#fde68a;
+  transform:scale(1.02);
+}
+</style>
+</head>
+
+<body>
+
+<div class="controls">
+  <button onclick="startSpeaking()">▶ Start</button>
+  <button onclick="stopSpeaking()">⏹ Stop</button>
+</div>
+
+<!-- CONTENT -->
+<p id="speak1">Welcome to this lesson. This system will automatically scroll and read content for you.</p>
+
+<p id="speak2">Each paragraph is identified with a unique ID like speak one, speak two, and so on.</p>
+
+<p id="speak3">As the system runs, it will scroll to each paragraph, highlight it, and speak it.</p>
+
+<p id="speak4">This is very useful for learning, accessibility, and creating engaging content.</p>
+
+<p id="speak5">You can use this in blogs, lessons, and even storytelling pages.</p>
+
+<script>
+let currentIndex = 1;
+let isRunning = false;
+
+function startSpeaking(){
+  isRunning = true;
+  currentIndex = 1;
+  speakNext();
+}
+
+function stopSpeaking(){
+  isRunning = false;
+  speechSynthesis.cancel();
+}
+
+function speakNext(){
+  if(!isRunning) return;
+
+  const el = document.getElementById("speak"+currentIndex);
+
+  if(!el){
+    isRunning = false;
+    return;
+  }
+
+  // highlight
+  document.querySelectorAll("p").forEach(p => p.classList.remove("active"));
+  el.classList.add("active");
+
+  // scroll
+  el.scrollIntoView({behavior:"smooth", block:"center"});
+
+  // speak
+  const text = el.innerText;
+  const utter = new SpeechSynthesisUtterance(text);
+
+  utter.rate = 1;
+  utter.pitch = 1;
+
+  utter.onend = () => {
+    currentIndex++;
+    setTimeout(speakNext, 500); // small pause
+  };
+
+  speechSynthesis.speak(utter);
+}
+</script>
+
+</body>
+</html>
