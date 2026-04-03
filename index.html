@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programmer's Picnic — Talking Avatar Demo</title>
+  <title>Programmer's Picnic — Talking Avatar Demo V2</title>
   <meta name="theme-color" content="#d97706" />
   <style>
     :root{
@@ -150,7 +150,6 @@
       font-weight:700;
     }
 
-    /* Floating avatar */
     .avatar-shell{
       position:sticky;
       top:20px;
@@ -159,7 +158,7 @@
     .avatar-card{
       position:relative;
       overflow:hidden;
-      min-height:430px;
+      min-height:460px;
       background:
         radial-gradient(circle at 50% 18%, rgba(255,255,255,.92), rgba(255,244,228,.96) 55%, rgba(255,236,205,.98) 100%);
       border:1px solid var(--line);
@@ -194,6 +193,7 @@
       background:#d1d5db;
       box-shadow:0 0 0 0 rgba(217,119,6,.25);
       transition:all .25s ease;
+      flex:0 0 auto;
     }
 
     .live-dot.speaking{
@@ -241,11 +241,7 @@
     .avatar{
       position:relative;
       width:220px;
-      height:220px;
-      border-radius:50%;
-      background:linear-gradient(180deg,#ffd29f,#f4b575);
-      border:6px solid rgba(255,255,255,.9);
-      box-shadow:0 20px 40px rgba(15,23,42,.16);
+      height:240px;
       animation:floaty 4s ease-in-out infinite;
     }
 
@@ -255,17 +251,32 @@
       100%{ transform:translateY(0); }
     }
 
+    .head{
+      position:absolute;
+      left:50%;
+      top:0;
+      width:220px;
+      height:220px;
+      transform:translateX(-50%);
+      border-radius:50%;
+      background:linear-gradient(180deg,#ffd29f,#f4b575);
+      border:6px solid rgba(255,255,255,.9);
+      box-shadow:0 20px 40px rgba(15,23,42,.16);
+      overflow:hidden;
+      z-index:2;
+    }
+
     .hair{
       position:absolute;
-      inset:18px 18px auto 18px;
-      height:90px;
+      inset:16px 18px auto 18px;
+      height:88px;
       background:linear-gradient(180deg,#27272a,#3f3f46);
       border-radius:90px 90px 38px 38px;
     }
 
     .face{
       position:absolute;
-      inset:44px 32px 26px 32px;
+      inset:42px 30px 24px 30px;
       border-radius:90px 90px 100px 100px;
       background:linear-gradient(180deg,#ffd7ae,#f3ba84);
       overflow:hidden;
@@ -319,11 +330,11 @@
       left:50%;
       top:132px;
       width:72px;
-      height:32px;
+      height:26px;
       transform:translateX(-50%);
       border-bottom:4px solid #8b4513;
       border-radius:0 0 60px 60px;
-      opacity:.65;
+      opacity:.45;
     }
 
     .mouth{
@@ -338,6 +349,7 @@
       overflow:hidden;
       transition:height .15s ease, border-radius .15s ease, top .15s ease;
       box-shadow:inset 0 -4px 0 rgba(0,0,0,.08);
+      z-index:3;
     }
 
     .mouth::after{
@@ -354,23 +366,24 @@
     }
 
     .avatar-card.is-speaking .mouth{
-      animation:talkMouth .18s ease-in-out infinite alternate;
+      animation:talkMouth .16s ease-in-out infinite alternate;
     }
 
     .avatar-card.is-paused .mouth{
+      animation:none;
       height:8px;
-      border-radius:0 0 20px 20px;
+      top:138px;
     }
 
     @keyframes talkMouth{
       0%{
         height:10px;
         top:136px;
-        border-radius:0 0 26px 26px;
+        border-radius:0 0 24px 24px;
       }
       100%{
         height:28px;
-        top:128px;
+        top:126px;
         border-radius:0 0 28px 28px;
       }
     }
@@ -378,24 +391,26 @@
     .neck{
       position:absolute;
       left:50%;
-      bottom:26px;
-      width:44px;
-      height:30px;
+      top:198px;
+      width:42px;
+      height:26px;
       transform:translateX(-50%);
       background:#ecb27c;
       border-radius:0 0 18px 18px;
+      z-index:1;
     }
 
     .shoulders{
       position:absolute;
       left:50%;
-      bottom:-8px;
-      width:250px;
-      height:110px;
+      top:208px;
+      width:190px;
+      height:82px;
       transform:translateX(-50%);
       background:linear-gradient(180deg,#d97706,#b45309);
-      border-radius:120px 120px 30px 30px;
-      box-shadow:inset 0 10px 20px rgba(255,255,255,.12);
+      border-radius:90px 90px 24px 24px;
+      box-shadow:inset 0 10px 20px rgba(255,255,255,.10);
+      z-index:0;
     }
 
     .avatar-caption{
@@ -463,10 +478,9 @@
   <div class="wrap">
     <section class="hero">
       <span class="kicker">Programmer's Picnic</span>
-      <h1 data-pp-speak-title>Talking Avatar Demo</h1>
+      <h1>Talking Avatar Demo V2</h1>
       <p class="lead">
-        This is a demo version of a floating speaking face that can later be merged into your PPSpeak system.
-        It blinks, animates the mouth while speaking, and highlights the current paragraph.
+        This version fixes the hidden mouth and makes the animation clearly visible on mobile too.
       </p>
     </section>
 
@@ -510,15 +524,17 @@
             <div class="avatar-glow"></div>
 
             <div class="avatar">
-              <div class="hair"></div>
-              <div class="face">
-                <div class="brow left"></div>
-                <div class="brow right"></div>
-                <div class="eye left"></div>
-                <div class="eye right"></div>
-                <div class="nose"></div>
-                <div class="smile"></div>
-                <div class="mouth"></div>
+              <div class="head">
+                <div class="hair"></div>
+                <div class="face">
+                  <div class="brow left"></div>
+                  <div class="brow right"></div>
+                  <div class="eye left"></div>
+                  <div class="eye right"></div>
+                  <div class="nose"></div>
+                  <div class="smile"></div>
+                  <div class="mouth"></div>
+                </div>
               </div>
               <div class="neck"></div>
               <div class="shoulders"></div>
@@ -547,17 +563,20 @@
       const liveDot = document.getElementById("liveDot");
       const statusBox = document.getElementById("statusBox");
       const avatarCaption = document.getElementById("avatarCaption");
+      const pauseBtn = document.getElementById("pauseBtn");
 
       let currentIndex = 0;
       let running = false;
       let paused = false;
+      let activeUtterance = null;
 
       function setStatus(text) {
         statusBox.textContent = text;
       }
 
       function setAvatarText(title, text) {
-        avatarCaption.innerHTML = "<strong>" + escapeHtml(title) + "</strong>" + escapeHtml(text);
+        avatarCaption.innerHTML =
+          "<strong>" + escapeHtml(title) + "</strong>" + escapeHtml(text);
       }
 
       function escapeHtml(str) {
@@ -600,9 +619,11 @@
         if (index < 0 || index >= blocks.length) {
           running = false;
           paused = false;
+          activeUtterance = null;
           activateAvatarIdle();
           setStatus("Completed.");
           setAvatarText("Completed", "Narration finished.");
+          pauseBtn.textContent = "Pause";
           return;
         }
 
@@ -617,6 +638,7 @@
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 1;
         utterance.pitch = 1;
+        activeUtterance = utterance;
 
         setStatus("Speaking " + el.id + "...");
         setAvatarText(el.id, text);
@@ -632,33 +654,38 @@
           speakIndex(currentIndex + 1);
         };
 
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
+        window.speechSynthesis.cancel();
+
+        setTimeout(() => {
+          if (!running) return;
+          window.speechSynthesis.speak(utterance);
+        }, 80);
       }
 
       document.getElementById("startBtn").addEventListener("click", () => {
         running = true;
         paused = false;
+        pauseBtn.textContent = "Pause";
         speakIndex(currentIndex);
       });
 
-      document.getElementById("pauseBtn").addEventListener("click", () => {
+      pauseBtn.addEventListener("click", () => {
         if (!running) return;
 
         if (!paused) {
           paused = true;
-          speechSynthesis.pause();
+          window.speechSynthesis.pause();
           setStatus("Paused.");
           setAvatarText("Paused", "Narration is paused.");
           activateAvatarPaused();
-          document.getElementById("pauseBtn").textContent = "Resume";
+          pauseBtn.textContent = "Resume";
         } else {
           paused = false;
-          speechSynthesis.resume();
+          window.speechSynthesis.resume();
           setStatus("Resumed.");
           setAvatarText("Resumed", "Narration has resumed.");
           activateAvatarSpeaking();
-          document.getElementById("pauseBtn").textContent = "Pause";
+          pauseBtn.textContent = "Pause";
         }
       });
 
@@ -666,8 +693,8 @@
         if (!blocks.length) return;
         running = true;
         paused = false;
-        document.getElementById("pauseBtn").textContent = "Pause";
-        speechSynthesis.cancel();
+        pauseBtn.textContent = "Pause";
+        window.speechSynthesis.cancel();
         currentIndex = Math.min(currentIndex + 1, blocks.length - 1);
         speakIndex(currentIndex);
       });
@@ -675,12 +702,13 @@
       document.getElementById("stopBtn").addEventListener("click", () => {
         running = false;
         paused = false;
-        speechSynthesis.cancel();
+        activeUtterance = null;
+        window.speechSynthesis.cancel();
         clearActive();
         activateAvatarIdle();
         setStatus("Stopped.");
         setAvatarText("Status", "Waiting to start narration.");
-        document.getElementById("pauseBtn").textContent = "Pause";
+        pauseBtn.textContent = "Pause";
       });
 
       setAvatarText("Status", "Waiting to start narration.");
