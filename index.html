@@ -3,1342 +3,1232 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PunyaYatra.in — Locations Entry & Management</title>
-  <meta name="theme-color" content="#d97706" />
+  <title>Share Trading Profit Optimizer — HTML CSS JavaScript</title>
+  <meta
+    name="description"
+    content="A pure HTML, CSS and JavaScript share trading strategy simulator using dummy data. Buy on dips, sell on rises, and optimize parameters."
+  />
   <style>
     :root{
       --bg:#fff8eb;
-      --panel:#ffffff;
-      --panel-2:#fff3dc;
+      --card:#ffffff;
       --ink:#1f2937;
       --muted:#6b7280;
+      --line:#ead7b0;
       --brand:#d97706;
-      --brand-2:#f59e0b;
-      --line:#ecd8b3;
-      --ok:#166534;
-      --danger:#b91c1c;
-      --soft-danger:#fef2f2;
-      --soft-ok:#f0fdf4;
-      --shadow:0 12px 30px rgba(0,0,0,.08);
-      --radius:18px;
+      --brand2:#f59e0b;
+      --soft:#fff3cd;
+      --good:#166534;
+      --good-bg:#dcfce7;
+      --bad:#991b1b;
+      --bad-bg:#fee2e2;
+      --shadow:0 14px 40px rgba(0,0,0,.08);
+      --radius:22px;
     }
 
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
+
     body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,#fff8eb 0%,#fff5e4 100%);
-      color:var(--ink);
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter:blur(10px);
-      background:rgba(255,248,235,.9);
-      border-bottom:1px solid var(--line);
-    }
-
-    .topbar-inner{
-      max-width:1400px;
-      margin:0 auto;
-      padding:14px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .logo{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      background:linear-gradient(135deg,var(--brand),var(--brand-2));
-      color:#fff;
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      box-shadow:var(--shadow);
-    }
-
-    .brand h1{
       margin:0;
-      font-size:1.15rem;
-      line-height:1.1;
-    }
-
-    .brand p{
-      margin:.15rem 0 0;
-      color:var(--muted);
-      font-size:.92rem;
-    }
-
-    .toolbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    .btn{
-      border:1px solid transparent;
-      background:linear-gradient(135deg,var(--brand),var(--brand-2));
-      color:#fff;
-      padding:10px 14px;
-      border-radius:12px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.2s transform,.2s opacity,.2s box-shadow,.2s background;
-      box-shadow:0 8px 18px rgba(217,119,6,.18);
-    }
-
-    .btn:hover{transform:translateY(-1px)}
-    .btn.secondary{
-      background:#fff;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(245,158,11,.14), transparent 25%),
+        linear-gradient(180deg,#fffaf2 0%, var(--bg) 55%, #fff 100%);
       color:var(--ink);
-      border-color:var(--line);
-      box-shadow:none;
     }
 
-    .btn.danger{
-      background:linear-gradient(135deg,#dc2626,#ef4444);
-      box-shadow:0 8px 18px rgba(220,38,38,.15);
-    }
-
-    .btn.ok{
-      background:linear-gradient(135deg,#15803d,#22c55e);
-      box-shadow:0 8px 18px rgba(34,197,94,.15);
-    }
-
-    .layout{
-      max-width:1400px;
+    .wrap{
+      width:min(1380px, calc(100% - 24px));
       margin:0 auto;
-      padding:18px;
+      padding:16px 0 32px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;
+      padding:22px;
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      right:-40px;
+      top:-40px;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:rgba(255,255,255,.14);
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(1.6rem, 3.8vw, 2.4rem);
+      line-height:1.15;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:900px;
+      line-height:1.7;
+      color:rgba(255,255,255,.95);
+      position:relative;
+      z-index:1;
+    }
+
+    .grid{
       display:grid;
-      grid-template-columns:320px 1fr 420px;
       gap:18px;
-      align-items:start;
+    }
+
+    .top-grid{
+      grid-template-columns:1.25fr .95fr;
+      margin-bottom:18px;
+    }
+
+    .main-grid{
+      grid-template-columns:400px 1fr;
+      margin-bottom:18px;
+    }
+
+    .bottom-grid{
+      grid-template-columns:1.2fr .8fr;
     }
 
     .card{
-      background:var(--panel);
-      border:1px solid var(--line);
+      background:var(--card);
+      border:1px solid rgba(217,119,6,.12);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       overflow:hidden;
     }
 
-    .card-head{
-      padding:16px 16px 12px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#fffdf8,#fff6e7);
+    .card-header{
+      padding:18px 18px 8px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      flex-wrap:wrap;
     }
 
-    .card-head h2,
-    .card-head h3{
+    .card-header h2,
+    .card-header h3{
       margin:0;
-      font-size:1.05rem;
+      font-size:1.15rem;
     }
 
-    .card-head p{
-      margin:.35rem 0 0;
+    .card-header p{
+      margin:6px 0 0;
       color:var(--muted);
-      font-size:.92rem;
+      line-height:1.55;
     }
 
     .card-body{
-      padding:16px;
+      padding:18px;
     }
 
-    .sidebar .search{
-      width:100%;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      outline:none;
-      font:inherit;
-      background:#fff;
-    }
-
-    .city-list,
-    .place-list{
-      display:grid;
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .city-item,
-    .place-item{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:14px;
-      padding:12px;
-      cursor:pointer;
-      transition:.2s;
-    }
-
-    .city-item:hover,
-    .place-item:hover{
-      border-color:#e7b569;
-      transform:translateY(-1px);
-    }
-
-    .city-item.active,
-    .place-item.active{
-      border-color:var(--brand);
-      background:#fff7ea;
-      box-shadow:0 8px 20px rgba(217,119,6,.12);
-    }
-
-    .city-top,
-    .place-top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    .mini{
-      font-size:.8rem;
-      color:var(--muted);
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      border:1px solid var(--line);
-      background:#fff;
+    .badge{
+      display:inline-block;
+      background:#ffedd5;
+      color:#9a3412;
+      border:1px solid #fdba74;
+      padding:6px 10px;
       border-radius:999px;
-      padding:5px 9px;
-      font-size:.78rem;
-      color:var(--muted);
-      margin:4px 6px 0 0;
-    }
-
-    .pill.featured{
-      background:#fff6d7;
-      color:#8a5a00;
-      border-color:#f5d57b;
-    }
-
-    .section-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      margin-bottom:14px;
-    }
-
-    .field label{
+      font-size:.85rem;
       font-weight:700;
-      font-size:.92rem;
+      margin-bottom:10px;
     }
 
-    .field input,
-    .field textarea,
-    .field select{
-      width:100%;
-      padding:12px 13px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      font:inherit;
+    .btn{
+      border:none;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;
+      padding:12px 16px;
+      border-radius:16px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      box-shadow:0 10px 24px rgba(217,119,6,.25);
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn.secondary{
       background:#fff;
-      color:var(--ink);
-      outline:none;
+      color:var(--brand);
+      border:1px solid rgba(217,119,6,.24);
+      box-shadow:none;
     }
 
-    .field textarea{
-      min-height:90px;
-      resize:vertical;
-    }
-
-    .inline{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .check{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:12px 13px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-    }
-
-    .form-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:6px;
-    }
-
-    .muted{
-      color:var(--muted);
-    }
-
-    .stat-grid{
+    .stats{
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin-bottom:16px;
+      gap:14px;
+      margin-top:12px;
     }
 
     .stat{
-      background:linear-gradient(180deg,#fff,#fff7ea);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .stat .num{
-      font-size:1.5rem;
-      font-weight:800;
-      color:var(--brand);
-    }
-
-    .json-box{
-      width:100%;
-      min-height:320px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-      font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-      resize:vertical;
-      background:#fffdfa;
-      color:#111827;
-    }
-
-    .message{
-      margin-top:12px;
-      padding:12px 14px;
-      border-radius:12px;
-      font-size:.92rem;
-      display:none;
-    }
-
-    .message.show{display:block}
-    .message.ok{
-      background:var(--soft-ok);
-      color:var(--ok);
-      border:1px solid #bbf7d0;
-    }
-
-    .message.error{
-      background:var(--soft-danger);
-      color:var(--danger);
-      border:1px solid #fecaca;
-    }
-
-    .images-preview{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .thumb{
-      border:1px solid var(--line);
-      border-radius:12px;
-      overflow:hidden;
       background:#fff;
-      min-height:92px;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      padding:16px;
     }
 
-    .thumb img{
-      width:100%;
-      height:92px;
-      object-fit:cover;
+    .stat .label{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:8px;
+    }
+
+    .stat .value{
+      font-size:1.7rem;
+      font-weight:800;
+      line-height:1.15;
+    }
+
+    .stat .sub{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+
+    .mini-box{
+      background:#f8fafc;
+      border-radius:18px;
+      padding:14px;
+      border:1px solid rgba(0,0,0,.05);
+    }
+
+    .mini-box strong{
       display:block;
+      margin-top:6px;
+      font-size:1.05rem;
     }
 
-    .thumb .path{
-      padding:8px;
-      font-size:.74rem;
+    .mini-box.orange{
+      background:#fff7ed;
+      border-color:#fed7aa;
+    }
+
+    .controls{
+      display:grid;
+      gap:18px;
+    }
+
+    .control{
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      padding:14px;
+      background:#fff;
+    }
+
+    .control label{
+      display:block;
+      font-weight:700;
+      margin-bottom:10px;
+      line-height:1.5;
+    }
+
+    .control .hint{
       color:var(--muted);
-      word-break:break-word;
+      font-size:.9rem;
+      margin-top:8px;
+      line-height:1.5;
     }
 
-    .empty{
-      padding:18px;
-      border:1px dashed var(--line);
+    .control input[type="number"]{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #d1d5db;
       border-radius:14px;
-      background:#fffdf8;
-      color:var(--muted);
-      text-align:center;
+      font-size:1rem;
+      outline:none;
     }
 
-    .danger-zone{
-      margin-top:18px;
-      padding-top:16px;
-      border-top:1px dashed var(--line);
+    .control input[type="range"]{
+      width:100%;
+      accent-color:var(--brand);
     }
 
-    .subtle{
-      background:var(--panel-2);
-      border:1px solid var(--line);
-      border-radius:14px;
+    .chart-card{
+      display:grid;
+      gap:18px;
+    }
+
+    .chart-wrap{
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      background:#fff;
       padding:12px;
     }
 
-    .small{
-      font-size:.85rem;
+    .chart-wrap canvas{
+      display:block;
+      width:100%;
+      height:340px;
     }
 
-    @media (max-width:1180px){
-      .layout{
-        grid-template-columns:300px 1fr;
+    .small-chart canvas{
+      height:240px;
+    }
+
+    .legend{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:6px 6px 0;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .legend span{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      display:inline-block;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      max-height:430px;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:760px;
+    }
+
+    th, td{
+      padding:12px 10px;
+      text-align:left;
+      border-bottom:1px solid #eef2f7;
+      font-size:.95rem;
+    }
+
+    th{
+      position:sticky;
+      top:0;
+      background:#f8fafc;
+      z-index:1;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:800;
+    }
+
+    .pill.buy{
+      background:var(--bad-bg);
+      color:var(--bad);
+    }
+
+    .pill.sell{
+      background:var(--good-bg);
+      color:var(--good);
+    }
+
+    .note-box{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff;
+      line-height:1.7;
+      color:#374151;
+      margin-bottom:12px;
+    }
+
+    .note-box.orange{
+      background:#fff7ed;
+      border-color:#fed7aa;
+    }
+
+    .list-lines{
+      margin:10px 0 0;
+      padding-left:18px;
+    }
+
+    .list-lines li{
+      margin:6px 0;
+    }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.7;
+      text-align:center;
+    }
+
+    @media (max-width: 1120px){
+      .top-grid,
+      .main-grid,
+      .bottom-grid{
+        grid-template-columns:1fr;
       }
-      .json-panel{
-        grid-column:1 / -1;
+      .stats{
+        grid-template-columns:1fr;
       }
     }
 
-    @media (max-width:800px){
-      .layout{
+    @media (max-width: 700px){
+      .mini-grid{
         grid-template-columns:1fr;
       }
-      .section-grid,
-      .stat-grid{
-        grid-template-columns:1fr;
+      .wrap{
+        width:min(100% - 14px, 1380px);
       }
-      .images-preview{
-        grid-template-columns:1fr 1fr;
+      .hero{
+        border-radius:22px;
+      }
+      .card{
+        border-radius:20px;
+      }
+      .card-header,
+      .card-body{
+        padding:15px;
       }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="logo">PY</div>
-        <div>
-          <h1>PunyaYatra.in Locations Manager</h1>
-          <p>Entry, editing, preview, and JSON export for cities and places.</p>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Share Trading Profit Optimizer</h1>
+      <p>
+        This pure HTML, CSS and JavaScript app uses dummy data to simulate a strategy where you invest when the share price falls
+        and sell when it rises above your average cost. You can change the buy amount, dip trigger, sell target, scaling rule and
+        number of buys, then compare the results and run a simple optimizer.
+      </p>
+    </section>
+
+    <section class="grid top-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="badge">Dummy data demo</div>
+            <h2>Simulation summary</h2>
+            <p>Change the rules and instantly see how the strategy behaves on generated price data.</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn secondary" id="btnReset">Reset controls</button>
+            <button class="btn" id="btnRefresh">Refresh dummy data</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="stats">
+            <div class="stat">
+              <div class="label">Final value</div>
+              <div class="value" id="statFinalValue">₹0</div>
+              <div class="sub" id="statStartedWith">Started with ₹0</div>
+            </div>
+            <div class="stat">
+              <div class="label">Total return</div>
+              <div class="value" id="statTotalReturn">₹0</div>
+              <div class="sub" id="statSellCycles">0 completed sell cycles</div>
+            </div>
+            <div class="stat">
+              <div class="label">Realized profit</div>
+              <div class="value" id="statRealizedProfit">₹0</div>
+              <div class="sub" id="statOpenShares">Open shares: 0</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="toolbar">
-        <button class="btn secondary" id="loadSampleBtn">Load Sample Data</button>
-        <button class="btn secondary" id="importJsonBtn">Import JSON</button>
-        <button class="btn secondary" id="copyJsonBtn">Copy JSON</button>
-        <button class="btn ok" id="downloadJsonBtn">Download locations.json</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="layout">
-    <!-- LEFT -->
-    <aside class="card sidebar">
-      <div class="card-head">
-        <h2>Cities</h2>
-        <p>Select a city to manage its places.</p>
-      </div>
-      <div class="card-body">
-        <div class="field">
-          <label for="citySearch">Search cities or places</label>
-          <input id="citySearch" class="search" type="text" placeholder="Search by city, place, tag, id..." />
-        </div>
-
-        <div class="subtle small">
-          <strong>Selected city:</strong>
-          <span id="selectedCityLabel">None</span>
-        </div>
-
-        <div class="city-list" id="cityList"></div>
-
-        <div style="margin-top:16px">
-          <button class="btn" id="newCityBtn" style="width:100%">+ Add New City</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- CENTER -->
-    <section class="card">
-      <div class="card-head">
-        <h2>Places & Editor</h2>
-        <p>Add, update, or remove places for the selected city.</p>
-      </div>
-      <div class="card-body">
-        <div class="stat-grid">
-          <div class="stat">
-            <div class="mini">Cities</div>
-            <div class="num" id="statCities">0</div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Best settings found on dummy data</h3>
+            <p>A simple grid search checks many combinations and reports the strongest result.</p>
           </div>
-          <div class="stat">
-            <div class="mini">Places</div>
-            <div class="num" id="statPlaces">0</div>
+          <button class="btn" id="btnOptimize">Run optimizer</button>
+        </div>
+        <div class="card-body">
+          <div class="mini-grid" id="optimizerGrid">
+            <div class="mini-box"><span>Buy dip</span><strong id="bestDip">-</strong></div>
+            <div class="mini-box"><span>Sell profit</span><strong id="bestProfit">-</strong></div>
+            <div class="mini-box"><span>Base buy</span><strong id="bestBaseBuy">-</strong></div>
+            <div class="mini-box"><span>Scale factor</span><strong id="bestScale">-</strong></div>
+            <div class="mini-box"><span>Max buys</span><strong id="bestMaxBuys">-</strong></div>
+            <div class="mini-box orange"><span>Best final value</span><strong id="bestFinal">-</strong></div>
           </div>
-          <div class="stat">
-            <div class="mini">Featured</div>
-            <div class="num" id="statFeatured">0</div>
+          <div class="note-box orange" style="margin-top:14px;">
+            The best settings can change for each stock, timeframe and market condition. This is why the app should later run on your uploaded dataframe, not only on dummy data.
           </div>
         </div>
-
-        <div id="placesWrap">
-          <div class="empty">Select a city to view and manage places.</div>
-        </div>
-
-        <hr style="border:none;border-top:1px solid var(--line);margin:18px 0" />
-
-        <form id="placeForm">
-          <h3 style="margin-top:0">Place Entry Form</h3>
-          <p class="muted">Use this form to add a new place or edit an existing one.</p>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="placeId">Place ID</label>
-              <input id="placeId" type="text" placeholder="kashi_vishwanath" />
-            </div>
-            <div class="field">
-              <label for="citySelectForPlace">City</label>
-              <select id="citySelectForPlace"></select>
-            </div>
-          </div>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="placeNameEn">Place Name (EN)</label>
-              <input id="placeNameEn" type="text" placeholder="Kashi Vishwanath Temple" />
-            </div>
-            <div class="field">
-              <label for="placeNameHi">Place Name (HI)</label>
-              <input id="placeNameHi" type="text" placeholder="काशी विश्वनाथ मंदिर" />
-            </div>
-          </div>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="placeLat">Latitude</label>
-              <input id="placeLat" type="number" step="any" placeholder="25.3109" />
-            </div>
-            <div class="field">
-              <label for="placeLng">Longitude</label>
-              <input id="placeLng" type="number" step="any" placeholder="83.0107" />
-            </div>
-          </div>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="placeTags">Tags</label>
-              <input id="placeTags" type="text" placeholder="temple, shiv, jyotirlinga" />
-            </div>
-            <div class="field">
-              <label for="placeImages">Images</label>
-              <textarea id="placeImages" placeholder="One image path per line"></textarea>
-            </div>
-          </div>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="placeDescEn">Description (EN)</label>
-              <textarea id="placeDescEn" placeholder="One of the 12 Jyotirlingas of Lord Shiva."></textarea>
-            </div>
-            <div class="field">
-              <label for="placeDescHi">Description (HI)</label>
-              <textarea id="placeDescHi" placeholder="भगवान शिव के 12 ज्योतिर्लिंगों में से एक।"></textarea>
-            </div>
-          </div>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="featuredNoteEn">Featured Note (EN)</label>
-              <input id="featuredNoteEn" type="text" placeholder="Most visited spiritual destination" />
-            </div>
-            <div class="field">
-              <label for="featuredNoteHi">Featured Note (HI)</label>
-              <input id="featuredNoteHi" type="text" placeholder="सबसे लोकप्रिय तीर्थ स्थल" />
-            </div>
-          </div>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="featuredRank">Featured Rank</label>
-              <input id="featuredRank" type="number" step="1" placeholder="1" />
-            </div>
-            <div class="field">
-              <label>&nbsp;</label>
-              <div class="check">
-                <input id="placeFeatured" type="checkbox" />
-                <label for="placeFeatured" style="margin:0;font-weight:600">Mark as featured</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="btn">Save Place</button>
-            <button type="button" class="btn secondary" id="resetPlaceBtn">Reset Form</button>
-            <button type="button" class="btn danger" id="deletePlaceBtn">Delete Current Place</button>
-          </div>
-
-          <div class="message" id="placeMessage"></div>
-        </form>
       </div>
     </section>
 
-    <!-- RIGHT -->
-    <aside class="card json-panel">
-      <div class="card-head">
-        <h2>JSON Preview & City Form</h2>
-        <p>Live JSON preview, import, export, and city editing.</p>
-      </div>
-      <div class="card-body">
-        <form id="cityForm">
-          <h3 style="margin-top:0">City Entry Form</h3>
-
-          <div class="section-grid">
-            <div class="field">
-              <label for="cityId">City ID</label>
-              <input id="cityId" type="text" placeholder="varanasi" />
-            </div>
-            <div class="field">
-              <label for="cityNameEn">City Name (EN)</label>
-              <input id="cityNameEn" type="text" placeholder="Varanasi" />
-            </div>
+    <section class="grid main-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Strategy controls</h3>
+            <p>These settings define when to buy, how much to buy, and when to sell.</p>
           </div>
-
-          <div class="field">
-            <label for="cityNameHi">City Name (HI)</label>
-            <input id="cityNameHi" type="text" placeholder="वाराणसी" />
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="btn">Save City</button>
-            <button type="button" class="btn secondary" id="resetCityBtn">Reset City Form</button>
-            <button type="button" class="btn danger" id="deleteCityBtn">Delete Current City</button>
-          </div>
-
-          <div class="message" id="cityMessage"></div>
-        </form>
-
-        <hr style="border:none;border-top:1px solid var(--line);margin:18px 0" />
-
-        <div class="field">
-          <label for="jsonPreview">locations.json Preview</label>
-          <textarea id="jsonPreview" class="json-box" spellcheck="false"></textarea>
         </div>
+        <div class="card-body">
+          <div class="controls">
+            <div class="control">
+              <label for="initialCash">Initial capital</label>
+              <input id="initialCash" type="number" min="1000" step="1000" value="100000" />
+              <div class="hint">The total capital available for the simulation.</div>
+            </div>
 
-        <div class="inline">
-          <button class="btn secondary" id="applyJsonBtn" type="button">Apply JSON From Preview</button>
-          <button class="btn secondary" id="saveLocalBtn" type="button">Save to Browser</button>
-          <button class="btn secondary" id="clearLocalBtn" type="button">Clear Browser Save</button>
-        </div>
+            <div class="control">
+              <label for="baseBuy">Base buy amount: <span id="baseBuyValue">₹5,000</span></label>
+              <input id="baseBuy" type="range" min="1000" max="20000" step="500" value="5000" />
+              <div class="hint">The first buy size used when the price drops enough from the recent peak.</div>
+            </div>
 
-        <div class="message" id="jsonMessage"></div>
+            <div class="control">
+              <label for="dipPercent">Buy after dip from recent peak: <span id="dipPercentValue">5%</span></label>
+              <input id="dipPercent" type="range" min="1" max="15" step="1" value="5" />
+              <div class="hint">Lower values buy sooner. Higher values wait for deeper dips.</div>
+            </div>
 
-        <div class="danger-zone">
-          <div class="subtle small">
-            <strong>Storage note:</strong> this page saves to your browser only.  
-            For production, upload the exported file as your real <code>locations.json</code>.
+            <div class="control">
+              <label for="profitPercent">Sell after rise above average cost: <span id="profitPercentValue">4%</span></label>
+              <input id="profitPercent" type="range" min="1" max="15" step="1" value="4" />
+              <div class="hint">The whole basket is sold when price rises enough above the average cost.</div>
+            </div>
+
+            <div class="control">
+              <label for="scaleFactor">Scale factor for next buys: <span id="scaleFactorValue">1.5x</span></label>
+              <input id="scaleFactor" type="range" min="1" max="3" step="0.25" value="1.5" />
+              <div class="hint">If price keeps falling, the second and third buys can be larger.</div>
+            </div>
+
+            <div class="control">
+              <label for="maxBuys">Maximum buys in one falling cycle: <span id="maxBuysValue">3</span></label>
+              <input id="maxBuys" type="range" min="1" max="6" step="1" value="3" />
+              <div class="hint">Limits how many times the strategy averages down before waiting.</div>
+            </div>
           </div>
         </div>
       </div>
-    </aside>
-  </main>
+
+      <div class="chart-card">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Price and portfolio chart</h3>
+              <p>Shows share price, average cost, target sell line and portfolio value.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="legend">
+              <span><i class="dot" style="background:#d97706"></i> Price</span>
+              <span><i class="dot" style="background:#2563eb"></i> Average cost</span>
+              <span><i class="dot" style="background:#7c3aed"></i> Target sell</span>
+              <span><i class="dot" style="background:#059669"></i> Portfolio value</span>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="mainChart" width="1200" height="340"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Portfolio value only</h3>
+              <p>This makes growth and drawdown easier to see.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap small-chart">
+              <canvas id="portfolioChart" width="1200" height="240"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid bottom-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Trade log</h3>
+            <p>Every buy and sell in the current simulation appears here.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Day</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Amount</th>
+                  <th>Qty</th>
+                  <th>Cash After</th>
+                  <th>Shares After</th>
+                </tr>
+              </thead>
+              <tbody id="tradeTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>How to think about maximizing profit</h3>
+            <p>The goal is not just more profit, but better risk-adjusted profit.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="note-box orange">
+            <strong>Key variables to optimize</strong>
+            <ul class="list-lines">
+              <li>At what percentage drop from the recent peak should the first buy happen?</li>
+              <li>How much money should be invested in each buy?</li>
+              <li>How much should later buys be scaled up?</li>
+              <li>At what percentage above average cost should the system sell?</li>
+              <li>How many buys should be allowed in one down cycle?</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <strong>Important caution</strong><br />
+            A strategy can look excellent on past data and then fail in future data. Real optimization should use a training period and then a separate testing period.
+          </div>
+
+          <div class="note-box">
+            <strong>Next step when you upload a dataframe</strong><br />
+            This same app can read your dataframe columns directly, test many combinations, and report which settings performed best for your real share history.
+          </div>
+
+          <div class="note-box">
+            <strong>Practical direction</strong><br />
+            For real use, also add stop-loss rules, max capital per stock, transaction cost, slippage, taxes and separate testing data.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Built with pure HTML, CSS and JavaScript. Ready to save as <strong>index.html</strong> and publish on GitHub Pages.
+    </div>
+  </div>
 
   <script>
-    const STORAGE_KEY = "punyayatra_locations_admin_v1";
-
-    const sampleData = {
-      "cities": [
-        {
-          "id": "varanasi",
-          "name": { "en": "Varanasi", "hi": "वाराणसी" },
-          "places": [
-            {
-              "id": "champak_roy",
-              "name": { "en": "Champak's Home", "hi": "काशी विश्वनाथ मंदिर" },
-              "lat": 25.3109,
-              "lng": 83.0107,
-              "featured": true,
-              "featuredRank": 1,
-              "featuredNote": {
-                "en": "Most visited spiritual destination",
-                "hi": "सबसे लोकप्रिय तीर्थ स्थल"
-              },
-              "tags": ["temple", "shiv", "jyotirlinga"],
-              "images": [
-                "assets/images/varanasi/kashi-viswanath/0.jpg",
-                "assets/images/varanasi/kashi-viswanath/1.jpg"
-              ],
-              "description": {
-                "en": "One of the 12 Jyotirlingas of Lord Shiva.",
-                "hi": "भगवान शिव के 12 ज्योतिर्लिंगों में से एक।"
-              }
-            },
-            {
-              "id": "kashi_vishwanath",
-              "name": { "en": "Kashi Vishwanath Temple", "hi": "काशी विश्वनाथ मंदिर" },
-              "lat": 25.3109,
-              "lng": 83.0107,
-              "featured": true,
-              "featuredRank": 2,
-              "featuredNote": {
-                "en": "Most visited spiritual destination",
-                "hi": "सबसे लोकप्रिय तीर्थ स्थल"
-              },
-              "tags": ["temple", "shiv", "jyotirlinga"],
-              "images": [
-                "assets/images/varanasi/kashi-viswanath/0.jpg",
-                "assets/images/varanasi/kashi-viswanath/1.jpg"
-              ],
-              "description": {
-                "en": "One of the 12 Jyotirlingas of Lord Shiva.",
-                "hi": "भगवान शिव के 12 ज्योतिर्लिंगों में से one."
-              }
-            }
-          ]
-        },
-        {
-          "id": "ayodhya",
-          "name": { "en": "Ayodhya", "hi": "अयोध्या" },
-          "places": [
-            {
-              "id": "ram_janmabhoomi",
-              "name": { "en": "Shri Ram Janmabhoomi", "hi": "श्री राम जन्मभूमि" },
-              "lat": 26.7957,
-              "lng": 82.1944,
-              "tags": ["ram", "temple", "janmabhoomi"],
-              "images": ["assets/images/ayodhya/ram_janmabhoomi.jpg"],
-              "description": {
-                "en": "Birthplace of Lord Ram.",
-                "hi": "भगवान श्रीराम का जन्मस्थान।"
-              }
-            }
-          ]
-        }
-      ]
+    const state = {
+      seed: 1,
+      data: [],
+      simulation: null
     };
 
-    let state = loadInitialData();
-    let selectedCityId = null;
-    let selectedPlaceId = null;
+    const els = {
+      initialCash: document.getElementById("initialCash"),
+      baseBuy: document.getElementById("baseBuy"),
+      dipPercent: document.getElementById("dipPercent"),
+      profitPercent: document.getElementById("profitPercent"),
+      scaleFactor: document.getElementById("scaleFactor"),
+      maxBuys: document.getElementById("maxBuys"),
 
-    const cityList = document.getElementById("cityList");
-    const citySearch = document.getElementById("citySearch");
-    const placesWrap = document.getElementById("placesWrap");
-    const jsonPreview = document.getElementById("jsonPreview");
+      baseBuyValue: document.getElementById("baseBuyValue"),
+      dipPercentValue: document.getElementById("dipPercentValue"),
+      profitPercentValue: document.getElementById("profitPercentValue"),
+      scaleFactorValue: document.getElementById("scaleFactorValue"),
+      maxBuysValue: document.getElementById("maxBuysValue"),
 
-    const selectedCityLabel = document.getElementById("selectedCityLabel");
-    const statCities = document.getElementById("statCities");
-    const statPlaces = document.getElementById("statPlaces");
-    const statFeatured = document.getElementById("statFeatured");
+      statFinalValue: document.getElementById("statFinalValue"),
+      statStartedWith: document.getElementById("statStartedWith"),
+      statTotalReturn: document.getElementById("statTotalReturn"),
+      statSellCycles: document.getElementById("statSellCycles"),
+      statRealizedProfit: document.getElementById("statRealizedProfit"),
+      statOpenShares: document.getElementById("statOpenShares"),
 
-    const cityForm = document.getElementById("cityForm");
-    const cityIdInput = document.getElementById("cityId");
-    const cityNameEnInput = document.getElementById("cityNameEn");
-    const cityNameHiInput = document.getElementById("cityNameHi");
-    const cityMessage = document.getElementById("cityMessage");
+      bestDip: document.getElementById("bestDip"),
+      bestProfit: document.getElementById("bestProfit"),
+      bestBaseBuy: document.getElementById("bestBaseBuy"),
+      bestScale: document.getElementById("bestScale"),
+      bestMaxBuys: document.getElementById("bestMaxBuys"),
+      bestFinal: document.getElementById("bestFinal"),
 
-    const placeForm = document.getElementById("placeForm");
-    const citySelectForPlace = document.getElementById("citySelectForPlace");
-    const placeIdInput = document.getElementById("placeId");
-    const placeNameEnInput = document.getElementById("placeNameEn");
-    const placeNameHiInput = document.getElementById("placeNameHi");
-    const placeLatInput = document.getElementById("placeLat");
-    const placeLngInput = document.getElementById("placeLng");
-    const placeTagsInput = document.getElementById("placeTags");
-    const placeImagesInput = document.getElementById("placeImages");
-    const placeDescEnInput = document.getElementById("placeDescEn");
-    const placeDescHiInput = document.getElementById("placeDescHi");
-    const placeFeaturedInput = document.getElementById("placeFeatured");
-    const featuredRankInput = document.getElementById("featuredRank");
-    const featuredNoteEnInput = document.getElementById("featuredNoteEn");
-    const featuredNoteHiInput = document.getElementById("featuredNoteHi");
-    const placeMessage = document.getElementById("placeMessage");
-    const jsonMessage = document.getElementById("jsonMessage");
+      tradeTableBody: document.getElementById("tradeTableBody"),
+      btnRefresh: document.getElementById("btnRefresh"),
+      btnReset: document.getElementById("btnReset"),
+      btnOptimize: document.getElementById("btnOptimize"),
 
-    function loadInitialData(){
-      try{
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if(saved){
-          const parsed = JSON.parse(saved);
-          if(parsed && Array.isArray(parsed.cities)) return parsed;
-        }
-      }catch(err){}
-      return { cities: [] };
-    }
+      mainChart: document.getElementById("mainChart"),
+      portfolioChart: document.getElementById("portfolioChart")
+    };
 
-    function saveToLocal(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function slugify(text){
-      return String(text || "")
-        .toLowerCase()
-        .trim()
-        .replace(/['"]/g, "")
-        .replace(/[^a-z0-9]+/g, "_")
-        .replace(/^_+|_+$/g, "");
-    }
-
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;");
-    }
-
-    function getSelectedCity(){
-      return state.cities.find(c => c.id === selectedCityId) || null;
-    }
-
-    function getSelectedPlace(){
-      const city = getSelectedCity();
-      if(!city) return null;
-      return (city.places || []).find(p => p.id === selectedPlaceId) || null;
-    }
-
-    function countAllPlaces(){
-      return state.cities.reduce((sum,c) => sum + (c.places?.length || 0), 0);
-    }
-
-    function countFeaturedPlaces(){
-      return state.cities.reduce((sum,c) => {
-        return sum + (c.places || []).filter(p => p.featured).length;
-      }, 0);
-    }
-
-    function showMessage(el, text, type="ok"){
-      el.textContent = text;
-      el.className = "message show " + type;
-      clearTimeout(el._t);
-      el._t = setTimeout(() => {
-        el.className = "message";
-      }, 2400);
-    }
-
-    function setJsonPreview(){
-      jsonPreview.value = JSON.stringify(state, null, 2);
-    }
-
-    function fillCitySelect(){
-      citySelectForPlace.innerHTML = state.cities.map(city => {
-        const selected = city.id === selectedCityId ? "selected" : "";
-        return `<option value="${escapeHtml(city.id)}" ${selected}>${escapeHtml(city.name?.en || city.id)}</option>`;
-      }).join("");
-    }
-
-    function renderStats(){
-      statCities.textContent = state.cities.length;
-      statPlaces.textContent = countAllPlaces();
-      statFeatured.textContent = countFeaturedPlaces();
-    }
-
-    function matchesQuery(city, q){
-      if(!q) return true;
-      const raw = [
-        city.id,
-        city.name?.en,
-        city.name?.hi,
-        ...(city.places || []).flatMap(p => [
-          p.id,
-          p.name?.en,
-          p.name?.hi,
-          ...(p.tags || [])
-        ])
-      ].join(" ").toLowerCase();
-      return raw.includes(q);
-    }
-
-    function renderCities(){
-      const q = citySearch.value.trim().toLowerCase();
-      const html = state.cities
-        .filter(city => matchesQuery(city, q))
-        .map(city => {
-          const count = city.places?.length || 0;
-          const featuredCount = (city.places || []).filter(p => p.featured).length;
-          return `
-            <div class="city-item ${city.id === selectedCityId ? "active" : ""}" data-city-id="${escapeHtml(city.id)}">
-              <div class="city-top">
-                <div>
-                  <strong>${escapeHtml(city.name?.en || city.id)}</strong>
-                  <div class="mini">${escapeHtml(city.id)}</div>
-                </div>
-                <div class="mini">${count} place${count === 1 ? "" : "s"}</div>
-              </div>
-              <div style="margin-top:8px">
-                <span class="pill">${count} places</span>
-                <span class="pill featured">${featuredCount} featured</span>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-      cityList.innerHTML = html || `<div class="empty">No cities match your search.</div>`;
-
-      cityList.querySelectorAll(".city-item").forEach(item => {
-        item.addEventListener("click", () => {
-          selectedCityId = item.dataset.cityId;
-          selectedPlaceId = null;
-          populateCityForm();
-          resetPlaceForm();
-          renderAll();
-        });
+    function formatINR(value) {
+      return "₹" + Number(value || 0).toLocaleString("en-IN", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0
       });
     }
 
-    function renderPlaces(){
-      const city = getSelectedCity();
-      if(!city){
-        placesWrap.innerHTML = `<div class="empty">Select a city to view and manage places.</div>`;
-        selectedCityLabel.textContent = "None";
-        return;
-      }
-
-      selectedCityLabel.textContent = city.name?.en || city.id;
-
-      const sortedPlaces = [...(city.places || [])].sort((a,b) => {
-        const af = a.featured ? 0 : 1;
-        const bf = b.featured ? 0 : 1;
-        if(af !== bf) return af - bf;
-        return (a.featuredRank || 9999) - (b.featuredRank || 9999);
-      });
-
-      const html = sortedPlaces.map(place => {
-        const tags = (place.tags || []).map(t => `<span class="pill">${escapeHtml(t)}</span>`).join("");
-        return `
-          <div class="place-item ${place.id === selectedPlaceId ? "active" : ""}" data-place-id="${escapeHtml(place.id)}">
-            <div class="place-top">
-              <div>
-                <strong>${escapeHtml(place.name?.en || place.id)}</strong>
-                <div class="mini">${escapeHtml(place.id)}</div>
-              </div>
-              ${place.featured ? `<span class="pill featured">Featured #${Number(place.featuredRank || 0)}</span>` : ``}
-            </div>
-
-            <div class="mini" style="margin-top:8px">
-              ${Number(place.lat || 0)}, ${Number(place.lng || 0)}
-            </div>
-
-            <div style="margin-top:6px">${tags}</div>
-
-            ${(place.images || []).length ? `
-              <div class="images-preview">
-                ${(place.images || []).slice(0,3).map(src => `
-                  <div class="thumb">
-                    <img src="${escapeHtml(src)}" alt="${escapeHtml(place.name?.en || place.id)}" onerror="this.style.display='none';this.parentNode.innerHTML='<div class=&quot;path&quot;>${escapeHtml(src)}</div>'" />
-                  </div>
-                `).join("")}
-              </div>
-            ` : ``}
-          </div>
-        `;
-      }).join("");
-
-      placesWrap.innerHTML = `
-        <div class="inline" style="justify-content:space-between;margin-bottom:12px">
-          <div>
-            <strong>${escapeHtml(city.name?.en || city.id)}</strong>
-            <div class="mini">${(city.places || []).length} place(s)</div>
-          </div>
-          <button class="btn" id="newPlaceBtn" type="button">+ Add New Place</button>
-        </div>
-        <div class="place-list">
-          ${html || `<div class="empty">No places in this city yet.</div>`}
-        </div>
-      `;
-
-      const newPlaceBtn = document.getElementById("newPlaceBtn");
-      if(newPlaceBtn){
-        newPlaceBtn.addEventListener("click", () => {
-          selectedPlaceId = null;
-          resetPlaceForm();
-          citySelectForPlace.value = city.id;
-          placeIdInput.focus();
-          renderAll();
-        });
-      }
-
-      placesWrap.querySelectorAll(".place-item").forEach(item => {
-        item.addEventListener("click", () => {
-          selectedPlaceId = item.dataset.placeId;
-          populatePlaceForm();
-          renderAll();
-        });
+    function formatNum(value, digits = 2) {
+      return Number(value || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
       });
     }
 
-    function populateCityForm(){
-      const city = getSelectedCity();
-      if(!city){
-        cityForm.reset();
-        cityIdInput.value = "";
-        return;
-      }
-      cityIdInput.value = city.id || "";
-      cityNameEnInput.value = city.name?.en || "";
-      cityNameHiInput.value = city.name?.hi || "";
+    function getParams() {
+      return {
+        initialCash: Number(els.initialCash.value || 0),
+        baseBuy: Number(els.baseBuy.value || 0),
+        dipPercent: Number(els.dipPercent.value || 0),
+        profitPercent: Number(els.profitPercent.value || 0),
+        scaleFactor: Number(els.scaleFactor.value || 1),
+        maxBuys: Number(els.maxBuys.value || 1)
+      };
     }
 
-    function resetCityForm(){
-      cityForm.reset();
-      cityIdInput.value = "";
-      cityNameEnInput.value = "";
-      cityNameHiInput.value = "";
+    function updateControlLabels() {
+      els.baseBuyValue.textContent = formatINR(els.baseBuy.value);
+      els.dipPercentValue.textContent = els.dipPercent.value + "%";
+      els.profitPercentValue.textContent = els.profitPercent.value + "%";
+      els.scaleFactorValue.textContent = Number(els.scaleFactor.value).toFixed(2).replace(/\.00$/,"") + "x";
+      els.maxBuysValue.textContent = els.maxBuys.value;
     }
 
-    function populatePlaceForm(){
-      const city = getSelectedCity();
-      const place = getSelectedPlace();
-      if(!city || !place){
-        resetPlaceForm();
-        return;
-      }
+    function makeDummyData(seed = 1) {
+      const data = [];
+      let price = 100 + seed * 0.4;
 
-      citySelectForPlace.value = city.id;
-      placeIdInput.value = place.id || "";
-      placeNameEnInput.value = place.name?.en || "";
-      placeNameHiInput.value = place.name?.hi || "";
-      placeLatInput.value = place.lat ?? "";
-      placeLngInput.value = place.lng ?? "";
-      placeTagsInput.value = (place.tags || []).join(", ");
-      placeImagesInput.value = (place.images || []).join("\n");
-      placeDescEnInput.value = place.description?.en || "";
-      placeDescHiInput.value = place.description?.hi || "";
-      placeFeaturedInput.checked = !!place.featured;
-      featuredRankInput.value = place.featuredRank ?? "";
-      featuredNoteEnInput.value = place.featuredNote?.en || "";
-      featuredNoteHiInput.value = place.featuredNote?.hi || "";
-    }
+      for (let i = 0; i < 180; i++) {
+        const wave1 = Math.sin((i + seed) / 8) * 4;
+        const wave2 = Math.cos((i + seed * 2) / 17) * 6;
+        const drift = i < 60 ? 0.12 : i < 120 ? -0.05 : 0.18;
+        const noise = Math.sin((i + seed) * 1.73) * 1.8;
+        const volatilityBurst = (i > 42 && i < 58) ? -1.2 : (i > 110 && i < 128 ? 1.1 : 0);
 
-    function resetPlaceForm(){
-      placeForm.reset();
-      placeIdInput.value = "";
-      placeNameEnInput.value = "";
-      placeNameHiInput.value = "";
-      placeLatInput.value = "";
-      placeLngInput.value = "";
-      placeTagsInput.value = "";
-      placeImagesInput.value = "";
-      placeDescEnInput.value = "";
-      placeDescHiInput.value = "";
-      placeFeaturedInput.checked = false;
-      featuredRankInput.value = "";
-      featuredNoteEnInput.value = "";
-      featuredNoteHiInput.value = "";
-      if(selectedCityId) citySelectForPlace.value = selectedCityId;
-    }
+        price = Math.max(
+          25,
+          price + drift + wave1 * 0.22 + wave2 * 0.18 + noise * 0.35 + volatilityBurst
+        );
 
-    function renderAll(){
-      renderStats();
-      renderCities();
-      fillCitySelect();
-      renderPlaces();
-      setJsonPreview();
-    }
-
-    document.getElementById("loadSampleBtn").addEventListener("click", () => {
-      state = structuredClone(sampleData);
-      selectedCityId = state.cities[0]?.id || null;
-      selectedPlaceId = null;
-      saveToLocal();
-      populateCityForm();
-      resetPlaceForm();
-      renderAll();
-      showMessage(jsonMessage, "Sample data loaded.", "ok");
-    });
-
-    document.getElementById("saveLocalBtn").addEventListener("click", () => {
-      saveToLocal();
-      showMessage(jsonMessage, "Saved to browser storage.", "ok");
-    });
-
-    document.getElementById("clearLocalBtn").addEventListener("click", () => {
-      localStorage.removeItem(STORAGE_KEY);
-      showMessage(jsonMessage, "Browser save cleared.", "ok");
-    });
-
-    document.getElementById("copyJsonBtn").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(jsonPreview.value);
-        showMessage(jsonMessage, "JSON copied to clipboard.", "ok");
-      }catch(err){
-        showMessage(jsonMessage, "Could not copy JSON.", "error");
-      }
-    });
-
-    document.getElementById("downloadJsonBtn").addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "locations.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    document.getElementById("importJsonBtn").addEventListener("click", () => {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".json,application/json";
-      input.addEventListener("change", async () => {
-        const file = input.files?.[0];
-        if(!file) return;
-        try{
-          const text = await file.text();
-          const parsed = JSON.parse(text);
-          if(!parsed || !Array.isArray(parsed.cities)) throw new Error("Invalid shape");
-          state = parsed;
-          selectedCityId = state.cities[0]?.id || null;
-          selectedPlaceId = null;
-          saveToLocal();
-          populateCityForm();
-          resetPlaceForm();
-          renderAll();
-          showMessage(jsonMessage, "JSON imported successfully.", "ok");
-        }catch(err){
-          showMessage(jsonMessage, "Import failed. Please check the JSON format.", "error");
-        }
-      });
-      input.click();
-    });
-
-    document.getElementById("applyJsonBtn").addEventListener("click", () => {
-      try{
-        const parsed = JSON.parse(jsonPreview.value);
-        if(!parsed || !Array.isArray(parsed.cities)) throw new Error("Invalid shape");
-        state = parsed;
-        if(!state.cities.find(c => c.id === selectedCityId)){
-          selectedCityId = state.cities[0]?.id || null;
-          selectedPlaceId = null;
-        }
-        saveToLocal();
-        populateCityForm();
-        resetPlaceForm();
-        renderAll();
-        showMessage(jsonMessage, "Preview JSON applied.", "ok");
-      }catch(err){
-        showMessage(jsonMessage, "Invalid JSON in preview.", "error");
-      }
-    });
-
-    citySearch.addEventListener("input", renderCities);
-
-    document.getElementById("newCityBtn").addEventListener("click", () => {
-      selectedCityId = null;
-      selectedPlaceId = null;
-      resetCityForm();
-      resetPlaceForm();
-      renderAll();
-      cityIdInput.focus();
-    });
-
-    cityForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const id = slugify(cityIdInput.value || cityNameEnInput.value);
-      const en = cityNameEnInput.value.trim();
-      const hi = cityNameHiInput.value.trim();
-
-      if(!id || !en){
-        showMessage(cityMessage, "City ID and English name are required.", "error");
-        return;
-      }
-
-      const existing = state.cities.find(c => c.id === id);
-
-      if(selectedCityId && selectedCityId !== id){
-        const duplicate = state.cities.find(c => c.id === id);
-        if(duplicate){
-          showMessage(cityMessage, "Another city already uses this ID.", "error");
-          return;
-        }
-      }
-
-      if(existing && selectedCityId !== id){
-        existing.name = { en, hi };
-        selectedCityId = existing.id;
-        showMessage(cityMessage, "Existing city updated.", "ok");
-      }else if(selectedCityId){
-        const city = getSelectedCity();
-        if(city){
-          city.id = id;
-          city.name = { en, hi };
-          selectedCityId = id;
-          showMessage(cityMessage, "City updated.", "ok");
-        }
-      }else{
-        state.cities.push({
-          id,
-          name: { en, hi },
-          places: []
+        data.push({
+          day: i + 1,
+          price: Number(price.toFixed(2))
         });
-        selectedCityId = id;
-        showMessage(cityMessage, "City added.", "ok");
+      }
+      return data;
+    }
+
+    function simulateStrategy(data, params) {
+      const {
+        initialCash,
+        baseBuy,
+        dipPercent,
+        profitPercent,
+        scaleFactor,
+        maxBuys
+      } = params;
+
+      let cash = initialCash;
+      let shares = 0;
+      let avgCost = 0;
+      let realizedProfit = 0;
+      let peak = data[0] ? data[0].price : 0;
+      let buysInCycle = 0;
+      const trades = [];
+      const curve = [];
+
+      for (const row of data) {
+        const price = row.price;
+        peak = Math.max(peak, price);
+
+        const targetBuyPrice = peak * (1 - dipPercent / 100);
+        const canBuy = price <= targetBuyPrice && buysInCycle < maxBuys && cash > 0;
+
+        if (canBuy) {
+          const intended = baseBuy * Math.pow(scaleFactor, buysInCycle);
+          const spend = Math.min(cash, intended);
+
+          if (spend > 0) {
+            const qty = spend / price;
+            const totalCostBefore = avgCost * shares;
+            shares += qty;
+            avgCost = (totalCostBefore + spend) / shares;
+            cash -= spend;
+            buysInCycle += 1;
+
+            trades.push({
+              day: row.day,
+              price,
+              type: "BUY",
+              amount: spend,
+              qty,
+              cashAfter: cash,
+              sharesAfter: shares
+            });
+          }
+        }
+
+        const targetSellPrice = shares > 0 ? avgCost * (1 + profitPercent / 100) : Infinity;
+        const canSell = shares > 0 && price >= targetSellPrice;
+
+        if (canSell) {
+          const proceeds = shares * price;
+          const costBasis = shares * avgCost;
+          realizedProfit += proceeds - costBasis;
+          cash += proceeds;
+
+          trades.push({
+            day: row.day,
+            price,
+            type: "SELL",
+            amount: proceeds,
+            qty: shares,
+            cashAfter: cash,
+            sharesAfter: 0
+          });
+
+          shares = 0;
+          avgCost = 0;
+          peak = price;
+          buysInCycle = 0;
+        }
+
+        const portfolioValue = cash + shares * price;
+
+        curve.push({
+          day: row.day,
+          price,
+          portfolioValue: Number(portfolioValue.toFixed(2)),
+          avgCost: shares > 0 ? Number(avgCost.toFixed(2)) : null,
+          targetSell: shares > 0 ? Number(targetSellPrice.toFixed(2)) : null
+        });
       }
 
-      saveToLocal();
-      populateCityForm();
-      fillCitySelect();
-      renderAll();
-    });
+      const lastPrice = data[data.length - 1] ? data[data.length - 1].price : 0;
+      const finalValue = cash + shares * lastPrice;
+      const totalReturn = finalValue - initialCash;
+      const completedSales = trades.filter(t => t.type === "SELL").length;
 
-    document.getElementById("resetCityBtn").addEventListener("click", () => {
-      if(selectedCityId) populateCityForm();
-      else resetCityForm();
-    });
-
-    document.getElementById("deleteCityBtn").addEventListener("click", () => {
-      const city = getSelectedCity();
-      if(!city){
-        showMessage(cityMessage, "No city selected.", "error");
-        return;
-      }
-      const ok = confirm(`Delete city "${city.name?.en || city.id}" and all its places?`);
-      if(!ok) return;
-
-      state.cities = state.cities.filter(c => c.id !== city.id);
-      selectedCityId = state.cities[0]?.id || null;
-      selectedPlaceId = null;
-      saveToLocal();
-      populateCityForm();
-      resetPlaceForm();
-      renderAll();
-      showMessage(cityMessage, "City deleted.", "ok");
-    });
-
-    placeForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const cityId = citySelectForPlace.value;
-      const city = state.cities.find(c => c.id === cityId);
-
-      if(!city){
-        showMessage(placeMessage, "Please select a valid city.", "error");
-        return;
+      let maxValue = -Infinity;
+      let minValue = Infinity;
+      for (const row of curve) {
+        if (row.portfolioValue > maxValue) maxValue = row.portfolioValue;
+        if (row.portfolioValue < minValue) minValue = row.portfolioValue;
       }
 
-      const id = slugify(placeIdInput.value || placeNameEnInput.value);
-      const nameEn = placeNameEnInput.value.trim();
-      const nameHi = placeNameHiInput.value.trim();
-      const lat = Number(placeLatInput.value);
-      const lng = Number(placeLngInput.value);
-      const tags = placeTagsInput.value
-        .split(",")
-        .map(s => s.trim())
-        .filter(Boolean);
-      const images = placeImagesInput.value
-        .split("\n")
-        .map(s => s.trim())
-        .filter(Boolean);
-
-      if(!id || !nameEn || Number.isNaN(lat) || Number.isNaN(lng)){
-        showMessage(placeMessage, "Place ID, English name, latitude, and longitude are required.", "error");
-        return;
-      }
-
-      const payload = {
-        id,
-        name: { en: nameEn, hi: nameHi },
-        lat,
-        lng,
-        tags,
-        images,
-        description: {
-          en: placeDescEnInput.value.trim(),
-          hi: placeDescHiInput.value.trim()
+      return {
+        trades,
+        curve,
+        summary: {
+          finalCash: Number(cash.toFixed(2)),
+          openShares: Number(shares.toFixed(4)),
+          avgCost: Number(avgCost.toFixed(2)),
+          finalValue: Number(finalValue.toFixed(2)),
+          totalReturn: Number(totalReturn.toFixed(2)),
+          realizedProfit: Number(realizedProfit.toFixed(2)),
+          completedSales,
+          maxValue: Number(maxValue.toFixed(2)),
+          minValue: Number(minValue.toFixed(2))
         }
       };
+    }
 
-      if(placeFeaturedInput.checked){
-        payload.featured = true;
-        if(featuredRankInput.value !== "") payload.featuredRank = Number(featuredRankInput.value);
-        const noteEn = featuredNoteEnInput.value.trim();
-        const noteHi = featuredNoteHiInput.value.trim();
-        if(noteEn || noteHi){
-          payload.featuredNote = { en: noteEn, hi: noteHi };
+    function optimize(data, initialCash) {
+      const dipRange = [2, 3, 4, 5, 6, 7, 8, 10, 12];
+      const profitRange = [1, 2, 3, 4, 5, 6, 8, 10, 12];
+      const baseBuyRange = [2000, 3000, 5000, 7000, 10000];
+      const scaleRange = [1, 1.25, 1.5, 1.75, 2];
+      const maxBuyRange = [1, 2, 3, 4, 5];
+
+      let best = null;
+
+      for (const dipPercent of dipRange) {
+        for (const profitPercent of profitRange) {
+          for (const baseBuy of baseBuyRange) {
+            for (const scaleFactor of scaleRange) {
+              for (const maxBuys of maxBuyRange) {
+                const params = {
+                  initialCash,
+                  baseBuy,
+                  dipPercent,
+                  profitPercent,
+                  scaleFactor,
+                  maxBuys
+                };
+
+                const result = simulateStrategy(data, params);
+                const score = result.summary.finalValue;
+
+                if (!best || score > best.score) {
+                  best = {
+                    score,
+                    params,
+                    result
+                  };
+                }
+              }
+            }
+          }
         }
       }
 
-      let existing = city.places.find(p => p.id === id);
+      return best;
+    }
 
-      if(selectedCityId === cityId && selectedPlaceId && selectedPlaceId !== id){
-        const duplicate = city.places.find(p => p.id === id);
-        if(duplicate){
-          showMessage(placeMessage, "Another place in this city already uses this ID.", "error");
-          return;
-        }
-      }
+    function renderSummary(summary, initialCash) {
+      els.statFinalValue.textContent = formatINR(summary.finalValue);
+      els.statStartedWith.textContent = "Started with " + formatINR(initialCash);
+      els.statTotalReturn.textContent = formatINR(summary.totalReturn);
+      els.statSellCycles.textContent = summary.completedSales + " completed sell cycles";
+      els.statRealizedProfit.textContent = formatINR(summary.realizedProfit);
+      els.statOpenShares.textContent = "Open shares: " + formatNum(summary.openShares, 4);
+    }
 
-      if(selectedPlaceId){
-        const oldCity = getSelectedCity();
-        const oldPlace = getSelectedPlace();
-
-        if(oldCity && oldPlace){
-          oldCity.places = oldCity.places.filter(p => p.id !== oldPlace.id);
-        }
-
-        city.places.push(payload);
-        selectedCityId = cityId;
-        selectedPlaceId = id;
-        showMessage(placeMessage, "Place updated.", "ok");
-      }else if(existing){
-        Object.assign(existing, payload);
-        selectedCityId = cityId;
-        selectedPlaceId = id;
-        showMessage(placeMessage, "Existing place updated.", "ok");
-      }else{
-        city.places.push(payload);
-        selectedCityId = cityId;
-        selectedPlaceId = id;
-        showMessage(placeMessage, "Place added.", "ok");
-      }
-
-      saveToLocal();
-      populatePlaceForm();
-      renderAll();
-    });
-
-    document.getElementById("resetPlaceBtn").addEventListener("click", () => {
-      if(selectedPlaceId) populatePlaceForm();
-      else resetPlaceForm();
-    });
-
-    document.getElementById("deletePlaceBtn").addEventListener("click", () => {
-      const city = getSelectedCity();
-      const place = getSelectedPlace();
-      if(!city || !place){
-        showMessage(placeMessage, "No place selected.", "error");
+    function renderTradeTable(trades) {
+      if (!trades.length) {
+        els.tradeTableBody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center;color:#6b7280;padding:24px;">
+              No trades generated with the current settings.
+            </td>
+          </tr>
+        `;
         return;
       }
 
-      const ok = confirm(`Delete place "${place.name?.en || place.id}"?`);
-      if(!ok) return;
-
-      city.places = city.places.filter(p => p.id !== place.id);
-      selectedPlaceId = null;
-      saveToLocal();
-      resetPlaceForm();
-      renderAll();
-      showMessage(placeMessage, "Place deleted.", "ok");
-    });
-
-    // Initial render
-    if(state.cities.length){
-      selectedCityId = state.cities[0].id;
+      els.tradeTableBody.innerHTML = trades.map((t, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${t.day}</td>
+          <td><span class="pill ${t.type.toLowerCase()}">${t.type}</span></td>
+          <td>${formatINR(t.price)}</td>
+          <td>${formatINR(t.amount)}</td>
+          <td>${formatNum(t.qty, 4)}</td>
+          <td>${formatINR(t.cashAfter)}</td>
+          <td>${formatNum(t.sharesAfter, 4)}</td>
+        </tr>
+      `).join("");
     }
-    populateCityForm();
-    resetPlaceForm();
-    renderAll();
+
+    function renderBest(best) {
+      if (!best) return;
+      els.bestDip.textContent = best.params.dipPercent + "%";
+      els.bestProfit.textContent = best.params.profitPercent + "%";
+      els.bestBaseBuy.textContent = formatINR(best.params.baseBuy);
+      els.bestScale.textContent = best.params.scaleFactor + "x";
+      els.bestMaxBuys.textContent = best.params.maxBuys;
+      els.bestFinal.textContent = formatINR(best.result.summary.finalValue);
+    }
+
+    function drawAxes(ctx, width, height, margin, yMin, yMax, leftTicks, xCount) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(0,0,0,.12)";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#6b7280";
+      ctx.font = "12px system-ui, sans-serif";
+
+      for (let i = 0; i <= leftTicks; i++) {
+        const t = i / leftTicks;
+        const y = margin.top + (height - margin.top - margin.bottom) * t;
+        ctx.beginPath();
+        ctx.moveTo(margin.left, y);
+        ctx.lineTo(width - margin.right, y);
+        ctx.stroke();
+
+        const value = yMax - (yMax - yMin) * t;
+        ctx.fillText(formatNum(value, 0), 8, y + 4);
+      }
+
+      const steps = 6;
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const x = margin.left + (width - margin.left - margin.right) * t;
+        ctx.beginPath();
+        ctx.moveTo(x, margin.top);
+        ctx.lineTo(x, height - margin.bottom);
+        ctx.stroke();
+
+        const day = Math.round(1 + (xCount - 1) * t);
+        ctx.fillText("D" + day, x - 12, height - 12);
+      }
+
+      ctx.restore();
+    }
+
+    function drawLineSeries(ctx, points, mapperX, mapperY, color, width = 2, dashed = false) {
+      let started = false;
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      if (dashed) ctx.setLineDash([7, 5]);
+
+      ctx.beginPath();
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        if (p == null || p.value == null || Number.isNaN(p.value)) {
+          started = false;
+          continue;
+        }
+        const x = mapperX(i);
+        const y = mapperY(p.value);
+
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawArea(ctx, values, mapperX, mapperY, baselineY) {
+      ctx.save();
+      ctx.fillStyle = "rgba(5,150,105,.16)";
+      ctx.strokeStyle = "#059669";
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      for (let i = 0; i < values.length; i++) {
+        const val = values[i];
+        const x = mapperX(i);
+        const y = mapperY(val);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+
+      for (let i = values.length - 1; i >= 0; i--) {
+        const x = mapperX(i);
+        ctx.lineTo(x, baselineY);
+      }
+
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      for (let i = 0; i < values.length; i++) {
+        const val = values[i];
+        const x = mapperX(i);
+        const y = mapperY(val);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawMainChart(curve) {
+      const canvas = els.mainChart;
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const width = rect.width;
+      const height = rect.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      if (!curve.length) return;
+
+      const margin = { top: 16, right: 22, bottom: 32, left: 72 };
+
+      const priceValues = curve.map(d => d.price);
+      const costValues = curve.filter(d => d.avgCost != null).map(d => d.avgCost);
+      const targetValues = curve.filter(d => d.targetSell != null).map(d => d.targetSell);
+      const portfolioValues = curve.map(d => d.portfolioValue);
+
+      const allValues = priceValues.concat(costValues, targetValues, portfolioValues);
+      const yMin = Math.min(...allValues) * 0.95;
+      const yMax = Math.max(...allValues) * 1.05;
+
+      const mapperX = i =>
+        margin.left + (i / Math.max(curve.length - 1, 1)) * (width - margin.left - margin.right);
+
+      const mapperY = value =>
+        margin.top + (1 - (value - yMin) / (yMax - yMin || 1)) * (height - margin.top - margin.bottom);
+
+      drawAxes(ctx, width, height, margin, yMin, yMax, 5, curve.length);
+
+      drawLineSeries(
+        ctx,
+        curve.map(d => ({ value: d.price })),
+        mapperX,
+        mapperY,
+        "#d97706",
+        2.4,
+        false
+      );
+
+      drawLineSeries(
+        ctx,
+        curve.map(d => ({ value: d.avgCost })),
+        mapperX,
+        mapperY,
+        "#2563eb",
+        2,
+        true
+      );
+
+      drawLineSeries(
+        ctx,
+        curve.map(d => ({ value: d.targetSell })),
+        mapperX,
+        mapperY,
+        "#7c3aed",
+        2,
+        true
+      );
+
+      drawLineSeries(
+        ctx,
+        curve.map(d => ({ value: d.portfolioValue })),
+        mapperX,
+        mapperY,
+        "#059669",
+        2.5,
+        false
+      );
+    }
+
+    function drawPortfolioChart(curve, initialCash) {
+      const canvas = els.portfolioChart;
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const width = rect.width;
+      const height = rect.height;
+
+      ctx.clearRect(0, 0, width, height);
+      if (!curve.length) return;
+
+      const margin = { top: 16, right: 22, bottom: 32, left: 72 };
+      const values = curve.map(d => d.portfolioValue);
+      const yMin = Math.min(...values, initialCash) * 0.97;
+      const yMax = Math.max(...values, initialCash) * 1.03;
+
+      const mapperX = i =>
+        margin.left + (i / Math.max(curve.length - 1, 1)) * (width - margin.left - margin.right);
+
+      const mapperY = value =>
+        margin.top + (1 - (value - yMin) / (yMax - yMin || 1)) * (height - margin.top - margin.bottom);
+
+      drawAxes(ctx, width, height, margin, yMin, yMax, 4, curve.length);
+
+      const baseY = mapperY(yMin);
+      drawArea(ctx, values, mapperX, mapperY, baseY);
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(124,58,237,.8)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]);
+      const lineY = mapperY(initialCash);
+      ctx.beginPath();
+      ctx.moveTo(margin.left, lineY);
+      ctx.lineTo(width - margin.right, lineY);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function runSimulation() {
+      updateControlLabels();
+      const params = getParams();
+      state.simulation = simulateStrategy(state.data, params);
+      renderSummary(state.simulation.summary, params.initialCash);
+      renderTradeTable(state.simulation.trades);
+      drawMainChart(state.simulation.curve);
+      drawPortfolioChart(state.simulation.curve, params.initialCash);
+    }
+
+    function resetControls() {
+      els.initialCash.value = 100000;
+      els.baseBuy.value = 5000;
+      els.dipPercent.value = 5;
+      els.profitPercent.value = 4;
+      els.scaleFactor.value = 1.5;
+      els.maxBuys.value = 3;
+      updateControlLabels();
+      runSimulation();
+    }
+
+    function refreshData() {
+      state.seed += 1;
+      state.data = makeDummyData(state.seed);
+      runSimulation();
+    }
+
+    function init() {
+      state.data = makeDummyData(state.seed);
+      updateControlLabels();
+      runSimulation();
+
+      [
+        els.initialCash,
+        els.baseBuy,
+        els.dipPercent,
+        els.profitPercent,
+        els.scaleFactor,
+        els.maxBuys
+      ].forEach(el => {
+        el.addEventListener("input", runSimulation);
+        el.addEventListener("change", runSimulation);
+      });
+
+      els.btnReset.addEventListener("click", resetControls);
+      els.btnRefresh.addEventListener("click", refreshData);
+
+      els.btnOptimize.addEventListener("click", () => {
+        els.btnOptimize.disabled = true;
+        els.btnOptimize.textContent = "Optimizing...";
+
+        setTimeout(() => {
+          const initialCash = Number(els.initialCash.value || 0);
+          const best = optimize(state.data, initialCash);
+          renderBest(best);
+          els.btnOptimize.disabled = false;
+          els.btnOptimize.textContent = "Run optimizer";
+        }, 30);
+      });
+
+      window.addEventListener("resize", () => {
+        if (state.simulation) {
+          drawMainChart(state.simulation.curve);
+          drawPortfolioChart(state.simulation.curve, Number(els.initialCash.value || 0));
+        }
+      });
+    }
+
+    init();
   </script>
 </body>
 </html>
