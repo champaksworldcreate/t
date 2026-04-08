@@ -1,55 +1,46 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>JSON Save & Read</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Cursor Demo</title>
   <style>
-    body { font-family: Arial; padding:20px; background:#fff8eb }
-    textarea { width:100%; height:200px; margin-top:10px }
-    input, button { padding:10px; margin-top:10px }
-    pre { background:#111; color:#0f0; padding:10px }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff8e7;
+      color: #222;
+      cursor: url("cursor.png") 16 16, auto;
+    }
+
+    .box {
+      width: 300px;
+      margin: 80px auto;
+      padding: 24px;
+      background: white;
+      border: 2px solid #f0c36d;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    button {
+      margin-top: 16px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      background: #d97706;
+      color: white;
+      font-size: 16px;
+      cursor: url("cursor.png") 16 16, pointer;
+    }
   </style>
 </head>
 <body>
-
-<h2>JSON Save & Read</h2>
-
-<input id="fileName" value="test.json" />
-
-<textarea id="jsonData">
-{
-  "name": "Champak",
-  "city": "Lucknow"
-}
-</textarea>
-
-<br>
-<button onclick="save()">Save JSON</button>
-<button onclick="read()">Read JSON</button>
-
-<pre id="output"></pre>
-
-<script>
-async function save() {
-  const file = document.getElementById("fileName").value;
-  const data = document.getElementById("jsonData").value;
-
-  const res = await fetch(`server.learnwithchampak.live/JsonFileHandler.aspx?action=save&file=${file}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: data
-  });
-
-  document.getElementById("output").textContent = await res.text();
-}
-
-async function read() {
-  const file = document.getElementById("fileName").value;
-
-  const res = await fetch(`server.learnwithchampak.live/JsonFileHandler.aspx?action=read&file=${file}`);
-  document.getElementById("output").textContent = await res.text();
-}
-</script>
-
+  <div class="box">
+    <h1>Image Cursor Example</h1>
+    <p>Move your mouse on this page. The cursor will use the image file.</p>
+    <button>Hover Me</button>
+  </div>
 </body>
 </html>
