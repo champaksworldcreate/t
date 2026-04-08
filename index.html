@@ -3,44 +3,273 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Image Cursor Demo</title>
+  <title>AI/ML Course Map V2 ULTRA | Learn With Champak</title>
+
+  <!-- SPEAK ENGINE -->
+  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
+
+  <meta name="theme-color" content="#f59e0b" />
+
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff8e7;
-      color: #222;
-      cursor: url("cursor.png") 16 16, auto;
+    :root{
+      --bg:#fffaf0;
+      --panel:#ffffff;
+      --panel2:#fff4d6;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#f1d9a6;
+      --brand:#d97706;
+      --brand2:#f59e0b;
+      --shadow:0 14px 40px rgba(128,81,0,.12);
     }
 
-    .box {
-      width: 300px;
-      margin: 80px auto;
-      padding: 24px;
-      background: white;
-      border: 2px solid #f0c36d;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:system-ui;
+      background:var(--bg);
+      color:var(--text);
     }
 
-    button {
-      margin-top: 16px;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 10px;
-      background: #d97706;
-      color: white;
-      font-size: 16px;
-      cursor: url("cursor.png") 16 16, pointer;
+    header{
+      padding:20px;
+      text-align:center;
+      background:linear-gradient(90deg,var(--brand),var(--brand2));
+      color:white;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:auto;
+      padding:20px;
+    }
+
+    .card{
+      background:var(--panel);
+      border-radius:14px;
+      padding:18px;
+      margin-bottom:16px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--line);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:8px;
+      font-size:12px;
+      margin-right:6px;
+    }
+
+    .b-green{background:#dcfce7;color:#166534;}
+    .b-yellow{background:#fef9c3;color:#854d0e;}
+    .b-red{background:#fee2e2;color:#991b1b;}
+
+    .meta{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    .btn{
+      display:inline-block;
+      margin-top:10px;
+      padding:8px 12px;
+      background:var(--brand);
+      color:white;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .toast{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:#000;
+      color:#fff;
+      padding:16px 22px;
+      border-radius:12px;
+      font-size:16px;
+      opacity:0;
+      pointer-events:none;
+      transition:.3s;
+    }
+
+    .toast.show{
+      opacity:1;
+    }
+
+    .progress{
+      height:8px;
+      background:#eee;
+      border-radius:6px;
+      overflow:hidden;
+      margin-top:10px;
+    }
+
+    .progress div{
+      height:100%;
+      width:30%;
+      background:var(--brand);
     }
   </style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>Image Cursor Example</h1>
-    <p>Move your mouse on this page. The cursor will use the image file.</p>
-    <button>Hover Me</button>
+
+<header>
+  <h1 id="speak0">AI / ML Complete Course — V2 ULTRA</h1>
+  <p id="speak1">From Zero to AI Engineer with Projects, Practice and Real Applications</p>
+</header>
+
+<div class="container">
+
+<!-- OUTCOME -->
+<div class="card">
+  <h2 id="speak2">🎯 What You Will Achieve</h2>
+  <ul id="speak3">
+    <li>Build Machine Learning models from scratch</li>
+    <li>Create real AI applications</li>
+    <li>Understand statistics deeply</li>
+    <li>Deploy AI systems</li>
+    <li>Crack AI/ML interviews</li>
+  </ul>
+</div>
+
+<!-- TRACKS -->
+<div class="card">
+  <h2 id="speak4">🧭 Choose Your Track</h2>
+  <ul id="speak5">
+    <li>🎓 Beginner Track (No coding)</li>
+    <li>💻 Developer Track (Python + ML)</li>
+    <li>🚀 Advanced Track (AI Systems + Deployment)</li>
+  </ul>
+</div>
+
+<!-- MODULE -->
+<div class="card">
+  <h3 id="speak6">📘 Module 1: Programming Foundations</h3>
+
+  <div class="meta">
+    <span class="badge b-green">Beginner</span>
+    ⏱ 1 Week
   </div>
+
+  <p id="speak7">Learn Python basics required for AI.</p>
+
+  <p><b>Projects:</b></p>
+  <ul id="speak8">
+    <li>Calculator</li>
+    <li>Number Analyzer</li>
+  </ul>
+
+  <div class="btn" onclick="toggle('m1')">View Lessons</div>
+
+  <div id="m1" class="hidden">
+    <ul>
+      <li onclick="locked()">Variables</li>
+      <li onclick="locked()">Loops</li>
+      <li onclick="locked()">Functions</li>
+    </ul>
+  </div>
+</div>
+
+<!-- MODULE -->
+<div class="card">
+  <h3 id="speak9">📊 Module 2: Statistics for AI</h3>
+
+  <div class="meta">
+    <span class="badge b-yellow">Intermediate</span>
+    ⏱ 2 Weeks
+  </div>
+
+  <p id="speak10">Understand data deeply using statistics.</p>
+
+  <p><b>Projects:</b></p>
+  <ul id="speak11">
+    <li>Data Visualizer</li>
+    <li>Probability Simulator</li>
+  </ul>
+
+  <div class="btn" onclick="toggle('m2')">View Lessons</div>
+
+  <div id="m2" class="hidden">
+    <ul>
+      <li onclick="locked()">Mean Median Mode</li>
+      <li onclick="locked()">Probability</li>
+      <li onclick="locked()">Distributions</li>
+    </ul>
+  </div>
+</div>
+
+<!-- MODULE -->
+<div class="card">
+  <h3 id="speak12">🤖 Module 3: Machine Learning</h3>
+
+  <div class="meta">
+    <span class="badge b-red">Advanced</span>
+    ⏱ 3 Weeks
+  </div>
+
+  <p id="speak13">Build real ML models.</p>
+
+  <p><b>Projects:</b></p>
+  <ul id="speak14">
+    <li>House Price Predictor</li>
+    <li>Spam Classifier</li>
+  </ul>
+
+  <div class="btn" onclick="toggle('m3')">View Lessons</div>
+
+  <div id="m3" class="hidden">
+    <ul>
+      <li onclick="locked()">Linear Regression</li>
+      <li onclick="locked()">Classification</li>
+      <li onclick="locked()">Clustering</li>
+    </ul>
+  </div>
+</div>
+
+<!-- CAPSTONE -->
+<div class="card">
+  <h2 id="speak15">🏆 Capstone Projects</h2>
+  <ul id="speak16">
+    <li>AI SaaS App</li>
+    <li>Face Recognition System</li>
+    <li>Chatbot</li>
+  </ul>
+</div>
+
+<!-- PROGRESS -->
+<div class="card">
+  <h2 id="speak17">📈 Your Progress</h2>
+  <div class="progress">
+    <div></div>
+  </div>
+</div>
+
+</div>
+
+<div id="toast" class="toast">🚧 Coming Soon</div>
+
+<script>
+function toggle(id){
+  const el = document.getElementById(id);
+  el.classList.toggle("hidden");
+}
+
+function locked(){
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1500);
+}
+</script>
+
 </body>
 </html>
