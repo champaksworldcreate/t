@@ -1,1227 +1,187 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Programmer’s Picnic — JSON Editor + UI Builder</title>
-    <meta
-      name="description"
-      content="JSON Editor + UI Builder (create UI from JSON). Programmer’s Picnic • Champak Roy."
-    />
-    <meta name="theme-color" content="#d97706" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root{
-        --bg:#fff7e6;
-        --panel:rgba(255,255,255,.82);
-        --ink:#1f2328;
-        --muted:#5b6570;
-        --line:rgba(31,35,40,.12);
-        --saffron:#ff9f1c;
-        --saffron2:#ffb74d;
-        --green:#2f7d4a;
-        --shadow:0 14px 36px rgba(31,35,40,.14);
-        --shadow2:0 10px 26px rgba(31,35,40,.12);
-        --radius:18px;
-        --radius2:24px;
-        --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-        --sans:"DM Sans", Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      }
-      *{box-sizing:border-box}
-      html,body{height:100%}
-      body{
-        margin:0;
-        font-family:var(--sans);
-        color:var(--ink);
-        background:
-          radial-gradient(1200px 600px at 10% 0%, rgba(255,159,28,.18), transparent 60%),
-          radial-gradient(900px 520px at 90% 10%, rgba(255,183,77,.20), transparent 55%),
-          linear-gradient(180deg,#fffaf0,var(--bg));
-      }
-      a{color:inherit;text-decoration:none}
-      .wrap{max-width:1200px;margin:0 auto;padding:18px}
-
-      .topbar{
-        position:sticky;top:0;z-index:30;
-        backdrop-filter: blur(10px);
-        background: linear-gradient(180deg, rgba(255,247,230,.88), rgba(255,247,230,.62));
-        border-bottom:1px solid var(--line);
-      }
-      .row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 18px}
-      .brand{display:flex;gap:10px;align-items:center;min-width:240px}
-      .logo{
-        width:38px;height:38px;border-radius:12px;
-        background: conic-gradient(from 210deg, var(--saffron), var(--saffron2));
-        box-shadow: var(--shadow2);
-        position:relative;flex:0 0 auto;
-      }
-      .logo:after{
-        content:"";position:absolute;inset:10px;border-radius:10px;
-        background:rgba(255,255,255,.65);
-        border:1px solid rgba(31,35,40,.08);
-      }
-      .brand h1{font-size:15px;margin:0;letter-spacing:.2px}
-      .brand p{margin:0;font-size:12px;color:var(--muted)}
-      .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-
-      .btn{
-        border:1px solid rgba(31,35,40,.12);
-        background:rgba(255,255,255,.75);
-        color:var(--ink);
-        border-radius:14px;
-        padding:10px 12px;
-        font-weight:900;
-        font-size:13px;
-        display:inline-flex;gap:8px;align-items:center;
-        cursor:pointer;
-        transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-        box-shadow:0 8px 18px rgba(31,35,40,.08);
-        user-select:none;
-        -webkit-tap-highlight-color: transparent;
-      }
-      .btn:hover{transform:translateY(-1px);box-shadow:0 14px 26px rgba(31,35,40,.12);background:rgba(255,255,255,.9)}
-      .btn:active{transform:translateY(0) scale(.99)}
-      .btn.primary{
-        background: linear-gradient(180deg, rgba(255,159,28,.98), rgba(255,183,77,.98));
-        border-color: rgba(217,119,6,.35);
-        color:#1a140c;
-      }
-      .btn.green{background:rgba(47,125,74,.12);border-color:rgba(47,125,74,.28)}
-      .btn.danger{background:rgba(220,38,38,.10);border-color:rgba(220,38,38,.22)}
-      .btn.small{padding:8px 10px;border-radius:12px;font-size:12px;box-shadow:none}
-
-      .card{
-        background:var(--panel);
-        border:1px solid rgba(31,35,40,.10);
-        border-radius:var(--radius2);
-        box-shadow:var(--shadow);
-        overflow:hidden;
-      }
-      .sectionHead{
-        padding:14px;
-        border-bottom:1px solid rgba(31,35,40,.10);
-        background: linear-gradient(180deg, rgba(255,247,230,.70), rgba(255,255,255,.55));
-        display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
-      }
-      .sectionHead h2{margin:0;font-size:15px;letter-spacing:-.2px}
-      .sectionHead p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45;max-width:90ch}
-      .hint{font-size:12px;color:var(--muted)}
-      .pad{padding:14px}
-      .mini{
-        background:rgba(255,255,255,.70);
-        border:1px solid rgba(31,35,40,.10);
-        border-radius:var(--radius);
-        padding:12px;
-      }
-      .mini h3{margin:0 0 6px;font-size:13px}
-      .mini p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}
-
-      .field{display:flex;flex-direction:column;gap:6px}
-      .label{font-size:12px;color:var(--muted);font-weight:900}
-      .input,.select,.ta{
-        width:100%;
-        padding:11px 12px;
-        border-radius:14px;
-        border:1px solid rgba(31,35,40,.14);
-        background:rgba(255,255,255,.82);
-        outline:none;
-        font-weight:800;
-        font-family:var(--sans);
-      }
-      .ta{
-        font-family:var(--mono);
-        font-weight:700;
-        min-height:340px;
-        line-height:1.5;
-        resize:vertical;
-      }
-      .input:focus,.select:focus,.ta:focus{
-        box-shadow:0 0 0 4px rgba(255,159,28,.16);
-        border-color: rgba(217,119,6,.35);
-      }
-
-      .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-      @media (max-width:980px){.row2{grid-template-columns:1fr}}
-      .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-      @media (max-width:980px){.row3{grid-template-columns:1fr}}
-
-      .tabs{
-        display:flex;gap:8px;flex-wrap:wrap;
-        padding:12px 14px;border-bottom:1px solid rgba(31,35,40,.10);
-        background:rgba(255,255,255,.55);
-      }
-      .tabBtn{
-        border:1px solid rgba(31,35,40,.12);
-        background:rgba(255,255,255,.85);
-        color:var(--ink);
-        border-radius:999px;
-        padding:8px 12px;
-        font-weight:1000;
-        font-size:12px;
-        cursor:pointer;
-        user-select:none;
-        -webkit-tap-highlight-color:transparent;
-      }
-      .tabBtn.on{
-        background:rgba(255,159,28,.22);
-        border-color:rgba(217,119,6,.28);
-        box-shadow:0 10px 24px rgba(255,159,28,.14);
-      }
-
-      .panel{display:none}
-      .panel.show{display:block}
-
-      .previewWrap{
-        padding:14px;
-        background:rgba(255,255,255,.55);
-        border-top:1px solid rgba(31,35,40,.10);
-      }
-      .previewStage{
-        border:1px dashed rgba(31,35,40,.22);
-        background:rgba(255,255,255,.72);
-        border-radius:18px;
-        padding:14px;
-        min-height:180px;
-      }
-      .previewStage .pp-ui{
-        display:grid;
-        gap:10px;
-      }
-      .pp-box{
-        border:1px solid rgba(31,35,40,.10);
-        background:rgba(255,255,255,.78);
-        border-radius:16px;
-        padding:12px;
-      }
-      .pp-title{margin:0;font-size:18px;letter-spacing:-.3px}
-      .pp-sub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
-      .pp-hr{height:1px;background:rgba(31,35,40,.10);border:0;margin:8px 0}
-      .pp-row{
-        display:flex;gap:10px;flex-wrap:wrap;align-items:center;
-      }
-      .pp-badge{
-        display:inline-flex;gap:8px;align-items:center;
-        font-size:12px;font-weight:900;
-        padding:7px 10px;border-radius:999px;
-        border:1px solid rgba(31,35,40,.10);
-        background:rgba(255,255,255,.75);
-      }
-      .pp-badge i{
-        width:10px;height:10px;border-radius:50%;
-        background:var(--saffron);
-        box-shadow:0 0 0 4px rgba(255,159,28,.18);
-      }
-
-      .faq{
-        border:1px solid rgba(31,35,40,.10);
-        background:rgba(255,255,255,.75);
-        border-radius:18px;
-        padding:10px 12px;
-      }
-      .faq + .faq{margin-top:10px}
-      summary{
-        cursor:pointer;
-        font-weight:1000;
-        font-size:13px;
-        list-style:none;
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:10px;
-      }
-      summary::-webkit-details-marker{display:none}
-      .faq summary:after{content:"▾";font-size:14px;opacity:.75}
-      .faq[open] summary:after{content:"▴"}
-      .faq .ans{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.55}
-      .codeLine{
-        font-family:var(--mono);
-        font-size:12px;
-        padding:8px 10px;
-        border-radius:14px;
-        border:1px solid rgba(31,35,40,.10);
-        background:rgba(255,255,255,.86);
-        overflow:auto;
-        white-space:pre;
-      }
-
-      .toast{
-        position:fixed;bottom:18px;left:50%;
-        transform:translateX(-50%);
-        background:rgba(31,35,40,.92);
-        color:#fff;border-radius:999px;
-        padding:10px 14px;font-size:12px;
-        box-shadow:0 16px 30px rgba(0,0,0,.24);
-        opacity:0;pointer-events:none;
-        transition: opacity .2s ease, transform .2s ease;
-        z-index:90;
-      }
-      .toast.show{opacity:1;transform:translateX(-50%) translateY(-2px)}
-      .pill{
-        display:inline-flex;gap:8px;align-items:center;
-        border:1px solid rgba(31,35,40,.12);
-        background:rgba(255,255,255,.75);
-        border-radius:999px;
-        padding:6px 10px;
-        font-size:12px;
-        font-weight:900;
-      }
-      .sr{
-        position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
-        clip:rect(0,0,0,0);white-space:nowrap;border:0;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="topbar">
-      <div class="row wrap">
-        <div class="brand" role="banner">
-          <div class="logo" aria-hidden="true"></div>
-          <div>
-            <h1>JSON Editor + UI Builder</h1>
-            <p>Programmer’s Picnic • Champak Roy</p>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="btnLoadExample" type="button">✨ Example</button>
-          <button class="btn" id="btnValidate" type="button">✅ Validate</button>
-          <button class="btn" id="btnPretty" type="button">🧹 Pretty</button>
-          <button class="btn primary" id="btnBuild" type="button">🪄 Build UI</button>
-          <button class="btn green" id="btnSave" type="button">💾 Save</button>
-          <button class="btn" id="btnExport" type="button">⬇ Export</button>
-          <button class="btn" id="btnOpenHelp" type="button" title="Open Help tab">❓ Help</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="wrap">
-      <section class="card">
-        <div class="sectionHead">
-          <div>
-            <h2>Build real UI using JSON</h2>
-            <p>
-              Paste a JSON schema → click <b>Build UI</b> → it creates elements below.
-              You can also use the <b>Element Creator</b> tab to generate JSON.
-            </p>
-          </div>
-          <div class="hint"><span class="pill">Safe: no JS execution</span></div>
-        </div>
-
-        <div class="tabs" role="tablist" aria-label="Tools">
-          <button class="tabBtn on" data-tab="editor" role="tab" aria-selected="true">🧾 JSON Editor</button>
-          <button class="tabBtn" data-tab="creator" role="tab" aria-selected="false">➕ Element Creator</button>
-          <button class="tabBtn" data-tab="docs" role="tab" aria-selected="false">📚 Schema</button>
-          <button class="tabBtn" data-tab="help" role="tab" aria-selected="false">❓ Help</button>
-        </div>
-
-        <div class="panel show" id="panel_editor">
-          <div class="pad">
-            <div class="row2">
-              <div class="field">
-                <div class="label">Storage key</div>
-                <input class="input" id="storeKey" value="pp_ui_schema_v1" />
-              </div>
-              <div class="field">
-                <div class="label">Actions</div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap">
-                  <button class="btn small" id="btnLoadSaved" type="button">📥 Load saved</button>
-                  <button class="btn small" id="btnClearSaved" type="button">🗑 Clear saved</button>
-                  <button class="btn small" id="btnImport" type="button">📄 Import JSON</button>
-                  <input class="sr" id="fileIn" type="file" accept=".json,application/json" />
-                  <button class="btn small danger" id="btnResetEditor" type="button">↩ Reset editor</button>
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top:10px" class="row2">
-              <div class="field">
-                <div class="label">JSON (UI Schema)</div>
-                <textarea class="ta" id="jsonArea" spellcheck="false"></textarea>
-                <div class="hint" id="jsonMsg">—</div>
-              </div>
-
-              <div class="field">
-                <div class="label">Quick merge (optional)</div>
-                <textarea class="ta" id="mergeArea" spellcheck="false" placeholder='Paste another JSON object here and click “Merge → Editor”.'></textarea>
-                <div style="display:flex; gap:10px; flex-wrap:wrap">
-                  <button class="btn small" id="btnMerge" type="button">🔀 Merge → Editor</button>
-                  <button class="btn small" id="btnCopyJson" type="button">📋 Copy JSON</button>
-                </div>
-                <div class="hint">Merge uses deep-merge (objects merge, arrays replace).</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" id="panel_creator">
-          <div class="pad">
-            <div class="mini" style="margin-bottom:10px">
-              <h3>Create elements without writing JSON</h3>
-              <p>Fill the form → Add element → it updates the JSON editor and UI preview.</p>
-            </div>
-
-            <div class="row3">
-              <div class="field">
-                <div class="label">Type</div>
-                <select class="select" id="elType">
-                  <option value="container">container</option>
-                  <option value="card">card</option>
-                  <option value="title">title</option>
-                  <option value="text">text</option>
-                  <option value="badge">badge</option>
-                  <option value="divider">divider</option>
-                  <option value="button">button</option>
-                  <option value="input">input</option>
-                  <option value="select">select</option>
-                  <option value="image">image</option>
-                  <option value="link">link</option>
-                </select>
-              </div>
-              <div class="field">
-                <div class="label">id (optional)</div>
-                <input class="input" id="elId" placeholder="e.g., heroTitle" />
-              </div>
-              <div class="field">
-                <div class="label">class (optional)</div>
-                <input class="input" id="elClass" placeholder="e.g., myBox" />
-              </div>
-            </div>
-
-            <div class="row2" style="margin-top:10px">
-              <div class="field">
-                <div class="label">Text / Label</div>
-                <input class="input" id="elText" placeholder="Visible text" />
-              </div>
-              <div class="field">
-                <div class="label">href/src/value (depends on type)</div>
-                <input class="input" id="elValue" placeholder="https://... or default value" />
-              </div>
-            </div>
-
-            <div class="row2" style="margin-top:10px">
-              <div class="field">
-                <div class="label">Style (JSON object, optional)</div>
-                <input class="input" id="elStyle" placeholder='{"maxWidth":"520px","margin":"0 auto"}' />
-              </div>
-              <div class="field">
-                <div class="label">Attributes (JSON object, optional)</div>
-                <input class="input" id="elAttrs" placeholder='{"placeholder":"Type...","target":"_blank"}' />
-              </div>
-            </div>
-
-            <div class="row2" style="margin-top:10px">
-              <div class="field">
-                <div class="label">Children (JSON array, optional)</div>
-                <input class="input" id="elChildren" placeholder='[{"type":"text","text":"Hello"}]' />
-              </div>
-              <div class="field">
-                <div class="label">Where to add?</div>
-                <select class="select" id="addWhere">
-                  <option value="root">Add to root.children</option>
-                  <option value="lastContainer">Add to last container/card</option>
-                </select>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
-              <button class="btn primary" id="btnAddEl" type="button">➕ Add element</button>
-              <button class="btn" id="btnNewSchema" type="button">🧱 New schema</button>
-              <button class="btn green" id="btnBuild2" type="button">🪄 Build UI</button>
-              <button class="btn" id="btnHelpFromCreator" type="button">❓ Help</button>
-            </div>
-
-            <div class="hint" style="margin-top:8px" id="creatorMsg">—</div>
-          </div>
-        </div>
-
-        <div class="panel" id="panel_docs">
-          <div class="pad">
-            <div class="mini">
-              <h3>UI Schema (v1)</h3>
-              <p style="margin-top:6px">
-                Root object:
-                <span style="font-family:var(--mono)">{"$schema":"pp-ui/v1","title":"...","children":[...]}</span>
-              </p>
-              <hr class="pp-hr" />
-              <p style="margin-top:6px">Element fields:</p>
-              <ul style="margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.6">
-                <li><b>type</b>: container | row | card | title | text | badge | divider | button | input | select | image | link</li>
-                <li><b>text</b>: visible text</li>
-                <li><b>value</b>: input/select default OR href/src</li>
-                <li><b>id</b>, <b>class</b>: optional</li>
-                <li><b>style</b>: CSS-in-JS object</li>
-                <li><b>attrs</b>: safe attributes (placeholder, target, rel, alt…)</li>
-                <li><b>children</b>: nested elements</li>
-              </ul>
-              <hr class="pp-hr" />
-              <p style="margin-top:6px">
-                Buttons are safe-only. Use:
-                <span style="font-family:var(--mono)">toast:Hello</span>,
-                <span style="font-family:var(--mono)">open:https://...</span>,
-                <span style="font-family:var(--mono)">copy:some text</span>.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" id="panel_help">
-          <div class="pad">
-            <div class="mini" style="margin-bottom:10px">
-              <h3>Help & How to use</h3>
-              <p>This page edits JSON and builds UI from it. Safe rendering only (no scripts).</p>
-            </div>
-
-            <details class="faq" open>
-              <summary>1) Quick start (3 steps)</summary>
-              <div class="ans">
-                <ol style="margin:8px 0 0; padding-left:18px">
-                  <li>Click <b>✨ Example</b>.</li>
-                  <li>Edit JSON inside <b>JSON Editor</b>.</li>
-                  <li>Click <b>🪄 Build UI</b> to render it in the preview.</li>
-                </ol>
-              </div>
-            </details>
-
-            <details class="faq">
-              <summary>2) Minimal schema</summary>
-              <div class="ans">
-                <div class="codeLine">{
-  "$schema": "pp-ui/v1",
-  "title": "My UI",
-  "children": [
-    { "type": "card", "children": [
-      { "type": "title", "text": "Hello" },
-      { "type": "text", "text": "Built from JSON." }
-    ]}
-  ]
-}</div>
-              </div>
-            </details>
-
-            <details class="faq">
-              <summary>3) Safety rules</summary>
-              <div class="ans">
-                <ul style="margin:8px 0 0; padding-left:18px">
-                  <li>Only <b>http(s)</b> and relative URLs allowed.</li>
-                  <li>Attributes starting with <b>on*</b> are blocked.</li>
-                  <li>No JS is executed from JSON.</li>
-                </ul>
-              </div>
-            </details>
-
-            <div class="mini" style="margin-top:12px">
-              <h3>Need help?</h3>
-              <p>Programmer’s Picnic • Champak Roy — coaching, projects, interview prep, dev support.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="previewWrap">
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between">
-            <div>
-              <div class="pp-badge"><i></i> Live Preview</div>
-              <div class="hint" id="previewMsg" style="margin-top:6px">—</div>
-            </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap">
-              <button class="btn" id="btnClearPreview" type="button">🧼 Clear Preview</button>
-              <button class="btn primary" id="btnDownloadHtml" type="button">⬇ Download UI as HTML</button>
-            </div>
-          </div>
-
-          <div class="previewStage" style="margin-top:12px">
-            <div id="preview" class="pp-ui" aria-live="polite"></div>
-          </div>
-        </div>
-      </section>
-
-      <footer style="padding:16px 2px; color:var(--muted); font-size:12px">
-        <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between">
-          <div>© <span id="y"></span> Programmer’s Picnic • Champak Roy</div>
-          <div>JSON Editor + UI Builder</div>
-        </div>
-      </footer>
-    </div>
-
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-    <script>
-      const $ = (s, r=document)=>r.querySelector(s);
-      const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
-      $("#y").textContent = new Date().getFullYear();
-
-      const toastEl = $("#toast");
-      let toastT = null;
-      function toast(msg){
-        toastEl.textContent = msg;
-        toastEl.classList.add("show");
-        if (toastT) clearTimeout(toastT);
-        toastT = setTimeout(()=>toastEl.classList.remove("show"), 1400);
-      }
-
-      // ---------------- Tabs ----------------
-      const tabBtns = $$(".tabBtn");
-      function openTab(name){
-        tabBtns.forEach(x=>{
-          const on = x.dataset.tab === name;
-          x.classList.toggle("on", on);
-          x.setAttribute("aria-selected", String(on));
-        });
-        $$(".panel").forEach(p=>p.classList.remove("show"));
-        const panel = $("#panel_"+name);
-        if (panel) panel.classList.add("show");
-      }
-      tabBtns.forEach(b=>b.addEventListener("click", ()=>openTab(b.dataset.tab)));
-
-      // ---------------- Defaults ----------------
-      const DEFAULT_SCHEMA = {
-        $schema: "pp-ui/v1",
-        title: "Programmer’s Picnic UI",
-        description: "Generated from JSON — safe UI builder.",
-        children: [
-          {
-            type: "card",
-            children: [
-              { type: "title", text: "Hello from JSON 👋" },
-              { type: "text", text: "This UI is generated by the JSON Builder. Edit schema and rebuild." },
-              { type: "divider" },
-              { type: "row", children: [
-                { type: "badge", text: "Learning Sutras" },
-                { type: "badge", text: "Programmer’s Picnic" },
-              ]},
-              { type: "divider" },
-              { type: "button", text: "Toast message", action: "toast:Built using JSON!" },
-              { type: "link", text: "Open Programmer’s Picnic", value: "https://programmer-s-picnic.github.io/", attrs: { target: "_blank", rel: "noopener" } }
-            ]
-          }
-        ]
-      };
-
-      const AREA_KEY_FALLBACK = "pp_ui_schema_v1";
-      const jsonArea = $("#jsonArea");
-      const mergeArea = $("#mergeArea");
-      const storeKeyEl = $("#storeKey");
-      const msgEl = $("#jsonMsg");
-      const previewMsg = $("#previewMsg");
-      const creatorMsg = $("#creatorMsg");
-      const previewRoot = $("#preview");
-
-      // ---------------- Safe helpers ----------------
-      function safeText(s){ return String(s ?? "").replace(/\s+/g, " ").trim(); }
-      function safeAttrKey(k){ return /^[a-zA-Z0-9_\-:]+$/.test(k) ? k : null; }
-      function safeUrl(u){
-        const s = String(u ?? "").trim();
-        if (!s) return "";
-        if (s.startsWith("/") || s.startsWith("./") || s.startsWith("../")) return s;
-        if (/^https?:\/\//i.test(s)) return s;
-        return "";
-      }
-      function isPlainObject(x){ return !!x && typeof x === "object" && !Array.isArray(x); }
-      function deepMerge(a,b){
-        if (Array.isArray(a) || Array.isArray(b)) return structuredClone(b);
-        if (!isPlainObject(a) || !isPlainObject(b)) return structuredClone(b);
-        const out = structuredClone(a);
-        for (const k of Object.keys(b)){
-          if (isPlainObject(b[k]) && isPlainObject(out[k])) out[k] = deepMerge(out[k], b[k]);
-          else out[k] = structuredClone(b[k]);
-        }
-        return out;
-      }
-      function parseJson(text){
-        const raw = String(text ?? "").trim();
-        if (!raw) throw new Error("Empty JSON");
-        return JSON.parse(raw);
-      }
-      function pretty(obj){ return JSON.stringify(obj, null, 2); }
-
-      // ---------------- Validation ----------------
-      const ALLOWED_TYPES = new Set(["container","row","card","title","text","badge","divider","button","input","select","image","link"]);
-      function validateSchema(schema){
-        const errs = [];
-        if (!isPlainObject(schema)) errs.push("Root must be an object.");
-        if (schema.$schema !== "pp-ui/v1") errs.push('Root "$schema" should be "pp-ui/v1".');
-        if (!Array.isArray(schema.children)) errs.push('Root "children" must be an array.');
-        if (errs.length) return { ok:false, errs };
-
-        function walk(node, path){
-          if (!isPlainObject(node)) { errs.push(path + ": element must be an object."); return; }
-          const t = node.type;
-          if (!ALLOWED_TYPES.has(t)) errs.push(path + ': unknown type "' + t + '".');
-          if (node.children != null && !Array.isArray(node.children)) errs.push(path + ".children must be an array.");
-          if (node.style != null && !isPlainObject(node.style)) errs.push(path + ".style must be an object.");
-          if (node.attrs != null && !isPlainObject(node.attrs)) errs.push(path + ".attrs must be an object.");
-          if (node.text != null && typeof node.text !== "string") errs.push(path + ".text must be a string.");
-          if (node.value != null && typeof node.value !== "string") errs.push(path + ".value must be a string.");
-          if (node.action != null && typeof node.action !== "string") errs.push(path + ".action must be a string.");
-          if (node.options != null && !Array.isArray(node.options)) errs.push(path + ".options must be an array.");
-          (node.children || []).forEach((c,i)=>walk(c, path + ".children[" + i + "]"));
-        }
-        schema.children.forEach((c,i)=>walk(c, "children[" + i + "]"));
-        return { ok: errs.length===0, errs };
-      }
-
-      // ---------------- Renderer ----------------
-      function applyStyle(el, styleObj){
-        if (!styleObj) return;
-        for (const [k,v] of Object.entries(styleObj)){
-          if (typeof v !== "string" && typeof v !== "number") continue;
-          if (!/^[a-zA-Z][a-zA-Z0-9\-]*$/.test(k)) continue;
-          el.style[k] = String(v);
-        }
-      }
-      function applyAttrs(el, attrs){
-        if (!attrs) return;
-        for (const [k,v] of Object.entries(attrs)){
-          const kk = safeAttrKey(k);
-          if (!kk) continue;
-          if (v == null) continue;
-          if (/^on/i.test(kk)) continue;
-          if (kk === "href" || kk === "src") continue;
-          el.setAttribute(kk, String(v));
-        }
-      }
-      async function doAction(action){
-        const a = String(action||"").trim();
-        if (!a) return;
-        const parts = a.split(":");
-        const kind = parts.shift();
-        const payload = parts.join(":").trim();
-
-        if (kind === "toast"){ toast(payload || "Done"); return; }
-        if (kind === "open"){
-          const url = safeUrl(payload);
-          if (!url) return toast("Blocked URL");
-          window.open(url, "_blank", "noopener");
-          return;
-        }
-        if (kind === "copy"){
-          const txt = payload || "";
-          try{
-            await navigator.clipboard.writeText(txt);
-            toast("Copied");
-          }catch{
-            const ta=document.createElement("textarea");
-            ta.value=txt; ta.style.position="fixed"; ta.style.left="-9999px";
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand("copy");
-            ta.remove();
-            toast("Copied");
-          }
-          return;
-        }
-        toast("Unknown action");
-      }
-
-      function renderElement(node){
-        const type = node.type;
-        const id = node.id ? String(node.id) : "";
-        const cls = node.class ? String(node.class) : "";
-        let el;
-
-        if (type === "container"){
-          el = document.createElement("div");
-          el.className = "pp-box";
-        } else if (type === "row"){
-          el = document.createElement("div");
-          el.className = "pp-row";
-        } else if (type === "card"){
-          el = document.createElement("div");
-          el.className = "pp-box";
-          el.style.borderRadius = "18px";
-          el.style.boxShadow = "0 10px 22px rgba(31,35,40,.10)";
-        } else if (type === "title"){
-          el = document.createElement("h3");
-          el.className = "pp-title";
-          el.textContent = safeText(node.text);
-        } else if (type === "text"){
-          el = document.createElement("p");
-          el.className = "pp-sub";
-          el.textContent = safeText(node.text);
-        } else if (type === "badge"){
-          el = document.createElement("span");
-          el.className = "pp-badge";
-          el.innerHTML = '<i aria-hidden="true"></i><span></span>';
-          el.querySelector("span").textContent = safeText(node.text);
-        } else if (type === "divider"){
-          el = document.createElement("hr");
-          el.className = "pp-hr";
-        } else if (type === "button"){
-          el = document.createElement("button");
-          el.type = "button";
-          el.className = "btn small primary";
-          el.textContent = safeText(node.text || "Button");
-          const action = String(node.action || "");
-          if (action) el.addEventListener("click", ()=>doAction(action));
-        } else if (type === "input"){
-          el = document.createElement("input");
-          el.className = "input";
-          el.value = String(node.value || "");
-          applyAttrs(el, node.attrs);
-          if (!el.getAttribute("placeholder")) el.setAttribute("placeholder", "Type…");
-        } else if (type === "select"){
-          el = document.createElement("select");
-          el.className = "select";
-          const opts = Array.isArray(node.options) ? node.options : [];
-          for (const o of opts){
-            const op = document.createElement("option");
-            if (isPlainObject(o)){
-              op.value = String(o.value ?? o.label ?? "");
-              op.textContent = String(o.label ?? o.value ?? "");
-            } else {
-              op.value = String(o);
-              op.textContent = String(o);
-            }
-            el.appendChild(op);
-          }
-          if (node.value != null) el.value = String(node.value);
-          applyAttrs(el, node.attrs);
-        } else if (type === "image"){
-          el = document.createElement("img");
-          el.style.maxWidth = "100%";
-          el.style.borderRadius = "16px";
-          el.style.border = "1px solid rgba(31,35,40,.10)";
-          const src = safeUrl(node.value || node.src);
-          if (src) el.src = src;
-          el.alt = safeText(node.text || node.alt || "image");
-          applyAttrs(el, node.attrs);
-        } else if (type === "link"){
-          el = document.createElement("a");
-          el.className = "btn small";
-          el.textContent = safeText(node.text || "Open");
-          const href = safeUrl(node.value || node.href);
-          el.href = href || "#";
-          el.target = (node.attrs && node.attrs.target) ? String(node.attrs.target) : "_blank";
-          el.rel = "noopener";
-          if (!href) el.addEventListener("click", (e)=>{e.preventDefault(); toast("No URL");});
-          applyAttrs(el, node.attrs);
-        } else {
-          el = document.createElement("div");
-          el.className = "pp-box";
-          el.textContent = "Unsupported type: " + type;
-        }
-
-        if (id) el.id = id;
-        if (cls) el.className = (el.className ? el.className + " " : "") + cls;
-
-        applyStyle(el, node.style);
-        if (!["link","image"].includes(type)) applyAttrs(el, node.attrs);
-
-        if (Array.isArray(node.children) && (type==="container" || type==="card" || type==="row")){
-          if (type === "row"){
-            el.innerHTML = "";
-            for (const child of node.children) el.appendChild(renderElement(child));
-          } else {
-            const inner = document.createElement("div");
-            inner.className = "pp-ui";
-            inner.style.gap = "10px";
-            for (const child of node.children) inner.appendChild(renderElement(child));
-            el.appendChild(inner);
-          }
-        }
-        return el;
-      }
-
-      function buildUIFromSchema(schema){
-        previewRoot.innerHTML = "";
-        const title = safeText(schema.title || "");
-        if (title){
-          const head = document.createElement("div");
-          head.className = "pp-box";
-          head.innerHTML = '<div class="pp-badge"><i></i><span></span></div>';
-          head.querySelector("span").textContent = title;
-
-          if (schema.description){
-            const p = document.createElement("p");
-            p.className = "pp-sub";
-            p.textContent = safeText(schema.description);
-            p.style.marginTop = "8px";
-            head.appendChild(p);
-          }
-          previewRoot.appendChild(head);
-        }
-        for (const node of (schema.children || [])) previewRoot.appendChild(renderElement(node));
-      }
-
-      // ---------------- Editor actions ----------------
-      function setEditor(obj){
-        jsonArea.value = pretty(obj);
-        msgEl.textContent = "Editor updated.";
-      }
-      function getEditorObj(){ return parseJson(jsonArea.value); }
-
-      function setExample(){
-        setEditor(DEFAULT_SCHEMA);
-        toast("Example loaded");
-      }
-      function validate(){
-        try{
-          const obj = getEditorObj();
-          const v = validateSchema(obj);
-          if (v.ok){
-            msgEl.textContent = "✅ Valid schema.";
-            toast("Valid JSON");
-          } else {
-            msgEl.textContent = "❌ " + v.errs.slice(0,6).join(" | ") + (v.errs.length>6 ? " (+"+(v.errs.length-6)+" more)" : "");
-            toast("Invalid schema");
-          }
-          return v;
-        }catch(e){
-          msgEl.textContent = "❌ JSON parse error: " + e.message;
-          toast("Parse error");
-          return { ok:false, errs:[e.message] };
-        }
-      }
-      function prettyEditor(){
-        try{
-          const obj = getEditorObj();
-          jsonArea.value = pretty(obj);
-          msgEl.textContent = "Pretty formatted.";
-          toast("Pretty");
-        }catch(e){
-          msgEl.textContent = "❌ Cannot pretty: " + e.message;
-          toast("Parse error");
-        }
-      }
-      function build(){
-        const v = validate();
-        if (!v.ok){
-          previewMsg.textContent = "Preview not updated (schema invalid).";
-          return;
-        }
-        const obj = getEditorObj();
-        buildUIFromSchema(obj);
-        previewMsg.textContent = "UI built from JSON.";
-        toast("UI built");
-      }
-      function save(){
-        try{
-          const key = storeKeyEl.value.trim() || AREA_KEY_FALLBACK;
-          const obj = getEditorObj();
-          localStorage.setItem(key, JSON.stringify(obj));
-          msgEl.textContent = "Saved to localStorage: " + key;
-          toast("Saved");
-        }catch(e){
-          msgEl.textContent = "❌ Save failed: " + e.message;
-          toast("Save failed");
-        }
-      }
-      function loadSaved(){
-        const key = storeKeyEl.value.trim() || AREA_KEY_FALLBACK;
-        const raw = localStorage.getItem(key);
-        if (!raw){
-          msgEl.textContent = "No saved JSON for key: " + key;
-          toast("Nothing saved");
-          return;
-        }
-        try{
-          const obj = JSON.parse(raw);
-          jsonArea.value = pretty(obj);
-          msgEl.textContent = "Loaded saved JSON: " + key;
-          toast("Loaded");
-        }catch(e){
-          msgEl.textContent = "❌ Saved JSON is corrupted.";
-          toast("Corrupt saved JSON");
-        }
-      }
-      function clearSaved(){
-        const key = storeKeyEl.value.trim() || AREA_KEY_FALLBACK;
-        localStorage.removeItem(key);
-        msgEl.textContent = "Cleared saved JSON: " + key;
-        toast("Cleared");
-      }
-      function exportJson(){
-        try{
-          const obj = getEditorObj();
-          const blob = new Blob([pretty(obj)], {type:"application/json"});
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = (obj.title ? obj.title.replace(/[^\w\-]+/g,"_") : "pp_ui_schema") + ".json";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
-          toast("Exported");
-        }catch(e){
-          toast("Parse error");
-          msgEl.textContent = "❌ Export failed: " + e.message;
-        }
-      }
-      function copyJson(){
-        const txt = jsonArea.value;
-        navigator.clipboard?.writeText(txt).then(()=>toast("Copied")).catch(()=>{
-          const ta=document.createElement("textarea");
-          ta.value=txt; ta.style.position="fixed"; ta.style.left="-9999px";
-          document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
-          toast("Copied");
-        });
-      }
-      function mergeIntoEditor(){
-        try{
-          const base = getEditorObj();
-          const patch = parseJson(mergeArea.value);
-          if (!isPlainObject(base) || !isPlainObject(patch)) throw new Error("Both must be JSON objects.");
-          const merged = deepMerge(base, patch);
-          jsonArea.value = pretty(merged);
-          msgEl.textContent = "Merged successfully.";
-          toast("Merged");
-        }catch(e){
-          msgEl.textContent = "❌ Merge failed: " + e.message;
-          toast("Merge failed");
-        }
-      }
-      function resetEditor(){
-        setExample();
-        build();
-        msgEl.textContent = "Reset to example.";
-      }
-
-      // ---------------- Element Creator ----------------
-      function ensureSchema(){
-        let obj;
-        try{ obj = getEditorObj(); }
-        catch{ obj = structuredClone(DEFAULT_SCHEMA); }
-        if (!isPlainObject(obj) || obj.$schema !== "pp-ui/v1" || !Array.isArray(obj.children)){
-          obj = structuredClone(DEFAULT_SCHEMA);
-        }
-        return obj;
-      }
-      function parseOptionalObj(str){
-        const s = String(str||"").trim();
-        if (!s) return null;
-        const v = JSON.parse(s);
-        if (!isPlainObject(v)) throw new Error("Must be a JSON object.");
-        return v;
-      }
-      function parseOptionalArr(str){
-        const s = String(str||"").trim();
-        if (!s) return null;
-        const v = JSON.parse(s);
-        if (!Array.isArray(v)) throw new Error("Must be a JSON array.");
-        return v;
-      }
-      function findLastContainer(children){
-        for (let i=children.length-1; i>=0; i--){
-          const n = children[i];
-          if (!n || typeof n !== "object") continue;
-          if (n.type === "card" || n.type === "container") return n;
-        }
-        return null;
-      }
-      function addElement(){
-        try{
-          const schema = ensureSchema();
-          const type = $("#elType").value;
-          const id = $("#elId").value.trim();
-          const cls = $("#elClass").value.trim();
-          const text = $("#elText").value;
-          const value = $("#elValue").value;
-          const style = parseOptionalObj($("#elStyle").value);
-          const attrs = parseOptionalObj($("#elAttrs").value);
-          const children = parseOptionalArr($("#elChildren").value);
-
-          const node = { type };
-          if (id) node.id = id;
-          if (cls) node.class = cls;
-
-          if (["title","text","badge","button","link","image"].includes(type) && text.trim()) node.text = text;
-          if (["input","select","link","image"].includes(type) && value.trim()) node.value = value;
-          if (style) node.style = style;
-          if (attrs) node.attrs = attrs;
-          if (children) node.children = children;
-
-          if (type === "select" && !node.options) node.options = ["Option 1","Option 2","Option 3"];
-          if (type === "button" && !node.action) node.action = "toast:Button clicked";
-
-          const where = $("#addWhere").value;
-          if (where === "root"){
-            schema.children.push(node);
-          } else {
-            const last = findLastContainer(schema.children);
-            if (last){
-              last.children = Array.isArray(last.children) ? last.children : [];
-              last.children.push(node);
-            } else {
-              schema.children.push({ type:"card", children:[node] });
-            }
-          }
-
-          jsonArea.value = pretty(schema);
-          creatorMsg.textContent = "✅ Added element to JSON.";
-          toast("Element added");
-          build();
-        }catch(e){
-          creatorMsg.textContent = "❌ " + e.message;
-          toast("Could not add");
-        }
-      }
-      function newSchema(){
-        const s = {$schema:"pp-ui/v1", title:"New UI", description:"Built with Programmer’s Picnic UI Builder", children:[]};
-        jsonArea.value = pretty(s);
-        creatorMsg.textContent = "New schema created.";
-        toast("New schema");
-        previewRoot.innerHTML = "";
-        previewMsg.textContent = "Preview cleared.";
-      }
-
-      // ---------------- Download UI as HTML (SAFE STRING BUILDER) ----------------
-      function escHtml(s){
-        return String(s??"")
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
-      }
-
-      function buildStandaloneHtml(schema){
-        const title = escHtml(schema.title || "PP UI");
-        const schemaJson = JSON.stringify(schema);
-
-        const parts = [];
-        parts.push('<!doctype html>');
-        parts.push('<html lang="en">');
-        parts.push('<head>');
-        parts.push('<meta charset="utf-8"/>');
-        parts.push('<meta name="viewport" content="width=device-width,initial-scale=1"/>');
-        parts.push('<title>' + title + '</title>');
-        parts.push('<meta name="theme-color" content="#d97706"/>');
-        parts.push('<style>');
-        parts.push('body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#fff7e6;color:#1f2328}');
-        parts.push('.wrap{max-width:980px;margin:0 auto;padding:18px}');
-        parts.push('.box{border:1px solid rgba(31,35,40,.10);background:rgba(255,255,255,.78);border-radius:16px;padding:12px}');
-        parts.push('.ui{display:grid;gap:10px}');
-        parts.push('.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}');
-        parts.push('.badge{display:inline-flex;gap:8px;align-items:center;font-size:12px;font-weight:800;padding:7px 10px;border-radius:999px;border:1px solid rgba(31,35,40,.10);background:rgba(255,255,255,.75)}');
-        parts.push('.badge i{width:10px;height:10px;border-radius:50%;background:#ff9f1c;box-shadow:0 0 0 4px rgba(255,159,28,.18)}');
-        parts.push('.title{margin:0;font-size:18px}');
-        parts.push('.text{margin:6px 0 0;color:rgba(31,35,40,.75);line-height:1.5}');
-        parts.push('.hr{height:1px;background:rgba(31,35,40,.10);border:0;margin:8px 0}');
-        parts.push('.btn{border:1px solid rgba(31,35,40,.12);background:rgba(255,255,255,.85);border-radius:999px;padding:10px 12px;font-weight:800;cursor:pointer;text-decoration:none;color:inherit;display:inline-flex;gap:8px;align-items:center}');
-        parts.push('.btn.primary{background:linear-gradient(180deg, rgba(255,159,28,.98), rgba(255,183,77,.98));border-color:rgba(217,119,6,.35)}');
-        parts.push('.input,.select{width:100%;padding:11px 12px;border-radius:14px;border:1px solid rgba(31,35,40,.14);background:rgba(255,255,255,.82);outline:none;font-weight:700}');
-        parts.push('</style>');
-        parts.push('</head>');
-        parts.push('<body>');
-        parts.push('<div class="wrap"><div id="app" class="ui"></div></div>');
-        parts.push('<script>');
-        parts.push('const schema = ' + schemaJson + ';');
-        parts.push('const ALLOWED_TYPES=new Set(["container","row","card","title","text","badge","divider","button","input","select","image","link"]);');
-        parts.push('const isObj=x=>!!x&&typeof x==="object"&&!Array.isArray(x);');
-        parts.push('const safeText=s=>String(s??"").replace(/\\s+/g," ").trim();');
-        parts.push('const safeUrl=u=>{const s=String(u??"").trim(); if(!s) return ""; if(s.startsWith("/")||s.startsWith("./")||s.startsWith("../")) return s; if(/^https?:\\/\\//i.test(s)) return s; return ""};');
-        parts.push('function applyStyle(el, style){if(!style||!isObj(style)) return; for(const [k,v] of Object.entries(style)){if(!/^[a-zA-Z][a-zA-Z0-9\\-]*$/.test(k)) continue; if(typeof v!=="string"&&typeof v!=="number") continue; el.style[k]=String(v);} }');
-        parts.push('function render(node){ if(!isObj(node)||!ALLOWED_TYPES.has(node.type)) return document.createElement("div"); const t=node.type; let el;');
-        parts.push('if(t==="container"){el=document.createElement("div"); el.className="box";}');
-        parts.push('else if(t==="row"){el=document.createElement("div"); el.className="row";}');
-        parts.push('else if(t==="card"){el=document.createElement("div"); el.className="box"; el.style.boxShadow="0 10px 22px rgba(31,35,40,.10)"; el.style.borderRadius="18px";}');
-        parts.push('else if(t==="title"){el=document.createElement("h3"); el.className="title"; el.textContent=safeText(node.text);}');
-        parts.push('else if(t==="text"){el=document.createElement("p"); el.className="text"; el.textContent=safeText(node.text);}');
-        parts.push('else if(t==="badge"){el=document.createElement("span"); el.className="badge"; el.innerHTML=\'<i aria-hidden="true"></i><span></span>\'; el.querySelector("span").textContent=safeText(node.text);}');
-        parts.push('else if(t==="divider"){el=document.createElement("hr"); el.className="hr";}');
-        parts.push('else if(t==="button"){el=document.createElement("button"); el.type="button"; el.className="btn primary"; el.textContent=safeText(node.text||"Button");}');
-        parts.push('else if(t==="input"){el=document.createElement("input"); el.className="input"; el.value=String(node.value||""); el.placeholder=(node.attrs&&node.attrs.placeholder)||"Type…";}');
-        parts.push('else if(t==="select"){el=document.createElement("select"); el.className="select"; const opts=Array.isArray(node.options)?node.options:[]; for(const o of opts){ const op=document.createElement("option"); op.value=isObj(o)?String(o.value??o.label??""):String(o); op.textContent=isObj(o)?String(o.label??o.value??""):String(o); el.appendChild(op);} if(node.value!=null) el.value=String(node.value);}');
-        parts.push('else if(t==="image"){el=document.createElement("img"); el.style.maxWidth="100%"; el.style.borderRadius="16px"; el.style.border="1px solid rgba(31,35,40,.10)"; el.alt=safeText(node.text||"image"); const src=safeUrl(node.value||node.src); if(src) el.src=src;}');
-        parts.push('else if(t==="link"){el=document.createElement("a"); el.className="btn"; el.textContent=safeText(node.text||"Open"); const href=safeUrl(node.value||node.href); el.href=href||"#"; el.target="_blank"; el.rel="noopener";}');
-        parts.push('if(node.id) el.id=String(node.id); if(node.class) el.className=(el.className?el.className+" ":"")+String(node.class); applyStyle(el,node.style);');
-        parts.push('if(Array.isArray(node.children)&&(t==="container"||t==="card"||t==="row")){ if(t==="row"){ el.innerHTML=""; for(const c of node.children) el.appendChild(render(c)); } else { const inner=document.createElement("div"); inner.className="ui"; for(const c of node.children) inner.appendChild(render(c)); el.appendChild(inner);} }');
-        parts.push('return el; }');
-        parts.push('const app=document.getElementById("app");');
-        parts.push('if(schema.title){ const head=document.createElement("div"); head.className="box"; head.innerHTML=\'<div class="badge"><i></i><span></span></div>\'; head.querySelector("span").textContent=safeText(schema.title); if(schema.description){ const p=document.createElement("p"); p.className="text"; p.textContent=safeText(schema.description); p.style.marginTop="8px"; head.appendChild(p);} app.appendChild(head);}');
-        parts.push('(schema.children||[]).forEach(n=>app.appendChild(render(n)));');
-        parts.push('</script>');
-        parts.push('</body></html>');
-        return parts.join("\\n");
-      }
-
-      function downloadUIHtml(){
-        const v = validate();
-        if (!v.ok){ toast("Fix JSON first"); return; }
-        const schema = getEditorObj();
-        const html = buildStandaloneHtml(schema);
-        const blob = new Blob([html], {type:"text/html"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = (schema.title ? String(schema.title).replace(/[^\w\-]+/g,"_") : "pp_ui") + ".html";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
-        toast("HTML downloaded");
-      }
-
-      // ---------------- Import ----------------
-      $("#btnImport").addEventListener("click", ()=>$("#fileIn").click());
-      $("#fileIn").addEventListener("change", async (e)=>{
-        const f = e.target.files && e.target.files[0];
-        if (!f) return;
-        try{
-          const txt = await f.text();
-          const obj = JSON.parse(txt);
-          jsonArea.value = pretty(obj);
-          msgEl.textContent = "Imported JSON file.";
-          toast("Imported");
-        }catch(err){
-          msgEl.textContent = "❌ Import failed: " + err.message;
-          toast("Import failed");
-        }finally{
-          e.target.value = "";
-        }
-      });
-
-      // ---------------- Bindings ----------------
-      $("#btnLoadExample").addEventListener("click", ()=>{ setExample(); build(); });
-      $("#btnValidate").addEventListener("click", validate);
-      $("#btnPretty").addEventListener("click", prettyEditor);
-      $("#btnBuild").addEventListener("click", build);
-      $("#btnBuild2").addEventListener("click", build);
-      $("#btnSave").addEventListener("click", save);
-      $("#btnExport").addEventListener("click", exportJson);
-      $("#btnCopyJson").addEventListener("click", copyJson);
-      $("#btnMerge").addEventListener("click", mergeIntoEditor);
-      $("#btnResetEditor").addEventListener("click", resetEditor);
-      $("#btnLoadSaved").addEventListener("click", loadSaved);
-      $("#btnClearSaved").addEventListener("click", clearSaved);
-      $("#btnAddEl").addEventListener("click", addElement);
-      $("#btnNewSchema").addEventListener("click", newSchema);
-      $("#btnClearPreview").addEventListener("click", ()=>{
-        previewRoot.innerHTML = "";
-        previewMsg.textContent = "Preview cleared.";
-        toast("Cleared");
-      });
-      $("#btnDownloadHtml").addEventListener("click", downloadUIHtml);
-
-      $("#btnOpenHelp").addEventListener("click", ()=>{ openTab("help"); toast("Help opened"); });
-      $("#btnHelpFromCreator").addEventListener("click", ()=>{ openTab("help"); toast("Help opened"); });
-
-      // Auto-validate hint
-      let tVal=null;
-      jsonArea.addEventListener("input", ()=>{
-        if (tVal) clearTimeout(tVal);
-        tVal = setTimeout(()=>{
-          try{
-            const obj = getEditorObj();
-            const v = validateSchema(obj);
-            msgEl.textContent = v.ok ? "✅ Looks valid." : "⚠️ " + v.errs[0];
-          }catch(e){
-            msgEl.textContent = "⚠️ " + e.message;
-          }
-        }, 250);
-      });
-
-      // Boot
-      (function boot(){
-        setExample();
-        build();
-        msgEl.textContent = "Ready.";
-        previewMsg.textContent = "UI built from example schema.";
-      })();
-    </script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>404 - Page Not Found | Learn With Champak</title>
+
+  <meta name="description" content="Oops! The page you are looking for does not exist. Continue learning with Programmer's Picnic and Learn With Champak." />
+
+  <!-- Adsense -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494"
+    crossorigin="anonymous"></script>
+
+  <!-- Speak Engine -->
+  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
+
+  <style>
+    :root{
+      --bg:#fffaf0;
+      --card:#ffffff;
+      --accent:#f59e0b;
+      --accent-dark:#d97706;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#fde68a;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:linear-gradient(135deg,#fff7ed,#fffaf0);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
+    }
+
+    .card{
+      max-width:700px;
+      width:100%;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:30px;
+      text-align:center;
+      box-shadow:0 10px 40px rgba(0,0,0,0.08);
+      animation:fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(20px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    .code{
+      font-size:72px;
+      font-weight:800;
+      color:var(--accent-dark);
+    }
+
+    h1{
+      font-size:28px;
+      margin:10px 0;
+    }
+
+    p{
+      color:var(--muted);
+      margin-bottom:20px;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top:20px;
+    }
+
+    .btn{
+      padding:12px 18px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      text-decoration:none;
+      transition:0.2s;
+    }
+
+    .btn-primary{
+      background:var(--accent);
+      color:white;
+    }
+
+    .btn-primary:hover{
+      background:var(--accent-dark);
+    }
+
+    .btn-outline{
+      background:white;
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+
+    .btn-outline:hover{
+      background:#fff7ed;
+    }
+
+    .search-box{
+      margin-top:20px;
+      display:flex;
+      gap:10px;
+    }
+
+    input{
+      flex:1;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+    }
+
+    footer{
+      margin-top:25px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    @media(max-width:500px){
+      .code{font-size:56px}
+      h1{font-size:22px}
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div id="speak0" class="code">404</div>
+
+  <h1 id="speak1">Page Not Found</h1>
+
+  <p id="speak2">
+    The page you are looking for does not exist or has been moved.
+    But your learning journey does not stop here.
+  </p>
+
+  <p id="speak3">
+    Think of this like a bug in code — we debug and move forward.
+  </p>
+
+  <!-- Search -->
+  <div class="search-box">
+    <input id="searchInput" placeholder="Search lessons..." />
+    <button class="btn btn-primary" onclick="searchSite()">Search</button>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <a href="/" class="btn btn-primary" id="speak4">Go Home</a>
+    <a href="/course/course-map.html" class="btn btn-outline" id="speak5">Course Map</a>
+    <a href="https://www.learnwithchampak.live" class="btn btn-outline" id="speak6">All Lessons</a>
+  </div>
+
+  <footer id="speak7">
+    © Learn With Champak | Programmer's Picnic
+  </footer>
+
+</div>
+
+<script>
+function searchSite(){
+  var q = document.getElementById("searchInput").value.trim();
+  if(!q){
+    alert("Enter something to search");
+    return;
+  }
+  window.location.href = "/search?q=" + encodeURIComponent(q);
+}
+</script>
+
+</body>
 </html>
