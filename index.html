@@ -3,20 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Champak Roy Birthday Slideshow</title>
-  <meta name="description" content="A birthday slideshow page for Champak Roy with countdown to the next birthday." />
+  <title>Champak Roy — Warm Birthday Slideshow</title>
+  <meta
+    name="description"
+    content="An exquisite warm birthday slideshow page for Champak Roy with thumbnails, humor, and a live countdown to the next birthday."
+  />
   <style>
     :root{
-      --bg1:#fff8e7;
-      --bg2:#ffe7b3;
-      --card:#ffffffcc;
-      --text:#2b1d0e;
-      --muted:#7a5b2e;
-      --accent:#d97706;
-      --accent2:#f59e0b;
-      --line:rgba(121, 85, 36, 0.15);
-      --shadow:0 20px 60px rgba(120, 82, 20, 0.18);
-      --radius:28px;
+      --bg:#fff7ef;
+      --bg2:#ffe8c9;
+      --bg3:#ffd7a1;
+      --card:rgba(255,255,255,.72);
+      --card-strong:rgba(255,255,255,.9);
+      --text:#3b2410;
+      --muted:#7a5835;
+      --accent:#c96f16;
+      --accent2:#f4a623;
+      --accent3:#ffcf70;
+      --line:rgba(116,74,24,.12);
+      --shadow:0 24px 80px rgba(130,82,22,.16);
+      --shadow-soft:0 10px 28px rgba(130,82,22,.10);
+      --radius:30px;
+      --thumbW:118px;
     }
 
     *{box-sizing:border-box}
@@ -26,120 +34,161 @@
       font-family:Arial, Helvetica, sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left, #fff7d6 0%, transparent 35%),
-        radial-gradient(circle at top right, #ffd89b 0%, transparent 30%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
+        radial-gradient(circle at 10% 10%, rgba(255,255,255,.95), transparent 28%),
+        radial-gradient(circle at 90% 12%, rgba(255,220,160,.55), transparent 24%),
+        radial-gradient(circle at 20% 90%, rgba(255,235,205,.7), transparent 25%),
+        linear-gradient(135deg, var(--bg), var(--bg2) 52%, var(--bg3));
       overflow-x:hidden;
     }
 
-    .bg-bubbles{
+    .sparkles,
+    .hearts{
       position:fixed;
       inset:0;
       pointer-events:none;
-      overflow:hidden;
       z-index:0;
+      overflow:hidden;
     }
 
-    .bubble{
+    .spark{
       position:absolute;
-      bottom:-120px;
-      border-radius:50%;
-      background:rgba(255,255,255,0.28);
-      animation:floatUp linear infinite;
-      filter:blur(1px);
+      width:10px;
+      height:10px;
+      background:linear-gradient(135deg,#fff,#ffe59c);
+      transform:rotate(45deg);
+      opacity:.7;
+      border-radius:2px;
+      animation:twinkle 4s ease-in-out infinite;
     }
 
-    .bubble:nth-child(1){left:6%; width:70px; height:70px; animation-duration:16s;}
-    .bubble:nth-child(2){left:18%; width:24px; height:24px; animation-duration:10s;}
-    .bubble:nth-child(3){left:32%; width:48px; height:48px; animation-duration:13s;}
-    .bubble:nth-child(4){left:48%; width:82px; height:82px; animation-duration:18s;}
-    .bubble:nth-child(5){left:62%; width:34px; height:34px; animation-duration:12s;}
-    .bubble:nth-child(6){left:76%; width:60px; height:60px; animation-duration:15s;}
-    .bubble:nth-child(7){left:88%; width:26px; height:26px; animation-duration:11s;}
+    .spark:nth-child(1){left:8%; top:10%; animation-delay:.2s}
+    .spark:nth-child(2){left:22%; top:18%; animation-delay:1s}
+    .spark:nth-child(3){left:80%; top:12%; animation-delay:1.8s}
+    .spark:nth-child(4){left:90%; top:28%; animation-delay:.8s}
+    .spark:nth-child(5){left:14%; top:70%; animation-delay:2.2s}
+    .spark:nth-child(6){left:74%; top:76%; animation-delay:1.4s}
+    .spark:nth-child(7){left:46%; top:8%; animation-delay:2.7s}
+    .spark:nth-child(8){left:56%; top:84%; animation-delay:.4s}
 
-    @keyframes floatUp{
-      from{transform:translateY(0) scale(1); opacity:0}
-      10%{opacity:1}
-      to{transform:translateY(-120vh) scale(1.2); opacity:0}
+    @keyframes twinkle{
+      0%,100%{transform:rotate(45deg) scale(.7); opacity:.25}
+      50%{transform:rotate(45deg) scale(1.25); opacity:1}
+    }
+
+    .heart{
+      position:absolute;
+      bottom:-40px;
+      width:22px;
+      height:22px;
+      background:rgba(255,255,255,.35);
+      transform:rotate(45deg);
+      animation:floatHeart linear infinite;
+      filter:blur(.2px);
+    }
+    .heart::before,
+    .heart::after{
+      content:"";
+      position:absolute;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:inherit;
+    }
+    .heart::before{left:-11px; top:0}
+    .heart::after{left:0; top:-11px}
+
+    .heart:nth-child(1){left:6%; animation-duration:17s}
+    .heart:nth-child(2){left:20%; animation-duration:14s; opacity:.6}
+    .heart:nth-child(3){left:37%; animation-duration:18s}
+    .heart:nth-child(4){left:53%; animation-duration:15s; opacity:.45}
+    .heart:nth-child(5){left:71%; animation-duration:19s}
+    .heart:nth-child(6){left:87%; animation-duration:16s; opacity:.5}
+
+    @keyframes floatHeart{
+      from{transform:translateY(0) rotate(45deg) scale(.8); opacity:0}
+      12%{opacity:.9}
+      to{transform:translateY(-120vh) rotate(45deg) scale(1.2); opacity:0}
     }
 
     .wrap{
       position:relative;
       z-index:1;
       min-height:100vh;
+      padding:28px;
       display:grid;
       place-items:center;
-      padding:24px;
     }
 
     .app{
-      width:min(980px, 100%);
+      width:min(1180px, 100%);
       background:var(--card);
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(255,255,255,0.45);
+      border:1px solid rgba(255,255,255,.48);
+      backdrop-filter:blur(18px);
       box-shadow:var(--shadow);
-      border-radius:var(--radius);
+      border-radius:36px;
       overflow:hidden;
     }
 
     .topbar{
-      padding:18px 22px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
+      gap:18px;
+      padding:20px 24px;
+      background:linear-gradient(90deg, rgba(255,255,255,.82), rgba(255,245,227,.9));
       border-bottom:1px solid var(--line);
-      background:linear-gradient(90deg, rgba(255,255,255,0.75), rgba(255,248,231,0.9));
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:14px;
       min-width:0;
     }
 
-    .brand-badge{
-      width:46px;
-      height:46px;
-      border-radius:14px;
+    .badge{
+      width:56px;
+      height:56px;
+      border-radius:18px;
       display:grid;
       place-items:center;
-      font-size:24px;
+      font-size:28px;
       background:linear-gradient(135deg, var(--accent), var(--accent2));
       color:#fff;
-      box-shadow:0 10px 25px rgba(217,119,6,0.28);
+      box-shadow:0 14px 30px rgba(201,111,22,.26);
+      flex:0 0 auto;
     }
 
     .brand h1{
       margin:0;
-      font-size:clamp(1.1rem, 2vw, 1.5rem);
-      line-height:1.15;
+      font-size:clamp(1.2rem, 2vw, 1.7rem);
+      line-height:1.1;
     }
 
     .brand p{
-      margin:3px 0 0;
+      margin:5px 0 0;
       color:var(--muted);
-      font-size:0.95rem;
+      font-size:.98rem;
     }
 
-    .controls{
+    .actions{
       display:flex;
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
     button{
       border:none;
       background:#fff;
       color:var(--text);
-      padding:10px 14px;
-      border-radius:12px;
+      padding:11px 15px;
+      border-radius:14px;
       font-weight:700;
       cursor:pointer;
-      box-shadow:0 6px 16px rgba(0,0,0,0.08);
-      transition:transform .18s ease, background .18s ease;
+      box-shadow:var(--shadow-soft);
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
     }
 
     button:hover{transform:translateY(-2px)}
@@ -148,75 +197,127 @@
       color:#fff;
     }
 
-    .slideshow{
-      position:relative;
-      min-height:540px;
+    .main{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 300px;
+      gap:0;
+      min-height:700px;
+    }
+
+    .viewer{
       padding:22px;
+      border-right:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.06));
+    }
+
+    .slide-shell{
+      position:relative;
+      border-radius:30px;
+      overflow:hidden;
+      min-height:650px;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.75), transparent 28%),
+        linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,248,237,.92));
+      border:1px solid rgba(255,255,255,.55);
+      box-shadow:var(--shadow-soft);
     }
 
     .slide{
       display:none;
-      min-height:496px;
-      border-radius:24px;
-      padding:28px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,247,232,0.95));
-      border:1px solid var(--line);
-      animation:fade .55s ease;
+      width:100%;
+      min-height:650px;
+      padding:30px;
+      animation:fadeSlide .55s ease;
     }
-
     .slide.active{display:grid}
 
-    @keyframes fade{
-      from{opacity:.25; transform:translateY(12px) scale(.985)}
-      to{opacity:1; transform:translateY(0) scale(1)}
+    @keyframes fadeSlide{
+      from{opacity:.18; transform:scale(.987) translateY(12px)}
+      to{opacity:1; transform:scale(1) translateY(0)}
     }
 
-    .hero-slide{
-      grid-template-columns:1.1fr .9fr;
-      gap:26px;
+    .hero{
+      grid-template-columns:1.08fr .92fr;
       align-items:center;
+      gap:24px;
     }
 
-    .title{
-      font-size:clamp(2rem, 4vw, 3.5rem);
-      line-height:1.05;
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:#8a5c1f;
+      border-radius:999px;
+      padding:9px 14px;
+      font-size:.92rem;
+      font-weight:700;
+      box-shadow:var(--shadow-soft);
+      margin-bottom:14px;
+    }
+
+    .hero h2,
+    .center h2{
       margin:0 0 14px;
+      font-size:clamp(2rem, 4vw, 3.7rem);
+      line-height:1.03;
+      letter-spacing:-.02em;
     }
 
-    .subtitle{
+    .lead{
       font-size:1.1rem;
-      line-height:1.7;
-      color:#5b451f;
+      line-height:1.72;
+      color:#5b4323;
       margin:0 0 18px;
+      max-width:62ch;
     }
 
     .chips{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
+      margin-top:10px;
     }
 
     .chip{
-      padding:10px 14px;
+      padding:11px 14px;
       border-radius:999px;
       background:#fff;
       border:1px solid var(--line);
       font-weight:700;
-      color:#6a4b1d;
+      color:#6b4a1d;
+      box-shadow:var(--shadow-soft);
     }
 
-    .cake-box{
+    .cake-stage{
       display:grid;
       place-items:center;
-      min-height:300px;
+      position:relative;
+      min-height:360px;
+    }
+
+    .halo{
+      position:absolute;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,222,167,.85), rgba(255,222,167,0) 68%);
+      filter:blur(10px);
+      animation:breathe 5s ease-in-out infinite;
+    }
+
+    @keyframes breathe{
+      0%,100%{transform:scale(1); opacity:.85}
+      50%{transform:scale(1.08); opacity:1}
     }
 
     .cake{
       position:relative;
-      width:230px;
-      height:220px;
-      animation:gentle 3.5s ease-in-out infinite;
+      width:270px;
+      height:260px;
+      animation:gentle 4s ease-in-out infinite;
+      z-index:2;
     }
 
     @keyframes gentle{
@@ -224,78 +325,88 @@
       50%{transform:translateY(-8px)}
     }
 
-    .cake .plate{
+    .plate{
       position:absolute;
-      bottom:12px;
       left:50%;
+      bottom:10px;
       transform:translateX(-50%);
-      width:240px;
-      height:18px;
+      width:258px;
+      height:22px;
       border-radius:999px;
-      background:#e7cda0;
+      background:linear-gradient(180deg, #efd9b3, #d9b98e);
+      box-shadow:0 8px 18px rgba(88,60,20,.12);
     }
 
-    .cake .layer1,
-    .cake .layer2{
+    .shadow-cake{
+      position:absolute;
+      left:50%;
+      bottom:0;
+      transform:translateX(-50%);
+      width:210px;
+      height:24px;
+      border-radius:50%;
+      background:rgba(103,67,18,.14);
+      filter:blur(9px);
+    }
+
+    .layer1,.layer2{
       position:absolute;
       left:50%;
       transform:translateX(-50%);
-      border-radius:18px;
-      background:linear-gradient(180deg, #ffd39b, #f3ae55);
-      box-shadow:inset 0 -8px 0 rgba(255,255,255,0.18);
+      border-radius:22px;
+      background:linear-gradient(180deg,#ffd59f,#eba14a);
+      box-shadow:inset 0 -12px 0 rgba(255,255,255,.14), 0 12px 25px rgba(96,59,19,.14);
     }
-
-    .cake .layer1{
-      bottom:30px;
-      width:200px;
-      height:70px;
-    }
-
-    .cake .layer2{
-      bottom:92px;
-      width:150px;
-      height:56px;
-    }
+    .layer1{bottom:32px; width:220px; height:78px}
+    .layer2{bottom:108px; width:162px; height:62px}
 
     .icing1,.icing2{
       position:absolute;
       left:50%;
       transform:translateX(-50%);
-      background:#fff7ef;
-      border-radius:18px 18px 22px 22px;
+      background:#fff8f0;
+      box-shadow:0 8px 14px rgba(85,58,19,.07);
     }
-
-    .icing1{bottom:86px; width:200px; height:18px;}
-    .icing2{bottom:142px; width:150px; height:16px;}
+    .icing1{
+      width:220px;
+      height:18px;
+      bottom:101px;
+      border-radius:22px;
+    }
+    .icing2{
+      width:162px;
+      height:16px;
+      bottom:163px;
+      border-radius:20px;
+    }
 
     .candle{
       position:absolute;
       left:50%;
-      bottom:148px;
+      bottom:168px;
       transform:translateX(-50%);
       width:18px;
-      height:52px;
+      height:56px;
+      border-radius:9px;
       background:repeating-linear-gradient(
         45deg,
-        #fff,
-        #fff 6px,
-        #f59e0b 6px,
-        #f59e0b 12px
+        #fff 0 7px,
+        #f4a623 7px 14px
       );
-      border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
     }
 
     .flame{
       position:absolute;
       left:50%;
-      bottom:198px;
+      bottom:222px;
       transform:translateX(-50%);
-      width:22px;
-      height:34px;
-      background:radial-gradient(circle at 50% 35%, #fff8c9 0%, #ffd54a 38%, #ff8a00 75%);
-      border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+      width:24px;
+      height:38px;
+      border-radius:50% 50% 50% 50% / 68% 68% 35% 35%;
+      background:radial-gradient(circle at 50% 34%, #fffdd3 0%, #ffe26e 36%, #ff9b18 76%);
+      filter:drop-shadow(0 0 14px rgba(255,190,63,.7));
       animation:flicker .9s ease-in-out infinite alternate;
-      filter:drop-shadow(0 0 12px rgba(255,180,0,0.5));
     }
 
     @keyframes flicker{
@@ -303,27 +414,50 @@
       to{transform:translateX(-50%) scale(1.08) rotate(2deg)}
     }
 
-    .center-slide{
+    .confetti span{
+      position:absolute;
+      width:10px;
+      height:18px;
+      border-radius:4px;
+      opacity:.8;
+      animation:drift 4s ease-in-out infinite;
+    }
+    .confetti span:nth-child(1){left:25px; top:25px; background:#ffcf70}
+    .confetti span:nth-child(2){left:72px; top:84px; background:#f4a623}
+    .confetti span:nth-child(3){right:34px; top:45px; background:#ffdba0}
+    .confetti span:nth-child(4){right:92px; top:98px; background:#ffb347}
+    .confetti span:nth-child(5){left:48%; top:18px; background:#fff}
+    .confetti span:nth-child(6){left:55%; top:110px; background:#fbd38d}
+    @keyframes drift{
+      0%,100%{transform:translateY(0) rotate(0deg)}
+      50%{transform:translateY(8px) rotate(15deg)}
+    }
+
+    .center{
       align-items:center;
       justify-items:center;
       text-align:center;
-      gap:16px;
+      gap:14px;
     }
 
     .big-number{
-      font-size:clamp(3rem, 9vw, 6rem);
+      font-size:clamp(3rem, 10vw, 6.2rem);
       font-weight:900;
       line-height:1;
-      background:linear-gradient(135deg, #b45309, #f59e0b);
+      margin:0;
+      background:linear-gradient(135deg,#a7560e,#f4a623);
       -webkit-background-clip:text;
       background-clip:text;
       color:transparent;
-      margin:0;
+      letter-spacing:-.04em;
     }
 
-    .mini{
+    .sub{
       color:var(--muted);
-      font-size:1rem;
+      font-size:1.03rem;
+      line-height:1.6;
+      max-width:60ch;
+      margin:0 auto;
     }
 
     .count-grid{
@@ -335,218 +469,469 @@
     }
 
     .count-card{
-      background:#fff;
+      background:var(--card-strong);
       border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px 12px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.05);
+      border-radius:24px;
+      padding:20px 12px;
+      box-shadow:var(--shadow-soft);
     }
 
     .count-card .num{
-      font-size:clamp(1.7rem, 4vw, 2.6rem);
+      font-size:clamp(1.7rem, 4vw, 2.8rem);
       font-weight:900;
+      color:#b45e11;
       margin-bottom:8px;
-      color:#b45309;
     }
 
     .count-card .lab{
+      font-size:.82rem;
       color:var(--muted);
       font-weight:700;
-      letter-spacing:.4px;
       text-transform:uppercase;
-      font-size:.8rem;
+      letter-spacing:.08em;
+    }
+
+    .warm-line{
+      background:linear-gradient(135deg, rgba(255,247,232,.95), rgba(255,255,255,.88));
+      border:1px solid var(--line);
+      padding:14px 18px;
+      border-radius:18px;
+      box-shadow:var(--shadow-soft);
+      font-size:1.02rem;
+      color:#5e4421;
+      max-width:760px;
     }
 
     .facts{
-      width:min(760px, 100%);
+      width:min(820px, 100%);
       display:grid;
       grid-template-columns:repeat(2,1fr);
       gap:16px;
-      margin-top:10px;
+      margin-top:8px;
       text-align:left;
     }
 
     .fact{
-      background:#fff;
+      background:var(--card-strong);
       border:1px solid var(--line);
-      border-radius:20px;
+      border-radius:24px;
       padding:18px;
+      box-shadow:var(--shadow-soft);
     }
 
     .fact h3{
-      margin:0 0 10px;
+      margin:0 0 9px;
+      color:#9a651f;
       font-size:1rem;
-      color:#8a5a12;
     }
 
     .fact p{
       margin:0;
       font-size:1.05rem;
-      line-height:1.6;
+      line-height:1.68;
+    }
+
+    .quote-box{
+      width:min(800px,100%);
+      background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,248,236,.94));
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:28px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .quote-box blockquote{
+      margin:0;
+      font-size:clamp(1.25rem, 3vw, 2rem);
+      line-height:1.55;
+      font-weight:700;
+      color:#5d3b18;
+    }
+
+    .quote-box p{
+      margin:16px 0 0;
+      color:var(--muted);
+      font-size:1rem;
+      line-height:1.7;
+    }
+
+    .thumbs{
+      padding:20px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,245,229,.52));
+    }
+
+    .thumb-head{
+      padding:8px 10px 2px;
+    }
+
+    .thumb-head h3{
+      margin:0;
+      font-size:1rem;
+    }
+
+    .thumb-head p{
+      margin:6px 0 0;
+      font-size:.93rem;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .thumb-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .thumb{
+      display:grid;
+      grid-template-columns:84px 1fr;
+      gap:12px;
+      align-items:center;
+      width:100%;
+      text-align:left;
+      padding:10px;
+      border-radius:20px;
+      background:rgba(255,255,255,.72);
+      border:1px solid transparent;
+      box-shadow:var(--shadow-soft);
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .thumb:hover{transform:translateY(-2px)}
+    .thumb.active{
+      border-color:rgba(201,111,22,.34);
+      background:rgba(255,255,255,.96);
+    }
+
+    .thumb-art{
+      width:84px;
+      height:68px;
+      border-radius:16px;
+      overflow:hidden;
+      position:relative;
+      background:linear-gradient(135deg,#fff7ea,#ffd79f);
+      border:1px solid rgba(255,255,255,.7);
+    }
+
+    .art1::before,
+    .art2::before,
+    .art3::before,
+    .art4::before{
+      content:"";
+      position:absolute;
+      inset:0;
+    }
+
+    .art1::before{
+      background:
+        radial-gradient(circle at 50% 34%, #fff6ba 0 8px, transparent 10px),
+        linear-gradient(180deg, transparent 0 54%, #f0b15d 54% 76%, #dc8d34 76% 100%);
+    }
+
+    .art2::before{
+      background:
+        linear-gradient(180deg,#fff7ea, #ffd08c),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.7), transparent 55%);
+    }
+
+    .art3::before{
+      background:
+        linear-gradient(135deg,#fff8ef,#ffe4bb),
+        radial-gradient(circle at 22% 26%, #f4a623 0 7px, transparent 8px),
+        radial-gradient(circle at 70% 48%, #ffd379 0 10px, transparent 11px),
+        radial-gradient(circle at 40% 72%, #fff 0 8px, transparent 9px);
+    }
+
+    .art4::before{
+      background:
+        linear-gradient(135deg,#fff8ef,#ffdcb0),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.9) 0 14px, transparent 16px);
+    }
+
+    .thumb-title{
+      font-weight:800;
+      margin-bottom:4px;
+      color:#5b3916;
+      font-size:.98rem;
+    }
+    .thumb-text{
+      color:var(--muted);
+      font-size:.89rem;
+      line-height:1.45;
+    }
+
+    .bottom-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:16px 22px 22px;
+      border-top:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.35));
     }
 
     .dots{
       display:flex;
-      justify-content:center;
+      align-items:center;
       gap:10px;
-      padding:0 0 22px;
+      flex-wrap:wrap;
     }
 
     .dot{
       width:12px;
       height:12px;
-      border-radius:50%;
-      background:rgba(180,83,9,0.22);
-      cursor:pointer;
-      transition:all .2s ease;
+      border:none;
+      padding:0;
+      border-radius:999px;
+      background:rgba(180,86,14,.22);
+      box-shadow:none;
     }
-
     .dot.active{
       width:34px;
-      border-radius:999px;
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
     }
 
     .footer-note{
-      text-align:center;
-      color:#77551f;
-      font-size:.96rem;
-      padding:0 20px 24px;
+      color:#76522b;
+      font-size:.95rem;
+      line-height:1.55;
+      text-align:right;
+    }
+
+    @media (max-width: 1040px){
+      .main{grid-template-columns:1fr}
+      .viewer{border-right:none; border-bottom:1px solid var(--line)}
+      .thumbs{padding-top:18px}
+      .thumb-list{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+      }
+      .slide-shell,.slide{min-height:unset}
     }
 
     @media (max-width: 820px){
-      .hero-slide{grid-template-columns:1fr}
+      .hero{grid-template-columns:1fr}
       .count-grid{grid-template-columns:repeat(2,1fr)}
       .facts{grid-template-columns:1fr}
-      .slideshow{min-height:unset}
-      .slide{min-height:unset}
-      .topbar{align-items:flex-start; flex-direction:column}
+      .topbar{flex-direction:column; align-items:flex-start}
+      .actions{justify-content:flex-start}
+      .bottom-bar{flex-direction:column; align-items:flex-start}
+      .footer-note{text-align:left}
     }
 
-    @media (max-width: 520px){
-      .count-grid{grid-template-columns:1fr 1fr}
-      .title{font-size:2rem}
-      .subtitle{font-size:1rem}
+    @media (max-width: 560px){
+      body{font-size:15px}
+      .wrap{padding:14px}
+      .viewer{padding:12px}
       .slide{padding:18px}
-      .slideshow{padding:16px}
-      button{padding:10px 12px}
+      .thumb-list{grid-template-columns:1fr}
+      .count-grid{grid-template-columns:1fr 1fr}
+      .badge{width:48px; height:48px; font-size:24px}
+      .app{border-radius:24px}
+      .slide-shell{border-radius:20px}
+      .thumb{grid-template-columns:74px 1fr}
+      .thumb-art{width:74px; height:62px}
     }
   </style>
 </head>
 <body>
-  <div class="bg-bubbles" aria-hidden="true">
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
+  <div class="sparkles" aria-hidden="true">
+    <span class="spark"></span>
+    <span class="spark"></span>
+    <span class="spark"></span>
+    <span class="spark"></span>
+    <span class="spark"></span>
+    <span class="spark"></span>
+    <span class="spark"></span>
+    <span class="spark"></span>
+  </div>
+
+  <div class="hearts" aria-hidden="true">
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
   </div>
 
   <div class="wrap">
     <section class="app">
-      <div class="topbar">
+      <header class="topbar">
         <div class="brand">
-          <div class="brand-badge">🎂</div>
+          <div class="badge">🎂</div>
           <div>
-            <h1>Birthday Slideshow for Champak Roy</h1>
-            <p>Born on 16 January 1970</p>
+            <h1>Champak Roy — Birthday Slideshow</h1>
+            <p>Warmth, humor, glowing thumbnails, and a live countdown to the next birthday.</p>
           </div>
         </div>
 
-        <div class="controls">
+        <div class="actions">
           <button id="prevBtn">◀ Prev</button>
           <button id="playPauseBtn" class="primary">Pause</button>
           <button id="nextBtn">Next ▶</button>
         </div>
+      </header>
+
+      <div class="main">
+        <div class="viewer">
+          <div class="slide-shell">
+            <section class="slide hero active" data-title="Birthday Welcome">
+              <div>
+                <div class="eyebrow">✨ A gentle celebration for Champak Roy</div>
+                <h2>Hello, Champak.<br />Another splendid orbit around the sun.</h2>
+                <p class="lead">
+                  Born on <strong>16 January 1970</strong>, and still clearly aging with more dignity than most software versions.
+                  This page keeps your next birthday in sight with warmth, glowing details, and a little affectionate humor.
+                </p>
+
+                <div class="chips">
+                  <span class="chip" id="chipName">Name: Champak Roy</span>
+                  <span class="chip" id="chipDob">DOB: 16 Jan 1970</span>
+                  <span class="chip" id="chipAge">Current Age: 56</span>
+                </div>
+              </div>
+
+              <div class="cake-stage">
+                <div class="halo"></div>
+                <div class="cake">
+                  <div class="confetti">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="flame"></div>
+                  <div class="candle"></div>
+                  <div class="icing2"></div>
+                  <div class="layer2"></div>
+                  <div class="icing1"></div>
+                  <div class="layer1"></div>
+                  <div class="plate"></div>
+                  <div class="shadow-cake"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="slide center" data-title="Countdown">
+              <div class="eyebrow">⏳ Countdown to the next cake inspection</div>
+              <h2 class="big-number" id="nextBirthdayText">16 January 2027</h2>
+              <p class="sub" id="daysOnlyText">281 days to go. The candles are preparing emotionally.</p>
+
+              <div class="count-grid">
+                <div class="count-card">
+                  <div class="num" id="days">281</div>
+                  <div class="lab">Days</div>
+                </div>
+                <div class="count-card">
+                  <div class="num" id="hours">0</div>
+                  <div class="lab">Hours</div>
+                </div>
+                <div class="count-card">
+                  <div class="num" id="minutes">0</div>
+                  <div class="lab">Minutes</div>
+                </div>
+                <div class="count-card">
+                  <div class="num" id="seconds">0</div>
+                  <div class="lab">Seconds</div>
+                </div>
+              </div>
+
+              <div class="warm-line" id="countdownWarmLine">
+                Time is moving politely but steadily toward your next birthday.
+              </div>
+            </section>
+
+            <section class="slide center" data-title="Birthday Facts">
+              <div class="eyebrow">📜 Fine vintage data, lovingly presented</div>
+              <h2 class="big-number" id="turningAge">57</h2>
+              <p class="sub">That is the age you will turn on your next birthday. Still younger than ancient databases, wiser than fresh bugs.</p>
+
+              <div class="facts">
+                <div class="fact">
+                  <h3>Current age</h3>
+                  <p id="currentAgeText">You are currently 56 years old.</p>
+                </div>
+
+                <div class="fact">
+                  <h3>Next birthday</h3>
+                  <p id="nextBirthdayFact">Your next birthday is on 16 January 2027.</p>
+                </div>
+
+                <div class="fact">
+                  <h3>Days remaining</h3>
+                  <p id="remainingDaysFact">There are 281 days left until your next birthday.</p>
+                </div>
+
+                <div class="fact">
+                  <h3>Born on</h3>
+                  <p id="bornFact">You were born on Friday, 16 January 1970.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="slide center" data-title="Warm Wishes">
+              <div class="quote-box">
+                <blockquote id="warmQuote">
+                  “A good birthday is not just about age. It is about warmth, stories, laughter, and people who still smile when your name appears.”
+                </blockquote>
+                <p id="warmParagraph">
+                  And in your case, also about keeping the cake safe from people who say, “Just a tiny slice,” and then perform demolition.
+                </p>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <aside class="thumbs">
+          <div class="thumb-head">
+            <h3>Slides</h3>
+            <p>Use the thumbnails to jump to any part of the celebration.</p>
+          </div>
+
+          <div class="thumb-list" id="thumbList">
+            <button class="thumb active" data-index="0">
+              <div class="thumb-art art1"></div>
+              <div>
+                <div class="thumb-title">Birthday Welcome</div>
+                <div class="thumb-text">A warm introduction, a cake, and a respectful amount of sparkle.</div>
+              </div>
+            </button>
+
+            <button class="thumb" data-index="1">
+              <div class="thumb-art art2"></div>
+              <div>
+                <div class="thumb-title">Countdown</div>
+                <div class="thumb-text">See the live time left until the next birthday arrives.</div>
+              </div>
+            </button>
+
+            <button class="thumb" data-index="2">
+              <div class="thumb-art art3"></div>
+              <div>
+                <div class="thumb-title">Birthday Facts</div>
+                <div class="thumb-text">Age, date, and delightful statistics with a little charm.</div>
+              </div>
+            </button>
+
+            <button class="thumb" data-index="3">
+              <div class="thumb-art art4"></div>
+              <div>
+                <div class="thumb-title">Warm Wishes</div>
+                <div class="thumb-text">Soft words, gentle humor, and affectionate birthday energy.</div>
+              </div>
+            </button>
+          </div>
+        </aside>
       </div>
 
-      <div class="slideshow">
-        <article class="slide hero-slide active">
-          <div>
-            <h2 class="title">Happy Journey,<br />Champak Roy</h2>
-            <p class="subtitle">
-              This page celebrates your birthday details and shows the live time remaining to your next birthday.
-            </p>
-
-            <div class="chips">
-              <span class="chip" id="chipName">Name: Champak Roy</span>
-              <span class="chip" id="chipDob">DOB: 16 Jan 1970</span>
-              <span class="chip" id="chipAge">Current Age: 56</span>
-            </div>
-          </div>
-
-          <div class="cake-box">
-            <div class="cake" aria-hidden="true">
-              <div class="flame"></div>
-              <div class="candle"></div>
-              <div class="icing2"></div>
-              <div class="layer2"></div>
-              <div class="icing1"></div>
-              <div class="layer1"></div>
-              <div class="plate"></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="slide center-slide">
-          <div class="mini">Your next birthday will be on</div>
-          <h2 class="big-number" id="nextBirthdayText">16 January 2027</h2>
-          <div class="mini" id="daysOnlyText">281 days to go</div>
-
-          <div class="count-grid">
-            <div class="count-card">
-              <div class="num" id="days">281</div>
-              <div class="lab">Days</div>
-            </div>
-            <div class="count-card">
-              <div class="num" id="hours">0</div>
-              <div class="lab">Hours</div>
-            </div>
-            <div class="count-card">
-              <div class="num" id="minutes">0</div>
-              <div class="lab">Minutes</div>
-            </div>
-            <div class="count-card">
-              <div class="num" id="seconds">0</div>
-              <div class="lab">Seconds</div>
-            </div>
-          </div>
-        </article>
-
-        <article class="slide center-slide">
-          <div class="mini">Birthday facts</div>
-          <h2 class="big-number" id="turningAge">57</h2>
-          <div class="mini">Age on your next birthday</div>
-
-          <div class="facts">
-            <div class="fact">
-              <h3>Current age</h3>
-              <p id="currentAgeText">You are currently 56 years old.</p>
-            </div>
-
-            <div class="fact">
-              <h3>Next birthday</h3>
-              <p id="nextBirthdayFact">Your next birthday is on 16 January 2027.</p>
-            </div>
-
-            <div class="fact">
-              <h3>Days remaining</h3>
-              <p id="remainingDaysFact">There are 281 days left until your next birthday.</p>
-            </div>
-
-            <div class="fact">
-              <h3>Born on</h3>
-              <p id="bornFact">You were born on Friday, 16 January 1970.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="dots" id="dots"></div>
-      <div class="footer-note">
-        Live countdown updates every second.
+      <div class="bottom-bar">
+        <div class="dots" id="dots"></div>
+        <div class="footer-note">
+          Auto-playing slideshow with thumbnails.<br />
+          Countdown updates every second.
+        </div>
       </div>
     </section>
   </div>
@@ -558,11 +943,12 @@
       const person = {
         name: "Champak Roy",
         birthYear: 1970,
-        birthMonth: 0,   // January = 0
+        birthMonth: 0,
         birthDate: 16
       };
 
       const slides = Array.from(document.querySelectorAll(".slide"));
+      const thumbButtons = Array.from(document.querySelectorAll(".thumb"));
       const dotsWrap = document.getElementById("dots");
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
@@ -570,7 +956,26 @@
 
       let current = 0;
       let autoPlay = true;
-      let slideTimer = null;
+      let timer = null;
+
+      const quotes = [
+        {
+          q: "A birthday is the calendar's way of saying, “This person remains important. Kindly bring cake.”",
+          p: "Also tea. Also warm wishes. Also at least one person pretending they remembered the date without help."
+        },
+        {
+          q: "Another year older, yes — but also another year richer in stories, grit, humor, and quiet victories.",
+          p: "That is a much better deal than simply counting candles and negotiating with the mirror."
+        },
+        {
+          q: "The best birthdays glow from warmth, affection, and the people who make ordinary days feel lighter.",
+          p: "Cake helps too. Let us remain realistic and emotionally honest."
+        },
+        {
+          q: "A well-lived life gathers depth the way a good library gathers books: one meaningful volume at a time.",
+          p: "And ideally with fewer overdue fines than usual."
+        }
+      ];
 
       function formatLongDate(date) {
         return date.toLocaleDateString("en-GB", {
@@ -592,31 +997,42 @@
       function getNextBirthday(now) {
         let year = now.getFullYear();
         let next = new Date(year, person.birthMonth, person.birthDate, 0, 0, 0, 0);
-
         if (now > next) {
           next = new Date(year + 1, person.birthMonth, person.birthDate, 0, 0, 0, 0);
         }
-
         return next;
       }
 
-      function getAge(now) {
+      function getCurrentAge(now) {
         let age = now.getFullYear() - person.birthYear;
         const thisYearBirthday = new Date(now.getFullYear(), person.birthMonth, person.birthDate);
-
         if (now < thisYearBirthday) age--;
         return age;
       }
 
-      function updateBirthdayData() {
+      function plural(n, word) {
+        return n + " " + word + (n === 1 ? "" : "s");
+      }
+
+      function getWarmCountdownLine(days, hours, minutes, seconds) {
+        if (days > 200) return "There is still plenty of time. The cake ingredients are calm, composed, and not yet under pressure.";
+        if (days > 90) return "The next birthday is visible on the horizon. Excitement level: gently simmering.";
+        if (days > 30) return "Now it starts to feel real. The calendar has quietly circled the date in golden ink.";
+        if (days > 7) return "Not long now. The candles are stretching and the smiles are rehearsing.";
+        if (days > 1) return "Very close now. Dessert confidence is rising by the hour.";
+        if (days === 1) return "Just one day left. This is no time for emotional weakness in front of pastries.";
+        if (days === 0 && (hours > 0 || minutes > 0 || seconds > 0)) return "It is almost birthday time. The cake is practically clearing its throat.";
+        return "It is birthday day. This is officially an excellent time to accept compliments and extra dessert.";
+      }
+
+      function refreshData() {
         const now = new Date();
         const birthDate = new Date(person.birthYear, person.birthMonth, person.birthDate);
         const nextBirthday = getNextBirthday(now);
-        const currentAge = getAge(now);
+        const currentAge = getCurrentAge(now);
         const nextAge = currentAge + 1;
 
         const diff = nextBirthday - now;
-
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -624,44 +1040,53 @@
 
         document.getElementById("chipAge").textContent = "Current Age: " + currentAge;
         document.getElementById("nextBirthdayText").textContent = formatLongDate(nextBirthday);
-        document.getElementById("daysOnlyText").textContent = days + " days to go";
+        document.getElementById("daysOnlyText").textContent =
+          plural(days, "day") + " to go — with " +
+          plural(hours, "hour") + ", " +
+          plural(minutes, "minute") + ", and " +
+          plural(seconds, "second") + " politely following behind.";
 
         document.getElementById("days").textContent = days;
         document.getElementById("hours").textContent = hours;
         document.getElementById("minutes").textContent = minutes;
         document.getElementById("seconds").textContent = seconds;
 
+        document.getElementById("countdownWarmLine").textContent = getWarmCountdownLine(days, hours, minutes, seconds);
+
         document.getElementById("turningAge").textContent = nextAge;
         document.getElementById("currentAgeText").textContent = "You are currently " + currentAge + " years old.";
         document.getElementById("nextBirthdayFact").textContent = "Your next birthday is on " + formatLongDate(nextBirthday) + ".";
         document.getElementById("remainingDaysFact").textContent = "There are " + days + " days left until your next birthday.";
         document.getElementById("bornFact").textContent = "You were born on " + formatFullDate(birthDate) + ".";
+
+        const quoteIndex = (days + currentAge) % quotes.length;
+        document.getElementById("warmQuote").textContent = "“" + quotes[quoteIndex].q + "”";
+        document.getElementById("warmParagraph").textContent = quotes[quoteIndex].p;
       }
 
       function buildDots() {
         dotsWrap.innerHTML = "";
-        slides.forEach((_, index) => {
+        slides.forEach((slide, index) => {
           const dot = document.createElement("button");
           dot.className = "dot" + (index === 0 ? " active" : "");
-          dot.setAttribute("aria-label", "Go to slide " + (index + 1));
+          dot.setAttribute("aria-label", "Go to " + (slide.dataset.title || ("slide " + (index + 1))));
           dot.addEventListener("click", function () {
             showSlide(index);
-            restartAutoplay();
+            restartAuto();
           });
           dotsWrap.appendChild(dot);
         });
       }
 
+      function syncUI() {
+        slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+        thumbButtons.forEach((btn, i) => btn.classList.toggle("active", i === current));
+        Array.from(dotsWrap.children).forEach((dot, i) => dot.classList.toggle("active", i === current));
+      }
+
       function showSlide(index) {
         current = (index + slides.length) % slides.length;
-
-        slides.forEach((slide, i) => {
-          slide.classList.toggle("active", i === current);
-        });
-
-        Array.from(dotsWrap.children).forEach((dot, i) => {
-          dot.classList.toggle("active", i === current);
-        });
+        syncUI();
       }
 
       function nextSlide() {
@@ -672,38 +1097,45 @@
         showSlide(current - 1);
       }
 
-      function startAutoplay() {
-        clearInterval(slideTimer);
+      function startAuto() {
+        clearInterval(timer);
         if (!autoPlay) return;
-        slideTimer = setInterval(nextSlide, 4000);
+        timer = setInterval(nextSlide, 4800);
       }
 
-      function restartAutoplay() {
-        startAutoplay();
+      function restartAuto() {
+        startAuto();
       }
+
+      thumbButtons.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          showSlide(Number(btn.dataset.index));
+          restartAuto();
+        });
+      });
 
       prevBtn.addEventListener("click", function () {
         prevSlide();
-        restartAutoplay();
+        restartAuto();
       });
 
       nextBtn.addEventListener("click", function () {
         nextSlide();
-        restartAutoplay();
+        restartAuto();
       });
 
       playPauseBtn.addEventListener("click", function () {
         autoPlay = !autoPlay;
         playPauseBtn.textContent = autoPlay ? "Pause" : "Play";
         playPauseBtn.classList.toggle("primary", autoPlay);
-        startAutoplay();
+        startAuto();
       });
 
       buildDots();
       showSlide(0);
-      updateBirthdayData();
-      startAutoplay();
-      setInterval(updateBirthdayData, 1000);
+      refreshData();
+      startAuto();
+      setInterval(refreshData, 1000);
     })();
   </script>
 </body>
