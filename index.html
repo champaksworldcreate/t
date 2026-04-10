@@ -3,23 +3,708 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI/ML V3 Premium Platform | Learn With Champak</title>
-  <meta name="theme-color" content="#f59e0b" />
-
+  <title>Champak Roy Birthday Slideshow</title>
+  <meta name="description" content="A birthday slideshow page for Champak Roy with countdown to the next birthday." />
   <style>
-    html{visibility:hidden}
+    :root{
+      --bg1:#fff8e7;
+      --bg2:#ffe7b3;
+      --card:#ffffffcc;
+      --text:#2b1d0e;
+      --muted:#7a5b2e;
+      --accent:#d97706;
+      --accent2:#f59e0b;
+      --line:rgba(121, 85, 36, 0.15);
+      --shadow:0 20px 60px rgba(120, 82, 20, 0.18);
+      --radius:28px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, #fff7d6 0%, transparent 35%),
+        radial-gradient(circle at top right, #ffd89b 0%, transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    .bg-bubbles{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+
+    .bubble{
+      position:absolute;
+      bottom:-120px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.28);
+      animation:floatUp linear infinite;
+      filter:blur(1px);
+    }
+
+    .bubble:nth-child(1){left:6%; width:70px; height:70px; animation-duration:16s;}
+    .bubble:nth-child(2){left:18%; width:24px; height:24px; animation-duration:10s;}
+    .bubble:nth-child(3){left:32%; width:48px; height:48px; animation-duration:13s;}
+    .bubble:nth-child(4){left:48%; width:82px; height:82px; animation-duration:18s;}
+    .bubble:nth-child(5){left:62%; width:34px; height:34px; animation-duration:12s;}
+    .bubble:nth-child(6){left:76%; width:60px; height:60px; animation-duration:15s;}
+    .bubble:nth-child(7){left:88%; width:26px; height:26px; animation-duration:11s;}
+
+    @keyframes floatUp{
+      from{transform:translateY(0) scale(1); opacity:0}
+      10%{opacity:1}
+      to{transform:translateY(-120vh) scale(1.2); opacity:0}
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      background:var(--card);
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,0.45);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      overflow:hidden;
+    }
+
+    .topbar{
+      padding:18px 22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(90deg, rgba(255,255,255,0.75), rgba(255,248,231,0.9));
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .brand-badge{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-size:24px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff;
+      box-shadow:0 10px 25px rgba(217,119,6,0.28);
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:clamp(1.1rem, 2vw, 1.5rem);
+      line-height:1.15;
+    }
+
+    .brand p{
+      margin:3px 0 0;
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      background:#fff;
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,0.08);
+      transition:transform .18s ease, background .18s ease;
+    }
+
+    button:hover{transform:translateY(-2px)}
+    .primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff;
+    }
+
+    .slideshow{
+      position:relative;
+      min-height:540px;
+      padding:22px;
+    }
+
+    .slide{
+      display:none;
+      min-height:496px;
+      border-radius:24px;
+      padding:28px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,247,232,0.95));
+      border:1px solid var(--line);
+      animation:fade .55s ease;
+    }
+
+    .slide.active{display:grid}
+
+    @keyframes fade{
+      from{opacity:.25; transform:translateY(12px) scale(.985)}
+      to{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    .hero-slide{
+      grid-template-columns:1.1fr .9fr;
+      gap:26px;
+      align-items:center;
+    }
+
+    .title{
+      font-size:clamp(2rem, 4vw, 3.5rem);
+      line-height:1.05;
+      margin:0 0 14px;
+    }
+
+    .subtitle{
+      font-size:1.1rem;
+      line-height:1.7;
+      color:#5b451f;
+      margin:0 0 18px;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .chip{
+      padding:10px 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-weight:700;
+      color:#6a4b1d;
+    }
+
+    .cake-box{
+      display:grid;
+      place-items:center;
+      min-height:300px;
+    }
+
+    .cake{
+      position:relative;
+      width:230px;
+      height:220px;
+      animation:gentle 3.5s ease-in-out infinite;
+    }
+
+    @keyframes gentle{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
+    }
+
+    .cake .plate{
+      position:absolute;
+      bottom:12px;
+      left:50%;
+      transform:translateX(-50%);
+      width:240px;
+      height:18px;
+      border-radius:999px;
+      background:#e7cda0;
+    }
+
+    .cake .layer1,
+    .cake .layer2{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      border-radius:18px;
+      background:linear-gradient(180deg, #ffd39b, #f3ae55);
+      box-shadow:inset 0 -8px 0 rgba(255,255,255,0.18);
+    }
+
+    .cake .layer1{
+      bottom:30px;
+      width:200px;
+      height:70px;
+    }
+
+    .cake .layer2{
+      bottom:92px;
+      width:150px;
+      height:56px;
+    }
+
+    .icing1,.icing2{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      background:#fff7ef;
+      border-radius:18px 18px 22px 22px;
+    }
+
+    .icing1{bottom:86px; width:200px; height:18px;}
+    .icing2{bottom:142px; width:150px; height:16px;}
+
+    .candle{
+      position:absolute;
+      left:50%;
+      bottom:148px;
+      transform:translateX(-50%);
+      width:18px;
+      height:52px;
+      background:repeating-linear-gradient(
+        45deg,
+        #fff,
+        #fff 6px,
+        #f59e0b 6px,
+        #f59e0b 12px
+      );
+      border-radius:8px;
+    }
+
+    .flame{
+      position:absolute;
+      left:50%;
+      bottom:198px;
+      transform:translateX(-50%);
+      width:22px;
+      height:34px;
+      background:radial-gradient(circle at 50% 35%, #fff8c9 0%, #ffd54a 38%, #ff8a00 75%);
+      border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+      animation:flicker .9s ease-in-out infinite alternate;
+      filter:drop-shadow(0 0 12px rgba(255,180,0,0.5));
+    }
+
+    @keyframes flicker{
+      from{transform:translateX(-50%) scale(1) rotate(-2deg)}
+      to{transform:translateX(-50%) scale(1.08) rotate(2deg)}
+    }
+
+    .center-slide{
+      align-items:center;
+      justify-items:center;
+      text-align:center;
+      gap:16px;
+    }
+
+    .big-number{
+      font-size:clamp(3rem, 9vw, 6rem);
+      font-weight:900;
+      line-height:1;
+      background:linear-gradient(135deg, #b45309, #f59e0b);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      margin:0;
+    }
+
+    .mini{
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .count-grid{
+      width:min(760px, 100%);
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-top:8px;
+    }
+
+    .count-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:18px 12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .count-card .num{
+      font-size:clamp(1.7rem, 4vw, 2.6rem);
+      font-weight:900;
+      margin-bottom:8px;
+      color:#b45309;
+    }
+
+    .count-card .lab{
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+      font-size:.8rem;
+    }
+
+    .facts{
+      width:min(760px, 100%);
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+      margin-top:10px;
+      text-align:left;
+    }
+
+    .fact{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .fact h3{
+      margin:0 0 10px;
+      font-size:1rem;
+      color:#8a5a12;
+    }
+
+    .fact p{
+      margin:0;
+      font-size:1.05rem;
+      line-height:1.6;
+    }
+
+    .dots{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      padding:0 0 22px;
+    }
+
+    .dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:rgba(180,83,9,0.22);
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+
+    .dot.active{
+      width:34px;
+      border-radius:999px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+
+    .footer-note{
+      text-align:center;
+      color:#77551f;
+      font-size:.96rem;
+      padding:0 20px 24px;
+    }
+
+    @media (max-width: 820px){
+      .hero-slide{grid-template-columns:1fr}
+      .count-grid{grid-template-columns:repeat(2,1fr)}
+      .facts{grid-template-columns:1fr}
+      .slideshow{min-height:unset}
+      .slide{min-height:unset}
+      .topbar{align-items:flex-start; flex-direction:column}
+    }
+
+    @media (max-width: 520px){
+      .count-grid{grid-template-columns:1fr 1fr}
+      .title{font-size:2rem}
+      .subtitle{font-size:1rem}
+      .slide{padding:18px}
+      .slideshow{padding:16px}
+      button{padding:10px 12px}
+    }
   </style>
-
-  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
-  <script src="https://programmer-s-picnic.github.io/json-images/pwd.js"></script>
-
-  <script>
-    window.addEventListener("load", function () {
-      document.documentElement.style.visibility = "visible";
-    });
-  </script>
 </head>
 <body>
-  <!-- your full platform -->
+  <div class="bg-bubbles" aria-hidden="true">
+    <span class="bubble"></span>
+    <span class="bubble"></span>
+    <span class="bubble"></span>
+    <span class="bubble"></span>
+    <span class="bubble"></span>
+    <span class="bubble"></span>
+    <span class="bubble"></span>
+  </div>
+
+  <div class="wrap">
+    <section class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-badge">🎂</div>
+          <div>
+            <h1>Birthday Slideshow for Champak Roy</h1>
+            <p>Born on 16 January 1970</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="prevBtn">◀ Prev</button>
+          <button id="playPauseBtn" class="primary">Pause</button>
+          <button id="nextBtn">Next ▶</button>
+        </div>
+      </div>
+
+      <div class="slideshow">
+        <article class="slide hero-slide active">
+          <div>
+            <h2 class="title">Happy Journey,<br />Champak Roy</h2>
+            <p class="subtitle">
+              This page celebrates your birthday details and shows the live time remaining to your next birthday.
+            </p>
+
+            <div class="chips">
+              <span class="chip" id="chipName">Name: Champak Roy</span>
+              <span class="chip" id="chipDob">DOB: 16 Jan 1970</span>
+              <span class="chip" id="chipAge">Current Age: 56</span>
+            </div>
+          </div>
+
+          <div class="cake-box">
+            <div class="cake" aria-hidden="true">
+              <div class="flame"></div>
+              <div class="candle"></div>
+              <div class="icing2"></div>
+              <div class="layer2"></div>
+              <div class="icing1"></div>
+              <div class="layer1"></div>
+              <div class="plate"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide center-slide">
+          <div class="mini">Your next birthday will be on</div>
+          <h2 class="big-number" id="nextBirthdayText">16 January 2027</h2>
+          <div class="mini" id="daysOnlyText">281 days to go</div>
+
+          <div class="count-grid">
+            <div class="count-card">
+              <div class="num" id="days">281</div>
+              <div class="lab">Days</div>
+            </div>
+            <div class="count-card">
+              <div class="num" id="hours">0</div>
+              <div class="lab">Hours</div>
+            </div>
+            <div class="count-card">
+              <div class="num" id="minutes">0</div>
+              <div class="lab">Minutes</div>
+            </div>
+            <div class="count-card">
+              <div class="num" id="seconds">0</div>
+              <div class="lab">Seconds</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide center-slide">
+          <div class="mini">Birthday facts</div>
+          <h2 class="big-number" id="turningAge">57</h2>
+          <div class="mini">Age on your next birthday</div>
+
+          <div class="facts">
+            <div class="fact">
+              <h3>Current age</h3>
+              <p id="currentAgeText">You are currently 56 years old.</p>
+            </div>
+
+            <div class="fact">
+              <h3>Next birthday</h3>
+              <p id="nextBirthdayFact">Your next birthday is on 16 January 2027.</p>
+            </div>
+
+            <div class="fact">
+              <h3>Days remaining</h3>
+              <p id="remainingDaysFact">There are 281 days left until your next birthday.</p>
+            </div>
+
+            <div class="fact">
+              <h3>Born on</h3>
+              <p id="bornFact">You were born on Friday, 16 January 1970.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="dots" id="dots"></div>
+      <div class="footer-note">
+        Live countdown updates every second.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const person = {
+        name: "Champak Roy",
+        birthYear: 1970,
+        birthMonth: 0,   // January = 0
+        birthDate: 16
+      };
+
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const dotsWrap = document.getElementById("dots");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const playPauseBtn = document.getElementById("playPauseBtn");
+
+      let current = 0;
+      let autoPlay = true;
+      let slideTimer = null;
+
+      function formatLongDate(date) {
+        return date.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+      }
+
+      function formatFullDate(date) {
+        return date.toLocaleDateString("en-GB", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+      }
+
+      function getNextBirthday(now) {
+        let year = now.getFullYear();
+        let next = new Date(year, person.birthMonth, person.birthDate, 0, 0, 0, 0);
+
+        if (now > next) {
+          next = new Date(year + 1, person.birthMonth, person.birthDate, 0, 0, 0, 0);
+        }
+
+        return next;
+      }
+
+      function getAge(now) {
+        let age = now.getFullYear() - person.birthYear;
+        const thisYearBirthday = new Date(now.getFullYear(), person.birthMonth, person.birthDate);
+
+        if (now < thisYearBirthday) age--;
+        return age;
+      }
+
+      function updateBirthdayData() {
+        const now = new Date();
+        const birthDate = new Date(person.birthYear, person.birthMonth, person.birthDate);
+        const nextBirthday = getNextBirthday(now);
+        const currentAge = getAge(now);
+        const nextAge = currentAge + 1;
+
+        const diff = nextBirthday - now;
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        document.getElementById("chipAge").textContent = "Current Age: " + currentAge;
+        document.getElementById("nextBirthdayText").textContent = formatLongDate(nextBirthday);
+        document.getElementById("daysOnlyText").textContent = days + " days to go";
+
+        document.getElementById("days").textContent = days;
+        document.getElementById("hours").textContent = hours;
+        document.getElementById("minutes").textContent = minutes;
+        document.getElementById("seconds").textContent = seconds;
+
+        document.getElementById("turningAge").textContent = nextAge;
+        document.getElementById("currentAgeText").textContent = "You are currently " + currentAge + " years old.";
+        document.getElementById("nextBirthdayFact").textContent = "Your next birthday is on " + formatLongDate(nextBirthday) + ".";
+        document.getElementById("remainingDaysFact").textContent = "There are " + days + " days left until your next birthday.";
+        document.getElementById("bornFact").textContent = "You were born on " + formatFullDate(birthDate) + ".";
+      }
+
+      function buildDots() {
+        dotsWrap.innerHTML = "";
+        slides.forEach((_, index) => {
+          const dot = document.createElement("button");
+          dot.className = "dot" + (index === 0 ? " active" : "");
+          dot.setAttribute("aria-label", "Go to slide " + (index + 1));
+          dot.addEventListener("click", function () {
+            showSlide(index);
+            restartAutoplay();
+          });
+          dotsWrap.appendChild(dot);
+        });
+      }
+
+      function showSlide(index) {
+        current = (index + slides.length) % slides.length;
+
+        slides.forEach((slide, i) => {
+          slide.classList.toggle("active", i === current);
+        });
+
+        Array.from(dotsWrap.children).forEach((dot, i) => {
+          dot.classList.toggle("active", i === current);
+        });
+      }
+
+      function nextSlide() {
+        showSlide(current + 1);
+      }
+
+      function prevSlide() {
+        showSlide(current - 1);
+      }
+
+      function startAutoplay() {
+        clearInterval(slideTimer);
+        if (!autoPlay) return;
+        slideTimer = setInterval(nextSlide, 4000);
+      }
+
+      function restartAutoplay() {
+        startAutoplay();
+      }
+
+      prevBtn.addEventListener("click", function () {
+        prevSlide();
+        restartAutoplay();
+      });
+
+      nextBtn.addEventListener("click", function () {
+        nextSlide();
+        restartAutoplay();
+      });
+
+      playPauseBtn.addEventListener("click", function () {
+        autoPlay = !autoPlay;
+        playPauseBtn.textContent = autoPlay ? "Pause" : "Play";
+        playPauseBtn.classList.toggle("primary", autoPlay);
+        startAutoplay();
+      });
+
+      buildDots();
+      showSlide(0);
+      updateBirthdayData();
+      startAutoplay();
+      setInterval(updateBirthdayData, 1000);
+    })();
+  </script>
 </body>
 </html>
