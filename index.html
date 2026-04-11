@@ -1,1667 +1,909 @@
 <!doctype html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Champak Roy — Birthday Slideshow Calendar Journey</title>
-  <meta
-    name="description"
-    content="A warm birthday slideshow page for Champak Roy with thumbnails, humor, live countdown, and a sliding calendar journey to January 16."
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Digital Circuit Visualizer</title>
   <style>
-    :root{
-      --bg:#fff7ef;
-      --bg2:#ffe8c9;
-      --bg3:#ffd7a1;
-      --card:rgba(255,255,255,.74);
-      --card-strong:rgba(255,255,255,.92);
-      --text:#3b2410;
-      --muted:#7a5835;
-      --accent:#c96f16;
-      --accent2:#f4a623;
-      --accent3:#ffcf70;
-      --line:rgba(116,74,24,.12);
-      --shadow:0 24px 80px rgba(130,82,22,.16);
-      --shadow-soft:0 10px 28px rgba(130,82,22,.10);
-      --radius:30px;
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(255,255,255,.95), transparent 28%),
-        radial-gradient(circle at 90% 12%, rgba(255,220,160,.55), transparent 24%),
-        radial-gradient(circle at 20% 90%, rgba(255,235,205,.7), transparent 25%),
-        linear-gradient(135deg, var(--bg), var(--bg2) 52%, var(--bg3));
-      overflow-x:hidden;
-    }
-
-    .sparkles,
-    .hearts{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-      overflow:hidden;
-    }
-
-    .spark{
-      position:absolute;
-      width:10px;
-      height:10px;
-      background:linear-gradient(135deg,#fff,#ffe59c);
-      transform:rotate(45deg);
-      opacity:.7;
-      border-radius:2px;
-      animation:twinkle 4s ease-in-out infinite;
-    }
-
-    .spark:nth-child(1){left:8%; top:10%; animation-delay:.2s}
-    .spark:nth-child(2){left:22%; top:18%; animation-delay:1s}
-    .spark:nth-child(3){left:80%; top:12%; animation-delay:1.8s}
-    .spark:nth-child(4){left:90%; top:28%; animation-delay:.8s}
-    .spark:nth-child(5){left:14%; top:70%; animation-delay:2.2s}
-    .spark:nth-child(6){left:74%; top:76%; animation-delay:1.4s}
-    .spark:nth-child(7){left:46%; top:8%; animation-delay:2.7s}
-    .spark:nth-child(8){left:56%; top:84%; animation-delay:.4s}
-
-    @keyframes twinkle{
-      0%,100%{transform:rotate(45deg) scale(.7); opacity:.25}
-      50%{transform:rotate(45deg) scale(1.25); opacity:1}
-    }
-
-    .heart{
-      position:absolute;
-      bottom:-40px;
-      width:22px;
-      height:22px;
-      background:rgba(255,255,255,.35);
-      transform:rotate(45deg);
-      animation:floatHeart linear infinite;
-      filter:blur(.2px);
-    }
-    .heart::before,
-    .heart::after{
-      content:"";
-      position:absolute;
-      width:22px;
-      height:22px;
-      border-radius:50%;
-      background:inherit;
-    }
-    .heart::before{left:-11px; top:0}
-    .heart::after{left:0; top:-11px}
-
-    .heart:nth-child(1){left:6%; animation-duration:17s}
-    .heart:nth-child(2){left:20%; animation-duration:14s; opacity:.6}
-    .heart:nth-child(3){left:37%; animation-duration:18s}
-    .heart:nth-child(4){left:53%; animation-duration:15s; opacity:.45}
-    .heart:nth-child(5){left:71%; animation-duration:19s}
-    .heart:nth-child(6){left:87%; animation-duration:16s; opacity:.5}
-
-    @keyframes floatHeart{
-      from{transform:translateY(0) rotate(45deg) scale(.8); opacity:0}
-      12%{opacity:.9}
-      to{transform:translateY(-120vh) rotate(45deg) scale(1.2); opacity:0}
-    }
-
-    .wrap{
-      position:relative;
-      z-index:1;
-      min-height:100vh;
-      padding:28px;
-      display:grid;
-      place-items:center;
-    }
-
-    .app{
-      width:min(1240px, 100%);
-      background:var(--card);
-      border:1px solid rgba(255,255,255,.48);
-      backdrop-filter:blur(18px);
-      box-shadow:var(--shadow);
-      border-radius:36px;
-      overflow:hidden;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:18px;
-      padding:20px 24px;
-      background:linear-gradient(90deg, rgba(255,255,255,.82), rgba(255,245,227,.9));
-      border-bottom:1px solid var(--line);
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      min-width:0;
-    }
-
-    .badge{
-      width:56px;
-      height:56px;
-      border-radius:18px;
-      display:grid;
-      place-items:center;
-      font-size:28px;
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#fff;
-      box-shadow:0 14px 30px rgba(201,111,22,.26);
-      flex:0 0 auto;
-    }
-
-    .brand h1{
-      margin:0;
-      font-size:clamp(1.2rem, 2vw, 1.7rem);
-      line-height:1.1;
-    }
-
-    .brand p{
-      margin:5px 0 0;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    button{
-      border:none;
-      background:#fff;
-      color:var(--text);
-      padding:11px 15px;
-      border-radius:14px;
-      font-weight:700;
-      cursor:pointer;
-      box-shadow:var(--shadow-soft);
-      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-    }
-
-    button:hover{transform:translateY(-2px)}
-    .primary{
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#fff;
-    }
-
-    .main{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 300px;
-      gap:0;
-      min-height:780px;
-    }
-
-    .viewer{
-      padding:22px;
-      border-right:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.06));
-    }
-
-    .slide-shell{
-      position:relative;
-      border-radius:30px;
-      overflow:hidden;
-      min-height:730px;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,.75), transparent 28%),
-        linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,248,237,.92));
-      border:1px solid rgba(255,255,255,.55);
-      box-shadow:var(--shadow-soft);
-    }
-
-    .slide{
-      display:none;
-      width:100%;
-      min-height:730px;
-      padding:30px;
-      animation:fadeSlide .55s ease;
-    }
-    .slide.active{display:grid}
-
-    @keyframes fadeSlide{
-      from{opacity:.18; transform:scale(.987) translateY(12px)}
-      to{opacity:1; transform:scale(1) translateY(0)}
-    }
-
-    .hero{
-      grid-template-columns:1.08fr .92fr;
-      align-items:center;
-      gap:24px;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      background:#fff;
-      border:1px solid var(--line);
-      color:#8a5c1f;
-      border-radius:999px;
-      padding:9px 14px;
-      font-size:.92rem;
-      font-weight:700;
-      box-shadow:var(--shadow-soft);
-      margin-bottom:14px;
-    }
-
-    .hero h2,
-    .center h2,
-    .calendar-journey h2{
-      margin:0 0 14px;
-      font-size:clamp(2rem, 4vw, 3.7rem);
-      line-height:1.03;
-      letter-spacing:-.02em;
-    }
-
-    .lead{
-      font-size:1.1rem;
-      line-height:1.72;
-      color:#5b4323;
-      margin:0 0 18px;
-      max-width:62ch;
-    }
-
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .chip{
-      padding:11px 14px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid var(--line);
-      font-weight:700;
-      color:#6b4a1d;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .cake-stage{
-      display:grid;
-      place-items:center;
-      position:relative;
-      min-height:360px;
-    }
-
-    .halo{
-      position:absolute;
-      width:320px;
-      height:320px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(255,222,167,.85), rgba(255,222,167,0) 68%);
-      filter:blur(10px);
-      animation:breathe 5s ease-in-out infinite;
-    }
-
-    @keyframes breathe{
-      0%,100%{transform:scale(1); opacity:.85}
-      50%{transform:scale(1.08); opacity:1}
-    }
-
-    .cake{
-      position:relative;
-      width:270px;
-      height:260px;
-      animation:gentle 4s ease-in-out infinite;
-      z-index:2;
-    }
-
-    @keyframes gentle{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-8px)}
-    }
-
-    .plate{
-      position:absolute;
-      left:50%;
-      bottom:10px;
-      transform:translateX(-50%);
-      width:258px;
-      height:22px;
-      border-radius:999px;
-      background:linear-gradient(180deg, #efd9b3, #d9b98e);
-      box-shadow:0 8px 18px rgba(88,60,20,.12);
-    }
-
-    .shadow-cake{
-      position:absolute;
-      left:50%;
-      bottom:0;
-      transform:translateX(-50%);
-      width:210px;
-      height:24px;
-      border-radius:50%;
-      background:rgba(103,67,18,.14);
-      filter:blur(9px);
-    }
-
-    .layer1,.layer2{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      border-radius:22px;
-      background:linear-gradient(180deg,#ffd59f,#eba14a);
-      box-shadow:inset 0 -12px 0 rgba(255,255,255,.14), 0 12px 25px rgba(96,59,19,.14);
-    }
-    .layer1{bottom:32px; width:220px; height:78px}
-    .layer2{bottom:108px; width:162px; height:62px}
-
-    .icing1,.icing2{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      background:#fff8f0;
-      box-shadow:0 8px 14px rgba(85,58,19,.07);
-    }
-    .icing1{
-      width:220px;
-      height:18px;
-      bottom:101px;
-      border-radius:22px;
-    }
-    .icing2{
-      width:162px;
-      height:16px;
-      bottom:163px;
-      border-radius:20px;
-    }
-
-    .candle{
-      position:absolute;
-      left:50%;
-      bottom:168px;
-      transform:translateX(-50%);
-      width:18px;
-      height:56px;
-      border-radius:9px;
-      background:repeating-linear-gradient(45deg, #fff 0 7px, #f4a623 7px 14px);
-      box-shadow:0 4px 10px rgba(0,0,0,.08);
-    }
-
-    .flame{
-      position:absolute;
-      left:50%;
-      bottom:222px;
-      transform:translateX(-50%);
-      width:24px;
-      height:38px;
-      border-radius:50% 50% 50% 50% / 68% 68% 35% 35%;
-      background:radial-gradient(circle at 50% 34%, #fffdd3 0%, #ffe26e 36%, #ff9b18 76%);
-      filter:drop-shadow(0 0 14px rgba(255,190,63,.7));
-      animation:flicker .9s ease-in-out infinite alternate;
-    }
-
-    @keyframes flicker{
-      from{transform:translateX(-50%) scale(1) rotate(-2deg)}
-      to{transform:translateX(-50%) scale(1.08) rotate(2deg)}
-    }
-
-    .confetti span{
-      position:absolute;
-      width:10px;
-      height:18px;
-      border-radius:4px;
-      opacity:.8;
-      animation:drift 4s ease-in-out infinite;
-    }
-    .confetti span:nth-child(1){left:25px; top:25px; background:#ffcf70}
-    .confetti span:nth-child(2){left:72px; top:84px; background:#f4a623}
-    .confetti span:nth-child(3){right:34px; top:45px; background:#ffdba0}
-    .confetti span:nth-child(4){right:92px; top:98px; background:#ffb347}
-    .confetti span:nth-child(5){left:48%; top:18px; background:#fff}
-    .confetti span:nth-child(6){left:55%; top:110px; background:#fbd38d}
-    @keyframes drift{
-      0%,100%{transform:translateY(0) rotate(0deg)}
-      50%{transform:translateY(8px) rotate(15deg)}
-    }
-
-    .center{
-      align-items:center;
-      justify-items:center;
-      text-align:center;
-      gap:14px;
-    }
-
-    .big-number{
-      font-size:clamp(3rem, 10vw, 6.2rem);
-      font-weight:900;
-      line-height:1;
-      margin:0;
-      background:linear-gradient(135deg,#a7560e,#f4a623);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      letter-spacing:-.04em;
-    }
-
-    .sub{
-      color:var(--muted);
-      font-size:1.03rem;
-      line-height:1.6;
-      max-width:60ch;
-      margin:0 auto;
-    }
-
-    .count-grid{
-      width:min(760px, 100%);
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:14px;
-      margin-top:8px;
-    }
-
-    .count-card{
-      background:var(--card-strong);
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:20px 12px;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .count-card .num{
-      font-size:clamp(1.7rem, 4vw, 2.8rem);
-      font-weight:900;
-      color:#b45e11;
-      margin-bottom:8px;
-    }
-
-    .count-card .lab{
-      font-size:.82rem;
-      color:var(--muted);
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .warm-line{
-      background:linear-gradient(135deg, rgba(255,247,232,.95), rgba(255,255,255,.88));
-      border:1px solid var(--line);
-      padding:14px 18px;
-      border-radius:18px;
-      box-shadow:var(--shadow-soft);
-      font-size:1.02rem;
-      color:#5e4421;
-      max-width:760px;
-    }
-
-    .facts{
-      width:min(820px, 100%);
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:16px;
-      margin-top:8px;
-      text-align:left;
-    }
-
-    .fact{
-      background:var(--card-strong);
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:18px;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .fact h3{
-      margin:0 0 9px;
-      color:#9a651f;
-      font-size:1rem;
-    }
-
-    .fact p{
-      margin:0;
-      font-size:1.05rem;
-      line-height:1.68;
-    }
-
-    .quote-box{
-      width:min(800px,100%);
-      background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,248,236,.94));
-      border:1px solid var(--line);
-      border-radius:28px;
-      padding:28px;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .quote-box blockquote{
-      margin:0;
-      font-size:clamp(1.25rem, 3vw, 2rem);
-      line-height:1.55;
-      font-weight:700;
-      color:#5d3b18;
-    }
-
-    .quote-box p{
-      margin:16px 0 0;
-      color:var(--muted);
-      font-size:1rem;
-      line-height:1.7;
-    }
-
-    .calendar-journey{
-      align-content:start;
-      gap:18px;
-    }
-
-    .calendar-wrap{
-      width:100%;
-      background:linear-gradient(135deg, rgba(255,255,255,.94), rgba(255,248,236,.94));
-      border:1px solid var(--line);
-      border-radius:28px;
-      padding:18px;
-      box-shadow:var(--shadow-soft);
-      overflow:hidden;
-    }
-
-    .calendar-status{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-
-    .calendar-status .journey-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:9px 14px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid var(--line);
-      color:#8a5b1d;
-      font-weight:700;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .calendar-hint{
-      color:var(--muted);
-      font-size:.96rem;
-      line-height:1.55;
-    }
-
-    .calendar-viewport{
-      position:relative;
-      overflow:hidden;
-      border-radius:22px;
-      background:linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,250,243,.95));
-      border:1px solid rgba(116,74,24,.08);
-      min-height:470px;
-    }
-
-    .months-track{
-      display:flex;
-      width:100%;
-      transition:transform .65s cubic-bezier(.2,.8,.2,1);
-    }
-
-    .month-card{
-      min-width:100%;
-      padding:18px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      background:
-        radial-gradient(circle at top right, rgba(255,226,180,.32), transparent 26%),
-        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,248,240,.98));
-    }
-
-    .month-top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .month-title{
-      margin:0;
-      font-size:1.5rem;
-      color:#613a14;
-    }
-
-    .month-sub{
-      color:var(--muted);
-      font-size:.96rem;
-      line-height:1.55;
-      margin-top:5px;
-    }
-
-    .month-tag{
-      padding:10px 12px;
-      border-radius:14px;
-      background:#fff;
-      border:1px solid var(--line);
-      font-weight:700;
-      color:#8a5b1d;
-      box-shadow:var(--shadow-soft);
-      white-space:nowrap;
-    }
-
-    .weekday-row,
-    .days-grid{
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:10px;
-    }
-
-    .weekday{
-      text-align:center;
-      font-size:.82rem;
-      color:#916739;
-      font-weight:800;
-      padding:8px 0;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .day{
-      min-height:58px;
-      border-radius:18px;
-      background:rgba(255,255,255,.82);
-      border:1px solid rgba(116,74,24,.08);
-      display:flex;
-      align-items:flex-start;
-      justify-content:flex-end;
-      padding:10px;
-      font-weight:800;
-      color:#6f4b21;
-      position:relative;
-      box-shadow:0 6px 16px rgba(120,82,20,.04);
-      overflow:hidden;
-    }
-
-    .day.empty{
-      background:rgba(255,255,255,.28);
-      border-style:dashed;
-      color:transparent;
-      box-shadow:none;
-    }
-
-    .day.today{
-      outline:2px solid rgba(201,111,22,.22);
-      background:linear-gradient(135deg, #fff8ef, #ffedcf);
-    }
-
-    .day.week-mark::before{
-      content:"";
-      position:absolute;
-      left:8px;
-      right:8px;
-      bottom:8px;
-      height:7px;
-      border-radius:999px;
-      background:linear-gradient(90deg, rgba(244,166,35,.18), rgba(201,111,22,.35));
-    }
-
-    .day.target{
-      background:linear-gradient(135deg, #fff0d9, #ffcf70);
-      color:#5a2d00;
-      border-color:rgba(201,111,22,.34);
-      transform:translateY(-2px) scale(1.02);
-      box-shadow:0 16px 28px rgba(201,111,22,.22);
-      animation:targetGlow 1.5s ease-in-out infinite alternate;
-    }
-
-    .day.target::after{
-      content:"🎉";
-      position:absolute;
-      left:10px;
-      bottom:8px;
-      font-size:16px;
-    }
-
-    @keyframes targetGlow{
-      from{box-shadow:0 12px 24px rgba(201,111,22,.16)}
-      to{box-shadow:0 18px 32px rgba(201,111,22,.28)}
-    }
-
-    .mini-note{
-      width:100%;
-      margin-top:2px;
-      font-size:.92rem;
-      color:#7b592f;
-      line-height:1.6;
-      background:rgba(255,255,255,.74);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:12px 14px;
-    }
-
-    .calendar-controls{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin-top:14px;
-    }
-
-    .calendar-progress{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin-top:12px;
-    }
-
-    .progress-pill{
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.84);
-      border:1px solid var(--line);
-      color:#805927;
-      font-weight:700;
-      font-size:.9rem;
-    }
-
-    .progress-pill.active{
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#fff;
-      border-color:transparent;
-    }
-
-    .thumbs{
-      padding:20px 16px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,245,229,.52));
-    }
-
-    .thumb-head{
-      padding:8px 10px 2px;
-    }
-
-    .thumb-head h3{
-      margin:0;
-      font-size:1rem;
-    }
-
-    .thumb-head p{
-      margin:6px 0 0;
-      font-size:.93rem;
-      color:var(--muted);
-      line-height:1.55;
-    }
-
-    .thumb-list{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-
-    .thumb{
-      display:grid;
-      grid-template-columns:84px 1fr;
-      gap:12px;
-      align-items:center;
-      width:100%;
-      text-align:left;
-      padding:10px;
-      border-radius:20px;
-      background:rgba(255,255,255,.72);
-      border:1px solid transparent;
-      box-shadow:var(--shadow-soft);
-      cursor:pointer;
-      transition:transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-
-    .thumb:hover{transform:translateY(-2px)}
-    .thumb.active{
-      border-color:rgba(201,111,22,.34);
-      background:rgba(255,255,255,.96);
-    }
-
-    .thumb-art{
-      width:84px;
-      height:68px;
-      border-radius:16px;
-      overflow:hidden;
-      position:relative;
-      background:linear-gradient(135deg,#fff7ea,#ffd79f);
-      border:1px solid rgba(255,255,255,.7);
-    }
-
-    .art1::before,
-    .art2::before,
-    .art3::before,
-    .art4::before,
-    .art5::before{
-      content:"";
-      position:absolute;
-      inset:0;
-    }
-
-    .art1::before{
-      background:
-        radial-gradient(circle at 50% 34%, #fff6ba 0 8px, transparent 10px),
-        linear-gradient(180deg, transparent 0 54%, #f0b15d 54% 76%, #dc8d34 76% 100%);
-    }
-    .art2::before{
-      background:
-        linear-gradient(180deg,#fff7ea, #ffd08c),
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.7), transparent 55%);
-    }
-    .art3::before{
-      background:
-        linear-gradient(135deg,#fff8ef,#ffe4bb),
-        radial-gradient(circle at 22% 26%, #f4a623 0 7px, transparent 8px),
-        radial-gradient(circle at 70% 48%, #ffd379 0 10px, transparent 11px),
-        radial-gradient(circle at 40% 72%, #fff 0 8px, transparent 9px);
-    }
-    .art4::before{
-      background:
-        linear-gradient(135deg,#fff8ef,#ffdcb0),
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.9) 0 14px, transparent 16px);
-    }
-    .art5::before{
-      background:
-        linear-gradient(135deg,#fff8ef,#ffd69b),
-        repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 12px, rgba(255,255,255,.2) 12px 24px);
-    }
-
-    .thumb-title{
-      font-weight:800;
-      margin-bottom:4px;
-      color:#5b3916;
-      font-size:.98rem;
-    }
-    .thumb-text{
-      color:var(--muted);
-      font-size:.89rem;
-      line-height:1.45;
-    }
-
-    .bottom-bar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      padding:16px 22px 22px;
-      border-top:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.35));
-    }
-
-    .dots{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .dot{
-      width:12px;
-      height:12px;
-      border:none;
-      padding:0;
-      border-radius:999px;
-      background:rgba(180,86,14,.22);
-      box-shadow:none;
-    }
-    .dot.active{
-      width:34px;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-    }
-
-    .footer-note{
-      color:#76522b;
-      font-size:.95rem;
-      line-height:1.55;
-      text-align:right;
-    }
-
-    @media (max-width: 1080px){
-      .main{grid-template-columns:1fr}
-      .viewer{border-right:none; border-bottom:1px solid var(--line)}
-      .thumb-list{
-        display:grid;
-        grid-template-columns:repeat(2,1fr);
-      }
-      .slide-shell,.slide{min-height:unset}
-      .calendar-viewport{min-height:430px}
-    }
-
-    @media (max-width: 820px){
-      .hero{grid-template-columns:1fr}
-      .count-grid{grid-template-columns:repeat(2,1fr)}
-      .facts{grid-template-columns:1fr}
-      .topbar{flex-direction:column; align-items:flex-start}
-      .actions{justify-content:flex-start}
-      .bottom-bar{flex-direction:column; align-items:flex-start}
-      .footer-note{text-align:left}
-      .day{min-height:50px; border-radius:14px}
-      .weekday-row,.days-grid{gap:7px}
-    }
-
-    @media (max-width: 560px){
-      body{font-size:15px}
-      .wrap{padding:14px}
-      .viewer{padding:12px}
-      .slide{padding:18px}
-      .thumb-list{grid-template-columns:1fr}
-      .count-grid{grid-template-columns:1fr 1fr}
-      .badge{width:48px; height:48px; font-size:24px}
-      .app{border-radius:24px}
-      .slide-shell{border-radius:20px}
-      .thumb{grid-template-columns:74px 1fr}
-      .thumb-art{width:74px; height:62px}
-      .day{min-height:42px; padding:7px; font-size:.92rem}
-      .month-title{font-size:1.25rem}
-      .calendar-viewport{min-height:395px}
-    }
+    :root {
+      --bg: #0b1020;
+      --panel: #131a2e;
+      --panel-2: #1a2340;
+      --card: #1a2140;
+      --line: rgba(255,255,255,.12);
+      --text: #eef2ff;
+      --muted: #9aa5ce;
+      --accent: #7dd3fc;
+      --accent-2: #a78bfa;
+      --good: #34d399;
+      --bad: #f87171;
+      --warn: #fbbf24;
+      --shadow: 0 18px 40px rgba(0,0,0,.28);
+      --radius: 18px;
+      --node-off: #475569;
+      --node-on: #22c55e;
+    }* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(125,211,252,.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(167,139,250,.12), transparent 24%),
+    linear-gradient(180deg, #0a0f1d, #0b1020 45%, #0a0f1a 100%);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  height: 100vh;
+}
+
+.sidebar {
+  border-right: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  backdrop-filter: blur(12px);
+  padding: 18px;
+  overflow: auto;
+}
+
+.title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  letter-spacing: .02em;
+}
+
+.subtitle {
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0 0 16px;
+  font-size: .95rem;
+}
+
+.section {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.section h2 {
+  font-size: 1rem;
+  margin: 0 0 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+button {
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(125,211,252,.5);
+  background: linear-gradient(180deg, rgba(125,211,252,.15), rgba(255,255,255,.05));
+}
+
+button.secondary { color: var(--muted); font-weight: 600; }
+button.danger:hover { border-color: rgba(248,113,113,.5); }
+
+.small {
+  font-size: .86rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.toolbar-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.workspace {
+  position: relative;
+  overflow: hidden;
+}
+
+.topbar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.pill {
+  pointer-events: auto;
+  background: rgba(12,16,31,.75);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: var(--muted);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  font-size: .92rem;
+}
+
+.board {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: 0 0;
+}
+
+svg.wires {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.wire {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .95;
+  filter: drop-shadow(0 0 10px rgba(125,211,252,.18));
+}
+
+.wire.on { stroke: var(--node-on); }
+.wire.off { stroke: #64748b; }
+.wire.pending { stroke: var(--warn); stroke-dasharray: 8 8; }
+
+.component {
+  position: absolute;
+  width: 160px;
+  min-height: 92px;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  z-index: 2;
+  user-select: none;
+}
+
+.component.input, .component.output {
+  width: 150px;
+}
+
+.component .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  cursor: grab;
+}
+
+.component.dragging .head { cursor: grabbing; }
+
+.kind {
+  font-size: .72rem;
+  letter-spacing: .08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.chip {
+  font-size: .72rem;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.body {
+  padding: 10px 12px 12px;
+  position: relative;
+  min-height: 54px;
+}
+
+.state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: .84rem;
+  font-weight: 800;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--node-off);
+  box-shadow: 0 0 0 2px rgba(255,255,255,.06);
+}
+
+.dot.on { background: var(--node-on); box-shadow: 0 0 14px rgba(34,197,94,.75); }
+.dot.off { background: var(--node-off); }
+
+.toggle {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.pin {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.8);
+  background: var(--node-off);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.06);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.pin:hover { transform: scale(1.1); }
+.pin.on { background: var(--node-on); box-shadow: 0 0 18px rgba(34,197,94,.7); }
+.pin.pending { background: var(--warn); box-shadow: 0 0 18px rgba(251,191,36,.7); }
+
+.pin.input-pin { left: -9px; }
+.pin.output-pin { right: -9px; }
+
+.pin-label {
+  position: absolute;
+  font-size: .68rem;
+  color: var(--muted);
+  font-weight: 700;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.pin-label.left { left: 16px; transform: translateY(-50%); }
+.pin-label.right { right: 16px; transform: translateY(-50%); }
+
+.delete-btn {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 10px;
+  font-size: .74rem;
+  padding: 6px 8px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: .82rem;
+}
+
+.mini-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+
+.truth {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.truth div {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 8px;
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.footer-note {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    bottom: 12px;
+    width: min(340px, calc(100vw - 24px));
+    z-index: 50;
+    border-right: none;
+    border: 1px solid var(--line);
+  }
+  .workspace { margin-left: 0; }
+}
+
   </style>
 </head>
 <body>
-  <div class="sparkles" aria-hidden="true">
-    <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
-    <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+  <div class="app">
+    <aside class="sidebar">
+      <h1 class="title">Interactive Digital Circuit Visualizer</h1>
+      <p class="subtitle">
+        Add inputs, logic gates, and outputs. Click pins to connect wires. Toggle inputs and watch the whole circuit evaluate live.
+      </p><section class="section">
+    <h2>Add components</h2>
+    <div class="grid" id="addButtons"></div>
+  </section>
+
+  <section class="section">
+    <h2>Tools</h2>
+    <div class="toolbar-row">
+      <button id="clearWiresBtn" class="secondary">Clear wires</button>
+      <button id="resetBtn" class="secondary danger">Reset board</button>
+    </div>
+    <div class="toolbar-row">
+      <button id="demoBtn">Load demo</button>
+      <button id="truthBtn" class="secondary">Show truth hints</button>
+    </div>
+    <p class="footer-note">
+      Connection rule: click an <strong>output pin</strong>, then click an <strong>input pin</strong>. Each input pin accepts one wire. Outputs can feed many inputs.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Status</h2>
+    <div class="small" id="statusText">Ready. Build a circuit.</div>
+    <div class="legend">
+      <span><i class="mini-dot" style="background:#22c55e"></i> Logic 1</span>
+      <span><i class="mini-dot" style="background:#475569"></i> Logic 0</span>
+      <span><i class="mini-dot" style="background:#fbbf24"></i> Pending connection</span>
+    </div>
+    <div class="truth" id="truthBox" style="display:none"></div>
+  </section>
+
+  <section class="section">
+    <h2>How it works</h2>
+    <div class="small">
+      <div><strong>INPUT</strong> gives 0 or 1.</div>
+      <div><strong>AND</strong> outputs 1 only if all inputs are 1.</div>
+      <div><strong>OR</strong> outputs 1 if at least one input is 1.</div>
+      <div><strong>XOR</strong> outputs 1 if inputs differ.</div>
+      <div><strong>NOT</strong> flips 0 to 1 and 1 to 0.</div>
+      <div><strong>NAND</strong>, <strong>NOR</strong>, <strong>XNOR</strong> are inverted forms.</div>
+      <div><strong>OUTPUT</strong> displays the final signal.</div>
+    </div>
+  </section>
+</aside>
+
+<main class="workspace">
+  <div class="topbar">
+    <div class="pill">Drag components by the header. Build combinational circuits visually.</div>
+    <div class="pill" id="summaryPill">0 components • 0 wires</div>
   </div>
+  <div class="board" id="board"></div>
+  <svg class="wires" id="wireLayer"></svg>
+</main>
 
-  <div class="hearts" aria-hidden="true">
-    <span class="heart"></span><span class="heart"></span><span class="heart"></span>
-    <span class="heart"></span><span class="heart"></span><span class="heart"></span>
-  </div>
+  </div>  <script>
+    (() => {
+      const board = document.getElementById('board');
+      const wireLayer = document.getElementById('wireLayer');
+      const addButtons = document.getElementById('addButtons');
+      const statusText = document.getElementById('statusText');
+      const summaryPill = document.getElementById('summaryPill');
+      const truthBox = document.getElementById('truthBox');
 
-  <div class="wrap">
-    <section class="app">
-      <header class="topbar">
-        <div class="brand">
-          <div class="badge">🎂</div>
-          <div>
-            <h1>Champak Roy — Birthday Slideshow</h1>
-            <p>Warmth, humor, thumbnails, live countdown, and a calendar journey to January 16.</p>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button id="prevBtn">◀ Prev</button>
-          <button id="playPauseBtn" class="primary">Pause</button>
-          <button id="nextBtn">Next ▶</button>
-        </div>
-      </header>
-
-      <div class="main">
-        <div class="viewer">
-          <div class="slide-shell">
-            <section class="slide hero active" data-title="Birthday Welcome">
-              <div>
-                <div class="eyebrow">✨ A gentle celebration for Champak Roy</div>
-                <h2>Hello, Champak.<br />Another splendid orbit around the sun.</h2>
-                <p class="lead">
-                  Born on <strong>16 January 1970</strong>, and still clearly aging with more dignity than most software versions.
-                  This page keeps your next birthday in sight with warmth, glowing details, and a little affectionate humor.
-                </p>
-
-                <div class="chips">
-                  <span class="chip" id="chipName">Name: Champak Roy</span>
-                  <span class="chip" id="chipDob">DOB: 16 Jan 1970</span>
-                  <span class="chip" id="chipAge">Current Age: 56</span>
-                </div>
-              </div>
-
-              <div class="cake-stage">
-                <div class="halo"></div>
-                <div class="cake">
-                  <div class="confetti">
-                    <span></span><span></span><span></span><span></span><span></span><span></span>
-                  </div>
-                  <div class="flame"></div>
-                  <div class="candle"></div>
-                  <div class="icing2"></div>
-                  <div class="layer2"></div>
-                  <div class="icing1"></div>
-                  <div class="layer1"></div>
-                  <div class="plate"></div>
-                  <div class="shadow-cake"></div>
-                </div>
-              </div>
-            </section>
-
-            <section class="slide center" data-title="Countdown">
-              <div class="eyebrow">⏳ Countdown to the next cake inspection</div>
-              <h2 class="big-number" id="nextBirthdayText">16 January 2027</h2>
-              <p class="sub" id="daysOnlyText">281 days to go. The candles are preparing emotionally.</p>
-
-              <div class="count-grid">
-                <div class="count-card">
-                  <div class="num" id="days">281</div>
-                  <div class="lab">Days</div>
-                </div>
-                <div class="count-card">
-                  <div class="num" id="hours">0</div>
-                  <div class="lab">Hours</div>
-                </div>
-                <div class="count-card">
-                  <div class="num" id="minutes">0</div>
-                  <div class="lab">Minutes</div>
-                </div>
-                <div class="count-card">
-                  <div class="num" id="seconds">0</div>
-                  <div class="lab">Seconds</div>
-                </div>
-              </div>
-
-              <div class="warm-line" id="countdownWarmLine">
-                Time is moving politely but steadily toward your next birthday.
-              </div>
-            </section>
-
-            <section class="slide center" data-title="Birthday Facts">
-              <div class="eyebrow">📜 Fine vintage data, lovingly presented</div>
-              <h2 class="big-number" id="turningAge">57</h2>
-              <p class="sub">That is the age you will turn on your next birthday. Still younger than ancient databases, wiser than fresh bugs.</p>
-
-              <div class="facts">
-                <div class="fact">
-                  <h3>Current age</h3>
-                  <p id="currentAgeText">You are currently 56 years old.</p>
-                </div>
-
-                <div class="fact">
-                  <h3>Next birthday</h3>
-                  <p id="nextBirthdayFact">Your next birthday is on 16 January 2027.</p>
-                </div>
-
-                <div class="fact">
-                  <h3>Days remaining</h3>
-                  <p id="remainingDaysFact">There are 281 days left until your next birthday.</p>
-                </div>
-
-                <div class="fact">
-                  <h3>Born on</h3>
-                  <p id="bornFact">You were born on Friday, 16 January 1970.</p>
-                </div>
-              </div>
-            </section>
-
-            <section class="slide calendar-journey" data-title="Calendar Journey">
-              <div>
-                <div class="eyebrow">🗓️ Sliding through the coming months and weeks</div>
-                <h2>Calendar journey to January 16</h2>
-                <p class="lead">
-                  Here the months slide out one by one until we reach January.
-                  Then the grand destination appears: <strong>16 January</strong>, highlighted like royalty.
-                </p>
-              </div>
-
-              <div class="calendar-wrap">
-                <div class="calendar-status">
-                  <div class="journey-badge" id="journeyBadge">Currently viewing: April 2026</div>
-                  <div class="calendar-hint" id="calendarHint">
-                    Following the coming weeks and months until the birthday date shines in January.
-                  </div>
-                </div>
-
-                <div class="calendar-viewport">
-                  <div class="months-track" id="monthsTrack"></div>
-                </div>
-
-                <div class="calendar-controls">
-                  <button id="monthPrevBtn">◀ Earlier</button>
-                  <button id="monthPlayBtn" class="primary">Auto Slide</button>
-                  <button id="monthNextBtn">Later ▶</button>
-                </div>
-
-                <div class="calendar-progress" id="calendarProgress"></div>
-              </div>
-            </section>
-
-            <section class="slide center" data-title="Warm Wishes">
-              <div class="quote-box">
-                <blockquote id="warmQuote">
-                  “A good birthday is not just about age. It is about warmth, stories, laughter, and people who still smile when your name appears.”
-                </blockquote>
-                <p id="warmParagraph">
-                  And in your case, also about keeping the cake safe from people who say, “Just a tiny slice,” and then perform demolition.
-                </p>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <aside class="thumbs">
-          <div class="thumb-head">
-            <h3>Slides</h3>
-            <p>Use the thumbnails to jump to any part of the celebration.</p>
-          </div>
-
-          <div class="thumb-list" id="thumbList">
-            <button class="thumb active" data-index="0">
-              <div class="thumb-art art1"></div>
-              <div>
-                <div class="thumb-title">Birthday Welcome</div>
-                <div class="thumb-text">A warm introduction, a cake, and a respectful amount of sparkle.</div>
-              </div>
-            </button>
-
-            <button class="thumb" data-index="1">
-              <div class="thumb-art art2"></div>
-              <div>
-                <div class="thumb-title">Countdown</div>
-                <div class="thumb-text">See the live time left until the next birthday arrives.</div>
-              </div>
-            </button>
-
-            <button class="thumb" data-index="2">
-              <div class="thumb-art art3"></div>
-              <div>
-                <div class="thumb-title">Birthday Facts</div>
-                <div class="thumb-text">Age, date, and delightful statistics with a little charm.</div>
-              </div>
-            </button>
-
-            <button class="thumb" data-index="3">
-              <div class="thumb-art art5"></div>
-              <div>
-                <div class="thumb-title">Calendar Journey</div>
-                <div class="thumb-text">Slide month by month and week by week until January 16 glows.</div>
-              </div>
-            </button>
-
-            <button class="thumb" data-index="4">
-              <div class="thumb-art art4"></div>
-              <div>
-                <div class="thumb-title">Warm Wishes</div>
-                <div class="thumb-text">Soft words, gentle humor, and affectionate birthday energy.</div>
-              </div>
-            </button>
-          </div>
-        </aside>
-      </div>
-
-      <div class="bottom-bar">
-        <div class="dots" id="dots"></div>
-        <div class="footer-note">
-          Auto-playing slideshow with thumbnails.<br />
-          Countdown updates every second. Calendar months can slide automatically too.
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    (function () {
-      "use strict";
-
-      const person = {
-        name: "Champak Roy",
-        birthYear: 1970,
-        birthMonth: 0,
-        birthDate: 16
-      };
-
-      const slides = Array.from(document.querySelectorAll(".slide"));
-      const thumbButtons = Array.from(document.querySelectorAll(".thumb"));
-      const dotsWrap = document.getElementById("dots");
-      const prevBtn = document.getElementById("prevBtn");
-      const nextBtn = document.getElementById("nextBtn");
-      const playPauseBtn = document.getElementById("playPauseBtn");
-
-      let current = 0;
-      let autoPlay = true;
-      let timer = null;
-
-      const quotes = [
-        {
-          q: "A birthday is the calendar's way of saying, “This person remains important. Kindly bring cake.”",
-          p: "Also tea. Also warm wishes. Also at least one person pretending they remembered the date without help."
-        },
-        {
-          q: "Another year older, yes — but also another year richer in stories, grit, humor, and quiet victories.",
-          p: "That is a much better deal than simply counting candles and negotiating with the mirror."
-        },
-        {
-          q: "The best birthdays glow from warmth, affection, and the people who make ordinary days feel lighter.",
-          p: "Cake helps too. Let us remain realistic and emotionally honest."
-        },
-        {
-          q: "A well-lived life gathers depth the way a good library gathers books: one meaningful volume at a time.",
-          p: "And ideally with fewer overdue fines than usual."
-        }
+      const componentTypes = [
+        { type: 'INPUT', label: 'Input' },
+        { type: 'OUTPUT', label: 'Output' },
+        { type: 'AND', label: 'AND' },
+        { type: 'OR', label: 'OR' },
+        { type: 'NOT', label: 'NOT' },
+        { type: 'XOR', label: 'XOR' },
+        { type: 'NAND', label: 'NAND' },
+        { type: 'NOR', label: 'NOR' },
+        { type: 'XNOR', label: 'XNOR' }
       ];
 
-      function formatLongDate(date) {
-        return date.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        });
+      const gateSpec = {
+        INPUT: { inputs: 0, outputs: 1 },
+        OUTPUT: { inputs: 1, outputs: 0 },
+        AND: { inputs: 2, outputs: 1 },
+        OR: { inputs: 2, outputs: 1 },
+        NOT: { inputs: 1, outputs: 1 },
+        XOR: { inputs: 2, outputs: 1 },
+        NAND: { inputs: 2, outputs: 1 },
+        NOR: { inputs: 2, outputs: 1 },
+        XNOR: { inputs: 2, outputs: 1 }
+      };
+
+      let nextId = 1;
+      const components = new Map();
+      let wires = [];
+      let pendingConnection = null;
+      let showTruth = false;
+
+      componentTypes.forEach(item => {
+        const btn = document.createElement('button');
+        btn.textContent = item.label;
+        btn.addEventListener('click', () => addComponent(item.type));
+        addButtons.appendChild(btn);
+      });
+
+      document.getElementById('clearWiresBtn').addEventListener('click', () => {
+        wires = [];
+        pendingConnection = null;
+        renderAll();
+        setStatus('All wires removed.');
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        components.clear();
+        wires = [];
+        pendingConnection = null;
+        board.innerHTML = '';
+        renderAll();
+        setStatus('Board reset.');
+      });
+
+      document.getElementById('truthBtn').addEventListener('click', () => {
+        showTruth = !showTruth;
+        truthBox.style.display = showTruth ? 'grid' : 'none';
+        renderTruthHints();
+      });
+
+      document.getElementById('demoBtn').addEventListener('click', loadDemo);
+
+      function setStatus(text) {
+        statusText.textContent = text;
       }
 
-      function formatFullDate(date) {
-        return date.toLocaleDateString("en-GB", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        });
+      function addComponent(type, x = null, y = null, initialState = 0) {
+        const id = 'c' + (nextId++);
+        const spec = gateSpec[type];
+        const comp = {
+          id,
+          type,
+          name: type + ' ' + id.slice(1),
+          x: x ?? (80 + (components.size % 4) * 190),
+          y: y ?? (110 + Math.floor(components.size / 4) * 150),
+          state: initialState,
+          inputs: new Array(spec.inputs).fill(0),
+          outputs: new Array(spec.outputs).fill(type === 'INPUT' ? initialState : 0)
+        };
+        components.set(id, comp);
+        createComponentElement(comp);
+        evaluateCircuit();
+        renderAll();
+        return comp;
       }
 
-      function getNextBirthday(now) {
-        let year = now.getFullYear();
-        let next = new Date(year, person.birthMonth, person.birthDate, 0, 0, 0, 0);
-        if (now > next) next = new Date(year + 1, person.birthMonth, person.birthDate, 0, 0, 0, 0);
-        return next;
+      function createComponentElement(comp) {
+        const el = document.createElement('div');
+        el.className = 'component ' + comp.type.toLowerCase();
+        el.dataset.id = comp.id;
+        el.innerHTML = `
+          <div class="head">
+            <div>
+              <div class="kind">${comp.type}</div>
+              <div class="name">${escapeHtml(comp.name)}</div>
+            </div>
+            <div class="chip">${gateSpec[comp.type].inputs}→${gateSpec[comp.type].outputs}</div>
+          </div>
+          <div class="body"></div>
+        `;
+        board.appendChild(el);
+        comp.el = el;
+        positionComponent(comp);
+        makeDraggable(comp);
+        renderComponent(comp);
       }
 
-      function getCurrentAge(now) {
-        let age = now.getFullYear() - person.birthYear;
-        const thisYearBirthday = new Date(now.getFullYear(), person.birthMonth, person.birthDate);
-        if (now < thisYearBirthday) age--;
-        return age;
-      }
+      function renderComponent(comp) {
+        const body = comp.el.querySelector('.body');
+        body.innerHTML = '';
 
-      function plural(n, word) {
-        return n + " " + word + (n === 1 ? "" : "s");
-      }
+        const stateBadge = document.createElement('div');
+        stateBadge.className = 'state-badge';
+        const currentValue = comp.type === 'OUTPUT'
+          ? comp.inputs[0] || 0
+          : (comp.outputs[0] || 0);
+        stateBadge.innerHTML = `<span class="dot ${currentValue ? 'on' : 'off'}"></span> ${currentValue ? 'Logic 1' : 'Logic 0'}`;
+        body.appendChild(stateBadge);
 
-      function getWarmCountdownLine(days, hours, minutes, seconds) {
-        if (days > 200) return "There is still plenty of time. The cake ingredients are calm, composed, and not yet under pressure.";
-        if (days > 90) return "The next birthday is visible on the horizon. Excitement level: gently simmering.";
-        if (days > 30) return "Now it starts to feel real. The calendar has quietly circled the date in golden ink.";
-        if (days > 7) return "Not long now. The candles are stretching and the smiles are rehearsing.";
-        if (days > 1) return "Very close now. Dessert confidence is rising by the hour.";
-        if (days === 1) return "Just one day left. This is no time for emotional weakness in front of pastries.";
-        if (days === 0 && (hours > 0 || minutes > 0 || seconds > 0)) return "It is almost birthday time. The cake is practically clearing its throat.";
-        return "It is birthday day. This is officially an excellent time to accept compliments and extra dessert.";
-      }
-
-      function refreshData() {
-        const now = new Date();
-        const birthDate = new Date(person.birthYear, person.birthMonth, person.birthDate);
-        const nextBirthday = getNextBirthday(now);
-        const currentAge = getCurrentAge(now);
-        const nextAge = currentAge + 1;
-
-        const diff = nextBirthday - now;
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-
-        document.getElementById("chipAge").textContent = "Current Age: " + currentAge;
-        document.getElementById("nextBirthdayText").textContent = formatLongDate(nextBirthday);
-        document.getElementById("daysOnlyText").textContent =
-          plural(days, "day") + " to go — with " +
-          plural(hours, "hour") + ", " +
-          plural(minutes, "minute") + ", and " +
-          plural(seconds, "second") + " politely following behind.";
-
-        document.getElementById("days").textContent = days;
-        document.getElementById("hours").textContent = hours;
-        document.getElementById("minutes").textContent = minutes;
-        document.getElementById("seconds").textContent = seconds;
-
-        document.getElementById("countdownWarmLine").textContent = getWarmCountdownLine(days, hours, minutes, seconds);
-        document.getElementById("turningAge").textContent = nextAge;
-        document.getElementById("currentAgeText").textContent = "You are currently " + currentAge + " years old.";
-        document.getElementById("nextBirthdayFact").textContent = "Your next birthday is on " + formatLongDate(nextBirthday) + ".";
-        document.getElementById("remainingDaysFact").textContent = "There are " + days + " days left until your next birthday.";
-        document.getElementById("bornFact").textContent = "You were born on " + formatFullDate(birthDate) + ".";
-
-        const quoteIndex = (days + currentAge) % quotes.length;
-        document.getElementById("warmQuote").textContent = "“" + quotes[quoteIndex].q + "”";
-        document.getElementById("warmParagraph").textContent = quotes[quoteIndex].p;
-      }
-
-      function buildDots() {
-        dotsWrap.innerHTML = "";
-        slides.forEach((slide, index) => {
-          const dot = document.createElement("button");
-          dot.className = "dot" + (index === 0 ? " active" : "");
-          dot.setAttribute("aria-label", "Go to " + (slide.dataset.title || ("slide " + (index + 1))));
-          dot.addEventListener("click", function () {
-            showSlide(index);
-            restartAuto();
+        if (comp.type === 'INPUT') {
+          const toggle = document.createElement('button');
+          toggle.className = 'toggle';
+          toggle.textContent = comp.state ? 'Set to 0' : 'Set to 1';
+          toggle.addEventListener('click', () => {
+            comp.state = comp.state ? 0 : 1;
+            comp.outputs[0] = comp.state;
+            evaluateCircuit();
+            renderAll();
+            setStatus(`${comp.name} changed to ${comp.state}.`);
           });
-          dotsWrap.appendChild(dot);
-        });
-      }
-
-      function syncUI() {
-        slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
-        thumbButtons.forEach((btn, i) => btn.classList.toggle("active", i === current));
-        Array.from(dotsWrap.children).forEach((dot, i) => dot.classList.toggle("active", i === current));
-      }
-
-      function showSlide(index) {
-        current = (index + slides.length) % slides.length;
-        syncUI();
-      }
-
-      function nextSlide() {
-        showSlide(current + 1);
-      }
-
-      function prevSlide() {
-        showSlide(current - 1);
-      }
-
-      function startAuto() {
-        clearInterval(timer);
-        if (!autoPlay) return;
-        timer = setInterval(nextSlide, 5200);
-      }
-
-      function restartAuto() {
-        startAuto();
-      }
-
-      thumbButtons.forEach((btn) => {
-        btn.addEventListener("click", function () {
-          showSlide(Number(btn.dataset.index));
-          restartAuto();
-        });
-      });
-
-      prevBtn.addEventListener("click", function () {
-        prevSlide();
-        restartAuto();
-      });
-
-      nextBtn.addEventListener("click", function () {
-        nextSlide();
-        restartAuto();
-      });
-
-      playPauseBtn.addEventListener("click", function () {
-        autoPlay = !autoPlay;
-        playPauseBtn.textContent = autoPlay ? "Pause" : "Play";
-        playPauseBtn.classList.toggle("primary", autoPlay);
-        startAuto();
-      });
-
-      buildDots();
-      showSlide(0);
-      refreshData();
-      startAuto();
-      setInterval(refreshData, 1000);
-
-      /* Calendar journey */
-
-      const monthsTrack = document.getElementById("monthsTrack");
-      const journeyBadge = document.getElementById("journeyBadge");
-      const calendarHint = document.getElementById("calendarHint");
-      const calendarProgress = document.getElementById("calendarProgress");
-      const monthPrevBtn = document.getElementById("monthPrevBtn");
-      const monthNextBtn = document.getElementById("monthNextBtn");
-      const monthPlayBtn = document.getElementById("monthPlayBtn");
-
-      const now = new Date();
-      const nextBirthday = getNextBirthday(now);
-      const startMonthDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endMonthDate = new Date(nextBirthday.getFullYear(), nextBirthday.getMonth(), 1);
-
-      const journeyMonths = [];
-      let walker = new Date(startMonthDate);
-      while (walker <= endMonthDate) {
-        journeyMonths.push(new Date(walker));
-        walker = new Date(walker.getFullYear(), walker.getMonth() + 1, 1);
-      }
-
-      let calendarIndex = 0;
-      let calendarAuto = true;
-      let calendarTimer = null;
-
-      function monthName(date) {
-        return date.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-      }
-
-      function shortMonthName(date) {
-        return date.toLocaleDateString("en-GB", { month: "short" });
-      }
-
-      function buildMonthCard(date, index) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const startOffset = (firstDay.getDay() + 6) % 7;
-        const totalDays = lastDay.getDate();
-
-        const card = document.createElement("div");
-        card.className = "month-card";
-
-        const top = document.createElement("div");
-        top.className = "month-top";
-
-        const left = document.createElement("div");
-        const title = document.createElement("h3");
-        title.className = "month-title";
-        title.textContent = monthName(date);
-
-        const sub = document.createElement("div");
-        sub.className = "month-sub";
-
-        if (year === now.getFullYear() && month === now.getMonth()) {
-          sub.textContent = "We begin here, in the present month, and keep sliding toward the birthday.";
-        } else if (year === nextBirthday.getFullYear() && month === nextBirthday.getMonth()) {
-          sub.textContent = "Destination month reached. The 16th is highlighted like the star of the entire calendar.";
-        } else {
-          sub.textContent = "One more step through the coming weeks and months toward 16 January.";
+          body.appendChild(toggle);
         }
 
-        left.appendChild(title);
-        left.appendChild(sub);
-
-        const tag = document.createElement("div");
-        tag.className = "month-tag";
-
-        const distanceMonths = (year - now.getFullYear()) * 12 + (month - now.getMonth());
-        if (distanceMonths === 0) {
-          tag.textContent = "Starting month";
-        } else if (year === nextBirthday.getFullYear() && month === nextBirthday.getMonth()) {
-          tag.textContent = "Birthday month";
-        } else {
-          tag.textContent = distanceMonths + " month" + (distanceMonths === 1 ? "" : "s") + " ahead";
+        if (comp.type !== 'INPUT') {
+          const info = document.createElement('div');
+          info.className = 'footer-note';
+          info.textContent = comp.type === 'OUTPUT'
+            ? 'Output lamp reflects the incoming signal.'
+            : `Inputs: ${comp.inputs.join(', ')} • Output: ${comp.outputs.join(', ')}`;
+          body.appendChild(info);
         }
 
-        top.appendChild(left);
-        top.appendChild(tag);
+        const del = document.createElement('button');
+        del.className = 'delete-btn secondary';
+        del.textContent = 'Delete';
+        del.addEventListener('click', () => deleteComponent(comp.id));
+        body.appendChild(del);
 
-        const weekdayRow = document.createElement("div");
-        weekdayRow.className = "weekday-row";
-        ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(day => {
-          const el = document.createElement("div");
-          el.className = "weekday";
-          el.textContent = day;
-          weekdayRow.appendChild(el);
-        });
-
-        const daysGrid = document.createElement("div");
-        daysGrid.className = "days-grid";
-
-        for (let i = 0; i < startOffset; i++) {
-          const empty = document.createElement("div");
-          empty.className = "day empty";
-          daysGrid.appendChild(empty);
-        }
-
-        const currentWeekStart = new Date(now);
-        currentWeekStart.setHours(0,0,0,0);
-        currentWeekStart.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-        const currentWeekEnd = new Date(currentWeekStart);
-        currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
-
-        for (let day = 1; day <= totalDays; day++) {
-          const dayDate = new Date(year, month, day);
-          dayDate.setHours(0,0,0,0);
-
-          const box = document.createElement("div");
-          box.className = "day";
-          box.textContent = day;
-
-          if (
-            dayDate.getFullYear() === now.getFullYear() &&
-            dayDate.getMonth() === now.getMonth() &&
-            dayDate.getDate() === now.getDate()
-          ) {
-            box.classList.add("today");
-          }
-
-          if (dayDate >= currentWeekStart && dayDate <= currentWeekEnd) {
-            box.classList.add("week-mark");
-          }
-
-          if (
-            year === nextBirthday.getFullYear() &&
-            month === nextBirthday.getMonth() &&
-            day === nextBirthday.getDate()
-          ) {
-            box.classList.add("target");
-            box.title = "Champak Roy's birthday";
-          }
-
-          daysGrid.appendChild(box);
-        }
-
-        const note = document.createElement("div");
-        note.className = "mini-note";
-
-        if (year === nextBirthday.getFullYear() && month === nextBirthday.getMonth()) {
-          note.textContent = "Here we are: January. The 16th is the birthday destination, proudly highlighted and looking slightly pleased with itself.";
-        } else if (year === now.getFullYear() && month === now.getMonth()) {
-          note.textContent = "This month contains the current week highlight so the journey starts from the present, not from some dramatic fantasy trailer voice.";
-        } else {
-          note.textContent = "This month slides by as part of the birthday runway. Every box is one more polite step toward the celebration.";
-        }
-
-        card.appendChild(top);
-        card.appendChild(weekdayRow);
-        card.appendChild(daysGrid);
-        card.appendChild(note);
-
-        return card;
+        renderPins(comp);
       }
 
-      function buildCalendarJourney() {
-        monthsTrack.innerHTML = "";
-        calendarProgress.innerHTML = "";
+      function deleteComponent(id) {
+        const comp = components.get(id);
+        if (!comp) return;
+        comp.el.remove();
+        components.delete(id);
+        wires = wires.filter(w => w.from.id !== id && w.to.id !== id);
+        if (pendingConnection && pendingConnection.id === id) pendingConnection = null;
+        evaluateCircuit();
+        renderAll();
+        setStatus(`${comp.name} deleted.`);
+      }
 
-        journeyMonths.forEach((date, index) => {
-          monthsTrack.appendChild(buildMonthCard(date, index));
+      function renderPins(comp) {
+        comp.el.querySelectorAll('.pin, .pin-label').forEach(n => n.remove());
+        const spec = gateSpec[comp.type];
+        const inGap = spec.inputs > 0 ? 58 / (spec.inputs + 1) : 0;
+        const outGap = spec.outputs > 0 ? 58 / (spec.outputs + 1) : 0;
 
-          const pill = document.createElement("button");
-          pill.className = "progress-pill" + (index === 0 ? " active" : "");
-          pill.textContent = shortMonthName(date);
-          pill.addEventListener("click", function () {
-            showCalendarMonth(index);
-            restartCalendarAuto();
+        for (let i = 0; i < spec.inputs; i++) {
+          const top = 34 + (i + 1) * inGap;
+          const pin = document.createElement('div');
+          pin.className = 'pin input-pin ' + ((comp.inputs[i] || 0) ? 'on' : '');
+          pin.style.top = top + 'px';
+          pin.dataset.kind = 'input';
+          pin.dataset.index = i;
+          pin.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleInputPinClick(comp.id, i);
           });
-          calendarProgress.appendChild(pill);
-        });
-      }
 
-      function updateCalendarStatus(index) {
-        const date = journeyMonths[index];
-        journeyBadge.textContent = "Currently viewing: " + monthName(date);
+          const label = document.createElement('div');
+          label.className = 'pin-label left';
+          label.style.top = (top + 9) + 'px';
+          label.textContent = 'IN ' + (i + 1);
 
-        if (date.getFullYear() === nextBirthday.getFullYear() && date.getMonth() === nextBirthday.getMonth()) {
-          calendarHint.textContent = "Destination reached. January is here, and the 16th is highlighted like the hero entrance in a birthday film.";
-        } else if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()) {
-          calendarHint.textContent = "This is the starting point. The current week is marked so the journey begins from right now.";
-        } else {
-          calendarHint.textContent = "Sliding through " + monthName(date) + " on the way to 16 January.";
+          comp.el.appendChild(pin);
+          comp.el.appendChild(label);
+        }
+
+        for (let i = 0; i < spec.outputs; i++) {
+          const top = 34 + (i + 1) * outGap;
+          const pin = document.createElement('div');
+          const isPending = pendingConnection && pendingConnection.id === comp.id && pendingConnection.index === i;
+          pin.className = 'pin output-pin ' + ((comp.outputs[i] || 0) ? 'on' : '') + (isPending ? ' pending' : '');
+          pin.style.top = top + 'px';
+          pin.dataset.kind = 'output';
+          pin.dataset.index = i;
+          pin.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleOutputPinClick(comp.id, i);
+          });
+
+          const label = document.createElement('div');
+          label.className = 'pin-label right';
+          label.style.top = (top + 9) + 'px';
+          label.textContent = 'OUT ' + (i + 1);
+
+          comp.el.appendChild(pin);
+          comp.el.appendChild(label);
         }
       }
 
-      function showCalendarMonth(index) {
-        calendarIndex = (index + journeyMonths.length) % journeyMonths.length;
-        monthsTrack.style.transform = "translateX(-" + (calendarIndex * 100) + "%)";
-
-        Array.from(calendarProgress.children).forEach((pill, i) => {
-          pill.classList.toggle("active", i === calendarIndex);
-        });
-
-        updateCalendarStatus(calendarIndex);
+      function handleOutputPinClick(id, index) {
+        pendingConnection = { id, index };
+        renderAll();
+        const comp = components.get(id);
+        setStatus(`Selected ${comp.name} output ${index + 1}. Now click an input pin.`);
       }
 
-      function nextCalendarMonth() {
-        if (calendarIndex < journeyMonths.length - 1) {
-          showCalendarMonth(calendarIndex + 1);
-        } else {
-          showCalendarMonth(journeyMonths.length - 1);
-        }
-      }
-
-      function prevCalendarMonth() {
-        if (calendarIndex > 0) {
-          showCalendarMonth(calendarIndex - 1);
-        } else {
-          showCalendarMonth(0);
-        }
-      }
-
-      function startCalendarAuto() {
-        clearInterval(calendarTimer);
-        if (!calendarAuto) return;
-
-        calendarTimer = setInterval(() => {
-          if (calendarIndex < journeyMonths.length - 1) {
-            showCalendarMonth(calendarIndex + 1);
-          } else {
-            showCalendarMonth(journeyMonths.length - 1);
-            calendarAuto = false;
-            monthPlayBtn.textContent = "Replay Slide";
-            monthPlayBtn.classList.remove("primary");
-            clearInterval(calendarTimer);
-          }
-        }, 1900);
-      }
-
-      function restartCalendarAuto() {
-        if (calendarAuto) startCalendarAuto();
-      }
-
-      monthPrevBtn.addEventListener("click", function () {
-        prevCalendarMonth();
-        restartCalendarAuto();
-      });
-
-      monthNextBtn.addEventListener("click", function () {
-        nextCalendarMonth();
-        restartCalendarAuto();
-      });
-
-      monthPlayBtn.addEventListener("click", function () {
-        if (!calendarAuto && calendarIndex === journeyMonths.length - 1) {
-          calendarIndex = 0;
-          showCalendarMonth(0);
-          calendarAuto = true;
-          monthPlayBtn.textContent = "Auto Slide";
-          monthPlayBtn.classList.add("primary");
-          startCalendarAuto();
+      function handleInputPinClick(id, index) {
+        const target = components.get(id);
+        if (!pendingConnection) {
+          setStatus(`Click an output pin first, then connect it to ${target.name} input ${index + 1}.`);
           return;
         }
 
-        calendarAuto = !calendarAuto;
-        monthPlayBtn.textContent = calendarAuto ? "Auto Slide" : "Paused";
-        monthPlayBtn.classList.toggle("primary", calendarAuto);
-        if (calendarAuto) {
-          startCalendarAuto();
-        } else {
-          clearInterval(calendarTimer);
+        if (pendingConnection.id === id) {
+          setStatus('Cannot connect a component output to its own input in this basic visualizer.');
+          pendingConnection = null;
+          renderAll();
+          return;
+        }
+
+        wires = wires.filter(w => !(w.to.id === id && w.to.index === index));
+        wires.push({
+          from: { id: pendingConnection.id, index: pendingConnection.index },
+          to: { id, index }
+        });
+        const source = components.get(pendingConnection.id);
+        pendingConnection = null;
+        evaluateCircuit();
+        renderAll();
+        setStatus(`Connected ${source.name} → ${target.name} input ${index + 1}.`);
+      }
+
+      function evaluateCircuit() {
+        for (const comp of components.values()) {
+          if (comp.type !== 'INPUT') {
+            comp.inputs = comp.inputs.map(() => 0);
+            if (comp.outputs.length) comp.outputs = comp.outputs.map(() => 0);
+          } else {
+            comp.outputs[0] = comp.state ? 1 : 0;
+          }
+        }
+
+        for (let pass = 0; pass < 8; pass++) {
+          for (const comp of components.values()) {
+            for (let i = 0; i < comp.inputs.length; i++) {
+              const wire = wires.find(w => w.to.id === comp.id && w.to.index === i);
+              if (!wire) {
+                comp.inputs[i] = 0;
+              } else {
+                const source = components.get(wire.from.id);
+                comp.inputs[i] = source ? (source.outputs[wire.from.index] || 0) : 0;
+              }
+            }
+
+            const next = computeOutputs(comp.type, comp.inputs, comp.state);
+            comp.outputs = next;
+          }
+        }
+      }
+
+      function computeOutputs(type, inputs, state) {
+        switch (type) {
+          case 'INPUT': return [state ? 1 : 0];
+          case 'OUTPUT': return [];
+          case 'AND': return [inputs.every(Boolean) ? 1 : 0];
+          case 'OR': return [inputs.some(Boolean) ? 1 : 0];
+          case 'NOT': return [inputs[0] ? 0 : 1];
+          case 'XOR': return [Number(Boolean(inputs[0]) !== Boolean(inputs[1]))];
+          case 'NAND': return [inputs.every(Boolean) ? 0 : 1];
+          case 'NOR': return [inputs.some(Boolean) ? 0 : 1];
+          case 'XNOR': return [Number(Boolean(inputs[0]) === Boolean(inputs[1]))];
+          default: return [0];
+        }
+      }
+
+      function renderAll() {
+        evaluateCircuit();
+        for (const comp of components.values()) {
+          positionComponent(comp);
+          renderComponent(comp);
+        }
+        renderWires();
+        renderTruthHints();
+        summaryPill.textContent = `${components.size} components • ${wires.length} wires`;
+      }
+
+      function renderWires() {
+        const rect = board.getBoundingClientRect();
+        wireLayer.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+        wireLayer.innerHTML = '';
+
+        for (const wire of wires) {
+          const srcComp = components.get(wire.from.id);
+          const dstComp = components.get(wire.to.id);
+          if (!srcComp || !dstComp) continue;
+
+          const srcPin = srcComp.el.querySelector(`.pin.output-pin[data-index="${wire.from.index}"]`);
+          const dstPin = dstComp.el.querySelector(`.pin.input-pin[data-index="${wire.to.index}"]`);
+          if (!srcPin || !dstPin) continue;
+
+          const p1 = centerPoint(srcPin, rect);
+          const p2 = centerPoint(dstPin, rect);
+          const dx = Math.max(36, Math.abs(p2.x - p1.x) * 0.45);
+          const d = `M ${p1.x} ${p1.y} C ${p1.x + dx} ${p1.y}, ${p2.x - dx} ${p2.y}, ${p2.x} ${p2.y}`;
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', d);
+          path.setAttribute('class', 'wire ' + ((srcComp.outputs[wire.from.index] || 0) ? 'on' : 'off'));
+          wireLayer.appendChild(path);
+        }
+
+        if (pendingConnection) {
+          const srcComp = components.get(pendingConnection.id);
+          if (srcComp) {
+            const srcPin = srcComp.el.querySelector(`.pin.output-pin[data-index="${pendingConnection.index}"]`);
+            if (srcPin) {
+              const p1 = centerPoint(srcPin, rect);
+              const p2 = { x: Math.min(rect.width - 30, p1.x + 120), y: p1.y };
+              const d = `M ${p1.x} ${p1.y} C ${p1.x + 60} ${p1.y}, ${p2.x - 30} ${p2.y}, ${p2.x} ${p2.y}`;
+              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              path.setAttribute('d', d);
+              path.setAttribute('class', 'wire pending');
+              wireLayer.appendChild(path);
+            }
+          }
+        }
+      }
+
+      function renderTruthHints() {
+        if (!showTruth) return;
+        const outputComponents = Array.from(components.values()).filter(c => c.type === 'OUTPUT');
+        truthBox.innerHTML = '';
+        if (!outputComponents.length) {
+          truthBox.innerHTML = '<div style="grid-column:1/-1">Add an OUTPUT block to see final signal hints.</div>';
+          return;
+        }
+
+        outputComponents.forEach(c => {
+          const value = c.inputs[0] || 0;
+          const box = document.createElement('div');
+          box.innerHTML = `<strong>${escapeHtml(c.name)}</strong><br>Current output: ${value}`;
+          truthBox.appendChild(box);
+        });
+      }
+
+      function centerPoint(el, boardRect) {
+        const r = el.getBoundingClientRect();
+        return {
+          x: r.left - boardRect.left + r.width / 2,
+          y: r.top - boardRect.top + r.height / 2
+        };
+      }
+
+      function positionComponent(comp) {
+        comp.el.style.left = comp.x + 'px';
+        comp.el.style.top = comp.y + 'px';
+      }
+
+      function makeDraggable(comp) {
+        const head = comp.el.querySelector('.head');
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let origX = 0;
+        let origY = 0;
+
+        const onMove = (e) => {
+          if (!dragging) return;
+          const point = getPoint(e);
+          const dx = point.x - startX;
+          const dy = point.y - startY;
+          comp.x = Math.max(10, origX + dx);
+          comp.y = Math.max(58, origY + dy);
+          positionComponent(comp);
+          renderWires();
+        };
+
+        const onUp = () => {
+          if (!dragging) return;
+          dragging = false;
+          comp.el.classList.remove('dragging');
+          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener('mouseup', onUp);
+          window.removeEventListener('touchmove', onMove);
+          window.removeEventListener('touchend', onUp);
+        };
+
+        const onDown = (e) => {
+          if (e.target.closest('button') || e.target.classList.contains('pin')) return;
+          dragging = true;
+          comp.el.classList.add('dragging');
+          const point = getPoint(e);
+          startX = point.x;
+          startY = point.y;
+          origX = comp.x;
+          origY = comp.y;
+          window.addEventListener('mousemove', onMove, { passive: false });
+          window.addEventListener('mouseup', onUp);
+          window.addEventListener('touchmove', onMove, { passive: false });
+          window.addEventListener('touchend', onUp);
+        };
+
+        head.addEventListener('mousedown', onDown);
+        head.addEventListener('touchstart', onDown, { passive: true });
+      }
+
+      function getPoint(e) {
+        if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        return { x: e.clientX, y: e.clientY };
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function loadDemo() {
+        components.clear();
+        wires = [];
+        pendingConnection = null;
+        board.innerHTML = '';
+
+        const a = addComponent('INPUT', 80, 120, 0);
+        a.name = 'A';
+        const b = addComponent('INPUT', 80, 280, 1);
+        b.name = 'B';
+        const xor = addComponent('XOR', 350, 110);
+        xor.name = 'XOR Gate';
+        const and = addComponent('AND', 350, 280);
+        and.name = 'AND Gate';
+        const sum = addComponent('OUTPUT', 650, 110);
+        sum.name = 'SUM';
+        const carry = addComponent('OUTPUT', 650, 280);
+        carry.name = 'CARRY';
+
+        wires.push(
+          { from: { id: a.id, index: 0 }, to: { id: xor.id, index: 0 } },
+          { from: { id: b.id, index: 0 }, to: { id: xor.id, index: 1 } },
+          { from: { id: a.id, index: 0 }, to: { id: and.id, index: 0 } },
+          { from: { id: b.id, index: 0 }, to: { id: and.id, index: 1 } },
+          { from: { id: xor.id, index: 0 }, to: { id: sum.id, index: 0 } },
+          { from: { id: and.id, index: 0 }, to: { id: carry.id, index: 0 } }
+        );
+
+        renderAll();
+        setStatus('Demo loaded: a half adder using XOR and AND.');
+      }
+
+      window.addEventListener('resize', renderWires);
+      board.addEventListener('click', () => {
+        if (pendingConnection) {
+          pendingConnection = null;
+          renderAll();
+          setStatus('Connection cancelled.');
         }
       });
 
-      buildCalendarJourney();
-      showCalendarMonth(0);
-      startCalendarAuto();
+      loadDemo();
     })();
-  </script>
-</body>
+  </script></body>
 </html>
