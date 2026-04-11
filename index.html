@@ -3,963 +3,1646 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Video Lesson — V2 Ultra | Programmer's Picnic</title>
+  <title>Videos | Learn With Champak</title>
 
-  <script async crossorigin="anonymous"
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494"></script>
+  <meta
+    name="description"
+    content="Watch programming, Java, Spring Boot, frontend, AI-ML, interview preparation, and project-building videos on Learn With Champak."
+  />
+  <meta name="theme-color" content="#f59e0b" />
+
+  <script
+    async
+    crossorigin="anonymous"
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494"
+  ></script>
 
   <script src="https://varanasi-software-junction.github.io/search/branding/branding.js"></script>
   <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
 
-  <meta name="description" content="A V2 Ultra lesson page with embedded video, speak tags, interactive notes, MCQs, and editor embed." />
-  <meta name="theme-color" content="#f59e0b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
 
   <style>
     :root{
       --bg:#fffaf0;
-      --bg2:#fff4d6;
-      --panel:#ffffff;
-      --panel2:#fff8e7;
-      --text:#2b2112;
-      --muted:#6b5b3e;
-      --line:rgba(146, 98, 16, .16);
+      --bg2:#fff3df;
+      --bg3:#ffedd5;
+      --card:#ffffff;
+      --card2:#fff8ea;
+      --text:#2f220f;
+      --muted:#6e5a37;
+      --line:rgba(180,120,0,.16);
       --brand:#f59e0b;
-      --brand2:#d97706;
-      --brand3:#b45309;
-      --ok:#166534;
-      --okbg:#ecfdf5;
-      --bad:#991b1b;
-      --badbg:#fef2f2;
-      --shadow:0 18px 45px rgba(217,119,6,.12);
-      --radius:24px;
-      --radius-lg:30px;
+      --brand2:#ea580c;
+      --brand3:#fbbf24;
+      --brand4:#d97706;
+      --good:#15803d;
+      --shadow:0 16px 40px rgba(217,119,6,.12);
+      --shadow-lg:0 24px 60px rgba(217,119,6,.18);
+      --radius:26px;
+      --radius-sm:18px;
       --max:1240px;
+      --hero-grad:
+        radial-gradient(circle at 10% 10%, rgba(251,191,36,.30), transparent 22%),
+        radial-gradient(circle at 90% 20%, rgba(234,88,12,.15), transparent 26%),
+        linear-gradient(180deg,#fffaf0 0%,#fff5e5 45%,#fffaf0 100%);
     }
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:Inter, "Segoe UI", Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(245,158,11,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(217,119,6,.10), transparent 24%),
-        linear-gradient(180deg,var(--bg),#fffdf7 55%,var(--bg2));
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      line-height:1.65;
+      background:var(--hero-grad);
+      overflow-x:hidden;
     }
 
-    a{color:var(--brand3);text-decoration:none}
-    a:hover{text-decoration:underline}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    iframe{max-width:100%}
+
+    .container{
+      width:min(var(--max), calc(100% - 24px));
+      margin-inline:auto;
+    }
 
     .topbar{
       position:sticky;
       top:0;
       z-index:100;
-      backdrop-filter:blur(14px);
-      background:rgba(255,250,240,.82);
+      backdrop-filter:blur(16px);
+      background:rgba(255,250,240,.84);
       border-bottom:1px solid var(--line);
     }
 
     .topbar-inner{
-      width:min(100%,var(--max));
-      margin:auto;
-      padding:12px 18px;
+      min-height:78px;
       display:flex;
-      gap:12px;
       align-items:center;
       justify-content:space-between;
+      gap:18px;
+      padding:10px 0;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:14px;
       min-width:0;
     }
 
-    .brand-badge{
-      width:46px;
-      height:46px;
-      border-radius:14px;
+    .logo{
+      width:58px;
+      height:58px;
+      border-radius:20px;
+      position:relative;
+      flex:0 0 auto;
+      background:
+        radial-gradient(circle at 30% 25%, #ffe08a, transparent 30%),
+        linear-gradient(135deg, #fbbf24, #f59e0b 55%, #ea580c);
+      box-shadow:0 18px 40px rgba(234,88,12,.22);
+      overflow:hidden;
+    }
+
+    .logo::before{
+      content:"▶";
+      position:absolute;
+      inset:0;
       display:grid;
       place-items:center;
-      font-size:1.25rem;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
       color:#fff;
-      box-shadow:var(--shadow);
-      flex:0 0 auto;
+      font-size:24px;
+      font-weight:900;
+      transform:translateX(2px);
+      text-shadow:0 6px 16px rgba(0,0,0,.18);
     }
 
-    .brand h1{
-      margin:0;
-      font-size:1.02rem;
+    .logo::after{
+      content:"";
+      position:absolute;
+      width:120%;
+      height:120%;
+      left:-10%;
+      top:-10%;
+      background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.35) 50%, transparent 65%);
+      animation:shine 5s linear infinite;
+    }
+
+    @keyframes shine{
+      0%{transform:translateX(-120%)}
+      100%{transform:translateX(120%)}
+    }
+
+    .brand-text strong{
+      display:block;
+      font-size:1.05rem;
       line-height:1.15;
+      font-weight:900;
+      letter-spacing:-.02em;
     }
 
-    .brand p{
-      margin:2px 0 0;
+    .brand-text span{
+      display:block;
       color:var(--muted);
-      font-size:.88rem;
+      font-size:.9rem;
+      margin-top:4px;
     }
 
-    .top-actions{
+    .nav{
       display:flex;
-      gap:10px;
+      align-items:center;
+      gap:8px;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
-    .btn{
-      appearance:none;
-      border:0;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      color:#fff;
-      padding:11px 16px;
+    .nav a{
+      padding:10px 14px;
       border-radius:999px;
-      cursor:pointer;
+      color:var(--muted);
       font-weight:700;
-      box-shadow:var(--shadow);
+      transition:.25s ease;
     }
 
-    .btn.secondary{
+    .nav a:hover{
       background:#fff;
-      color:var(--brand3);
-      border:1px solid rgba(217,119,6,.22);
-      box-shadow:none;
+      color:var(--brand2);
+      box-shadow:var(--shadow);
     }
 
     .hero{
-      width:min(100%,var(--max));
-      margin:0 auto;
-      padding:26px 18px 10px;
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:22px;
-    }
-
-    .hero-card,.glass-card,.section-card{
-      background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,248,231,.96));
-      border:1px solid var(--line);
-      border-radius:var(--radius-lg);
-      box-shadow:var(--shadow);
-    }
-
-    .hero-card{
-      padding:28px;
+      padding:34px 0 18px;
       position:relative;
       overflow:hidden;
     }
 
-    .hero-card::after{
-      content:"";
-      position:absolute;
-      right:-30px;
-      top:-30px;
-      width:180px;
-      height:180px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(245,158,11,.18), transparent 68%);
-      pointer-events:none;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:.82rem;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--brand3);
-      font-weight:800;
-      background:#fff7ed;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(217,119,6,.18);
-    }
-
-    .hero h2{
-      margin:14px 0 12px;
-      font-size:clamp(2rem,4vw,3.3rem);
-      line-height:1.06;
-      letter-spacing:-.03em;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      font-size:1.03rem;
-    }
-
-    .hero-points{
+    .hero-grid{
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-      margin-top:18px;
-    }
-
-    .point{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px 14px;
-      font-weight:600;
-      color:#4b3b1b;
-    }
-
-    .hero-side{
-      display:grid;
-      gap:18px;
-    }
-
-    .glass-card{
-      padding:20px;
-    }
-
-    .mini-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-      margin-top:12px;
-    }
-
-    .metric{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .metric strong{
-      display:block;
-      font-size:1.2rem;
-      color:var(--brand3);
-    }
-
-    .layout{
-      width:min(100%,var(--max));
-      margin:0 auto;
-      padding:16px 18px 40px;
-      display:grid;
-      grid-template-columns:300px minmax(0,1fr);
+      grid-template-columns:1.08fr .92fr;
       gap:22px;
-      align-items:start;
-    }
-
-    .toc{
-      position:sticky;
-      top:84px;
-      padding:18px;
-      background:rgba(255,255,255,.92);
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-    }
-
-    .toc h3{
-      margin:0 0 10px;
-      font-size:1rem;
-    }
-
-    .toc a{
-      display:block;
-      padding:10px 12px;
-      border-radius:12px;
-      color:var(--text);
-      font-weight:600;
-    }
-
-    .toc a:hover{
-      background:#fff7ed;
-      text-decoration:none;
-      color:var(--brand3);
-    }
-
-    .content{
-      display:grid;
-      gap:20px;
-    }
-
-    .section-card{
-      padding:24px;
-    }
-
-    .section-card h3{
-      margin:0 0 14px;
-      font-size:1.45rem;
-      color:#5a3a05;
-    }
-
-    .section-card h4{
-      margin:18px 0 10px;
-      font-size:1.08rem;
-      color:#6b4208;
-    }
-
-    .lead{
-      font-size:1.02rem;
-      color:var(--muted);
-    }
-
-    .video-shell{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-
-    .video-head{
-      padding:16px 18px;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#fffaf0,#fff4df);
-    }
-
-    .video-wrap{
-      position:relative;
-      width:100%;
-      aspect-ratio:16/9;
-      background:#000;
-    }
-
-    .video-wrap iframe{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      border:0;
-    }
-
-    .grid-2{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:16px;
-    }
-
-    .grid-3{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
+      align-items:stretch;
     }
 
     .card{
-      background:#fff;
+      background:linear-gradient(180deg, rgba(255,255,255,.97), rgba(255,248,232,.97));
       border:1px solid var(--line);
-      border-radius:20px;
-      padding:16px;
-    }
-
-    ul.clean,ol.clean{
-      margin:12px 0 0 0;
-      padding-left:22px;
-    }
-
-    .quote{
-      margin-top:12px;
-      padding:18px;
-      border-radius:20px;
-      background:linear-gradient(135deg,#fff7ed,#fffbeb);
-      border:1px solid rgba(217,119,6,.18);
-      font-weight:700;
-      color:#7c4a03;
-    }
-
-    .note-box{
-      display:grid;
-      gap:12px;
-    }
-
-    textarea.notes{
-      width:100%;
-      min-height:180px;
-      resize:vertical;
-      border-radius:18px;
-      border:1px solid rgba(217,119,6,.22);
-      padding:14px;
-      font:inherit;
-      background:#fffdf9;
-      color:var(--text);
-      outline:none;
-    }
-
-    .small{
-      color:var(--muted);
-      font-size:.92rem;
-    }
-
-    .save-msg{
-      font-weight:700;
-      color:var(--ok);
-      min-height:24px;
-    }
-
-    .checklist{
-      display:grid;
-      gap:10px;
-    }
-
-    .check{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .check input{
-      margin-top:5px;
-      transform:scale(1.2);
-      accent-color:var(--brand2);
-    }
-
-    .progress-wrap{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:16px;
-    }
-
-    .progress-bar{
-      width:100%;
-      height:14px;
-      background:#fde7b5;
-      border-radius:999px;
-      overflow:hidden;
-      margin-top:10px;
-    }
-
-    .progress-fill{
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg,var(--brand),var(--brand2));
-      border-radius:999px;
-      transition:width .3s ease;
-    }
-
-    .editor-shell{
-      overflow:hidden;
-      border:1px solid var(--line);
-      border-radius:24px;
-      background:#fff;
+      border-radius:var(--radius);
       box-shadow:var(--shadow);
     }
 
-    .editor-head{
-      padding:16px 18px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      background:linear-gradient(180deg,#fffaf0,#fff4df);
+    .hero-copy{
+      padding:30px;
+      min-height:510px;
+      position:relative;
+      overflow:hidden;
     }
 
-    .editor-frame{
-      width:100%;
-      height:620px;
-      border:0;
-      display:block;
-      background:#fff;
-    }
-
-    .mcq-list{
-      display:grid;
-      gap:18px;
-    }
-
-    .mcq{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-    }
-
-    .mcq h4{
-      margin:0 0 12px;
-      font-size:1.04rem;
-      color:var(--text);
-    }
-
-    .options{
-      display:grid;
-      gap:10px;
-    }
-
-    .opt{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding:12px 14px;
-      border:1px solid rgba(146,98,16,.12);
-      border-radius:14px;
-      background:#fffdf9;
-      cursor:pointer;
-    }
-
-    .opt:hover{
-      background:#fff7ed;
-    }
-
-    .mcq-result{
-      margin-top:10px;
-      font-weight:700;
-      min-height:22px;
-    }
-
-    .mcq-result.ok{color:var(--ok)}
-    .mcq-result.bad{color:var(--bad)}
-
-    .score-board{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      padding:18px;
-      border-radius:20px;
-      background:linear-gradient(135deg,#fff7ed,#fffbeb);
-      border:1px solid rgba(217,119,6,.18);
+    .hero-copy::before{
+      content:"";
+      position:absolute;
+      right:-80px;
+      bottom:-80px;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(245,158,11,.20), transparent 70%);
+      pointer-events:none;
     }
 
     .pill{
       display:inline-flex;
       align-items:center;
-      gap:8px;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(245,158,11,.12);
+      color:#9a5800;
+      border:1px solid rgba(245,158,11,.18);
+      font-size:.92rem;
+      font-weight:800;
+      box-shadow:0 8px 20px rgba(245,158,11,.08);
+    }
+
+    h1{
+      margin:18px 0 14px;
+      font-size:clamp(2.15rem, 4.3vw, 4.7rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+
+    .hero-copy p{
+      margin:0 0 20px;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:1.03rem;
+      max-width:62ch;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .btn{
+      min-height:52px;
+      padding:0 18px;
+      border-radius:18px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:800;
+      border:1px solid transparent;
+      transition:.25s ease;
+      cursor:pointer;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      box-shadow:0 16px 36px rgba(234,88,12,.22);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 22px 44px rgba(234,88,12,.26);
+    }
+
+    .btn-soft{
+      background:#fff;
+      color:var(--text);
+      border-color:var(--line);
+    }
+
+    .btn-soft:hover{
+      transform:translateY(-2px);
+      box-shadow:var(--shadow);
+    }
+
+    .stats{
+      margin-top:24px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+
+    .stat{
+      padding:16px;
+      border-radius:20px;
+      background:rgba(255,255,255,.78);
+      border:1px solid var(--line);
+    }
+
+    .stat strong{
+      display:block;
+      font-size:1.35rem;
+      font-weight:900;
+      margin-bottom:4px;
+    }
+
+    .stat span{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.45;
+    }
+
+    .hero-media{
+      padding:16px;
+      display:grid;
+      gap:14px;
+      align-content:start;
+    }
+
+    .player-wrap{
+      background:
+        radial-gradient(circle at 20% 18%, rgba(251,191,36,.18), transparent 22%),
+        linear-gradient(140deg, rgba(37,26,10,.93), rgba(94,53,7,.9));
+      border-radius:24px;
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow-lg);
+    }
+
+    .player-wrap::before{
+      content:"";
+      position:absolute;
+      inset:auto -10% -20% auto;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(251,191,36,.18), transparent 72%);
+      filter:blur(6px);
+    }
+
+    .video-frame{
+      aspect-ratio:16/9;
+      border-radius:18px;
+      overflow:hidden;
+      background:#000;
+      position:relative;
+      z-index:1;
+    }
+
+    .video-frame iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .mini-card{
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg, #fff, #fff8ea);
+    }
+
+    .mini-card strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:.98rem;
+    }
+
+    .mini-card span{
+      color:var(--muted);
+      line-height:1.55;
+      font-size:.92rem;
+    }
+
+    section{
+      padding:18px 0;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:16px;
+    }
+
+    .section-head h2{
+      margin:0;
+      font-size:clamp(1.45rem, 2.5vw, 2.2rem);
+      letter-spacing:-.03em;
+    }
+
+    .section-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.7;
+      max-width:66ch;
+    }
+
+    .section-link{
+      color:var(--brand2);
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .tools{
+      padding:18px;
+      display:grid;
+      grid-template-columns:1.35fr .9fr auto;
+      gap:12px;
+      align-items:center;
+    }
+
+    .tools input,
+    .tools select{
+      min-height:54px;
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      padding:0 16px;
+      outline:none;
+      color:var(--text);
+      font:inherit;
+    }
+
+    .tools input:focus,
+    .tools select:focus{
+      border-color:rgba(245,158,11,.55);
+      box-shadow:0 0 0 4px rgba(245,158,11,.12);
+    }
+
+    .categories{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+
+    .cat{
+      padding:20px;
+      transition:.25s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .cat:hover{
+      transform:translateY(-4px);
+      box-shadow:var(--shadow-lg);
+    }
+
+    .cat-icon{
+      width:60px;
+      height:60px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      font-size:1.5rem;
+      margin-bottom:14px;
+      background:linear-gradient(135deg, rgba(245,158,11,.18), rgba(234,88,12,.11));
+      border:1px solid rgba(245,158,11,.16);
+    }
+
+    .cat h3{
+      margin:0 0 8px;
+      font-size:1.08rem;
+    }
+
+    .cat p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:.95rem;
+    }
+
+    .cat .meta{
+      margin-top:12px;
+      color:#995b05;
+      font-size:.9rem;
+      font-weight:800;
+    }
+
+    .playlists{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:18px;
+    }
+
+    .playlist-main{
+      padding:22px;
+    }
+
+    .playlist-slider{
+      position:relative;
+      overflow:hidden;
+      border-radius:22px;
+      min-height:350px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(251,191,36,.16), transparent 26%),
+        linear-gradient(135deg, #fff8ea, #fffdf7);
+      border:1px solid var(--line);
+    }
+
+    .slides{
+      display:flex;
+      width:300%;
+      transition:transform .55s ease;
+      height:100%;
+    }
+
+    .slide{
+      width:100%;
+      flex:0 0 100%;
+      padding:22px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      align-items:center;
+      min-height:350px;
+    }
+
+    .slide-visual{
+      min-height:250px;
+      border-radius:22px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(251,191,36,.25), transparent 25%),
+        linear-gradient(135deg, rgba(45,34,15,.92), rgba(234,88,12,.82));
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:1.2rem;
+      font-weight:900;
+      text-align:center;
+      padding:18px;
+    }
+
+    .slide-visual::after{
+      content:"▶";
+      width:86px;
+      height:86px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.24);
+      font-size:30px;
+      transform:translateX(3px);
+      backdrop-filter:blur(8px);
+      box-shadow:0 18px 40px rgba(0,0,0,.2);
+    }
+
+    .slide-copy h3{
+      margin:0 0 10px;
+      font-size:1.7rem;
+      letter-spacing:-.03em;
+    }
+
+    .slide-copy p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.75;
+    }
+
+    .slide-points{
+      display:grid;
+      gap:10px;
+      margin:14px 0 0;
+    }
+
+    .slide-points span{
+      padding:10px 12px;
+      border-radius:14px;
       background:#fff;
       border:1px solid var(--line);
-      border-radius:999px;
-      padding:10px 14px;
+      color:var(--text);
       font-weight:700;
+      font-size:.92rem;
     }
 
-    .footer{
-      width:min(100%,var(--max));
-      margin:0 auto;
-      padding:0 18px 40px;
+    .slider-controls{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top:12px;
     }
 
-    .footer-card{
-      background:linear-gradient(180deg,#fff8e8,#fffef9);
-      border:1px solid var(--line);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      padding:24px;
-      text-align:center;
-    }
-
-    [id^="speak"]{
-      scroll-margin-top:110px;
-    }
-
-    .pp-speaking-active{
-      outline:3px solid rgba(245,158,11,.28);
+    .icon-btn{
+      width:46px;
+      height:46px;
       border-radius:14px;
-      background:linear-gradient(180deg,rgba(255,247,237,.9),rgba(255,255,255,.9));
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-size:1rem;
+      font-weight:900;
+      cursor:pointer;
       transition:.2s ease;
     }
 
-    @media (max-width: 1080px){
-      .hero{grid-template-columns:1fr}
-      .layout{grid-template-columns:1fr}
-      .toc{position:relative;top:0}
+    .icon-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:var(--shadow);
     }
 
-    @media (max-width: 760px){
-      .grid-2,.grid-3,.hero-points,.mini-grid{
+    .playlist-side{
+      display:grid;
+      gap:14px;
+    }
+
+    .side-card{
+      padding:18px;
+    }
+
+    .side-card h3{
+      margin:0 0 8px;
+      font-size:1.12rem;
+    }
+
+    .side-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .chip{
+      padding:9px 12px;
+      border-radius:999px;
+      background:var(--card2);
+      border:1px solid var(--line);
+      color:#8f5a06;
+      font-size:.86rem;
+      font-weight:800;
+    }
+
+    .grid-videos{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .video-card{
+      overflow:hidden;
+      transition:.25s ease;
+    }
+
+    .video-card:hover{
+      transform:translateY(-4px);
+      box-shadow:var(--shadow-lg);
+    }
+
+    .video-card[hidden]{
+      display:none !important;
+    }
+
+    .thumb{
+      aspect-ratio:16/9;
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:900;
+      text-align:center;
+      padding:16px;
+      background:
+        radial-gradient(circle at 20% 22%, rgba(251,191,36,.22), transparent 24%),
+        linear-gradient(135deg, rgba(39,27,8,.92), rgba(217,119,6,.84));
+    }
+
+    .thumb::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(transparent 55%, rgba(0,0,0,.18));
+    }
+
+    .thumb::after{
+      content:"▶";
+      position:absolute;
+      width:72px;
+      height:72px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.24);
+      font-size:24px;
+      transform:translateX(2px);
+      backdrop-filter:blur(9px);
+      box-shadow:0 18px 45px rgba(0,0,0,.18);
+    }
+
+    .video-body{
+      padding:18px;
+    }
+
+    .video-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+      align-items:flex-start;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(245,158,11,.12);
+      color:#995b05;
+      border:1px solid rgba(245,158,11,.16);
+      font-size:.8rem;
+      font-weight:900;
+    }
+
+    .duration{
+      color:var(--muted);
+      font-size:.88rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .video-title{
+      margin:0 0 8px;
+      font-size:1.08rem;
+      line-height:1.5;
+    }
+
+    .video-desc{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:.95rem;
+    }
+
+    .video-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .features{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+
+    .feature{
+      padding:20px;
+    }
+
+    .feature h3{
+      margin:0 0 8px;
+      font-size:1.08rem;
+    }
+
+    .feature p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .embed-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+
+    .embed-card{
+      padding:18px;
+    }
+
+    .embed-card h3{
+      margin:0 0 12px;
+      font-size:1.2rem;
+    }
+
+    .embed-card p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.75;
+    }
+
+    .editor-shell{
+      min-height:420px;
+      overflow:hidden;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .editor-shell iframe{
+      width:100%;
+      height:420px;
+      border:0;
+      display:block;
+      background:#fff;
+    }
+
+    .quiz-wrap{
+      padding:22px;
+    }
+
+    .quiz-box{
+      display:grid;
+      gap:14px;
+    }
+
+    .q-card{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,#fff,#fff9ee);
+    }
+
+    .q-card h4{
+      margin:0 0 10px;
+      font-size:1rem;
+      line-height:1.55;
+    }
+
+    .opts{
+      display:grid;
+      gap:8px;
+    }
+
+    .opt{
+      width:100%;
+      text-align:left;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:12px 14px;
+      cursor:pointer;
+      font:inherit;
+      color:var(--text);
+      transition:.18s ease;
+    }
+
+    .opt:hover{
+      border-color:rgba(245,158,11,.45);
+      transform:translateY(-1px);
+    }
+
+    .opt.correct{
+      background:rgba(21,128,61,.08);
+      border-color:rgba(21,128,61,.35);
+      color:#0d5f2c;
+      font-weight:800;
+    }
+
+    .opt.wrong{
+      background:rgba(220,38,38,.06);
+      border-color:rgba(220,38,38,.22);
+      color:#991b1b;
+      font-weight:800;
+    }
+
+    .quiz-result{
+      margin-top:14px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:var(--card2);
+      border:1px solid var(--line);
+      font-weight:800;
+      color:#8c5604;
+    }
+
+    .cta{
+      padding:12px 0 28px;
+    }
+
+    .cta-box{
+      padding:28px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:18px;
+      align-items:center;
+    }
+
+    .cta-box h2{
+      margin:0 0 8px;
+      font-size:clamp(1.5rem, 2.5vw, 2.4rem);
+      letter-spacing:-.03em;
+    }
+
+    .cta-box p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:70ch;
+    }
+
+    footer{
+      padding:0 0 36px;
+    }
+
+    .footer{
+      padding:24px;
+    }
+
+    .footer-grid{
+      display:grid;
+      grid-template-columns:1.2fr .9fr .9fr;
+      gap:18px;
+    }
+
+    .footer h3,
+    .footer h4{
+      margin:0 0 10px;
+    }
+
+    .footer p,
+    .footer li{
+      color:var(--muted);
+      line-height:1.75;
+    }
+
+    .footer ul{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:8px;
+    }
+
+    .footer-bottom{
+      margin-top:18px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:.94rem;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(24px);
+      transition:opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.show{
+      opacity:1;
+      transform:none;
+    }
+
+    @media (max-width:1100px){
+      .hero-grid,
+      .playlists,
+      .embed-grid,
+      .footer-grid,
+      .features,
+      .categories,
+      .grid-videos{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .stats{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .tools{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .tools .btn{
+        grid-column:1/-1;
+      }
+
+      .slide{
         grid-template-columns:1fr;
       }
-      .hero-card,.glass-card,.section-card{padding:18px}
-      .topbar-inner{padding:10px 12px}
-      .brand h1{font-size:.96rem}
-      .editor-frame{height:500px}
+    }
+
+    @media (max-width:760px){
+      .topbar-inner{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .nav{
+        justify-content:flex-start;
+      }
+
+      .hero-grid,
+      .playlists,
+      .embed-grid,
+      .features,
+      .categories,
+      .grid-videos,
+      .footer-grid,
+      .stats,
+      .tools,
+      .mini-grid,
+      .cta-box{
+        grid-template-columns:1fr;
+      }
+
+      .hero-copy,
+      .hero-media,
+      .playlist-main,
+      .embed-card,
+      .quiz-wrap,
+      .footer,
+      .feature,
+      .cat{
+        padding:20px;
+      }
+
+      .slide{
+        min-height:auto;
+        padding:18px;
+      }
+
+      .brand-text strong{
+        white-space:normal;
+      }
+
+      h1{
+        font-size:2.45rem;
+      }
     }
   </style>
 </head>
 <body>
 
   <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-badge">🎬</div>
-        <div>
-          <h1>Programmer's Picnic — Video Lesson V2 Ultra</h1>
-          <p>Watch, think, note, answer, and practice</p>
+    <div class="container topbar-inner">
+      <a class="brand" href="#" aria-label="Videos Learn With Champak home">
+        <div class="logo"></div>
+        <div class="brand-text">
+          <strong>Videos | Learn With Champak</strong>
+          <span>Video lessons with warmth, clarity, and real progression</span>
         </div>
-      </div>
-      <div class="top-actions">
-        <a class="btn secondary" href="#video">Watch</a>
-        <a class="btn secondary" href="#mcqs">MCQs</a>
-        <a class="btn" href="#editor">Practice</a>
-      </div>
+      </a>
+
+      <nav class="nav">
+        <a href="#featured">Featured</a>
+        <a href="#categories">Categories</a>
+        <a href="#latest">Latest</a>
+        <a href="#interactive">Interactive</a>
+        <a href="#quiz">MCQs</a>
+      </nav>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-card">
-      <div class="eyebrow" id="speak0" data-pp-speak-title="Video lesson introduction">🎓 Guided lesson experience</div>
-      <h2 id="speak1">Turn one video into a full learning session.</h2>
-      <p id="speak2">
-        This page helps the learner do much more than just watch. It encourages understanding, reflection,
-        note-making, practice, and self-testing. That is where real learning begins.
-      </p>
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="card hero-copy reveal">
+          <div id="speak0" class="pill">🎬 Video-first learning for serious beginners and growing developers</div>
 
-      <div class="hero-points">
-        <div class="point" id="speak3">✅ Embedded video for direct learning</div>
-        <div class="point" id="speak4">✅ Speak-tag-ready reading experience</div>
-        <div class="point" id="speak5">✅ Interactive notes and checklist</div>
-        <div class="point" id="speak6">✅ MCQs and embedded editor practice</div>
+          <h1 id="speak1">
+            Welcome to videos.learnwithchampak.live
+          </h1>
+
+          <p id="speak2">
+            This is the home for your programming, Java, Spring Boot, frontend, AI-ML,
+            interview preparation, and project-building videos. Learn gently. Build strongly.
+            Move from level zero to confidence through clear lessons, structured playlists,
+            practical explanations, and guided examples.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#latest">▶ Start Watching</a>
+            <a class="btn btn-soft" href="#categories">Explore Topics</a>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <strong id="speak3">500+</strong>
+              <span>Carefully planned teaching videos</span>
+            </div>
+            <div class="stat">
+              <strong id="speak4">50+</strong>
+              <span>Playlists and guided learning paths</span>
+            </div>
+            <div class="stat">
+              <strong id="speak5">0 → Expert</strong>
+              <span>Lessons built for progression</span>
+            </div>
+            <div class="stat">
+              <strong id="speak6">Warm & Clear</strong>
+              <span>Teaching that respects the learner</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="card hero-media reveal">
+          <div class="player-wrap">
+            <div class="video-frame">
+              <iframe
+                src="https://www.youtube.com/embed/IHvQXgVN8Vc?si=Ea3ESoum4fw8vD60"
+                title="Featured video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-card">
+              <strong id="speak7">Featured lesson</strong>
+              <span>
+                A guided video lesson to help learners start strong and move ahead with clarity.
+              </span>
+            </div>
+            <div class="mini-card">
+              <strong id="speak8">What you get</strong>
+              <span>
+                Videos, structured learning paths, quizzes, interactivity, and practical direction.
+              </span>
+            </div>
+          </div>
+        </aside>
       </div>
-    </div>
+    </section>
 
-    <div class="hero-side">
-      <div class="glass-card">
-        <h3 id="speak7" style="margin:0 0 8px;">How to use this page</h3>
-        <p id="speak8" class="lead" style="margin:0;">
-          Watch the video carefully, pause at important points, write your notes, answer the MCQs, and then try the concept yourself inside the practice editor.
-        </p>
-        <div class="mini-grid">
-          <div class="metric">
-            <strong id="speak9">Watch</strong>
-            <span>Understand the explanation visually</span>
+    <section class="container reveal">
+      <div class="card tools">
+        <input id="searchInput" type="text" placeholder="Search videos, topics, or keywords..." />
+        <select id="categoryFilter">
+          <option value="all">All categories</option>
+          <option value="frontend">Frontend</option>
+          <option value="java">Java</option>
+          <option value="spring">Spring Boot</option>
+          <option value="aiml">AI / ML</option>
+          <option value="interview">Interview Prep</option>
+          <option value="projects">Projects</option>
+        </select>
+        <button class="btn btn-primary" id="clearFilters">Reset Filters</button>
+      </div>
+    </section>
+
+    <section id="categories">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <h2 id="speak9">Popular categories</h2>
+            <p id="speak10">
+              Explore by topic and learn in a sequence that helps you grow steadily.
+            </p>
           </div>
-          <div class="metric">
-            <strong id="speak10">Think</strong>
-            <span>Ask why each step happens</span>
+          <a class="section-link" href="#latest">Jump to videos</a>
+        </div>
+
+        <div class="categories">
+          <article class="card cat reveal">
+            <div class="cat-icon">💻</div>
+            <h3 id="speak11">Frontend Development</h3>
+            <p id="speak12">
+              HTML, CSS, JavaScript, layouts, animation, UI design, interaction,
+              and project-based learning.
+            </p>
+            <div class="meta">120+ videos</div>
+          </article>
+
+          <article class="card cat reveal">
+            <div class="cat-icon">☕</div>
+            <h3 id="speak13">Java Programming</h3>
+            <p id="speak14">
+              Learn Java from the beginning through syntax, control flow, OOP,
+              problem solving, and practice.
+            </p>
+            <div class="meta">90+ videos</div>
+          </article>
+
+          <article class="card cat reveal">
+            <div class="cat-icon">🌱</div>
+            <h3 id="speak15">Spring Boot</h3>
+            <p id="speak16">
+              Controllers, templates, forms, REST APIs, databases, and structured
+              backend development for beginners.
+            </p>
+            <div class="meta">60+ videos</div>
+          </article>
+
+          <article class="card cat reveal">
+            <div class="cat-icon">🤖</div>
+            <h3 id="speak17">AI / Machine Learning</h3>
+            <p id="speak18">
+              Statistics, NumPy, ML foundations, mathematics, and practical AI
+              concepts taught clearly.
+            </p>
+            <div class="meta">70+ videos</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="featured">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <h2 id="speak19">Featured learning paths</h2>
+            <p id="speak20">
+              Follow playlists instead of guessing what to watch next.
+            </p>
           </div>
-          <div class="metric">
-            <strong id="speak11">Test</strong>
-            <span>Check yourself with MCQs</span>
+        </div>
+
+        <div class="playlists">
+          <div class="card playlist-main reveal">
+            <div class="playlist-slider">
+              <div class="slides" id="slides">
+                <div class="slide">
+                  <div class="slide-visual">Zero to Web Developer</div>
+                  <div class="slide-copy">
+                    <h3 id="speak21">Zero to Web Developer</h3>
+                    <p id="speak22">
+                      Start with HTML, CSS, and JavaScript. Then move into layouts,
+                      forms, animation, responsive design, and real frontend projects.
+                    </p>
+                    <div class="slide-points">
+                      <span>HTML structure and semantics</span>
+                      <span>CSS styling, layout, and animation</span>
+                      <span>JavaScript interactivity and projects</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="slide">
+                  <div class="slide-visual">Java to Spring Boot</div>
+                  <div class="slide-copy">
+                    <h3 id="speak23">Java to Spring Boot</h3>
+                    <p id="speak24">
+                      Build from core Java to backend development. Learn syntax,
+                      control flow, OOP, MVC, templates, REST APIs, and database work.
+                    </p>
+                    <div class="slide-points">
+                      <span>Core Java with strong foundations</span>
+                      <span>Spring Boot projects from scratch</span>
+                      <span>Real backend thinking and structure</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="slide">
+                  <div class="slide-visual">AI / ML Foundations</div>
+                  <div class="slide-copy">
+                    <h3 id="speak25">AI / ML Foundations</h3>
+                    <p id="speak26">
+                      Build your base in statistics, NumPy, mathematical thinking,
+                      data handling, and machine learning fundamentals.
+                    </p>
+                    <div class="slide-points">
+                      <span>Statistics that actually make sense</span>
+                      <span>NumPy for calculations and analysis</span>
+                      <span>ML concepts explained without fog</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slider-controls">
+              <button class="icon-btn" id="prevSlide" aria-label="Previous slide">←</button>
+              <button class="icon-btn" id="nextSlide" aria-label="Next slide">→</button>
+            </div>
           </div>
-          <div class="metric">
-            <strong id="speak12">Practice</strong>
-            <span>Use the editor to build confidence</span>
+
+          <div class="playlist-side">
+            <div class="card side-card reveal">
+              <h3 id="speak27">Why these paths help</h3>
+              <p id="speak28">
+                Learners often struggle because content is scattered. These paths
+                reduce confusion and help you move in the right order.
+              </p>
+              <div class="chip-row">
+                <span class="chip">Beginner friendly</span>
+                <span class="chip">Ordered learning</span>
+                <span class="chip">Project based</span>
+              </div>
+            </div>
+
+            <div class="card side-card reveal">
+              <h3 id="speak29">How to use this site well</h3>
+              <p id="speak30">
+                Pick one path, watch consistently, revise with quizzes, and build
+                small things after each lesson.
+              </p>
+              <div class="chip-row">
+                <span class="chip">Watch</span>
+                <span class="chip">Practice</span>
+                <span class="chip">Revise</span>
+                <span class="chip">Build</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="glass-card">
-        <h3 id="speak13" style="margin:0 0 8px;">Learning promise</h3>
-        <p id="speak14" class="lead" style="margin:0;">
-          Do not merely consume the video. Interact with it mentally. Pause, predict, and explain the logic in your own words. That is how passive watching becomes active learning.
-        </p>
+    <section id="latest">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <h2 id="speak31">Latest videos</h2>
+            <p id="speak32">
+              Fresh lessons, practical explainers, guided projects, and interview-focused content.
+            </p>
+          </div>
+          <a class="section-link" href="#interactive">Try interactive area</a>
+        </div>
+
+        <div class="grid-videos" id="videoGrid">
+          <article class="card video-card reveal" data-category="spring" data-search="spring boot sqlite database beginner backend controller save data jdbc">
+            <div class="thumb">Spring Boot + SQLite</div>
+            <div class="video-body">
+              <div class="video-top">
+                <span class="badge">Spring Boot</span>
+                <span class="duration">28 min</span>
+              </div>
+              <h3 class="video-title" id="speak33">Connect Spring Boot with SQLite from scratch</h3>
+              <p class="video-desc" id="speak34">
+                A gentle beginner walkthrough covering setup, dependencies,
+                checks, configuration, and saving data.
+              </p>
+              <div class="video-meta">
+                <span>Beginner</span>
+                <span>Backend</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card video-card reveal" data-category="frontend" data-search="frontend flexbox grid layout css responsive design tutorial">
+            <div class="thumb">Flexbox + Grid</div>
+            <div class="video-body">
+              <div class="video-top">
+                <span class="badge">Frontend</span>
+                <span class="duration">34 min</span>
+              </div>
+              <h3 class="video-title" id="speak35">Flexbox and Grid from level 0 to advanced</h3>
+              <p class="video-desc" id="speak36">
+                Build strong page layouts for mobile and desktop and understand
+                modern CSS layout thinking.
+              </p>
+              <div class="video-meta">
+                <span>All levels</span>
+                <span>CSS</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card video-card reveal" data-category="aiml" data-search="statistics ai ml numpy mean median variance standard deviation percentiles">
+            <div class="thumb">Statistics for AI-ML</div>
+            <div class="video-body">
+              <div class="video-top">
+                <span class="badge">AI / ML</span>
+                <span class="duration">41 min</span>
+              </div>
+              <h3 class="video-title" id="speak37">Statistics for AI and Machine Learning using NumPy</h3>
+              <p class="video-desc" id="speak38">
+                Learn mean, median, variance, standard deviation, and how they
+                support machine learning work.
+              </p>
+              <div class="video-meta">
+                <span>Intermediate</span>
+                <span>NumPy</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card video-card reveal" data-category="java" data-search="java if else ternary switch control flow beginner core java">
+            <div class="thumb">Java Control Flow</div>
+            <div class="video-body">
+              <div class="video-top">
+                <span class="badge">Java</span>
+                <span class="duration">25 min</span>
+              </div>
+              <h3 class="video-title" id="speak39">If, else, ternary, and switch in Java</h3>
+              <p class="video-desc" id="speak40">
+                Understand logic building, decision making, and control flow
+                through clear examples.
+              </p>
+              <div class="video-meta">
+                <span>Beginner</span>
+                <span>Core Java</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card video-card reveal" data-category="interview" data-search="sliding window interview algorithms arrays pattern coding practice amazon google meta">
+            <div class="thumb">Sliding Window</div>
+            <div class="video-body">
+              <div class="video-top">
+                <span class="badge">Interview Prep</span>
+                <span class="duration">31 min</span>
+              </div>
+              <h3 class="video-title" id="speak41">Sliding window algorithms made simple</h3>
+              <p class="video-desc" id="speak42">
+                Learn how brute-force approaches become efficient linear-time solutions.
+              </p>
+              <div class="video-meta">
+                <span>Interview track</span>
+                <span>Algorithms</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card video-card reveal" data-category="projects" data-search="shopping cart html css javascript frontend project cart ui interactivity">
+            <div class="thumb">Shopping Cart Project</div>
+            <div class="video-body">
+              <div class="video-top">
+                <span class="badge">Projects</span>
+                <span class="duration">46 min</span>
+              </div>
+              <h3 class="video-title" id="speak43">Build a shopping cart with HTML, CSS, and JavaScript</h3>
+              <p class="video-desc" id="speak44">
+                Create a complete frontend project while learning structure,
+                interactivity, and state changes.
+              </p>
+              <div class="video-meta">
+                <span>Hands-on</span>
+                <span>Project based</span>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <main class="layout">
-    <aside class="toc">
-      <h3>On this page</h3>
-      <a href="#video">1. Video lesson</a>
-      <a href="#objectives">2. Learning objectives</a>
-      <a href="#concepts">3. Key concepts</a>
-      <a href="#steps">4. How to understand the video</a>
-      <a href="#notes">5. Interactive notes</a>
-      <a href="#practice">6. Practice checklist</a>
-      <a href="#mcqs">7. MCQs</a>
-      <a href="#editor">8. Editor embed</a>
-      <a href="#next">9. Next step</a>
-    </aside>
+    <section id="why">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <h2 id="speak45">Why learners like this platform</h2>
+            <p id="speak46">
+              Because learning should be clear, practical, and encouraging.
+            </p>
+          </div>
+        </div>
 
-    <section class="content">
+        <div class="features">
+          <article class="card feature reveal">
+            <h3 id="speak47">Clear explanations</h3>
+            <p id="speak48">
+              Ideas are broken into steps so beginners do not get lost.
+            </p>
+          </article>
 
-      <section class="section-card" id="video">
-        <h3 id="speak15">Embedded video lesson</h3>
-        <p id="speak16" class="lead">
-          Watch the video once for the full flow. Then watch it a second time with pauses. During the second viewing, write down the main idea, the steps used, and any question that comes to your mind.
-        </p>
+          <article class="card feature reveal">
+            <h3 id="speak49">Practical learning</h3>
+            <p id="speak50">
+              Lessons focus on doing, building, and understanding, not just watching.
+            </p>
+          </article>
 
-        <div class="video-shell">
-          <div class="video-head">
-            <div>
-              <strong id="speak17">Lesson video</strong>
-              <div class="small">Responsive embedded YouTube player</div>
+          <article class="card feature reveal">
+            <h3 id="speak51">Structured progression</h3>
+            <p id="speak52">
+              The site helps you know what to learn next instead of wandering.
+            </p>
+          </article>
+
+          <article class="card feature reveal">
+            <h3 id="speak53">Warm teaching style</h3>
+            <p id="speak54">
+              Serious teaching with patience, humanity, and encouragement.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="interactive">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <h2 id="speak55">Interactive learning area</h2>
+            <p id="speak56">
+              Watch, then practice. Use the editor area to experiment and build confidence.
+            </p>
+          </div>
+        </div>
+
+        <div class="embed-grid">
+          <div class="card embed-card reveal">
+            <h3 id="speak57">Featured video area</h3>
+            <p id="speak58">
+              You can replace this embed with your main channel or featured playlist video anytime.
+            </p>
+            <div class="video-frame" style="aspect-ratio:16/9;border-radius:20px;">
+              <iframe
+                src="https://www.youtube.com/embed/IHvQXgVN8Vc?si=Ea3ESoum4fw8vD60"
+                title="Featured lesson video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
             </div>
-            <a class="btn secondary" target="_blank"
-               href="https://www.youtube.com/watch?v=IHvQXgVN8Vc">Open on YouTube</a>
           </div>
-          <div class="video-wrap">
-            <iframe
-              src="https://www.youtube.com/embed/IHvQXgVN8Vc?si=Ea3ESoum4fw8vD60"
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen>
-            </iframe>
-          </div>
-        </div>
-      </section>
 
-      <section class="section-card" id="objectives">
-        <h3 id="speak18">What this page helps you achieve</h3>
-        <div class="grid-2">
-          <div class="card">
-            <h4 id="speak19">Learning objective 1</h4>
-            <p id="speak20">Understand the central idea being explained in the video and express it in simple language.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak21">Learning objective 2</h4>
-            <p id="speak22">Recognize the flow of logic, steps, or process used in the explanation.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak23">Learning objective 3</h4>
-            <p id="speak24">Connect the explanation with actual use, problem solving, or implementation.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak25">Learning objective 4</h4>
-            <p id="speak26">Test understanding with questions and then reinforce it through practice.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-card" id="concepts">
-        <h3 id="speak27">Key concepts to watch for</h3>
-        <div class="grid-3">
-          <div class="card">
-            <h4 id="speak28">The main idea</h4>
-            <p id="speak29">What is the big concept? Every good video usually revolves around one central teaching point.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak30">The method</h4>
-            <p id="speak31">What steps, technique, pattern, or sequence are being demonstrated?</p>
-          </div>
-          <div class="card">
-            <h4 id="speak32">The reason</h4>
-            <p id="speak33">Why is this method useful? Faster? Clearer? More practical? More efficient?</p>
-          </div>
-        </div>
-
-        <div class="quote" id="speak34">
-          Do not watch like a spectator. Watch like a builder. Ask: What is happening? Why is it happening? Can I reproduce it myself?
-        </div>
-      </section>
-
-      <section class="section-card" id="steps">
-        <h3 id="speak35">A simple way to understand the video deeply</h3>
-        <div class="grid-2">
-          <div class="card">
-            <h4 id="speak36">Step 1 — Observe the problem</h4>
-            <p id="speak37">What is the issue, task, or question that the video is trying to address?</p>
-          </div>
-          <div class="card">
-            <h4 id="speak38">Step 2 — Follow the approach</h4>
-            <p id="speak39">Notice how the speaker starts solving or explaining it. That starting point often matters a lot.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak40">Step 3 — Track the flow</h4>
-            <p id="speak41">At each stage, ask what changed and why the next step became possible.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak42">Step 4 — Explain the result</h4>
-            <p id="speak43">If you can explain the final outcome in your own words, you have started owning the idea.</p>
-          </div>
-        </div>
-
-        <h4 id="speak44">Common mistakes</h4>
-        <ul class="clean">
-          <li id="speak45">Watching continuously without pausing to think</li>
-          <li id="speak46">Copying words without understanding the logic</li>
-          <li id="speak47">Skipping practice after watching</li>
-          <li id="speak48">Ignoring doubts instead of writing them down</li>
-        </ul>
-      </section>
-
-      <section class="section-card" id="notes">
-        <h3 id="speak49">Interactive notes area</h3>
-        <p id="speak50" class="lead">
-          Write your own summary. The best notes are short, clear, and personal. This box saves to your browser automatically.
-        </p>
-
-        <div class="note-box">
-          <textarea id="lessonNotes" class="notes" placeholder="Write here:
-- What is the main idea?
-- What steps did the video use?
-- What was new for you?
-- What question do you still have?
-"></textarea>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn" id="saveNotesBtn" type="button">Save notes</button>
-            <button class="btn secondary" id="clearNotesBtn" type="button">Clear notes</button>
-          </div>
-          <div class="save-msg" id="saveMsg"></div>
-          <div class="small">Your notes are stored locally in this browser.</div>
-        </div>
-      </section>
-
-      <section class="section-card" id="practice">
-        <h3 id="speak51">Interactive practice checklist</h3>
-        <p id="speak52" class="lead">
-          As you complete each action, your progress bar will move. This helps transform watching into learning.
-        </p>
-
-        <div class="checklist" id="checklist">
-          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak53">I watched the full video once without interruption.</span></label>
-          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak54">I watched again and paused at important moments.</span></label>
-          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak55">I wrote my own notes in simple words.</span></label>
-          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak56">I identified the main idea and the key steps.</span></label>
-          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak57">I answered the MCQs honestly.</span></label>
-          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak58">I used the editor or practice area after watching.</span></label>
-        </div>
-
-        <div class="progress-wrap" style="margin-top:16px;">
-          <strong>Learning progress</strong>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="small" id="progressText" style="margin-top:8px;">0 of 6 complete</div>
-        </div>
-      </section>
-
-      <section class="section-card" id="mcqs">
-        <h3 id="speak59">MCQs — check your understanding</h3>
-        <p id="speak60" class="lead">
-          These questions are designed to test learning behavior and conceptual clarity around the video lesson.
-        </p>
-
-        <div class="score-board">
-          <div class="pill">Score: <span id="scoreValue">0</span> / 6</div>
-          <button class="btn" id="submitQuizBtn" type="button">Check answers</button>
-        </div>
-
-        <div class="mcq-list" style="margin-top:18px;">
-          <div class="mcq" data-answer="b">
-            <h4 id="speak61">1. What is the best way to learn from a teaching video?</h4>
-            <div class="options">
-              <label class="opt"><input type="radio" name="q1" value="a" /> Watch it once quickly and move on</label>
-              <label class="opt"><input type="radio" name="q1" value="b" /> Watch, pause, think, and make notes</label>
-              <label class="opt"><input type="radio" name="q1" value="c" /> Memorize only the ending</label>
-              <label class="opt"><input type="radio" name="q1" value="d" /> Skip practice entirely</label>
+          <div class="card embed-card reveal">
+            <h3 id="speak59">Editor practice zone</h3>
+            <p id="speak60">
+              Learners can watch a lesson and immediately try code in the editor below.
+            </p>
+            <div class="editor-shell">
+              <iframe
+                src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+                title="Practice editor"
+                loading="lazy"
+                allowfullscreen
+              ></iframe>
             </div>
-            <div class="mcq-result"></div>
-          </div>
-
-          <div class="mcq" data-answer="c">
-            <h4 id="speak62">2. Why should a learner pause the video at important moments?</h4>
-            <div class="options">
-              <label class="opt"><input type="radio" name="q2" value="a" /> To make the video longer</label>
-              <label class="opt"><input type="radio" name="q2" value="b" /> To avoid finishing the lesson</label>
-              <label class="opt"><input type="radio" name="q2" value="c" /> To think and process what was explained</label>
-              <label class="opt"><input type="radio" name="q2" value="d" /> To reduce screen brightness</label>
-            </div>
-            <div class="mcq-result"></div>
-          </div>
-
-          <div class="mcq" data-answer="a">
-            <h4 id="speak63">3. Which of these is the strongest sign of understanding?</h4>
-            <div class="options">
-              <label class="opt"><input type="radio" name="q3" value="a" /> Explaining the idea in your own words</label>
-              <label class="opt"><input type="radio" name="q3" value="b" /> Watching silently without thinking</label>
-              <label class="opt"><input type="radio" name="q3" value="c" /> Copying every sentence exactly</label>
-              <label class="opt"><input type="radio" name="q3" value="d" /> Skipping all reflection</label>
-            </div>
-            <div class="mcq-result"></div>
-          </div>
-
-          <div class="mcq" data-answer="d">
-            <h4 id="speak64">4. What should you look for while watching the video?</h4>
-            <div class="options">
-              <label class="opt"><input type="radio" name="q4" value="a" /> Only the background color</label>
-              <label class="opt"><input type="radio" name="q4" value="b" /> Only the video length</label>
-              <label class="opt"><input type="radio" name="q4" value="c" /> Only the final screen</label>
-              <label class="opt"><input type="radio" name="q4" value="d" /> The main idea, the method, and the reason</label>
-            </div>
-            <div class="mcq-result"></div>
-          </div>
-
-          <div class="mcq" data-answer="b">
-            <h4 id="speak65">5. What is the role of the practice editor on this page?</h4>
-            <div class="options">
-              <label class="opt"><input type="radio" name="q5" value="a" /> Decoration only</label>
-              <label class="opt"><input type="radio" name="q5" value="b" /> To turn understanding into action</label>
-              <label class="opt"><input type="radio" name="q5" value="c" /> To replace the video completely</label>
-              <label class="opt"><input type="radio" name="q5" value="d" /> To disable note-making</label>
-            </div>
-            <div class="mcq-result"></div>
-          </div>
-
-          <div class="mcq" data-answer="a">
-            <h4 id="speak66">6. Which habit hurts learning the most?</h4>
-            <div class="options">
-              <label class="opt"><input type="radio" name="q6" value="a" /> Passive watching without thinking</label>
-              <label class="opt"><input type="radio" name="q6" value="b" /> Writing notes after pausing</label>
-              <label class="opt"><input type="radio" name="q6" value="c" /> Practicing after learning</label>
-              <label class="opt"><input type="radio" name="q6" value="d" /> Reflecting on mistakes</label>
-            </div>
-            <div class="mcq-result"></div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="section-card" id="editor">
-        <h3 id="speak67">Embedded practice editor</h3>
-        <p id="speak68" class="lead">
-          After watching the video, try to reproduce the idea in code, notes, structure, or pseudo code. Practice is where confidence grows.
-        </p>
-
-        <div class="editor-shell">
-          <div class="editor-head">
-            <div>
-              <strong id="speak69">Practice lab</strong>
-              <div class="small">Use the embedded editor below to experiment</div>
-            </div>
-            <a class="btn secondary" target="_blank"
-               href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html">Open editor separately</a>
-          </div>
-
-          <iframe
-            class="editor-frame"
-            src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
-            title="Embedded HTML editor"
-            loading="lazy"
-            allowfullscreen>
-          </iframe>
-        </div>
-
-        <div class="card" style="margin-top:16px;">
-          <h4 id="speak70">Suggested practice ideas</h4>
-          <ol class="clean">
-            <li id="speak71">Write the main idea of the video in your own words.</li>
-            <li id="speak72">List the exact steps shown in the explanation.</li>
-            <li id="speak73">Build a tiny example inspired by the video.</li>
-            <li id="speak74">Change one part and observe what happens.</li>
-            <li id="speak75">Write one doubt and then try to answer it yourself.</li>
-          </ol>
-        </div>
-      </section>
-
-      <section class="section-card" id="next">
-        <h3 id="speak76">What to do next</h3>
-        <div class="grid-2">
-          <div class="card">
-            <h4 id="speak77">Immediate next step</h4>
-            <p id="speak78">Rewatch the most important section of the video and update your notes with more clarity.</p>
-          </div>
-          <div class="card">
-            <h4 id="speak79">Skill-building step</h4>
-            <p id="speak80">Use the editor to build a mini exercise based on the concept you just learned.</p>
+    <section id="quiz">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <h2 id="speak61">Quick MCQ practice</h2>
+            <p id="speak62">
+              Small revisions help memory. Test yourself after watching.
+            </p>
           </div>
         </div>
 
-        <div class="quote" id="speak81">
-          The learner who practices after watching moves ahead of the learner who only watches five more videos.
-        </div>
-      </section>
+        <div class="card quiz-wrap reveal">
+          <div class="quiz-box" id="quizBox">
+            <div class="q-card" data-answer="b">
+              <h4 id="speak63">1. Which category is best for learning HTML, CSS, and JavaScript basics?</h4>
+              <div class="opts">
+                <button class="opt" data-choice="a">Spring Boot</button>
+                <button class="opt" data-choice="b">Frontend Development</button>
+                <button class="opt" data-choice="c">AI / ML</button>
+                <button class="opt" data-choice="d">Databases only</button>
+              </div>
+            </div>
 
+            <div class="q-card" data-answer="c">
+              <h4 id="speak64">2. Which path is most suitable after learning core Java if you want backend development?</h4>
+              <div class="opts">
+                <button class="opt" data-choice="a">Only CSS animations</button>
+                <button class="opt" data-choice="b">Only Photoshop practice</button>
+                <button class="opt" data-choice="c">Java to Spring Boot</button>
+                <button class="opt" data-choice="d">Only icon design</button>
+              </div>
+            </div>
+
+            <div class="q-card" data-answer="a">
+              <h4 id="speak65">3. What is the purpose of the practice editor on this page?</h4>
+              <div class="opts">
+                <button class="opt" data-choice="a">To try ideas immediately after learning</button>
+                <button class="opt" data-choice="b">To replace the homepage logo</button>
+                <button class="opt" data-choice="c">To hide all videos</button>
+                <button class="opt" data-choice="d">To disable navigation</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-result" id="quizResult">
+            Score: 0 / 3
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="card cta-box reveal">
+          <div>
+            <h2 id="speak66">Start learning today</h2>
+            <p id="speak67">
+              Pick a playlist, watch with consistency, revise with MCQs, practice in the editor,
+              and build your confidence one lesson at a time.
+            </p>
+          </div>
+          <div class="hero-actions" style="margin-top:0;">
+            <a class="btn btn-primary" href="#featured">Explore Playlists</a>
+            <a class="btn btn-soft" href="#latest">Browse Videos</a>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="footer-card">
-      <h3 id="speak82" style="margin-top:0;">Programmer's Picnic</h3>
-      <p id="speak83" class="lead" style="margin-bottom:0;">
-        Learn actively. Think deeply. Practice honestly. Build steadily.
-      </p>
+  <footer>
+    <div class="container card footer">
+      <div class="footer-grid">
+        <div>
+          <h3 id="speak68">Videos | Learn With Champak</h3>
+          <p id="speak69">
+            A video-first learning platform for programming, web development,
+            Java, Spring Boot, AI-ML, and interview preparation.
+          </p>
+        </div>
+
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#featured">Featured playlists</a></li>
+            <li><a href="#categories">Categories</a></li>
+            <li><a href="#latest">Latest videos</a></li>
+            <li><a href="#quiz">MCQ revision</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Domains</h4>
+          <ul>
+            <li><a href="https://www.learnwithchampak.live/">learnwithchampak.live</a></li>
+            <li><a href="https://aiml.learnwithchampak.live/">aiml.learnwithchampak.live</a></li>
+            <li><a href="https://videos.learnwithchampak.live/">videos.learnwithchampak.live</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Learn With Champak</span>
+        <span>Built with clarity, warmth, and saffron energy</span>
+      </div>
     </div>
   </footer>
 
@@ -967,116 +1650,126 @@
     (function(){
       "use strict";
 
-      /* ---------------- NOTES ---------------- */
-      var NOTES_KEY = "pp_video_lesson_notes_v2_ultra";
-      var notesEl = document.getElementById("lessonNotes");
-      var saveBtn = document.getElementById("saveNotesBtn");
-      var clearBtn = document.getElementById("clearNotesBtn");
-      var saveMsg = document.getElementById("saveMsg");
+      /* ---------------- reveal on scroll ---------------- */
+      const revealEls = document.querySelectorAll(".reveal");
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add("show");
+          }
+        });
+      }, {threshold:.12});
+      revealEls.forEach(el=>io.observe(el));
 
-      try{
-        var saved = localStorage.getItem(NOTES_KEY);
-        if(saved) notesEl.value = saved;
-      }catch(e){}
+      /* ---------------- playlist slider ---------------- */
+      const slides = document.getElementById("slides");
+      const nextBtn = document.getElementById("nextSlide");
+      const prevBtn = document.getElementById("prevSlide");
+      let currentSlide = 0;
+      const totalSlides = 3;
 
-      function flashMessage(msg){
-        saveMsg.textContent = msg;
-        setTimeout(function(){
-          if(saveMsg.textContent === msg) saveMsg.textContent = "";
-        }, 1800);
+      function renderSlide(){
+        slides.style.transform = "translateX(" + (-100 * currentSlide) + "%)";
       }
 
-      function saveNotes(){
-        try{
-          localStorage.setItem(NOTES_KEY, notesEl.value);
-          flashMessage("Notes saved.");
-        }catch(e){
-          saveMsg.textContent = "Could not save notes in this browser.";
-        }
-      }
-
-      saveBtn.addEventListener("click", saveNotes);
-
-      notesEl.addEventListener("input", function(){
-        try{
-          localStorage.setItem(NOTES_KEY, notesEl.value);
-        }catch(e){}
+      nextBtn.addEventListener("click", function(){
+        currentSlide = (currentSlide + 1) % totalSlides;
+        renderSlide();
       });
 
-      clearBtn.addEventListener("click", function(){
-        notesEl.value = "";
-        try{
-          localStorage.removeItem(NOTES_KEY);
-        }catch(e){}
-        flashMessage("Notes cleared.");
+      prevBtn.addEventListener("click", function(){
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        renderSlide();
       });
 
-      /* ---------------- CHECKLIST ---------------- */
-      var checks = Array.from(document.querySelectorAll(".learn-check"));
-      var progressFill = document.getElementById("progressFill");
-      var progressText = document.getElementById("progressText");
-      var CHECK_KEY = "pp_video_lesson_checks_v2_ultra";
+      setInterval(function(){
+        currentSlide = (currentSlide + 1) % totalSlides;
+        renderSlide();
+      }, 5500);
 
-      function renderProgress(){
-        var done = checks.filter(function(c){ return c.checked; }).length;
-        var total = checks.length;
-        var pct = total ? (done / total) * 100 : 0;
-        progressFill.style.width = pct + "%";
-        progressText.textContent = done + " of " + total + " complete";
+      /* ---------------- video filtering ---------------- */
+      const searchInput = document.getElementById("searchInput");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const clearFilters = document.getElementById("clearFilters");
+      const cards = Array.from(document.querySelectorAll(".video-card"));
+
+      function filterCards(){
+        const q = searchInput.value.trim().toLowerCase();
+        const cat = categoryFilter.value;
+
+        cards.forEach(card=>{
+          const cardCat = card.dataset.category || "";
+          const text = (card.dataset.search || "").toLowerCase();
+
+          const catOk = cat === "all" || cardCat === cat;
+          const textOk = !q || text.includes(q);
+
+          card.hidden = !(catOk && textOk);
+        });
       }
 
-      try{
-        var raw = localStorage.getItem(CHECK_KEY);
-        if(raw){
-          var arr = JSON.parse(raw);
-          checks.forEach(function(c, i){
-            c.checked = !!arr[i];
+      searchInput.addEventListener("input", filterCards);
+      categoryFilter.addEventListener("change", filterCards);
+
+      clearFilters.addEventListener("click", function(){
+        searchInput.value = "";
+        categoryFilter.value = "all";
+        filterCards();
+      });
+
+      /* ---------------- quiz ---------------- */
+      const qCards = document.querySelectorAll(".q-card");
+      const quizResult = document.getElementById("quizResult");
+      const answered = new WeakSet();
+
+      function updateScore(){
+        let score = 0;
+        qCards.forEach(card=>{
+          const answer = card.dataset.answer;
+          const selected = card.dataset.selected;
+          if(selected && selected === answer) score++;
+        });
+        quizResult.textContent = "Score: " + score + " / " + qCards.length;
+      }
+
+      qCards.forEach(card=>{
+        const opts = card.querySelectorAll(".opt");
+        opts.forEach(btn=>{
+          btn.addEventListener("click", function(){
+            if(answered.has(card)) return;
+
+            const answer = card.dataset.answer;
+            const choice = btn.dataset.choice;
+
+            card.dataset.selected = choice;
+            answered.add(card);
+
+            opts.forEach(o=>{
+              o.disabled = true;
+              if(o.dataset.choice === answer){
+                o.classList.add("correct");
+              }
+            });
+
+            if(choice !== answer){
+              btn.classList.add("wrong");
+            }
+
+            updateScore();
           });
-        }
-      }catch(e){}
-
-      checks.forEach(function(c){
-        c.addEventListener("change", function(){
-          try{
-            localStorage.setItem(CHECK_KEY, JSON.stringify(checks.map(function(x){ return x.checked; })));
-          }catch(e){}
-          renderProgress();
         });
       });
 
-      renderProgress();
-
-      /* ---------------- QUIZ ---------------- */
-      var submitQuizBtn = document.getElementById("submitQuizBtn");
-      var scoreValue = document.getElementById("scoreValue");
-
-      submitQuizBtn.addEventListener("click", function(){
-        var mcqs = Array.from(document.querySelectorAll(".mcq"));
-        var score = 0;
-
-        mcqs.forEach(function(box, idx){
-          var answer = box.getAttribute("data-answer");
-          var checked = box.querySelector('input[type="radio"]:checked');
-          var result = box.querySelector(".mcq-result");
-
-          if(!checked){
-            result.textContent = "Please choose an answer.";
-            result.className = "mcq-result bad";
-            return;
-          }
-
-          if(checked.value === answer){
-            score++;
-            result.textContent = "Correct.";
-            result.className = "mcq-result ok";
-          }else{
-            result.textContent = "Not correct. Review the lesson and think again.";
-            result.className = "mcq-result bad";
-          }
+      /* ---------------- soft scroll for hash links ---------------- */
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener("click", function(e){
+          const id = this.getAttribute("href");
+          if(!id || id === "#") return;
+          const el = document.querySelector(id);
+          if(!el) return;
+          e.preventDefault();
+          el.scrollIntoView({behavior:"smooth", block:"start"});
         });
-
-        scoreValue.textContent = score;
-        submitQuizBtn.textContent = "Checked";
       });
     })();
   </script>
