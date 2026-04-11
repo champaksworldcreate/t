@@ -1,909 +1,1084 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Interactive Digital Circuit Visualizer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Video Lesson — V2 Ultra | Programmer's Picnic</title>
+
+  <script async crossorigin="anonymous"
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494"></script>
+
+  <script src="https://varanasi-software-junction.github.io/search/branding/branding.js"></script>
+  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
+
+  <meta name="description" content="A V2 Ultra lesson page with embedded video, speak tags, interactive notes, MCQs, and editor embed." />
+  <meta name="theme-color" content="#f59e0b" />
+
   <style>
-    :root {
-      --bg: #0b1020;
-      --panel: #131a2e;
-      --panel-2: #1a2340;
-      --card: #1a2140;
-      --line: rgba(255,255,255,.12);
-      --text: #eef2ff;
-      --muted: #9aa5ce;
-      --accent: #7dd3fc;
-      --accent-2: #a78bfa;
-      --good: #34d399;
-      --bad: #f87171;
-      --warn: #fbbf24;
-      --shadow: 0 18px 40px rgba(0,0,0,.28);
-      --radius: 18px;
-      --node-off: #475569;
-      --node-on: #22c55e;
-    }* { box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(125,211,252,.12), transparent 28%),
-    radial-gradient(circle at top right, rgba(167,139,250,.12), transparent 24%),
-    linear-gradient(180deg, #0a0f1d, #0b1020 45%, #0a0f1a 100%);
-  color: var(--text);
-  overflow: hidden;
-}
+    :root{
+      --bg:#fffaf0;
+      --bg2:#fff4d6;
+      --panel:#ffffff;
+      --panel2:#fff8e7;
+      --text:#2b2112;
+      --muted:#6b5b3e;
+      --line:rgba(146, 98, 16, .16);
+      --brand:#f59e0b;
+      --brand2:#d97706;
+      --brand3:#b45309;
+      --ok:#166534;
+      --okbg:#ecfdf5;
+      --bad:#991b1b;
+      --badbg:#fef2f2;
+      --shadow:0 18px 45px rgba(217,119,6,.12);
+      --radius:24px;
+      --radius-lg:30px;
+      --max:1240px;
+    }
 
-.app {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  height: 100vh;
-}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(245,158,11,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(217,119,6,.10), transparent 24%),
+        linear-gradient(180deg,var(--bg),#fffdf7 55%,var(--bg2));
+      color:var(--text);
+      line-height:1.65;
+    }
 
-.sidebar {
-  border-right: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-  backdrop-filter: blur(12px);
-  padding: 18px;
-  overflow: auto;
-}
+    a{color:var(--brand3);text-decoration:none}
+    a:hover{text-decoration:underline}
 
-.title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  margin: 0 0 8px;
-  letter-spacing: .02em;
-}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      backdrop-filter:blur(14px);
+      background:rgba(255,250,240,.82);
+      border-bottom:1px solid var(--line);
+    }
 
-.subtitle {
-  color: var(--muted);
-  line-height: 1.45;
-  margin: 0 0 16px;
-  font-size: .95rem;
-}
+    .topbar-inner{
+      width:min(100%,var(--max));
+      margin:auto;
+      padding:12px 18px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
 
-.section {
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 14px;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow);
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
 
-.section h2 {
-  font-size: 1rem;
-  margin: 0 0 10px;
-}
+    .brand-badge{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-size:1.25rem;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
+    .brand h1{
+      margin:0;
+      font-size:1.02rem;
+      line-height:1.15;
+    }
 
-button {
-  border: 1px solid rgba(255,255,255,.12);
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-  color: var(--text);
-  border-radius: 12px;
-  padding: 10px 12px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: transform .12s ease, background .12s ease, border-color .12s ease;
-}
+    .brand p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:.88rem;
+    }
 
-button:hover {
-  transform: translateY(-1px);
-  border-color: rgba(125,211,252,.5);
-  background: linear-gradient(180deg, rgba(125,211,252,.15), rgba(255,255,255,.05));
-}
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
 
-button.secondary { color: var(--muted); font-weight: 600; }
-button.danger:hover { border-color: rgba(248,113,113,.5); }
+    .btn{
+      appearance:none;
+      border:0;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;
+      padding:11px 16px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      box-shadow:var(--shadow);
+    }
 
-.small {
-  font-size: .86rem;
-  color: var(--muted);
-  line-height: 1.5;
-}
+    .btn.secondary{
+      background:#fff;
+      color:var(--brand3);
+      border:1px solid rgba(217,119,6,.22);
+      box-shadow:none;
+    }
 
-.toolbar-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
-}
+    .hero{
+      width:min(100%,var(--max));
+      margin:0 auto;
+      padding:26px 18px 10px;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+    }
 
-.workspace {
-  position: relative;
-  overflow: hidden;
-}
+    .hero-card,.glass-card,.section-card{
+      background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,248,231,.96));
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      box-shadow:var(--shadow);
+    }
 
-.topbar {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  z-index: 20;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  pointer-events: none;
-}
+    .hero-card{
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+    }
 
-.pill {
-  pointer-events: auto;
-  background: rgba(12,16,31,.75);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 10px 14px;
-  color: var(--muted);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
-  font-size: .92rem;
-}
+    .hero-card::after{
+      content:"";
+      position:absolute;
+      right:-30px;
+      top:-30px;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(245,158,11,.18), transparent 68%);
+      pointer-events:none;
+    }
 
-.board {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: 0 0;
-}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:.82rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--brand3);
+      font-weight:800;
+      background:#fff7ed;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(217,119,6,.18);
+    }
 
-svg.wires {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
+    .hero h2{
+      margin:14px 0 12px;
+      font-size:clamp(2rem,4vw,3.3rem);
+      line-height:1.06;
+      letter-spacing:-.03em;
+    }
 
-.wire {
-  fill: none;
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: .95;
-  filter: drop-shadow(0 0 10px rgba(125,211,252,.18));
-}
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:1.03rem;
+    }
 
-.wire.on { stroke: var(--node-on); }
-.wire.off { stroke: #64748b; }
-.wire.pending { stroke: var(--warn); stroke-dasharray: 8 8; }
+    .hero-points{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
 
-.component {
-  position: absolute;
-  width: 160px;
-  min-height: 92px;
-  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-  border: 1px solid rgba(255,255,255,.13);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  z-index: 2;
-  user-select: none;
-}
+    .point{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:600;
+      color:#4b3b1b;
+    }
 
-.component.input, .component.output {
-  width: 150px;
-}
+    .hero-side{
+      display:grid;
+      gap:18px;
+    }
 
-.component .head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px 8px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  cursor: grab;
-}
+    .glass-card{
+      padding:20px;
+    }
 
-.component.dragging .head { cursor: grabbing; }
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
 
-.kind {
-  font-size: .72rem;
-  letter-spacing: .08em;
-  color: var(--muted);
-  text-transform: uppercase;
-  font-weight: 800;
-}
+    .metric{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+    }
 
-.name {
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-top: 2px;
-}
+    .metric strong{
+      display:block;
+      font-size:1.2rem;
+      color:var(--brand3);
+    }
 
-.chip {
-  font-size: .72rem;
-  padding: 5px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color: var(--muted);
-  font-weight: 700;
-}
+    .layout{
+      width:min(100%,var(--max));
+      margin:0 auto;
+      padding:16px 18px 40px;
+      display:grid;
+      grid-template-columns:300px minmax(0,1fr);
+      gap:22px;
+      align-items:start;
+    }
 
-.body {
-  padding: 10px 12px 12px;
-  position: relative;
-  min-height: 54px;
-}
+    .toc{
+      position:sticky;
+      top:84px;
+      padding:18px;
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+    }
 
-.state-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 999px;
-  padding: 8px 10px;
-  font-size: .84rem;
-  font-weight: 800;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-}
+    .toc h3{
+      margin:0 0 10px;
+      font-size:1rem;
+    }
 
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--node-off);
-  box-shadow: 0 0 0 2px rgba(255,255,255,.06);
-}
+    .toc a{
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--text);
+      font-weight:600;
+    }
 
-.dot.on { background: var(--node-on); box-shadow: 0 0 14px rgba(34,197,94,.75); }
-.dot.off { background: var(--node-off); }
+    .toc a:hover{
+      background:#fff7ed;
+      text-decoration:none;
+      color:var(--brand3);
+    }
 
-.toggle {
-  margin-top: 10px;
-  width: 100%;
-}
+    .content{
+      display:grid;
+      gap:20px;
+    }
 
-.pin {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.8);
-  background: var(--node-off);
-  box-shadow: 0 0 0 4px rgba(255,255,255,.06);
-  cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease;
-}
+    .section-card{
+      padding:24px;
+    }
 
-.pin:hover { transform: scale(1.1); }
-.pin.on { background: var(--node-on); box-shadow: 0 0 18px rgba(34,197,94,.7); }
-.pin.pending { background: var(--warn); box-shadow: 0 0 18px rgba(251,191,36,.7); }
+    .section-card h3{
+      margin:0 0 14px;
+      font-size:1.45rem;
+      color:#5a3a05;
+    }
 
-.pin.input-pin { left: -9px; }
-.pin.output-pin { right: -9px; }
+    .section-card h4{
+      margin:18px 0 10px;
+      font-size:1.08rem;
+      color:#6b4208;
+    }
 
-.pin-label {
-  position: absolute;
-  font-size: .68rem;
-  color: var(--muted);
-  font-weight: 700;
-  pointer-events: none;
-  white-space: nowrap;
-}
+    .lead{
+      font-size:1.02rem;
+      color:var(--muted);
+    }
 
-.pin-label.left { left: 16px; transform: translateY(-50%); }
-.pin-label.right { right: 16px; transform: translateY(-50%); }
+    .video-shell{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
 
-.delete-btn {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  border-radius: 10px;
-  font-size: .74rem;
-  padding: 6px 8px;
-}
+    .video-head{
+      padding:16px 18px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fffaf0,#fff4df);
+    }
 
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
-}
+    .video-wrap{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      background:#000;
+    }
 
-.legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--muted);
-  font-size: .82rem;
-}
+    .video-wrap iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
 
-.mini-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-}
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
 
-.truth {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 8px;
-}
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
 
-.truth div {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px;
-  padding: 8px;
-  font-size: .82rem;
-  color: var(--muted);
-}
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+    }
 
-.footer-note {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: .82rem;
-  line-height: 1.5;
-}
+    ul.clean,ol.clean{
+      margin:12px 0 0 0;
+      padding-left:22px;
+    }
 
-@media (max-width: 980px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar {
-    position: absolute;
-    left: 12px;
-    top: 12px;
-    bottom: 12px;
-    width: min(340px, calc(100vw - 24px));
-    z-index: 50;
-    border-right: none;
-    border: 1px solid var(--line);
-  }
-  .workspace { margin-left: 0; }
-}
+    .quote{
+      margin-top:12px;
+      padding:18px;
+      border-radius:20px;
+      background:linear-gradient(135deg,#fff7ed,#fffbeb);
+      border:1px solid rgba(217,119,6,.18);
+      font-weight:700;
+      color:#7c4a03;
+    }
 
+    .note-box{
+      display:grid;
+      gap:12px;
+    }
+
+    textarea.notes{
+      width:100%;
+      min-height:180px;
+      resize:vertical;
+      border-radius:18px;
+      border:1px solid rgba(217,119,6,.22);
+      padding:14px;
+      font:inherit;
+      background:#fffdf9;
+      color:var(--text);
+      outline:none;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .save-msg{
+      font-weight:700;
+      color:var(--ok);
+      min-height:24px;
+    }
+
+    .checklist{
+      display:grid;
+      gap:10px;
+    }
+
+    .check{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .check input{
+      margin-top:5px;
+      transform:scale(1.2);
+      accent-color:var(--brand2);
+    }
+
+    .progress-wrap{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .progress-bar{
+      width:100%;
+      height:14px;
+      background:#fde7b5;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:10px;
+    }
+
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--brand),var(--brand2));
+      border-radius:999px;
+      transition:width .3s ease;
+    }
+
+    .editor-shell{
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .editor-head{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      background:linear-gradient(180deg,#fffaf0,#fff4df);
+    }
+
+    .editor-frame{
+      width:100%;
+      height:620px;
+      border:0;
+      display:block;
+      background:#fff;
+    }
+
+    .mcq-list{
+      display:grid;
+      gap:18px;
+    }
+
+    .mcq{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .mcq h4{
+      margin:0 0 12px;
+      font-size:1.04rem;
+      color:var(--text);
+    }
+
+    .options{
+      display:grid;
+      gap:10px;
+    }
+
+    .opt{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px 14px;
+      border:1px solid rgba(146,98,16,.12);
+      border-radius:14px;
+      background:#fffdf9;
+      cursor:pointer;
+    }
+
+    .opt:hover{
+      background:#fff7ed;
+    }
+
+    .mcq-result{
+      margin-top:10px;
+      font-weight:700;
+      min-height:22px;
+    }
+
+    .mcq-result.ok{color:var(--ok)}
+    .mcq-result.bad{color:var(--bad)}
+
+    .score-board{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:18px;
+      border-radius:20px;
+      background:linear-gradient(135deg,#fff7ed,#fffbeb);
+      border:1px solid rgba(217,119,6,.18);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:700;
+    }
+
+    .footer{
+      width:min(100%,var(--max));
+      margin:0 auto;
+      padding:0 18px 40px;
+    }
+
+    .footer-card{
+      background:linear-gradient(180deg,#fff8e8,#fffef9);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:24px;
+      text-align:center;
+    }
+
+    [id^="speak"]{
+      scroll-margin-top:110px;
+    }
+
+    .pp-speaking-active{
+      outline:3px solid rgba(245,158,11,.28);
+      border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,247,237,.9),rgba(255,255,255,.9));
+      transition:.2s ease;
+    }
+
+    @media (max-width: 1080px){
+      .hero{grid-template-columns:1fr}
+      .layout{grid-template-columns:1fr}
+      .toc{position:relative;top:0}
+    }
+
+    @media (max-width: 760px){
+      .grid-2,.grid-3,.hero-points,.mini-grid{
+        grid-template-columns:1fr;
+      }
+      .hero-card,.glass-card,.section-card{padding:18px}
+      .topbar-inner{padding:10px 12px}
+      .brand h1{font-size:.96rem}
+      .editor-frame{height:500px}
+    }
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <h1 class="title">Interactive Digital Circuit Visualizer</h1>
-      <p class="subtitle">
-        Add inputs, logic gates, and outputs. Click pins to connect wires. Toggle inputs and watch the whole circuit evaluate live.
-      </p><section class="section">
-    <h2>Add components</h2>
-    <div class="grid" id="addButtons"></div>
-  </section>
 
-  <section class="section">
-    <h2>Tools</h2>
-    <div class="toolbar-row">
-      <button id="clearWiresBtn" class="secondary">Clear wires</button>
-      <button id="resetBtn" class="secondary danger">Reset board</button>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">🎬</div>
+        <div>
+          <h1>Programmer's Picnic — Video Lesson V2 Ultra</h1>
+          <p>Watch, think, note, answer, and practice</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="btn secondary" href="#video">Watch</a>
+        <a class="btn secondary" href="#mcqs">MCQs</a>
+        <a class="btn" href="#editor">Practice</a>
+      </div>
     </div>
-    <div class="toolbar-row">
-      <button id="demoBtn">Load demo</button>
-      <button id="truthBtn" class="secondary">Show truth hints</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-card">
+      <div class="eyebrow" id="speak0" data-pp-speak-title="Video lesson introduction">🎓 Guided lesson experience</div>
+      <h2 id="speak1">Turn one video into a full learning session.</h2>
+      <p id="speak2">
+        This page helps the learner do much more than just watch. It encourages understanding, reflection,
+        note-making, practice, and self-testing. That is where real learning begins.
+      </p>
+
+      <div class="hero-points">
+        <div class="point" id="speak3">✅ Embedded video for direct learning</div>
+        <div class="point" id="speak4">✅ Speak-tag-ready reading experience</div>
+        <div class="point" id="speak5">✅ Interactive notes and checklist</div>
+        <div class="point" id="speak6">✅ MCQs and embedded editor practice</div>
+      </div>
     </div>
-    <p class="footer-note">
-      Connection rule: click an <strong>output pin</strong>, then click an <strong>input pin</strong>. Each input pin accepts one wire. Outputs can feed many inputs.
-    </p>
-  </section>
 
-  <section class="section">
-    <h2>Status</h2>
-    <div class="small" id="statusText">Ready. Build a circuit.</div>
-    <div class="legend">
-      <span><i class="mini-dot" style="background:#22c55e"></i> Logic 1</span>
-      <span><i class="mini-dot" style="background:#475569"></i> Logic 0</span>
-      <span><i class="mini-dot" style="background:#fbbf24"></i> Pending connection</span>
-    </div>
-    <div class="truth" id="truthBox" style="display:none"></div>
-  </section>
-
-  <section class="section">
-    <h2>How it works</h2>
-    <div class="small">
-      <div><strong>INPUT</strong> gives 0 or 1.</div>
-      <div><strong>AND</strong> outputs 1 only if all inputs are 1.</div>
-      <div><strong>OR</strong> outputs 1 if at least one input is 1.</div>
-      <div><strong>XOR</strong> outputs 1 if inputs differ.</div>
-      <div><strong>NOT</strong> flips 0 to 1 and 1 to 0.</div>
-      <div><strong>NAND</strong>, <strong>NOR</strong>, <strong>XNOR</strong> are inverted forms.</div>
-      <div><strong>OUTPUT</strong> displays the final signal.</div>
-    </div>
-  </section>
-</aside>
-
-<main class="workspace">
-  <div class="topbar">
-    <div class="pill">Drag components by the header. Build combinational circuits visually.</div>
-    <div class="pill" id="summaryPill">0 components • 0 wires</div>
-  </div>
-  <div class="board" id="board"></div>
-  <svg class="wires" id="wireLayer"></svg>
-</main>
-
-  </div>  <script>
-    (() => {
-      const board = document.getElementById('board');
-      const wireLayer = document.getElementById('wireLayer');
-      const addButtons = document.getElementById('addButtons');
-      const statusText = document.getElementById('statusText');
-      const summaryPill = document.getElementById('summaryPill');
-      const truthBox = document.getElementById('truthBox');
-
-      const componentTypes = [
-        { type: 'INPUT', label: 'Input' },
-        { type: 'OUTPUT', label: 'Output' },
-        { type: 'AND', label: 'AND' },
-        { type: 'OR', label: 'OR' },
-        { type: 'NOT', label: 'NOT' },
-        { type: 'XOR', label: 'XOR' },
-        { type: 'NAND', label: 'NAND' },
-        { type: 'NOR', label: 'NOR' },
-        { type: 'XNOR', label: 'XNOR' }
-      ];
-
-      const gateSpec = {
-        INPUT: { inputs: 0, outputs: 1 },
-        OUTPUT: { inputs: 1, outputs: 0 },
-        AND: { inputs: 2, outputs: 1 },
-        OR: { inputs: 2, outputs: 1 },
-        NOT: { inputs: 1, outputs: 1 },
-        XOR: { inputs: 2, outputs: 1 },
-        NAND: { inputs: 2, outputs: 1 },
-        NOR: { inputs: 2, outputs: 1 },
-        XNOR: { inputs: 2, outputs: 1 }
-      };
-
-      let nextId = 1;
-      const components = new Map();
-      let wires = [];
-      let pendingConnection = null;
-      let showTruth = false;
-
-      componentTypes.forEach(item => {
-        const btn = document.createElement('button');
-        btn.textContent = item.label;
-        btn.addEventListener('click', () => addComponent(item.type));
-        addButtons.appendChild(btn);
-      });
-
-      document.getElementById('clearWiresBtn').addEventListener('click', () => {
-        wires = [];
-        pendingConnection = null;
-        renderAll();
-        setStatus('All wires removed.');
-      });
-
-      document.getElementById('resetBtn').addEventListener('click', () => {
-        components.clear();
-        wires = [];
-        pendingConnection = null;
-        board.innerHTML = '';
-        renderAll();
-        setStatus('Board reset.');
-      });
-
-      document.getElementById('truthBtn').addEventListener('click', () => {
-        showTruth = !showTruth;
-        truthBox.style.display = showTruth ? 'grid' : 'none';
-        renderTruthHints();
-      });
-
-      document.getElementById('demoBtn').addEventListener('click', loadDemo);
-
-      function setStatus(text) {
-        statusText.textContent = text;
-      }
-
-      function addComponent(type, x = null, y = null, initialState = 0) {
-        const id = 'c' + (nextId++);
-        const spec = gateSpec[type];
-        const comp = {
-          id,
-          type,
-          name: type + ' ' + id.slice(1),
-          x: x ?? (80 + (components.size % 4) * 190),
-          y: y ?? (110 + Math.floor(components.size / 4) * 150),
-          state: initialState,
-          inputs: new Array(spec.inputs).fill(0),
-          outputs: new Array(spec.outputs).fill(type === 'INPUT' ? initialState : 0)
-        };
-        components.set(id, comp);
-        createComponentElement(comp);
-        evaluateCircuit();
-        renderAll();
-        return comp;
-      }
-
-      function createComponentElement(comp) {
-        const el = document.createElement('div');
-        el.className = 'component ' + comp.type.toLowerCase();
-        el.dataset.id = comp.id;
-        el.innerHTML = `
-          <div class="head">
-            <div>
-              <div class="kind">${comp.type}</div>
-              <div class="name">${escapeHtml(comp.name)}</div>
-            </div>
-            <div class="chip">${gateSpec[comp.type].inputs}→${gateSpec[comp.type].outputs}</div>
+    <div class="hero-side">
+      <div class="glass-card">
+        <h3 id="speak7" style="margin:0 0 8px;">How to use this page</h3>
+        <p id="speak8" class="lead" style="margin:0;">
+          Watch the video carefully, pause at important points, write your notes, answer the MCQs, and then try the concept yourself inside the practice editor.
+        </p>
+        <div class="mini-grid">
+          <div class="metric">
+            <strong id="speak9">Watch</strong>
+            <span>Understand the explanation visually</span>
           </div>
-          <div class="body"></div>
-        `;
-        board.appendChild(el);
-        comp.el = el;
-        positionComponent(comp);
-        makeDraggable(comp);
-        renderComponent(comp);
+          <div class="metric">
+            <strong id="speak10">Think</strong>
+            <span>Ask why each step happens</span>
+          </div>
+          <div class="metric">
+            <strong id="speak11">Test</strong>
+            <span>Check yourself with MCQs</span>
+          </div>
+          <div class="metric">
+            <strong id="speak12">Practice</strong>
+            <span>Use the editor to build confidence</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 id="speak13" style="margin:0 0 8px;">Learning promise</h3>
+        <p id="speak14" class="lead" style="margin:0;">
+          Do not merely consume the video. Interact with it mentally. Pause, predict, and explain the logic in your own words. That is how passive watching becomes active learning.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <main class="layout">
+    <aside class="toc">
+      <h3>On this page</h3>
+      <a href="#video">1. Video lesson</a>
+      <a href="#objectives">2. Learning objectives</a>
+      <a href="#concepts">3. Key concepts</a>
+      <a href="#steps">4. How to understand the video</a>
+      <a href="#notes">5. Interactive notes</a>
+      <a href="#practice">6. Practice checklist</a>
+      <a href="#mcqs">7. MCQs</a>
+      <a href="#editor">8. Editor embed</a>
+      <a href="#next">9. Next step</a>
+    </aside>
+
+    <section class="content">
+
+      <section class="section-card" id="video">
+        <h3 id="speak15">Embedded video lesson</h3>
+        <p id="speak16" class="lead">
+          Watch the video once for the full flow. Then watch it a second time with pauses. During the second viewing, write down the main idea, the steps used, and any question that comes to your mind.
+        </p>
+
+        <div class="video-shell">
+          <div class="video-head">
+            <div>
+              <strong id="speak17">Lesson video</strong>
+              <div class="small">Responsive embedded YouTube player</div>
+            </div>
+            <a class="btn secondary" target="_blank"
+               href="https://www.youtube.com/watch?v=IHvQXgVN8Vc">Open on YouTube</a>
+          </div>
+          <div class="video-wrap">
+            <iframe
+              src="https://www.youtube.com/embed/IHvQXgVN8Vc?si=Ea3ESoum4fw8vD60"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" id="objectives">
+        <h3 id="speak18">What this page helps you achieve</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4 id="speak19">Learning objective 1</h4>
+            <p id="speak20">Understand the central idea being explained in the video and express it in simple language.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak21">Learning objective 2</h4>
+            <p id="speak22">Recognize the flow of logic, steps, or process used in the explanation.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak23">Learning objective 3</h4>
+            <p id="speak24">Connect the explanation with actual use, problem solving, or implementation.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak25">Learning objective 4</h4>
+            <p id="speak26">Test understanding with questions and then reinforce it through practice.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" id="concepts">
+        <h3 id="speak27">Key concepts to watch for</h3>
+        <div class="grid-3">
+          <div class="card">
+            <h4 id="speak28">The main idea</h4>
+            <p id="speak29">What is the big concept? Every good video usually revolves around one central teaching point.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak30">The method</h4>
+            <p id="speak31">What steps, technique, pattern, or sequence are being demonstrated?</p>
+          </div>
+          <div class="card">
+            <h4 id="speak32">The reason</h4>
+            <p id="speak33">Why is this method useful? Faster? Clearer? More practical? More efficient?</p>
+          </div>
+        </div>
+
+        <div class="quote" id="speak34">
+          Do not watch like a spectator. Watch like a builder. Ask: What is happening? Why is it happening? Can I reproduce it myself?
+        </div>
+      </section>
+
+      <section class="section-card" id="steps">
+        <h3 id="speak35">A simple way to understand the video deeply</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4 id="speak36">Step 1 — Observe the problem</h4>
+            <p id="speak37">What is the issue, task, or question that the video is trying to address?</p>
+          </div>
+          <div class="card">
+            <h4 id="speak38">Step 2 — Follow the approach</h4>
+            <p id="speak39">Notice how the speaker starts solving or explaining it. That starting point often matters a lot.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak40">Step 3 — Track the flow</h4>
+            <p id="speak41">At each stage, ask what changed and why the next step became possible.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak42">Step 4 — Explain the result</h4>
+            <p id="speak43">If you can explain the final outcome in your own words, you have started owning the idea.</p>
+          </div>
+        </div>
+
+        <h4 id="speak44">Common mistakes</h4>
+        <ul class="clean">
+          <li id="speak45">Watching continuously without pausing to think</li>
+          <li id="speak46">Copying words without understanding the logic</li>
+          <li id="speak47">Skipping practice after watching</li>
+          <li id="speak48">Ignoring doubts instead of writing them down</li>
+        </ul>
+      </section>
+
+      <section class="section-card" id="notes">
+        <h3 id="speak49">Interactive notes area</h3>
+        <p id="speak50" class="lead">
+          Write your own summary. The best notes are short, clear, and personal. This box saves to your browser automatically.
+        </p>
+
+        <div class="note-box">
+          <textarea id="lessonNotes" class="notes" placeholder="Write here:
+- What is the main idea?
+- What steps did the video use?
+- What was new for you?
+- What question do you still have?
+"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="saveNotesBtn" type="button">Save notes</button>
+            <button class="btn secondary" id="clearNotesBtn" type="button">Clear notes</button>
+          </div>
+          <div class="save-msg" id="saveMsg"></div>
+          <div class="small">Your notes are stored locally in this browser.</div>
+        </div>
+      </section>
+
+      <section class="section-card" id="practice">
+        <h3 id="speak51">Interactive practice checklist</h3>
+        <p id="speak52" class="lead">
+          As you complete each action, your progress bar will move. This helps transform watching into learning.
+        </p>
+
+        <div class="checklist" id="checklist">
+          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak53">I watched the full video once without interruption.</span></label>
+          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak54">I watched again and paused at important moments.</span></label>
+          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak55">I wrote my own notes in simple words.</span></label>
+          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak56">I identified the main idea and the key steps.</span></label>
+          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak57">I answered the MCQs honestly.</span></label>
+          <label class="check"><input type="checkbox" class="learn-check" /><span id="speak58">I used the editor or practice area after watching.</span></label>
+        </div>
+
+        <div class="progress-wrap" style="margin-top:16px;">
+          <strong>Learning progress</strong>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="small" id="progressText" style="margin-top:8px;">0 of 6 complete</div>
+        </div>
+      </section>
+
+      <section class="section-card" id="mcqs">
+        <h3 id="speak59">MCQs — check your understanding</h3>
+        <p id="speak60" class="lead">
+          These questions are designed to test learning behavior and conceptual clarity around the video lesson.
+        </p>
+
+        <div class="score-board">
+          <div class="pill">Score: <span id="scoreValue">0</span> / 6</div>
+          <button class="btn" id="submitQuizBtn" type="button">Check answers</button>
+        </div>
+
+        <div class="mcq-list" style="margin-top:18px;">
+          <div class="mcq" data-answer="b">
+            <h4 id="speak61">1. What is the best way to learn from a teaching video?</h4>
+            <div class="options">
+              <label class="opt"><input type="radio" name="q1" value="a" /> Watch it once quickly and move on</label>
+              <label class="opt"><input type="radio" name="q1" value="b" /> Watch, pause, think, and make notes</label>
+              <label class="opt"><input type="radio" name="q1" value="c" /> Memorize only the ending</label>
+              <label class="opt"><input type="radio" name="q1" value="d" /> Skip practice entirely</label>
+            </div>
+            <div class="mcq-result"></div>
+          </div>
+
+          <div class="mcq" data-answer="c">
+            <h4 id="speak62">2. Why should a learner pause the video at important moments?</h4>
+            <div class="options">
+              <label class="opt"><input type="radio" name="q2" value="a" /> To make the video longer</label>
+              <label class="opt"><input type="radio" name="q2" value="b" /> To avoid finishing the lesson</label>
+              <label class="opt"><input type="radio" name="q2" value="c" /> To think and process what was explained</label>
+              <label class="opt"><input type="radio" name="q2" value="d" /> To reduce screen brightness</label>
+            </div>
+            <div class="mcq-result"></div>
+          </div>
+
+          <div class="mcq" data-answer="a">
+            <h4 id="speak63">3. Which of these is the strongest sign of understanding?</h4>
+            <div class="options">
+              <label class="opt"><input type="radio" name="q3" value="a" /> Explaining the idea in your own words</label>
+              <label class="opt"><input type="radio" name="q3" value="b" /> Watching silently without thinking</label>
+              <label class="opt"><input type="radio" name="q3" value="c" /> Copying every sentence exactly</label>
+              <label class="opt"><input type="radio" name="q3" value="d" /> Skipping all reflection</label>
+            </div>
+            <div class="mcq-result"></div>
+          </div>
+
+          <div class="mcq" data-answer="d">
+            <h4 id="speak64">4. What should you look for while watching the video?</h4>
+            <div class="options">
+              <label class="opt"><input type="radio" name="q4" value="a" /> Only the background color</label>
+              <label class="opt"><input type="radio" name="q4" value="b" /> Only the video length</label>
+              <label class="opt"><input type="radio" name="q4" value="c" /> Only the final screen</label>
+              <label class="opt"><input type="radio" name="q4" value="d" /> The main idea, the method, and the reason</label>
+            </div>
+            <div class="mcq-result"></div>
+          </div>
+
+          <div class="mcq" data-answer="b">
+            <h4 id="speak65">5. What is the role of the practice editor on this page?</h4>
+            <div class="options">
+              <label class="opt"><input type="radio" name="q5" value="a" /> Decoration only</label>
+              <label class="opt"><input type="radio" name="q5" value="b" /> To turn understanding into action</label>
+              <label class="opt"><input type="radio" name="q5" value="c" /> To replace the video completely</label>
+              <label class="opt"><input type="radio" name="q5" value="d" /> To disable note-making</label>
+            </div>
+            <div class="mcq-result"></div>
+          </div>
+
+          <div class="mcq" data-answer="a">
+            <h4 id="speak66">6. Which habit hurts learning the most?</h4>
+            <div class="options">
+              <label class="opt"><input type="radio" name="q6" value="a" /> Passive watching without thinking</label>
+              <label class="opt"><input type="radio" name="q6" value="b" /> Writing notes after pausing</label>
+              <label class="opt"><input type="radio" name="q6" value="c" /> Practicing after learning</label>
+              <label class="opt"><input type="radio" name="q6" value="d" /> Reflecting on mistakes</label>
+            </div>
+            <div class="mcq-result"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" id="editor">
+        <h3 id="speak67">Embedded practice editor</h3>
+        <p id="speak68" class="lead">
+          After watching the video, try to reproduce the idea in code, notes, structure, or pseudo code. Practice is where confidence grows.
+        </p>
+
+        <div class="editor-shell">
+          <div class="editor-head">
+            <div>
+              <strong id="speak69">Practice lab</strong>
+              <div class="small">Use the embedded editor below to experiment</div>
+            </div>
+            <a class="btn secondary" target="_blank"
+               href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html">Open editor separately</a>
+          </div>
+
+          <iframe
+            class="editor-frame"
+            src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+            title="Embedded HTML editor"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h4 id="speak70">Suggested practice ideas</h4>
+          <ol class="clean">
+            <li id="speak71">Write the main idea of the video in your own words.</li>
+            <li id="speak72">List the exact steps shown in the explanation.</li>
+            <li id="speak73">Build a tiny example inspired by the video.</li>
+            <li id="speak74">Change one part and observe what happens.</li>
+            <li id="speak75">Write one doubt and then try to answer it yourself.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section-card" id="next">
+        <h3 id="speak76">What to do next</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4 id="speak77">Immediate next step</h4>
+            <p id="speak78">Rewatch the most important section of the video and update your notes with more clarity.</p>
+          </div>
+          <div class="card">
+            <h4 id="speak79">Skill-building step</h4>
+            <p id="speak80">Use the editor to build a mini exercise based on the concept you just learned.</p>
+          </div>
+        </div>
+
+        <div class="quote" id="speak81">
+          The learner who practices after watching moves ahead of the learner who only watches five more videos.
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-card">
+      <h3 id="speak82" style="margin-top:0;">Programmer's Picnic</h3>
+      <p id="speak83" class="lead" style="margin-bottom:0;">
+        Learn actively. Think deeply. Practice honestly. Build steadily.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      "use strict";
+
+      /* ---------------- NOTES ---------------- */
+      var NOTES_KEY = "pp_video_lesson_notes_v2_ultra";
+      var notesEl = document.getElementById("lessonNotes");
+      var saveBtn = document.getElementById("saveNotesBtn");
+      var clearBtn = document.getElementById("clearNotesBtn");
+      var saveMsg = document.getElementById("saveMsg");
+
+      try{
+        var saved = localStorage.getItem(NOTES_KEY);
+        if(saved) notesEl.value = saved;
+      }catch(e){}
+
+      function flashMessage(msg){
+        saveMsg.textContent = msg;
+        setTimeout(function(){
+          if(saveMsg.textContent === msg) saveMsg.textContent = "";
+        }, 1800);
       }
 
-      function renderComponent(comp) {
-        const body = comp.el.querySelector('.body');
-        body.innerHTML = '';
-
-        const stateBadge = document.createElement('div');
-        stateBadge.className = 'state-badge';
-        const currentValue = comp.type === 'OUTPUT'
-          ? comp.inputs[0] || 0
-          : (comp.outputs[0] || 0);
-        stateBadge.innerHTML = `<span class="dot ${currentValue ? 'on' : 'off'}"></span> ${currentValue ? 'Logic 1' : 'Logic 0'}`;
-        body.appendChild(stateBadge);
-
-        if (comp.type === 'INPUT') {
-          const toggle = document.createElement('button');
-          toggle.className = 'toggle';
-          toggle.textContent = comp.state ? 'Set to 0' : 'Set to 1';
-          toggle.addEventListener('click', () => {
-            comp.state = comp.state ? 0 : 1;
-            comp.outputs[0] = comp.state;
-            evaluateCircuit();
-            renderAll();
-            setStatus(`${comp.name} changed to ${comp.state}.`);
-          });
-          body.appendChild(toggle);
+      function saveNotes(){
+        try{
+          localStorage.setItem(NOTES_KEY, notesEl.value);
+          flashMessage("Notes saved.");
+        }catch(e){
+          saveMsg.textContent = "Could not save notes in this browser.";
         }
-
-        if (comp.type !== 'INPUT') {
-          const info = document.createElement('div');
-          info.className = 'footer-note';
-          info.textContent = comp.type === 'OUTPUT'
-            ? 'Output lamp reflects the incoming signal.'
-            : `Inputs: ${comp.inputs.join(', ')} • Output: ${comp.outputs.join(', ')}`;
-          body.appendChild(info);
-        }
-
-        const del = document.createElement('button');
-        del.className = 'delete-btn secondary';
-        del.textContent = 'Delete';
-        del.addEventListener('click', () => deleteComponent(comp.id));
-        body.appendChild(del);
-
-        renderPins(comp);
       }
 
-      function deleteComponent(id) {
-        const comp = components.get(id);
-        if (!comp) return;
-        comp.el.remove();
-        components.delete(id);
-        wires = wires.filter(w => w.from.id !== id && w.to.id !== id);
-        if (pendingConnection && pendingConnection.id === id) pendingConnection = null;
-        evaluateCircuit();
-        renderAll();
-        setStatus(`${comp.name} deleted.`);
-      }
+      saveBtn.addEventListener("click", saveNotes);
 
-      function renderPins(comp) {
-        comp.el.querySelectorAll('.pin, .pin-label').forEach(n => n.remove());
-        const spec = gateSpec[comp.type];
-        const inGap = spec.inputs > 0 ? 58 / (spec.inputs + 1) : 0;
-        const outGap = spec.outputs > 0 ? 58 / (spec.outputs + 1) : 0;
-
-        for (let i = 0; i < spec.inputs; i++) {
-          const top = 34 + (i + 1) * inGap;
-          const pin = document.createElement('div');
-          pin.className = 'pin input-pin ' + ((comp.inputs[i] || 0) ? 'on' : '');
-          pin.style.top = top + 'px';
-          pin.dataset.kind = 'input';
-          pin.dataset.index = i;
-          pin.addEventListener('click', (e) => {
-            e.stopPropagation();
-            handleInputPinClick(comp.id, i);
-          });
-
-          const label = document.createElement('div');
-          label.className = 'pin-label left';
-          label.style.top = (top + 9) + 'px';
-          label.textContent = 'IN ' + (i + 1);
-
-          comp.el.appendChild(pin);
-          comp.el.appendChild(label);
-        }
-
-        for (let i = 0; i < spec.outputs; i++) {
-          const top = 34 + (i + 1) * outGap;
-          const pin = document.createElement('div');
-          const isPending = pendingConnection && pendingConnection.id === comp.id && pendingConnection.index === i;
-          pin.className = 'pin output-pin ' + ((comp.outputs[i] || 0) ? 'on' : '') + (isPending ? ' pending' : '');
-          pin.style.top = top + 'px';
-          pin.dataset.kind = 'output';
-          pin.dataset.index = i;
-          pin.addEventListener('click', (e) => {
-            e.stopPropagation();
-            handleOutputPinClick(comp.id, i);
-          });
-
-          const label = document.createElement('div');
-          label.className = 'pin-label right';
-          label.style.top = (top + 9) + 'px';
-          label.textContent = 'OUT ' + (i + 1);
-
-          comp.el.appendChild(pin);
-          comp.el.appendChild(label);
-        }
-      }
-
-      function handleOutputPinClick(id, index) {
-        pendingConnection = { id, index };
-        renderAll();
-        const comp = components.get(id);
-        setStatus(`Selected ${comp.name} output ${index + 1}. Now click an input pin.`);
-      }
-
-      function handleInputPinClick(id, index) {
-        const target = components.get(id);
-        if (!pendingConnection) {
-          setStatus(`Click an output pin first, then connect it to ${target.name} input ${index + 1}.`);
-          return;
-        }
-
-        if (pendingConnection.id === id) {
-          setStatus('Cannot connect a component output to its own input in this basic visualizer.');
-          pendingConnection = null;
-          renderAll();
-          return;
-        }
-
-        wires = wires.filter(w => !(w.to.id === id && w.to.index === index));
-        wires.push({
-          from: { id: pendingConnection.id, index: pendingConnection.index },
-          to: { id, index }
-        });
-        const source = components.get(pendingConnection.id);
-        pendingConnection = null;
-        evaluateCircuit();
-        renderAll();
-        setStatus(`Connected ${source.name} → ${target.name} input ${index + 1}.`);
-      }
-
-      function evaluateCircuit() {
-        for (const comp of components.values()) {
-          if (comp.type !== 'INPUT') {
-            comp.inputs = comp.inputs.map(() => 0);
-            if (comp.outputs.length) comp.outputs = comp.outputs.map(() => 0);
-          } else {
-            comp.outputs[0] = comp.state ? 1 : 0;
-          }
-        }
-
-        for (let pass = 0; pass < 8; pass++) {
-          for (const comp of components.values()) {
-            for (let i = 0; i < comp.inputs.length; i++) {
-              const wire = wires.find(w => w.to.id === comp.id && w.to.index === i);
-              if (!wire) {
-                comp.inputs[i] = 0;
-              } else {
-                const source = components.get(wire.from.id);
-                comp.inputs[i] = source ? (source.outputs[wire.from.index] || 0) : 0;
-              }
-            }
-
-            const next = computeOutputs(comp.type, comp.inputs, comp.state);
-            comp.outputs = next;
-          }
-        }
-      }
-
-      function computeOutputs(type, inputs, state) {
-        switch (type) {
-          case 'INPUT': return [state ? 1 : 0];
-          case 'OUTPUT': return [];
-          case 'AND': return [inputs.every(Boolean) ? 1 : 0];
-          case 'OR': return [inputs.some(Boolean) ? 1 : 0];
-          case 'NOT': return [inputs[0] ? 0 : 1];
-          case 'XOR': return [Number(Boolean(inputs[0]) !== Boolean(inputs[1]))];
-          case 'NAND': return [inputs.every(Boolean) ? 0 : 1];
-          case 'NOR': return [inputs.some(Boolean) ? 0 : 1];
-          case 'XNOR': return [Number(Boolean(inputs[0]) === Boolean(inputs[1]))];
-          default: return [0];
-        }
-      }
-
-      function renderAll() {
-        evaluateCircuit();
-        for (const comp of components.values()) {
-          positionComponent(comp);
-          renderComponent(comp);
-        }
-        renderWires();
-        renderTruthHints();
-        summaryPill.textContent = `${components.size} components • ${wires.length} wires`;
-      }
-
-      function renderWires() {
-        const rect = board.getBoundingClientRect();
-        wireLayer.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
-        wireLayer.innerHTML = '';
-
-        for (const wire of wires) {
-          const srcComp = components.get(wire.from.id);
-          const dstComp = components.get(wire.to.id);
-          if (!srcComp || !dstComp) continue;
-
-          const srcPin = srcComp.el.querySelector(`.pin.output-pin[data-index="${wire.from.index}"]`);
-          const dstPin = dstComp.el.querySelector(`.pin.input-pin[data-index="${wire.to.index}"]`);
-          if (!srcPin || !dstPin) continue;
-
-          const p1 = centerPoint(srcPin, rect);
-          const p2 = centerPoint(dstPin, rect);
-          const dx = Math.max(36, Math.abs(p2.x - p1.x) * 0.45);
-          const d = `M ${p1.x} ${p1.y} C ${p1.x + dx} ${p1.y}, ${p2.x - dx} ${p2.y}, ${p2.x} ${p2.y}`;
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', d);
-          path.setAttribute('class', 'wire ' + ((srcComp.outputs[wire.from.index] || 0) ? 'on' : 'off'));
-          wireLayer.appendChild(path);
-        }
-
-        if (pendingConnection) {
-          const srcComp = components.get(pendingConnection.id);
-          if (srcComp) {
-            const srcPin = srcComp.el.querySelector(`.pin.output-pin[data-index="${pendingConnection.index}"]`);
-            if (srcPin) {
-              const p1 = centerPoint(srcPin, rect);
-              const p2 = { x: Math.min(rect.width - 30, p1.x + 120), y: p1.y };
-              const d = `M ${p1.x} ${p1.y} C ${p1.x + 60} ${p1.y}, ${p2.x - 30} ${p2.y}, ${p2.x} ${p2.y}`;
-              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-              path.setAttribute('d', d);
-              path.setAttribute('class', 'wire pending');
-              wireLayer.appendChild(path);
-            }
-          }
-        }
-      }
-
-      function renderTruthHints() {
-        if (!showTruth) return;
-        const outputComponents = Array.from(components.values()).filter(c => c.type === 'OUTPUT');
-        truthBox.innerHTML = '';
-        if (!outputComponents.length) {
-          truthBox.innerHTML = '<div style="grid-column:1/-1">Add an OUTPUT block to see final signal hints.</div>';
-          return;
-        }
-
-        outputComponents.forEach(c => {
-          const value = c.inputs[0] || 0;
-          const box = document.createElement('div');
-          box.innerHTML = `<strong>${escapeHtml(c.name)}</strong><br>Current output: ${value}`;
-          truthBox.appendChild(box);
-        });
-      }
-
-      function centerPoint(el, boardRect) {
-        const r = el.getBoundingClientRect();
-        return {
-          x: r.left - boardRect.left + r.width / 2,
-          y: r.top - boardRect.top + r.height / 2
-        };
-      }
-
-      function positionComponent(comp) {
-        comp.el.style.left = comp.x + 'px';
-        comp.el.style.top = comp.y + 'px';
-      }
-
-      function makeDraggable(comp) {
-        const head = comp.el.querySelector('.head');
-        let dragging = false;
-        let startX = 0;
-        let startY = 0;
-        let origX = 0;
-        let origY = 0;
-
-        const onMove = (e) => {
-          if (!dragging) return;
-          const point = getPoint(e);
-          const dx = point.x - startX;
-          const dy = point.y - startY;
-          comp.x = Math.max(10, origX + dx);
-          comp.y = Math.max(58, origY + dy);
-          positionComponent(comp);
-          renderWires();
-        };
-
-        const onUp = () => {
-          if (!dragging) return;
-          dragging = false;
-          comp.el.classList.remove('dragging');
-          window.removeEventListener('mousemove', onMove);
-          window.removeEventListener('mouseup', onUp);
-          window.removeEventListener('touchmove', onMove);
-          window.removeEventListener('touchend', onUp);
-        };
-
-        const onDown = (e) => {
-          if (e.target.closest('button') || e.target.classList.contains('pin')) return;
-          dragging = true;
-          comp.el.classList.add('dragging');
-          const point = getPoint(e);
-          startX = point.x;
-          startY = point.y;
-          origX = comp.x;
-          origY = comp.y;
-          window.addEventListener('mousemove', onMove, { passive: false });
-          window.addEventListener('mouseup', onUp);
-          window.addEventListener('touchmove', onMove, { passive: false });
-          window.addEventListener('touchend', onUp);
-        };
-
-        head.addEventListener('mousedown', onDown);
-        head.addEventListener('touchstart', onDown, { passive: true });
-      }
-
-      function getPoint(e) {
-        if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        return { x: e.clientX, y: e.clientY };
-      }
-
-      function escapeHtml(s) {
-        return String(s)
-          .replaceAll('&', '&amp;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;')
-          .replaceAll('"', '&quot;')
-          .replaceAll("'", '&#39;');
-      }
-
-      function loadDemo() {
-        components.clear();
-        wires = [];
-        pendingConnection = null;
-        board.innerHTML = '';
-
-        const a = addComponent('INPUT', 80, 120, 0);
-        a.name = 'A';
-        const b = addComponent('INPUT', 80, 280, 1);
-        b.name = 'B';
-        const xor = addComponent('XOR', 350, 110);
-        xor.name = 'XOR Gate';
-        const and = addComponent('AND', 350, 280);
-        and.name = 'AND Gate';
-        const sum = addComponent('OUTPUT', 650, 110);
-        sum.name = 'SUM';
-        const carry = addComponent('OUTPUT', 650, 280);
-        carry.name = 'CARRY';
-
-        wires.push(
-          { from: { id: a.id, index: 0 }, to: { id: xor.id, index: 0 } },
-          { from: { id: b.id, index: 0 }, to: { id: xor.id, index: 1 } },
-          { from: { id: a.id, index: 0 }, to: { id: and.id, index: 0 } },
-          { from: { id: b.id, index: 0 }, to: { id: and.id, index: 1 } },
-          { from: { id: xor.id, index: 0 }, to: { id: sum.id, index: 0 } },
-          { from: { id: and.id, index: 0 }, to: { id: carry.id, index: 0 } }
-        );
-
-        renderAll();
-        setStatus('Demo loaded: a half adder using XOR and AND.');
-      }
-
-      window.addEventListener('resize', renderWires);
-      board.addEventListener('click', () => {
-        if (pendingConnection) {
-          pendingConnection = null;
-          renderAll();
-          setStatus('Connection cancelled.');
-        }
+      notesEl.addEventListener("input", function(){
+        try{
+          localStorage.setItem(NOTES_KEY, notesEl.value);
+        }catch(e){}
       });
 
-      loadDemo();
+      clearBtn.addEventListener("click", function(){
+        notesEl.value = "";
+        try{
+          localStorage.removeItem(NOTES_KEY);
+        }catch(e){}
+        flashMessage("Notes cleared.");
+      });
+
+      /* ---------------- CHECKLIST ---------------- */
+      var checks = Array.from(document.querySelectorAll(".learn-check"));
+      var progressFill = document.getElementById("progressFill");
+      var progressText = document.getElementById("progressText");
+      var CHECK_KEY = "pp_video_lesson_checks_v2_ultra";
+
+      function renderProgress(){
+        var done = checks.filter(function(c){ return c.checked; }).length;
+        var total = checks.length;
+        var pct = total ? (done / total) * 100 : 0;
+        progressFill.style.width = pct + "%";
+        progressText.textContent = done + " of " + total + " complete";
+      }
+
+      try{
+        var raw = localStorage.getItem(CHECK_KEY);
+        if(raw){
+          var arr = JSON.parse(raw);
+          checks.forEach(function(c, i){
+            c.checked = !!arr[i];
+          });
+        }
+      }catch(e){}
+
+      checks.forEach(function(c){
+        c.addEventListener("change", function(){
+          try{
+            localStorage.setItem(CHECK_KEY, JSON.stringify(checks.map(function(x){ return x.checked; })));
+          }catch(e){}
+          renderProgress();
+        });
+      });
+
+      renderProgress();
+
+      /* ---------------- QUIZ ---------------- */
+      var submitQuizBtn = document.getElementById("submitQuizBtn");
+      var scoreValue = document.getElementById("scoreValue");
+
+      submitQuizBtn.addEventListener("click", function(){
+        var mcqs = Array.from(document.querySelectorAll(".mcq"));
+        var score = 0;
+
+        mcqs.forEach(function(box, idx){
+          var answer = box.getAttribute("data-answer");
+          var checked = box.querySelector('input[type="radio"]:checked');
+          var result = box.querySelector(".mcq-result");
+
+          if(!checked){
+            result.textContent = "Please choose an answer.";
+            result.className = "mcq-result bad";
+            return;
+          }
+
+          if(checked.value === answer){
+            score++;
+            result.textContent = "Correct.";
+            result.className = "mcq-result ok";
+          }else{
+            result.textContent = "Not correct. Review the lesson and think again.";
+            result.className = "mcq-result bad";
+          }
+        });
+
+        scoreValue.textContent = score;
+        submitQuizBtn.textContent = "Checked";
+      });
     })();
-  </script></body>
+  </script>
+</body>
 </html>
