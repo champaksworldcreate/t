@@ -1,0 +1,1994 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript Reel Maker — V3 Premium</title>
+    <script src="js/gif.js"></script>
+
+    <style>
+      :root {
+        --bg: #eef4ff;
+        --bg2: #f7fbff;
+        --card: #ffffff;
+        --card2: #f8fbff;
+        --text: #152033;
+        --muted: #5f6f88;
+        --line: #d7e3f2;
+        --brand: #2563eb;
+        --brand2: #1d4ed8;
+        --good: #059669;
+        --warn: #d97706;
+        --danger: #dc2626;
+        --shadow: 0 14px 40px rgba(37, 99, 235, 0.1);
+        --radius: 22px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at top left, #dbeafe 0%, transparent 24%),
+          radial-gradient(circle at bottom right, #e0f2fe 0%, transparent 20%),
+          linear-gradient(180deg, #eff6ff 0%, #eef4ff 100%);
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 1460px;
+        margin: 0 auto;
+        padding: 18px;
+      }
+
+      .hero {
+        background: linear-gradient(
+          135deg,
+          #1e3a8a 0%,
+          #2563eb 45%,
+          #60a5fa 100%
+        );
+        color: #fff;
+        border-radius: 28px;
+        padding: 24px;
+        box-shadow: var(--shadow);
+        margin-bottom: 18px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero:before {
+        content: "";
+        position: absolute;
+        right: -80px;
+        top: -80px;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.24),
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      .hero h1 {
+        margin: 0 0 8px;
+        font-size: 34px;
+        line-height: 1.1;
+      }
+
+      .hero p {
+        margin: 0;
+        max-width: 960px;
+        opacity: 0.96;
+        line-height: 1.5;
+        font-size: 15px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 370px minmax(0, 1fr) 380px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .panel-head {
+        padding: 16px 18px;
+        font-weight: 700;
+        font-size: 16px;
+        background: linear-gradient(180deg, #fff, #f7fbff);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .panel-body {
+        padding: 16px;
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="color"],
+      input[type="range"],
+      input[type="file"],
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid #c9d7e8;
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 14px;
+        background: #fff;
+        color: var(--text);
+        outline: none;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 92px;
+        line-height: 1.4;
+      }
+
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      button {
+        border: none;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        background: var(--brand);
+        color: #fff;
+        cursor: pointer;
+        transition: 0.18s ease;
+      }
+
+      button:hover {
+        background: var(--brand2);
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      button.secondary:hover {
+        background: #cbd5e1;
+      }
+
+      button.good {
+        background: var(--good);
+      }
+
+      button.warn {
+        background: var(--warn);
+      }
+
+      button.danger {
+        background: var(--danger);
+      }
+
+      .pill-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        background: var(--card2);
+        color: var(--text);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.18s ease;
+      }
+
+      .pill.active {
+        border-color: #93c5fd;
+        color: var(--brand2);
+        box-shadow: inset 0 0 0 1px #93c5fd;
+        background: linear-gradient(180deg, #eff6ff, #f8fbff);
+      }
+
+      .slides {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 66vh;
+        overflow: auto;
+        padding-right: 4px;
+      }
+
+      .slide-card {
+        display: grid;
+        grid-template-columns: 94px 1fr;
+        gap: 12px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, #fff, #f8fbff);
+        border-radius: 18px;
+        padding: 12px;
+        cursor: pointer;
+        transition: 0.18s ease;
+      }
+
+      .slide-card:hover {
+        transform: translateY(-1px);
+      }
+
+      .slide-card.active {
+        border-color: #93c5fd;
+        background: linear-gradient(180deg, #eff6ff, #f8fbff);
+        box-shadow: inset 0 0 0 1px #93c5fd;
+      }
+
+      .slide-card.dragging {
+        opacity: 0.45;
+      }
+
+      .slide-thumb {
+        width: 94px;
+        height: 138px;
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #0f172a;
+        border: 1px solid #d8e2f0;
+        flex-shrink: 0;
+      }
+
+      .slide-thumb img,
+      .slide-thumb video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .slide-badge {
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        background: rgba(0, 0, 0, 0.72);
+        color: #fff;
+        font-size: 11px;
+        padding: 4px 7px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+
+      .cover-badge {
+        position: absolute;
+        right: 6px;
+        top: 6px;
+        background: #f59e0b;
+        color: #fff;
+        font-size: 10px;
+        padding: 4px 7px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+
+      .slide-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        word-break: break-word;
+      }
+
+      .slide-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 8px;
+        line-height: 1.45;
+      }
+
+      .mini-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .mini-actions button {
+        padding: 7px 9px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
+
+      .preview-wrap {
+        padding: 18px;
+        min-height: 840px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        background:
+          radial-gradient(
+            circle at center,
+            rgba(96, 165, 250, 0.12),
+            transparent 45%
+          ),
+          linear-gradient(180deg, #f9fbff, #eef4ff);
+      }
+
+      .stage {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .screen-shell {
+        background: linear-gradient(180deg, #0f172a, #111827);
+        border-radius: 36px;
+        padding: 14px;
+        box-shadow: 0 28px 60px rgba(2, 8, 23, 0.28);
+      }
+
+      .reel-screen {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        background: #000;
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        transform-origin: center center;
+      }
+
+      .reel-screen img,
+      .reel-screen video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .progress-strip {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 8px;
+        display: flex;
+        gap: 5px;
+        z-index: 5;
+      }
+
+      .progress-seg {
+        flex: 1;
+        height: 4px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        background: #fff;
+      }
+
+      .screen-topbar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 4;
+        padding: 18px 12px 10px;
+        color: #fff;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.56),
+          rgba(0, 0, 0, 0)
+        );
+      }
+
+      .overlay-box {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 700;
+        line-height: 1.32;
+        text-align: center;
+        z-index: 6;
+        word-break: break-word;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(3px);
+      }
+
+      .preview-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .status {
+        min-height: 22px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .download-link {
+        color: var(--brand);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .timeline {
+        width: min(100%, 940px);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 14px;
+        box-shadow: var(--shadow);
+      }
+
+      .timeline-track {
+        display: flex;
+        gap: 8px;
+        overflow: auto;
+        padding-bottom: 4px;
+      }
+
+      .timeline-item {
+        min-width: 110px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, #fff, #f8fbff);
+        border-radius: 14px;
+        padding: 8px;
+        cursor: pointer;
+        transition: 0.18s ease;
+      }
+
+      .timeline-item.active {
+        border-color: #93c5fd;
+        box-shadow: inset 0 0 0 1px #93c5fd;
+        background: linear-gradient(180deg, #eff6ff, #f8fbff);
+      }
+
+      .timeline-thumb {
+        width: 100%;
+        height: 88px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #0f172a;
+        margin-bottom: 6px;
+      }
+
+      .timeline-thumb img,
+      .timeline-thumb video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .timeline-meta {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .range-value {
+        margin-top: 5px;
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .animated {
+        animation-duration: 1s;
+        animation-fill-mode: both;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes flipY {
+        from {
+          transform: rotateY(180deg);
+          opacity: 0;
+        }
+        to {
+          transform: rotateY(0deg);
+          opacity: 1;
+        }
+      }
+
+      @keyframes rotateX {
+        from {
+          transform: rotateX(90deg);
+          opacity: 0;
+        }
+        to {
+          transform: rotateX(0deg);
+          opacity: 1;
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.18);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes spinIn {
+        from {
+          transform: rotate(360deg) scale(0.7);
+          opacity: 0;
+        }
+        to {
+          transform: rotate(0deg) scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 1260px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .preview-wrap {
+          min-height: auto;
+        }
+
+        .slides {
+          max-height: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <h1>🎬 JavaScript Reel Maker — V3 Premium</h1>
+        <p>
+          A richer reel editor with drag-and-drop ordering, per-slide styling,
+          timeline view, JSON project save/load, cover selection, custom
+          transitions, GIF export, video export, and video with music export.
+        </p>
+      </section>
+
+      <section class="layout">
+        <!-- LEFT -->
+        <div class="panel">
+          <div class="panel-head">Project Setup</div>
+          <div class="panel-body">
+            <div class="field">
+              <label>Media files</label>
+              <input
+                type="file"
+                id="mediaInput"
+                accept="image/*,video/*"
+                multiple
+              />
+            </div>
+
+            <div class="field">
+              <label>Default caption for new slides</label>
+              <textarea
+                id="defaultCaption"
+                placeholder="This caption will be copied into newly imported slides..."
+              ></textarea>
+            </div>
+
+            <div class="grid2">
+              <div class="field">
+                <label>Default image duration (seconds)</label>
+                <input
+                  type="number"
+                  id="defaultDuration"
+                  min="1"
+                  max="60"
+                  value="2"
+                />
+              </div>
+              <div class="field">
+                <label>Background music</label>
+                <input type="file" id="bgMusic" accept="audio/*" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Ratio</label>
+              <div class="pill-grid" id="ratioGrid">
+                <button type="button" class="pill active" data-ratio="reel">
+                  Reel 9:16
+                </button>
+                <button type="button" class="pill" data-ratio="story">
+                  Story 9:16
+                </button>
+                <button type="button" class="pill" data-ratio="square">
+                  Square 1:1
+                </button>
+                <button type="button" class="pill" data-ratio="shorts">
+                  Shorts 9:16
+                </button>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button onclick="importSlides()">➕ Build Slides</button>
+              <button class="secondary" onclick="playPreview()">
+                ▶ Preview
+              </button>
+              <button class="secondary" onclick="pausePreview()">
+                ⏸ Pause
+              </button>
+              <button class="secondary" onclick="stopPreview()">⏹ Stop</button>
+            </div>
+
+            <div style="height: 10px"></div>
+
+            <div class="btn-row">
+              <button onclick="exportGIF()">📤 Export GIF</button>
+              <button onclick="exportVideo()">🎥 Export Video</button>
+              <button onclick="exportVideoWithMusic()">
+                🎧 Export With Music
+              </button>
+            </div>
+
+            <div style="height: 10px"></div>
+
+            <div class="btn-row">
+              <button class="good" onclick="saveProjectJson()">
+                💾 Save Project JSON
+              </button>
+              <button
+                class="warn"
+                onclick="document.getElementById('projectJsonInput').click()"
+              >
+                📂 Load Project JSON
+              </button>
+              <input
+                type="file"
+                id="projectJsonInput"
+                accept="application/json"
+                style="display: none"
+              />
+            </div>
+
+            <div style="height: 12px"></div>
+            <div id="gifStatus" class="status"></div>
+            <div id="videoStatus" class="status"></div>
+            <p class="hint">
+              Browser export usually creates WebM rather than true MP4. GIF
+              export works best for image slides.
+            </p>
+          </div>
+        </div>
+
+        <!-- CENTER -->
+        <div class="panel">
+          <div class="panel-head">Preview & Timeline</div>
+          <div class="preview-wrap">
+            <div class="stage">
+              <div class="screen-shell">
+                <div id="reelScreen" class="reel-screen animated"></div>
+              </div>
+
+              <div class="preview-controls">
+                <button class="secondary" onclick="prevSlide()">⬅ Prev</button>
+                <button class="secondary" onclick="nextSlide()">Next ➡</button>
+                <button class="secondary" onclick="toggleAutoplay()">
+                  🔁 Toggle Auto
+                </button>
+                <button class="secondary" onclick="jumpToCover()">
+                  ⭐ Go To Cover
+                </button>
+              </div>
+
+              <div id="previewInfo" class="status">No slide loaded yet.</div>
+
+              <div class="timeline">
+                <div id="timelineTrack" class="timeline-track"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel">
+          <div class="panel-head">Current Slide & Slide List</div>
+          <div class="panel-body">
+            <div class="stack">
+              <div class="field">
+                <label>Caption</label>
+                <textarea
+                  id="slideCaption"
+                  placeholder="Edit caption for selected slide..."
+                ></textarea>
+              </div>
+
+              <div class="grid2">
+                <div class="field">
+                  <label>Image duration (seconds)</label>
+                  <input
+                    type="number"
+                    id="slideDuration"
+                    min="1"
+                    max="60"
+                    value="2"
+                  />
+                </div>
+                <div class="field">
+                  <label>Transition</label>
+                  <select id="slideTransition">
+                    <option value="fadeIn">Fade In</option>
+                    <option value="zoomIn">Zoom In</option>
+                    <option value="flipY">Flip Y</option>
+                    <option value="rotateX">Rotate X</option>
+                    <option value="bounceIn">Bounce In</option>
+                    <option value="slideUp">Slide Up</option>
+                    <option value="spinIn">Spin In</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid2">
+                <div class="field">
+                  <label>Text size</label>
+                  <input
+                    type="range"
+                    id="slideFontSize"
+                    min="16"
+                    max="42"
+                    value="20"
+                  />
+                  <div id="fontSizeValue" class="range-value">20 px</div>
+                </div>
+                <div class="field">
+                  <label>Text color</label>
+                  <input type="color" id="slideTextColor" value="#ffffff" />
+                </div>
+              </div>
+
+              <div class="grid2">
+                <div class="field">
+                  <label>Overlay opacity</label>
+                  <input
+                    type="range"
+                    id="slideOverlayOpacity"
+                    min="0"
+                    max="0.9"
+                    step="0.05"
+                    value="0.45"
+                  />
+                  <div id="overlayOpacityValue" class="range-value">0.45</div>
+                </div>
+                <div class="field">
+                  <label>Overlay position</label>
+                  <select id="slideOverlayPosition">
+                    <option value="bottom">Bottom</option>
+                    <option value="middle">Middle</option>
+                    <option value="top">Top</option>
+                    <option value="hide">Hide</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="secondary" onclick="saveCurrentSlide()">
+                  💾 Save Slide
+                </button>
+                <button class="secondary" onclick="markAsCover()">
+                  ⭐ Make Cover
+                </button>
+                <button class="danger" onclick="removeCurrentSlide()">
+                  🗑 Remove
+                </button>
+              </div>
+
+              <div id="slidesList" class="slides"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const FPS = 30;
+      const ANIMATION_DURATION = 1000;
+
+      const ratioMap = {
+        reel: { width: 270, height: 480, label: "Reel 9:16" },
+        story: { width: 270, height: 480, label: "Story 9:16" },
+        square: { width: 400, height: 400, label: "Square 1:1" },
+        shorts: { width: 270, height: 480, label: "Shorts 9:16" },
+      };
+
+      const state = {
+        slides: [],
+        currentIndex: -1,
+        coverIndex: 0,
+        ratio: "reel",
+        autoplay: true,
+        previewStopped: true,
+        previewAudio: null,
+        dragIndex: null,
+      };
+
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      function clearStatuses() {
+        $("gifStatus").innerHTML = "";
+        $("videoStatus").innerHTML = "";
+      }
+
+      function wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      function getSize() {
+        return ratioMap[state.ratio];
+      }
+
+      function escapeHtml(str) {
+        return (str || "").replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[m],
+        );
+      }
+
+      function safeName(name) {
+        return (name || "project").replace(/[^\w\-]+/g, "_");
+      }
+
+      function formatType(file) {
+        if (file.type.startsWith("image/")) return "Image";
+        if (file.type.startsWith("video/")) return "Video";
+        return "Media";
+      }
+
+      function setRatioUI() {
+        document.querySelectorAll("#ratioGrid .pill").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.ratio === state.ratio);
+        });
+        renderPreview();
+        renderTimeline();
+      }
+
+      document.querySelectorAll("#ratioGrid .pill").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.ratio = btn.dataset.ratio;
+          setRatioUI();
+        });
+      });
+
+      $("slideFontSize").addEventListener("input", () => {
+        $("fontSizeValue").textContent = $("slideFontSize").value + " px";
+      });
+
+      $("slideOverlayOpacity").addEventListener("input", () => {
+        $("overlayOpacityValue").textContent = $("slideOverlayOpacity").value;
+      });
+
+      $("projectJsonInput").addEventListener("change", handleProjectLoad);
+
+      function baseSlideData(file, index) {
+        return {
+          id: crypto.randomUUID
+            ? crypto.randomUUID()
+            : "slide-" + Date.now() + "-" + index,
+          file,
+          url: URL.createObjectURL(file),
+          caption: $("defaultCaption").value.trim(),
+          duration: Math.max(
+            1,
+            parseInt($("defaultDuration").value || "2", 10),
+          ),
+          transition: "fadeIn",
+          fontSize: 20,
+          textColor: "#ffffff",
+          overlayOpacity: 0.45,
+          overlayPosition: "bottom",
+        };
+      }
+
+      function importSlides() {
+        clearStatuses();
+
+        const files = Array.from($("mediaInput").files || []);
+        if (!files.length) {
+          alert("Please choose media files first.");
+          return;
+        }
+
+        state.slides.forEach((s) => {
+          if (s.url) URL.revokeObjectURL(s.url);
+        });
+
+        state.slides = files.map(baseSlideData);
+        state.currentIndex = 0;
+        state.coverIndex = 0;
+
+        renderSlides();
+        loadCurrentSlideIntoEditor();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function getCurrentSlide() {
+        return state.slides[state.currentIndex];
+      }
+
+      function loadCurrentSlideIntoEditor() {
+        const slide = getCurrentSlide();
+        if (!slide) return;
+
+        $("slideCaption").value = slide.caption || "";
+        $("slideDuration").value = slide.duration || 2;
+        $("slideTransition").value = slide.transition || "fadeIn";
+        $("slideFontSize").value = slide.fontSize || 20;
+        $("slideTextColor").value = slide.textColor || "#ffffff";
+        $("slideOverlayOpacity").value = slide.overlayOpacity ?? 0.45;
+        $("slideOverlayPosition").value = slide.overlayPosition || "bottom";
+
+        $("fontSizeValue").textContent = $("slideFontSize").value + " px";
+        $("overlayOpacityValue").textContent = $("slideOverlayOpacity").value;
+      }
+
+      function saveCurrentSlide() {
+        const slide = getCurrentSlide();
+        if (!slide) return;
+
+        slide.caption = $("slideCaption").value.trim();
+        slide.duration = Math.max(
+          1,
+          parseInt($("slideDuration").value || "2", 10),
+        );
+        slide.transition = $("slideTransition").value;
+        slide.fontSize = Math.max(
+          16,
+          parseInt($("slideFontSize").value || "20", 10),
+        );
+        slide.textColor = $("slideTextColor").value;
+        slide.overlayOpacity = Math.max(
+          0,
+          Math.min(0.9, parseFloat($("slideOverlayOpacity").value || "0.45")),
+        );
+        slide.overlayPosition = $("slideOverlayPosition").value;
+
+        renderSlides();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function selectSlide(index) {
+        state.currentIndex = index;
+        renderSlides();
+        loadCurrentSlideIntoEditor();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function setCover(index) {
+        state.coverIndex = index;
+        renderSlides();
+        renderTimeline();
+      }
+
+      function markAsCover() {
+        if (state.currentIndex >= 0) {
+          state.coverIndex = state.currentIndex;
+          renderSlides();
+          renderTimeline();
+        }
+      }
+
+      function prevSlide() {
+        if (!state.slides.length) return;
+        state.currentIndex =
+          (state.currentIndex - 1 + state.slides.length) % state.slides.length;
+        renderSlides();
+        loadCurrentSlideIntoEditor();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function nextSlide() {
+        if (!state.slides.length) return;
+        state.currentIndex = (state.currentIndex + 1) % state.slides.length;
+        renderSlides();
+        loadCurrentSlideIntoEditor();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function jumpToCover() {
+        if (!state.slides.length) return;
+        state.currentIndex = state.coverIndex;
+        renderSlides();
+        loadCurrentSlideIntoEditor();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function toggleAutoplay() {
+        state.autoplay = !state.autoplay;
+        $("previewInfo").textContent =
+          `Autoplay is now ${state.autoplay ? "ON" : "OFF"}.`;
+      }
+
+      function pausePreview() {
+        state.previewStopped = true;
+        const video = $("reelScreen").querySelector("video");
+        if (video) video.pause();
+        if (state.previewAudio) state.previewAudio.pause();
+      }
+
+      function stopPreview() {
+        pausePreview();
+        if (state.previewAudio) {
+          state.previewAudio.currentTime = 0;
+        }
+      }
+
+      async function playPreview() {
+        if (!state.slides.length) {
+          alert("Please import slides first.");
+          return;
+        }
+
+        stopPreview();
+        state.previewStopped = false;
+
+        const musicFile = $("bgMusic").files[0];
+        if (musicFile) {
+          const musicUrl = URL.createObjectURL(musicFile);
+          state.previewAudio = new Audio(musicUrl);
+          state.previewAudio.play().catch(() => {});
+        }
+
+        while (!state.previewStopped) {
+          renderSlides();
+          loadCurrentSlideIntoEditor();
+          renderPreview();
+          renderTimeline();
+
+          const slide = getCurrentSlide();
+          if (!slide) break;
+
+          if (slide.file.type.startsWith("video/")) {
+            const video = $("reelScreen").querySelector("video");
+            if (video) await playPreviewVideo(video);
+            else await wait(2000);
+          } else {
+            await wait((slide.duration || 2) * 1000);
+          }
+
+          if (state.previewStopped || !state.autoplay) break;
+          state.currentIndex = (state.currentIndex + 1) % state.slides.length;
+        }
+
+        if (state.previewAudio) {
+          state.previewAudio.pause();
+          state.previewAudio = null;
+        }
+      }
+
+      function playPreviewVideo(video) {
+        return new Promise((resolve) => {
+          let done = false;
+
+          const finish = () => {
+            if (!done) {
+              done = true;
+              resolve();
+            }
+          };
+
+          video.loop = false;
+          video.onended = finish;
+          video.onerror = () => wait(2000).then(finish);
+          video.play().catch(() => wait(2000).then(finish));
+          setTimeout(finish, 15000);
+        });
+      }
+
+      function removeCurrentSlide() {
+        if (state.currentIndex < 0 || !state.slides.length) return;
+
+        const removed = state.slides.splice(state.currentIndex, 1)[0];
+        if (removed && removed.url) URL.revokeObjectURL(removed.url);
+
+        if (!state.slides.length) {
+          state.currentIndex = -1;
+          state.coverIndex = 0;
+        } else {
+          state.currentIndex = Math.min(
+            state.currentIndex,
+            state.slides.length - 1,
+          );
+          if (state.coverIndex >= state.slides.length) state.coverIndex = 0;
+        }
+
+        renderSlides();
+        loadCurrentSlideIntoEditor();
+        renderPreview();
+        renderTimeline();
+      }
+
+      function moveSlideUp(index) {
+        if (index <= 0) return;
+        swapSlides(index, index - 1);
+      }
+
+      function moveSlideDown(index) {
+        if (index >= state.slides.length - 1) return;
+        swapSlides(index, index + 1);
+      }
+
+      function swapSlides(a, b) {
+        [state.slides[a], state.slides[b]] = [state.slides[b], state.slides[a]];
+
+        if (state.currentIndex === a) state.currentIndex = b;
+        else if (state.currentIndex === b) state.currentIndex = a;
+
+        if (state.coverIndex === a) state.coverIndex = b;
+        else if (state.coverIndex === b) state.coverIndex = a;
+
+        renderSlides();
+        renderPreview();
+        renderTimeline();
+        loadCurrentSlideIntoEditor();
+      }
+
+      function renderSlides() {
+        const list = $("slidesList");
+
+        if (!state.slides.length) {
+          list.innerHTML = `<div class="hint">No slides yet. Import media files to build your project.</div>`;
+          return;
+        }
+
+        list.innerHTML = state.slides
+          .map((slide, index) => {
+            const isActive = index === state.currentIndex;
+            const isCover = index === state.coverIndex;
+            const mediaHtml = slide.file.type.startsWith("image/")
+              ? `<img src="${slide.url}" alt="">`
+              : `<video src="${slide.url}" muted playsinline></video>`;
+
+            return `
+          <div class="slide-card ${isActive ? "active" : ""}" draggable="true"
+               data-index="${index}"
+               ondragstart="handleDragStart(event)"
+               ondragover="handleDragOver(event)"
+               ondrop="handleDrop(event)"
+               ondragend="handleDragEnd(event)"
+               onclick="selectSlide(${index})">
+            <div class="slide-thumb">
+              ${mediaHtml}
+              <div class="slide-badge">#${index + 1}</div>
+              ${isCover ? `<div class="cover-badge">COVER</div>` : ``}
+            </div>
+            <div>
+              <div class="slide-title">${escapeHtml(slide.file.name)}</div>
+              <div class="slide-sub">${formatType(slide.file)} • ${slide.file.type.startsWith("image/") ? slide.duration + "s" : "video"} • ${slide.transition}</div>
+              <div class="slide-sub">${escapeHtml(slide.caption || "(No caption)")}</div>
+              <div class="mini-actions">
+                <button type="button" class="secondary" onclick="event.stopPropagation(); moveSlideUp(${index})">↑ Up</button>
+                <button type="button" class="secondary" onclick="event.stopPropagation(); moveSlideDown(${index})">↓ Down</button>
+                <button type="button" class="secondary" onclick="event.stopPropagation(); setCover(${index})">⭐ Cover</button>
+              </div>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function handleDragStart(event) {
+        const card = event.currentTarget;
+        state.dragIndex = Number(card.dataset.index);
+        card.classList.add("dragging");
+        event.dataTransfer.effectAllowed = "move";
+      }
+
+      function handleDragOver(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+      }
+
+      function handleDrop(event) {
+        event.preventDefault();
+        const toIndex = Number(event.currentTarget.dataset.index);
+        const fromIndex = state.dragIndex;
+        if (
+          Number.isInteger(fromIndex) &&
+          Number.isInteger(toIndex) &&
+          fromIndex !== toIndex
+        ) {
+          const [moved] = state.slides.splice(fromIndex, 1);
+          state.slides.splice(toIndex, 0, moved);
+
+          if (state.currentIndex === fromIndex) state.currentIndex = toIndex;
+          else if (
+            fromIndex < state.currentIndex &&
+            toIndex >= state.currentIndex
+          )
+            state.currentIndex--;
+          else if (
+            fromIndex > state.currentIndex &&
+            toIndex <= state.currentIndex
+          )
+            state.currentIndex++;
+
+          if (state.coverIndex === fromIndex) state.coverIndex = toIndex;
+          else if (fromIndex < state.coverIndex && toIndex >= state.coverIndex)
+            state.coverIndex--;
+          else if (fromIndex > state.coverIndex && toIndex <= state.coverIndex)
+            state.coverIndex++;
+
+          renderSlides();
+          renderTimeline();
+        }
+        state.dragIndex = null;
+      }
+
+      function handleDragEnd(event) {
+        event.currentTarget.classList.remove("dragging");
+        state.dragIndex = null;
+      }
+
+      function renderTimeline() {
+        const track = $("timelineTrack");
+
+        if (!state.slides.length) {
+          track.innerHTML = `<div class="hint">Timeline will appear here after importing slides.</div>`;
+          return;
+        }
+
+        track.innerHTML = state.slides
+          .map((slide, index) => {
+            const active = index === state.currentIndex;
+            const thumb = slide.file.type.startsWith("image/")
+              ? `<img src="${slide.url}" alt="">`
+              : `<video src="${slide.url}" muted playsinline></video>`;
+
+            return `
+          <div class="timeline-item ${active ? "active" : ""}" onclick="selectSlide(${index})">
+            <div class="timeline-thumb">${thumb}</div>
+            <div class="timeline-meta">
+              <div>#${index + 1}${index === state.coverIndex ? " • cover" : ""}</div>
+              <div>${slide.file.type.startsWith("image/") ? slide.duration + "s" : "video"}</div>
+              <div>${escapeHtml((slide.caption || "").slice(0, 32) || "(No caption)")}</div>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function renderOverlayPreview(screen, slide, height) {
+        if (!slide || slide.overlayPosition === "hide" || !slide.caption)
+          return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "overlay-box";
+        overlay.textContent = slide.caption;
+        overlay.style.fontSize = (slide.fontSize || 20) + "px";
+        overlay.style.color = slide.textColor || "#ffffff";
+        overlay.style.background = `linear-gradient(to top, rgba(0,0,0,${slide.overlayOpacity ?? 0.45}), rgba(0,0,0,${Math.max(0, (slide.overlayOpacity ?? 0.45) * 0.35)}))`;
+
+        if (slide.overlayPosition === "top") {
+          overlay.style.top = "56px";
+        } else if (slide.overlayPosition === "middle") {
+          overlay.style.top = "50%";
+          overlay.style.transform = "translateY(-50%)";
+        } else {
+          overlay.style.bottom = "16px";
+        }
+
+        screen.appendChild(overlay);
+      }
+
+      function renderPreview() {
+        const screen = $("reelScreen");
+        const info = $("previewInfo");
+        const { width, height, label } = getSize();
+
+        screen.innerHTML = "";
+        screen.className = "reel-screen animated";
+        screen.style.width = width + "px";
+        screen.style.height = height + "px";
+
+        const slide = getCurrentSlide();
+        if (!slide) {
+          info.textContent = "No slide loaded yet.";
+          return;
+        }
+
+        screen.style.animationName = slide.transition || "fadeIn";
+
+        const progressStrip = document.createElement("div");
+        progressStrip.className = "progress-strip";
+
+        state.slides.forEach((s, i) => {
+          const seg = document.createElement("div");
+          seg.className = "progress-seg";
+          const fill = document.createElement("div");
+          fill.className = "progress-fill";
+          fill.style.width = i < state.currentIndex ? "100%" : "0%";
+          seg.appendChild(fill);
+          progressStrip.appendChild(seg);
+        });
+
+        const topbar = document.createElement("div");
+        topbar.className = "screen-topbar";
+        topbar.innerHTML = `<span>${label}</span><span>${state.currentIndex + 1}/${state.slides.length}</span>`;
+
+        if (slide.file.type.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = slide.url;
+          screen.appendChild(img);
+        } else {
+          const video = document.createElement("video");
+          video.src = slide.url;
+          video.muted = true;
+          video.autoplay = true;
+          video.loop = true;
+          video.playsInline = true;
+          screen.appendChild(video);
+        }
+
+        screen.appendChild(progressStrip);
+        screen.appendChild(topbar);
+        renderOverlayPreview(screen, slide, height);
+
+        info.textContent = `${slide.file.name} • ${formatType(slide.file)} • ${slide.file.type.startsWith("image/") ? slide.duration + "s" : "video"} • ${slide.transition} • ${label}`;
+      }
+
+      function getAnimationState(type, progress, width, height) {
+        progress = Math.max(0, Math.min(1, progress));
+
+        let alpha = 1;
+        let scale = 1;
+        let tx = 0;
+        let ty = 0;
+        let rotation = 0;
+
+        switch (type) {
+          case "fadeIn":
+            alpha = progress;
+            break;
+          case "zoomIn":
+            alpha = progress;
+            scale = 0.6 + 0.4 * progress;
+            break;
+          case "flipY":
+            alpha = progress;
+            scale = Math.abs(Math.cos((1 - progress) * Math.PI * 0.5));
+            scale = Math.max(scale, 0.05);
+            break;
+          case "rotateX":
+            alpha = progress;
+            scale = Math.abs(Math.cos((1 - progress) * Math.PI * 0.5));
+            scale = Math.max(scale, 0.05);
+            break;
+          case "bounceIn":
+            alpha = progress;
+            if (progress < 0.6) scale = 0.5 + (1.2 - 0.5) * (progress / 0.6);
+            else scale = 1.2 - 0.2 * ((progress - 0.6) / 0.4);
+            break;
+          case "slideUp":
+            alpha = progress;
+            ty = (1 - progress) * height;
+            break;
+          case "spinIn":
+            alpha = progress;
+            rotation = (1 - progress) * Math.PI * 2;
+            scale = 0.7 + 0.3 * progress;
+            break;
+        }
+
+        return { alpha, scale, tx, ty, rotation };
+      }
+
+      function roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(
+          x + width,
+          y + height,
+          x + width - radius,
+          y + height,
+        );
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+
+      function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+        if (!text) return;
+
+        const words = text.split(" ");
+        let line = "";
+        const lines = [];
+
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line + words[i] + " ";
+          const width = ctx.measureText(testLine).width;
+          if (width > maxWidth && i > 0) {
+            lines.push(line.trim());
+            line = words[i] + " ";
+          } else {
+            line = testLine;
+          }
+        }
+        if (line.trim()) lines.push(line.trim());
+
+        const totalHeight = lines.length * lineHeight;
+        const startY = y - totalHeight / 2 + lineHeight / 2;
+
+        lines.forEach((ln, idx) => {
+          ctx.fillText(ln, x, startY + idx * lineHeight);
+        });
+      }
+
+      function drawOverlayOnCanvas(ctx, slide, width, height) {
+        if (!slide || slide.overlayPosition === "hide" || !slide.caption)
+          return;
+
+        const padding = 14;
+        const boxHeight = Math.max(90, Math.round(height * 0.16));
+        let y = height - boxHeight - 14;
+
+        if (slide.overlayPosition === "top") y = 52;
+        if (slide.overlayPosition === "middle")
+          y = Math.round((height - boxHeight) / 2);
+
+        ctx.fillStyle = `rgba(0,0,0,${slide.overlayOpacity ?? 0.45})`;
+        roundRect(ctx, padding, y, width - padding * 2, boxHeight, 16);
+        ctx.fill();
+
+        ctx.font = `bold ${slide.fontSize || 20}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = slide.textColor || "#ffffff";
+
+        drawWrappedText(
+          ctx,
+          slide.caption,
+          width / 2,
+          y + boxHeight / 2,
+          width - 44,
+          Math.max(22, Math.round((slide.fontSize || 20) * 1.2)),
+        );
+      }
+
+      function drawFrameBase(ctx, width, height, drawMedia, slide, elapsedMs) {
+        const progress = Math.min(elapsedMs / ANIMATION_DURATION, 1);
+        const anim = getAnimationState(
+          slide.transition || "fadeIn",
+          progress,
+          width,
+          height,
+        );
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.globalAlpha = anim.alpha;
+        ctx.translate(width / 2 + anim.tx, height / 2 + anim.ty);
+        ctx.rotate(anim.rotation);
+        ctx.scale(anim.scale, anim.scale);
+        drawMedia(ctx);
+        ctx.restore();
+
+        drawOverlayOnCanvas(ctx, slide, width, height);
+      }
+
+      function loadImageFromSlide(slide) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = slide.url;
+        });
+      }
+
+      async function recordAnimatedImageFrames(
+        slide,
+        ctx,
+        width,
+        height,
+        addGifFrame,
+        waitRealTime,
+      ) {
+        const img = await loadImageFromSlide(slide);
+        const totalMs = (slide.duration || 2) * 1000;
+        const totalFrames = Math.round((totalMs / 1000) * FPS);
+        const frameDelay = Math.round(1000 / FPS);
+
+        const drawMedia = (ctx2) => {
+          ctx2.drawImage(img, -width / 2, -height / 2, width, height);
+        };
+
+        for (let i = 0; i < totalFrames; i++) {
+          const elapsed = i * frameDelay;
+          drawFrameBase(ctx, width, height, drawMedia, slide, elapsed);
+          if (addGifFrame) addGifFrame(frameDelay);
+          if (waitRealTime) await wait(frameDelay);
+        }
+      }
+
+      function recordAnimatedVideoFrames(slide, ctx, width, height) {
+        return new Promise((resolve) => {
+          const video = document.createElement("video");
+          video.src = slide.url;
+          video.muted = true;
+          video.playsInline = true;
+          video.preload = "auto";
+
+          let rafId = null;
+          let startTs = null;
+
+          const cleanup = () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            resolve();
+          };
+
+          const drawLoop = (ts) => {
+            if (startTs === null) startTs = ts;
+            const elapsed = ts - startTs;
+
+            const drawMedia = (ctx2) => {
+              ctx2.drawImage(video, -width / 2, -height / 2, width, height);
+            };
+
+            drawFrameBase(ctx, width, height, drawMedia, slide, elapsed);
+
+            if (!video.paused && !video.ended) {
+              rafId = requestAnimationFrame(drawLoop);
+            }
+          };
+
+          video.onended = cleanup;
+          video.onerror = async () => {
+            await wait(2000);
+            cleanup();
+          };
+
+          video.onloadeddata = () => {
+            video
+              .play()
+              .then(() => {
+                rafId = requestAnimationFrame(drawLoop);
+              })
+              .catch(async () => {
+                await wait(2000);
+                cleanup();
+              });
+          };
+        });
+      }
+
+      async function exportGIF() {
+        clearStatuses();
+
+        if (!state.slides.length) {
+          alert("Please import slides first.");
+          return;
+        }
+
+        $("gifStatus").textContent = "Creating GIF... please wait.";
+        const { width, height } = getSize();
+
+        const gif = new GIF({
+          workers: 2,
+          quality: 10,
+          workerScript: "js/gif.worker.js",
+          width,
+          height,
+        });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        for (const slide of state.slides) {
+          if (!slide.file.type.startsWith("image/")) continue;
+          try {
+            await recordAnimatedImageFrames(
+              slide,
+              ctx,
+              width,
+              height,
+              (delay) => gif.addFrame(canvas, { copy: true, delay }),
+              false,
+            );
+          } catch (err) {
+            console.error("GIF export skipped slide:", slide.file.name, err);
+          }
+        }
+
+        gif.on("finished", function (blob) {
+          const url = URL.createObjectURL(blob);
+          $("gifStatus").innerHTML =
+            `<a class="download-link" href="${url}" download="reel.gif">⬇️ Download your GIF</a>`;
+        });
+
+        gif.render();
+      }
+
+      async function exportVideo() {
+        clearStatuses();
+
+        if (!state.slides.length) {
+          alert("Please import slides first.");
+          return;
+        }
+
+        $("videoStatus").textContent = "Rendering video... please wait.";
+        const { width, height } = getSize();
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        const stream = canvas.captureStream(FPS);
+        const recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+        const chunks = [];
+
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) chunks.push(e.data);
+        };
+
+        recorder.onstop = () => {
+          const blob = new Blob(chunks, { type: "video/webm" });
+          const url = URL.createObjectURL(blob);
+          $("videoStatus").innerHTML =
+            `<a class="download-link" href="${url}" download="reel.webm">⬇️ Download your video</a>`;
+        };
+
+        recorder.start();
+
+        for (const slide of state.slides) {
+          if (slide.file.type.startsWith("image/")) {
+            try {
+              await recordAnimatedImageFrames(
+                slide,
+                ctx,
+                width,
+                height,
+                null,
+                true,
+              );
+            } catch (err) {
+              console.error(
+                "Video export skipped image:",
+                slide.file.name,
+                err,
+              );
+            }
+          } else {
+            await recordAnimatedVideoFrames(slide, ctx, width, height);
+          }
+        }
+
+        recorder.stop();
+      }
+
+      async function exportVideoWithMusic() {
+        clearStatuses();
+
+        if (!state.slides.length) {
+          alert("Please import slides first.");
+          return;
+        }
+
+        const musicFile = $("bgMusic").files[0];
+        if (!musicFile) {
+          alert("Please choose a background music file.");
+          return;
+        }
+
+        $("videoStatus").textContent =
+          "Rendering video with background music...";
+        const { width, height } = getSize();
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        const videoStream = canvas.captureStream(FPS);
+
+        const audioContext = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
+        const destination = audioContext.createMediaStreamDestination();
+
+        const musicBuffer = await musicFile.arrayBuffer();
+        const decoded = await audioContext.decodeAudioData(
+          musicBuffer.slice(0),
+        );
+
+        const sourceNode = audioContext.createBufferSource();
+        sourceNode.buffer = decoded;
+        sourceNode.connect(destination);
+
+        const mixedStream = new MediaStream([
+          ...videoStream.getVideoTracks(),
+          ...destination.stream.getAudioTracks(),
+        ]);
+
+        const recorder = new MediaRecorder(mixedStream, {
+          mimeType: "video/webm",
+        });
+        const chunks = [];
+
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) chunks.push(e.data);
+        };
+
+        recorder.onstop = () => {
+          const blob = new Blob(chunks, { type: "video/webm" });
+          const url = URL.createObjectURL(blob);
+          $("videoStatus").innerHTML =
+            `<a class="download-link" href="${url}" download="reel_with_music.webm">⬇️ Download reel with music</a>`;
+        };
+
+        recorder.start();
+        sourceNode.start(0);
+
+        for (const slide of state.slides) {
+          if (slide.file.type.startsWith("image/")) {
+            try {
+              await recordAnimatedImageFrames(
+                slide,
+                ctx,
+                width,
+                height,
+                null,
+                true,
+              );
+            } catch (err) {
+              console.error(
+                "Video+music export skipped image:",
+                slide.file.name,
+                err,
+              );
+            }
+          } else {
+            await recordAnimatedVideoFrames(slide, ctx, width, height);
+          }
+        }
+
+        recorder.stop();
+        sourceNode.stop();
+      }
+
+      function buildProjectData() {
+        return {
+          app: "JavaScript Reel Maker V3 Premium",
+          version: 3,
+          ratio: state.ratio,
+          coverIndex: state.coverIndex,
+          currentIndex: state.currentIndex,
+          slides: state.slides.map((slide) => ({
+            id: slide.id,
+            name: slide.file.name,
+            type: slide.file.type,
+            caption: slide.caption,
+            duration: slide.duration,
+            transition: slide.transition,
+            fontSize: slide.fontSize,
+            textColor: slide.textColor,
+            overlayOpacity: slide.overlayOpacity,
+            overlayPosition: slide.overlayPosition,
+          })),
+        };
+      }
+
+      function saveProjectJson() {
+        if (!state.slides.length) {
+          alert("Please import slides first.");
+          return;
+        }
+
+        const data = buildProjectData();
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "reel_project.json";
+        link.click();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      async function handleProjectLoad(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        try {
+          const text = await file.text();
+          const project = JSON.parse(text);
+
+          if (!project || !Array.isArray(project.slides)) {
+            alert("Invalid project JSON.");
+            return;
+          }
+
+          if (!state.slides.length) {
+            alert(
+              "Load the same media files first, then load the project JSON so captions and styles can map correctly.",
+            );
+            return;
+          }
+
+          for (const saved of project.slides) {
+            const live = state.slides.find(
+              (s) => s.file.name === saved.name && s.file.type === saved.type,
+            );
+            if (live) {
+              live.caption = saved.caption ?? live.caption;
+              live.duration = saved.duration ?? live.duration;
+              live.transition = saved.transition ?? live.transition;
+              live.fontSize = saved.fontSize ?? live.fontSize;
+              live.textColor = saved.textColor ?? live.textColor;
+              live.overlayOpacity = saved.overlayOpacity ?? live.overlayOpacity;
+              live.overlayPosition =
+                saved.overlayPosition ?? live.overlayPosition;
+            }
+          }
+
+          state.ratio = project.ratio || state.ratio;
+          state.coverIndex = Math.min(
+            project.coverIndex ?? 0,
+            state.slides.length - 1,
+          );
+          state.currentIndex = Math.min(
+            project.currentIndex ?? 0,
+            state.slides.length - 1,
+          );
+
+          setRatioUI();
+          renderSlides();
+          loadCurrentSlideIntoEditor();
+          renderPreview();
+          renderTimeline();
+
+          alert(
+            "Project styling loaded. Media must match by file name and type.",
+          );
+        } catch (err) {
+          console.error(err);
+          alert("Could not load project JSON.");
+        } finally {
+          event.target.value = "";
+        }
+      }
+
+      setRatioUI();
+      renderSlides();
+      renderTimeline();
+      renderPreview();
+    </script>
+  </body>
+</html>
