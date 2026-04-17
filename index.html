@@ -1,11 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Reel Generator V6.1 Ultra Pro | Champak Roy</title>
-  <meta name="description" content="AI Reel Generator V6.1 Ultra Pro creates reel-ready project.json files from a topic, captions, image folder template, and teaching style." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>One Crore Data Processing System — Ground Zero to Advanced | Programmer's Picnic</title>
+  <meta
+    name="description"
+    content="A complete HTML lesson explaining the One Crore data processing system: file-wise min-max, recursive range partitioning, flowcharts, diagrams, pseudocode, dry runs, and complexity analysis."
+  />
   <meta name="theme-color" content="#f59e0b" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
   <style>
     :root{
       --bg:#fffaf0;
@@ -17,1108 +21,1282 @@
       --line:#efdfb2;
       --brand:#d97706;
       --brand2:#f59e0b;
-      --brand3:#fb923c;
-      --good:#059669;
-      --warn:#d97706;
-      --danger:#dc2626;
+      --brand3:#fbbf24;
+      --ok:#15803d;
+      --bad:#b91c1c;
       --blue:#2563eb;
-      --purple:#7c3aed;
-      --shadow:0 18px 44px rgba(145,96,0,.12);
-      --radius:24px;
-      --radius2:18px;
-      --max:1500px;
+      --shadow:0 18px 50px rgba(133,77,14,.12);
+      --radius:22px;
+      --max:1200px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
 
     *{box-sizing:border-box}
-    html,body{
+    html{scroll-behavior:smooth}
+    body{
       margin:0;
-      padding:0;
-      font-family:Inter,Arial,Helvetica,sans-serif;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(251,191,36,.18), transparent 20%),
-        radial-gradient(circle at bottom right, rgba(249,115,22,.10), transparent 20%),
-        linear-gradient(180deg,var(--bg) 0%,#fffdf6 100%);
+        radial-gradient(circle at top right, rgba(251,191,36,.22), transparent 26%),
+        radial-gradient(circle at left center, rgba(245,158,11,.12), transparent 28%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      line-height:1.65;
     }
 
-    body{min-height:100vh}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
 
-    .page{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:18px;
+    .topbar{
+      position:sticky; top:0; z-index:30;
+      backdrop-filter: blur(14px);
+      background:rgba(255,250,240,.78);
+      border-bottom:1px solid rgba(239,223,178,.9);
+    }
+    .topbar-inner{
+      width:min(var(--max),calc(100% - 24px));
+      margin:auto;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:12px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width:0;
+    }
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      display:grid; place-items:center;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff; font-weight:900; box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand-text{min-width:0}
+    .brand-text strong{
+      display:block; font-size:1rem; line-height:1.15;
+      font-family:"DM Sans",Inter,system-ui,sans-serif;
+    }
+    .brand-text span{
+      display:block; color:var(--muted); font-size:.86rem;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .top-actions{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .btn{
+      border:none; cursor:pointer; border-radius:14px; padding:11px 14px;
+      font-weight:800; font-size:.94rem;
+      transition:.2s transform ease,.2s box-shadow ease,.2s background ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff; box-shadow:var(--shadow);
+    }
+    .btn-soft{
+      background:#fff; color:var(--text); border:1px solid var(--line);
     }
 
     .hero{
-      position:relative;
-      overflow:hidden;
-      border-radius:32px;
-      padding:26px;
-      color:#fff;
-      background:
-        radial-gradient(circle at 85% 15%, rgba(255,255,255,.20), transparent 16%),
-        linear-gradient(135deg,#92400e 0%,#d97706 45%,#f59e0b 100%);
-      box-shadow:0 24px 70px rgba(125,79,0,.22);
-      margin-bottom:18px;
+      width:min(var(--max),calc(100% - 24px));
+      margin:20px auto 0;
+      display:grid; grid-template-columns:1.18fr .82fr; gap:18px;
+      align-items:stretch;
     }
-
-    .hero h1{
-      margin:0 0 8px;
-      font-size:40px;
-      line-height:1.06;
+    .hero-card,.card{
+      background:linear-gradient(180deg,#fffdf8,#fff8ea);
+      border:1px solid rgba(239,223,178,.95);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
     }
-
-    .hero p{
-      margin:0;
-      max-width:980px;
-      line-height:1.55;
-      font-size:15px;
-      opacity:.98;
+    .hero-main{padding:28px}
+    .eyebrow{
+      display:inline-flex; gap:8px; align-items:center;
+      background:#fff3cd; color:#8a5a00; border:1px solid #f5d589;
+      padding:8px 12px; border-radius:999px; font-weight:800; font-size:.84rem;
     }
-
-    .hero-badges{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+    h1,h2,h3{
+      font-family:"DM Sans",Inter,system-ui,sans-serif;
+      line-height:1.15; margin:0 0 14px;
+    }
+    h1{
+      font-size:clamp(2rem,4.8vw,3.3rem);
+      letter-spacing:-.03em;
       margin-top:14px;
     }
+    .lead{
+      font-size:1.07rem; color:var(--muted); max-width:72ch;
+    }
+    .hero-stats{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+      margin-top:18px;
+    }
+    .stat{
+      background:#fff; border:1px solid var(--line);
+      border-radius:18px; padding:14px;
+    }
+    .stat b{display:block; font-size:1.2rem}
+    .stat span{display:block; color:var(--muted); font-size:.92rem}
 
-    .hero-badge{
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-      background:rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.18);
-      backdrop-filter:blur(8px);
+    .hero-side{
+      padding:18px;
+      display:flex; flex-direction:column; gap:12px;
+      justify-content:center;
+    }
+    .mini{
+      background:#fff; border:1px solid var(--line);
+      border-radius:18px; padding:14px;
+    }
+    .mini h3{font-size:1.02rem; margin-bottom:8px}
+    .mini p{margin:0; color:var(--muted); font-size:.95rem}
+    .tagrow{display:flex; flex-wrap:wrap; gap:8px}
+    .tag{
+      padding:8px 10px; border-radius:999px; background:#fff4d6;
+      border:1px solid #f1d79a; color:#875900; font-weight:700; font-size:.82rem;
     }
 
     .layout{
-      display:grid;
-      grid-template-columns:430px minmax(0,1fr);
-      gap:18px;
-      align-items:start;
+      width:min(var(--max),calc(100% - 24px));
+      margin:18px auto 42px;
+      display:grid; grid-template-columns:300px minmax(0,1fr); gap:18px;
     }
-
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
+    .toc{
+      position:sticky; top:78px; align-self:start;
+      padding:18px;
+      background:rgba(255,255,255,.82);
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(239,223,178,.95);
+      border-radius:22px;
       box-shadow:var(--shadow);
-      overflow:hidden;
     }
-
-    .panel-head{
-      padding:16px 18px;
-      font-weight:800;
-      font-size:16px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#fffef9,#fff7df);
+    .toc h2{font-size:1.08rem; margin-bottom:12px}
+    .toc a{
+      display:block; padding:9px 10px; border-radius:12px;
+      color:var(--text); font-weight:700; font-size:.95rem;
     }
+    .toc a:hover{background:#fff5da; text-decoration:none}
+    .toc .sub{padding-left:18px; font-weight:600; color:var(--muted)}
 
-    .panel-body{
-      padding:16px;
-    }
-
-    .field{margin-bottom:14px}
-    label{
-      display:block;
-      margin-bottom:7px;
-      font-size:13px;
-      font-weight:800;
-      color:var(--muted);
-      letter-spacing:.2px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="color"],
-    textarea,
-    select{
-      width:100%;
-      border:1px solid #e7d7a8;
-      border-radius:14px;
-      padding:11px 12px;
-      font-size:14px;
-      color:var(--text);
-      background:#fffef9;
-      outline:none;
-      transition:border-color .16s ease, box-shadow .16s ease;
-    }
-
-    input:focus, textarea:focus, select:focus{
-      border-color:#f59e0b;
-      box-shadow:0 0 0 4px rgba(245,158,11,.14);
-    }
-
-    textarea{
-      min-height:96px;
-      resize:vertical;
-      line-height:1.45;
-    }
-
-    .grid2,.grid3{
-      display:grid;
-      gap:12px;
-    }
-    .grid2{grid-template-columns:1fr 1fr}
-    .grid3{grid-template-columns:1fr 1fr 1fr}
-
-    .btn-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    button{
-      appearance:none;
-      border:none;
-      border-radius:14px;
-      padding:11px 15px;
-      font-size:14px;
-      font-weight:800;
-      color:#fff;
-      background:var(--brand);
-      cursor:pointer;
-      transition:transform .18s ease, filter .18s ease, background .18s ease;
-      box-shadow:0 10px 24px rgba(217,119,6,.18);
-    }
-
-    button:hover{
-      background:var(--brand2);
-      transform:translateY(-1px);
-      filter:brightness(1.02);
-    }
-
-    button.secondary{
-      background:#f8edd0;
-      color:#6b4e0c;
-      border:1px solid #ecd48f;
-      box-shadow:none;
-    }
-
-    button.secondary:hover{background:#f7e4b0}
-    button.good{background:var(--good)}
-    button.warn{background:var(--warn)}
-    button.danger{background:var(--danger)}
-    button.blue{background:var(--blue)}
-    button.purple{background:var(--purple)}
-
-    .meta-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .meta-chip{
-      padding:8px 10px;
-      border-radius:999px;
-      background:#fff9ea;
-      border:1px solid #efdfb2;
-      font-size:12px;
-      font-weight:800;
-      color:#7b5f2a;
-    }
-
-    .stack{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-
-    .card-lite{
-      background:var(--card2);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:12px;
-    }
-
-    .hint{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.55;
-    }
-
-    .status{
-      min-height:22px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .slides{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      max-height:72vh;
-      overflow:auto;
-      padding-right:4px;
-    }
-
-    .slide-card{
-      display:grid;
-      grid-template-columns:96px 1fr;
-      gap:12px;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg,#fffef9,#fff5dc);
-      border-radius:18px;
-      padding:12px;
-      transition:.18s ease;
-    }
-
-    .slide-card:hover{transform:translateY(-1px)}
-
-    .slide-thumb{
-      width:96px;
-      height:142px;
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid #ead5a1;
-      position:relative;
-      background:#111827;
-    }
-
-    .slide-thumb-bg{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:10px;
-      color:#fff;
-      font-weight:800;
-      font-size:13px;
-      line-height:1.2;
-    }
-
-    .slide-badge{
-      position:absolute;
-      left:6px;
-      top:6px;
-      background:rgba(0,0,0,.72);
-      color:#fff;
-      font-size:10px;
-      padding:4px 7px;
-      border-radius:999px;
-      font-weight:800;
-    }
-
-    .slide-type{
-      position:absolute;
-      left:6px;
-      bottom:6px;
-      background:rgba(217,119,6,.92);
-      color:#fff;
-      font-size:10px;
-      padding:4px 7px;
-      border-radius:999px;
-      font-weight:800;
-    }
-
-    .slide-title{
-      font-size:14px;
-      font-weight:800;
-      margin-bottom:6px;
-    }
-
-    .slide-sub{
-      font-size:12px;
-      color:#7a6130;
-      line-height:1.45;
-      margin-bottom:6px;
-      white-space:pre-wrap;
-    }
-
-    .json-box{
-      width:100%;
-      min-height:320px;
-      border:1px solid #e7d7a8;
-      border-radius:18px;
-      padding:14px;
-      background:#1f1720;
-      color:#fef3c7;
-      font-family:Consolas,Monaco,monospace;
-      font-size:13px;
-      line-height:1.5;
-      resize:vertical;
-      outline:none;
-    }
-
-    .toolbar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
+    main{display:grid; gap:18px}
+    section.card{padding:22px}
+    .section-head{
+      display:flex; justify-content:space-between; gap:14px; align-items:flex-start; flex-wrap:wrap;
       margin-bottom:10px;
     }
-
-    .toolbar-left,.toolbar-right{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
+    .section-kicker{
+      font-size:.82rem; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--brand); font-weight:900;
     }
-
     .pill{
-      display:inline-flex;
-      align-items:center;
-      padding:8px 10px;
-      border-radius:999px;
-      background:#fff9ea;
-      border:1px solid #efdfb2;
-      font-size:12px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 11px; border-radius:999px;
+      border:1px solid var(--line); background:#fff;
+      color:var(--muted); font-size:.84rem; font-weight:700;
+    }
+
+    .grid-2,.grid-3{
+      display:grid; gap:14px;
+    }
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .note,.callout,.box{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+    }
+    .callout{
+      background:linear-gradient(180deg,#fff8e7,#fff);
+      border-left:5px solid var(--brand2);
+    }
+    .note.success{border-left:5px solid var(--ok)}
+    .note.warn{border-left:5px solid var(--bad)}
+    .box h3,.note h3,.callout h3{font-size:1.05rem; margin-bottom:8px}
+    .muted{color:var(--muted)}
+
+    .code, pre{
+      font-family:var(--mono);
+      background:#1f2937; color:#f9fafb;
+      border-radius:18px;
+      padding:16px; overflow:auto;
+      font-size:.93rem; line-height:1.55;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    code{font-family:var(--mono)}
+
+    .flow{
+      background:#fff;
+      border:1px dashed #e6c572;
+      border-radius:20px;
+      padding:16px;
+      overflow:auto;
+    }
+    .flow pre{
+      margin:0;
+      background:transparent;
+      color:#3b2a12;
+      border:none;
+      padding:0;
+      font-family:var(--mono);
+      font-size:.95rem;
+      line-height:1.5;
+    }
+
+    .diagram{
+      display:grid; gap:12px;
+      background:#fffdf8;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+    }
+    .lane{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
+    }
+    .node{
+      min-width:160px;
+      text-align:center;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:14px 12px;
+      border-radius:18px;
       font-weight:800;
-      color:#7b5f2a;
+      box-shadow:0 8px 22px rgba(133,77,14,.07);
+    }
+    .node.small{min-width:120px; font-weight:700}
+    .arrow{
+      font-size:1.3rem;
+      color:var(--brand);
+      font-weight:900;
     }
 
-    .two-panels{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:18px;
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+    }
+    table{
+      width:100%; border-collapse:collapse; min-width:780px;
+    }
+    th,td{
+      padding:12px 14px; border-bottom:1px solid var(--line);
+      text-align:left; vertical-align:top;
+    }
+    th{
+      background:#fff7e5; font-size:.92rem; color:#7a5310;
+      letter-spacing:.02em;
+    }
+    tr:last-child td{border-bottom:none}
+    td b{font-family:"DM Sans",Inter,sans-serif}
+
+    .step-list{display:grid; gap:12px}
+    .step{
+      display:grid; grid-template-columns:52px 1fr; gap:14px;
+      align-items:start;
+      background:#fff; border:1px solid var(--line);
+      border-radius:18px; padding:14px;
+    }
+    .step-num{
+      width:52px; height:52px; border-radius:16px;
+      display:grid; place-items:center;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff; font-weight:900; font-size:1.05rem;
+      box-shadow:var(--shadow);
+    }
+    .step h3{margin-bottom:6px}
+
+    .mcq{
+      display:grid; gap:12px;
+    }
+    .q{
+      background:#fff; border:1px solid var(--line);
+      border-radius:18px; padding:16px;
+    }
+    .q h3{font-size:1rem; margin-bottom:10px}
+    .q label{
+      display:block; margin:8px 0; padding:10px 12px; border-radius:12px;
+      border:1px solid #efe2ba; background:#fffaf0; cursor:pointer;
+    }
+    .q label:hover{background:#fff4d9}
+    .q input{margin-right:8px}
+    .mcq-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .scorebox{
+      min-height:48px; display:flex; align-items:center;
+      font-weight:800; color:var(--text);
     }
 
-    @media (max-width:1200px){
-      .layout{grid-template-columns:1fr}
-      .slides{max-height:none}
+    .footer{
+      width:min(var(--max),calc(100% - 24px));
+      margin:0 auto 34px;
+      color:var(--muted);
+      text-align:center;
+      font-size:.95rem;
     }
 
-    @media (max-width:760px){
-      .grid2,.grid3{grid-template-columns:1fr}
-      .hero h1{font-size:32px}
+    .speak{
+      scroll-margin-top:95px;
+    }
+
+    @media (max-width: 980px){
+      .hero,
+      .layout,
+      .grid-2,
+      .grid-3{grid-template-columns:1fr}
+      .toc{position:relative; top:0}
+      .hero-stats{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <section class="hero">
-      <h1>AI Reel Generator V6.1 Ultra Pro</h1>
-      <p>
-        Build a complete reel-ready <strong>project.json</strong> from a topic, audience, teaching style,
-        image folder template, and call-to-action. This version includes two built-in sample JSON projects and
-        a much larger animation library for richer reels.
-      </p>
-      <div class="hero-badges">
-        <div class="hero-badge">2 built-in sample JSONs</div>
-        <div class="hero-badge">More animations</div>
-        <div class="hero-badge">Image path automation</div>
-        <div class="hero-badge">Text + image reels</div>
-        <div class="hero-badge">Reel-ready JSON</div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo">PP</div>
+        <div class="brand-text">
+          <strong>Programmer’s Picnic</strong>
+          <span>One Crore Data Processing System — HTML Lesson</span>
+        </div>
       </div>
-    </section>
+      <div class="top-actions">
+        <button class="btn btn-soft" id="toggleAllBtn" type="button">Collapse notes</button>
+        <button class="btn btn-primary" id="checkMcqBtnTop" type="button">Check MCQs</button>
+      </div>
+    </div>
+  </header>
 
-    <section class="layout">
-      <div class="panel">
-        <div class="panel-head">Generator Controls</div>
-        <div class="panel-body">
-          <div class="field">
-            <label>Topic</label>
-            <input id="topic" type="text" value="Bubble Sort" placeholder="Example: Bubble Sort, Java Scanner, Python loops" />
+  <section class="hero">
+    <div class="hero-card hero-main">
+      <div class="eyebrow">Ground Zero to Advanced</div>
+      <h1 class="speak" id="speak0">One Crore Data Processing System</h1>
+      <p class="lead speak" id="speak1">
+        This lesson explains a Java project that works with very large numeric data. You will learn
+        the active file-wise min-max engine, the backup recursive range-partitioning design, dry runs,
+        flowcharts, pseudocode, complexity analysis, and the bigger system idea behind large-scale
+        file-based processing.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <b>2 Core Designs</b>
+          <span>Min-max reduction + recursive partitioning</span>
+        </div>
+        <div class="stat">
+          <b>10 Million</b>
+          <span>Possible dataset size handled by the backup approach</span>
+        </div>
+        <div class="stat">
+          <b>File-first Thinking</b>
+          <span>Process data in chunks instead of everything at once</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="hero-card hero-side">
+      <div class="mini">
+        <h3>What you will master</h3>
+        <p>How a large numeric dataset can be split, scanned, summarized, and recursively organized into manageable files.</p>
+      </div>
+      <div class="mini">
+        <h3>Keywords</h3>
+        <div class="tagrow">
+          <span class="tag">Min-Max</span>
+          <span class="tag">Chunk Files</span>
+          <span class="tag">Recursion</span>
+          <span class="tag">Partitioning</span>
+          <span class="tag">External Processing</span>
+          <span class="tag">Counting Sort Demo</span>
+        </div>
+      </div>
+      <div class="mini">
+        <h3>Best way to study</h3>
+        <p>Read the flowcharts first, then follow the dry run, then study the pseudocode, and finally solve the MCQs.</p>
+      </div>
+    </aside>
+  </section>
+
+  <div class="layout">
+    <nav class="toc">
+      <h2>Lesson Map</h2>
+      <a href="#sec-intro">1. Problem and Goal</a>
+      <a href="#sec-big-picture">2. Big Picture</a>
+      <a href="#sec-active">3. Active System</a>
+      <a class="sub" href="#sec-active-flow">3.1 Flowchart</a>
+      <a class="sub" href="#sec-active-dryrun">3.2 Dry Run</a>
+      <a href="#sec-backup">4. Backup System</a>
+      <a class="sub" href="#sec-backup-flow">4.1 Recursive Flow</a>
+      <a class="sub" href="#sec-backup-dryrun">4.2 Dry Run</a>
+      <a href="#sec-classes">5. Class Responsibilities</a>
+      <a href="#sec-pseudocode">6. Pseudocode</a>
+      <a href="#sec-complexity">7. Complexity</a>
+      <a href="#sec-strengths">8. Strengths and Limits</a>
+      <a href="#sec-analogy">9. Simple Analogy</a>
+      <a href="#sec-mcqs">10. MCQs</a>
+      <a href="#sec-summary">11. Final Summary</a>
+    </nav>
+
+    <main>
+      <section class="card" id="sec-intro">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 1</div>
+            <h2 class="speak" id="speak2">Problem and Goal</h2>
           </div>
+          <span class="pill">Foundation first</span>
+        </div>
 
-          <div class="grid2">
-            <div class="field">
-              <label>Reel style</label>
-              <select id="style">
-                <option value="lesson">Lesson / explainer</option>
-                <option value="story">Story flow</option>
-                <option value="listicle">Listicle</option>
-                <option value="algorithm">Algorithm walkthrough</option>
-                <option value="promo">Promo / call to action</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Audience level</label>
-              <select id="audience">
-                <option value="beginner">Beginner</option>
-                <option value="school">School student</option>
-                <option value="college">College student</option>
-                <option value="developer">Developer</option>
-                <option value="mixed">Mixed audience</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid2">
-            <div class="field">
-              <label>Slide count</label>
-              <input id="slideCount" type="number" min="3" max="25" value="11" />
-            </div>
-            <div class="field">
-              <label>Default duration (seconds)</label>
-              <input id="duration" type="number" min="1" max="20" value="3" />
-            </div>
-          </div>
-
-          <div class="grid3">
-            <div class="field">
-              <label>Ratio</label>
-              <select id="ratio">
-                <option value="reel">Reel 9:16</option>
-                <option value="story">Story 9:16</option>
-                <option value="square">Square 1:1</option>
-                <option value="landscape">Landscape 16:9</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Source mode</label>
-              <select id="sourceMode">
-                <option value="mixed">Mixed text + image</option>
-                <option value="image">Image slides only</option>
-                <option value="text">Text slides only</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Cover slide index</label>
-              <input id="coverIndex" type="number" min="0" max="24" value="0" />
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Image folder / path template</label>
-            <input id="imageTemplate" type="text" value="pics/{n}.jpg" placeholder="Example: pics/{n}.jpg or assets/frames/{n}.png" />
-          </div>
-
-          <div class="field">
-            <label>Call to action</label>
-            <input id="cta" type="text" value="Keep learning with Programmer’s Picnic" placeholder="Example: Follow for more, Subscribe now" />
-          </div>
-
-          <div class="field">
-            <label>Extra guidance for the generator</label>
-            <textarea id="notes" placeholder="Example: use simple English, keep lines short, explain with one example, end with motivation"></textarea>
-          </div>
-
-          <div class="grid2">
-            <div class="field">
-              <label>Transition mode</label>
-              <select id="transitionMode">
-                <option value="balanced">Balanced mix</option>
-                <option value="dramatic">Dramatic</option>
-                <option value="calm">Calm</option>
-                <option value="random">Random</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Text motion mode</label>
-              <select id="motionMode">
-                <option value="balanced">Balanced mix</option>
-                <option value="energetic">Energetic</option>
-                <option value="calm">Calm</option>
-                <option value="random">Random</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="card-lite">
-            <div class="field" style="margin-bottom:10px">
-              <label>Color theme 1</label>
-              <input id="bg1" type="color" value="#d97706" />
-            </div>
-            <div class="field" style="margin-bottom:10px">
-              <label>Color theme 2</label>
-              <input id="bg2" type="color" value="#7c3aed" />
-            </div>
-            <div class="field" style="margin-bottom:0">
-              <label>Color theme 3</label>
-              <input id="bg3" type="color" value="#2563eb" />
-            </div>
-          </div>
-
-          <div style="height:12px"></div>
-
-          <div class="btn-row">
-            <button onclick="V6.generate()">⚡ Generate V6 Project</button>
-            <button class="secondary" onclick="V6.regenerateCaptions()">🔁 Regenerate Captions</button>
-            <button class="secondary" onclick="V6.makeAlgorithmPreset()">🧠 Algorithm Preset</button>
-            <button class="secondary" onclick="V6.makePromoPreset()">📣 Promo Preset</button>
-          </div>
-
-          <div style="height:10px"></div>
-
-          <div class="btn-row">
-            <button class="good" onclick="V6.downloadJson()">💾 Download project.json</button>
-            <button class="blue" onclick="V6.copyJson()">📋 Copy JSON</button>
-            <button class="warn" onclick="V6.loadBubbleSortTextSample()">📝 Sample 1</button>
-            <button class="warn" onclick="V6.loadPicsImageSample()">🖼 Sample 2</button>
-            <button class="danger" onclick="V6.clearAll()">🗑 Reset</button>
-          </div>
-
-          <div class="meta-row">
-            <div class="meta-chip" id="metaSlides">Slides: 0</div>
-            <div class="meta-chip" id="metaMode">Mode: mixed</div>
-            <div class="meta-chip" id="metaTopic">Topic: -</div>
-          </div>
-
-          <div style="height:10px"></div>
-          <div id="status" class="status">Ready.</div>
-          <p class="hint">
-            Use <strong>{n}</strong> in the image template. Example: <code>pics/{n}.jpg</code>. The generator will map slide numbers to image paths automatically.
+        <div class="callout speak" id="speak3">
+          <h3>The challenge</h3>
+          <p>
+            Suppose you have a huge dataset of integers. It may contain up to <b>1 crore numbers</b>,
+            which means <b>10 million values</b>. Loading everything into memory and sorting it in one
+            shot may be uncomfortable or inefficient. So the project explores a different idea:
+            <b>process the data file by file</b>.
           </p>
         </div>
-      </div>
 
-      <div class="two-panels">
-        <div class="panel">
-          <div class="panel-head">Storyboard Preview</div>
-          <div class="panel-body">
-            <div class="toolbar">
-              <div class="toolbar-left">
-                <span class="pill">Preview cards</span>
-              </div>
-              <div class="toolbar-right">
-                <button class="secondary" onclick="V6.reverseSlides()">↕ Reverse Slides</button>
-                <button class="secondary" onclick="V6.addEndingSlide()">➕ Add Ending Slide</button>
-              </div>
-            </div>
-            <div id="slidesPreview" class="slides"></div>
+        <div class="grid-2">
+          <div class="note">
+            <h3>Goal of the active program</h3>
+            <p class="muted">
+              Read all files in a folder, find the minimum and maximum inside each file, and then
+              combine those results to compute the overall minimum and maximum.
+            </p>
+          </div>
+          <div class="note">
+            <h3>Goal of the backup program</h3>
+            <p class="muted">
+              Start with one giant file, split it into smaller files by value range, and keep splitting
+              recursively until every file becomes manageable.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-big-picture">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 2</div>
+            <h2 class="speak" id="speak4">Big Picture of the System</h2>
+          </div>
+          <span class="pill">Whole architecture</span>
+        </div>
+
+        <div class="diagram">
+          <div class="lane">
+            <div class="node">Huge Numeric Data</div>
+            <div class="arrow">→</div>
+            <div class="node">Chunk or Split Into Files</div>
+            <div class="arrow">→</div>
+            <div class="node">Process Each File</div>
+            <div class="arrow">→</div>
+            <div class="node">Combine Results</div>
+          </div>
+          <div class="lane">
+            <div class="node small">Local Min-Max</div>
+            <div class="node small">Range Partitioning</div>
+            <div class="node small">Metadata in File Names</div>
+            <div class="node small">Recursive Splitting</div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-head">Generated project.json</div>
-          <div class="panel-body">
-            <div class="toolbar">
-              <div class="toolbar-left">
-                <span class="pill">V5 / V6 compatible JSON</span>
-              </div>
-              <div class="toolbar-right">
-                <button class="secondary" onclick="V6.formatJson()">✨ Format</button>
-              </div>
-            </div>
-            <textarea id="jsonOutput" class="json-box" spellcheck="false"></textarea>
+        <div class="grid-2">
+          <div class="box">
+            <h3>Approach A: Active code</h3>
+            <p class="muted">
+              Many files already exist in the <code>Data</code> folder. The program scans them and
+              computes <b>local min-max</b>, then combines them into a <b>global min-max</b>.
+            </p>
+          </div>
+          <div class="box">
+            <h3>Approach B: Backup code</h3>
+            <p class="muted">
+              One giant file is generated first. Then the file is recursively broken into child files
+              using the midpoint of the numeric range.
+            </p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section class="card" id="sec-active">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 3</div>
+            <h2 class="speak" id="speak5">The Active System: File-wise Min-Max Engine</h2>
+          </div>
+          <span class="pill">Working code path</span>
+        </div>
+
+        <div class="step-list">
+          <article class="step">
+            <div class="step-num">1</div>
+            <div>
+              <h3>Open the <code>Data</code> folder</h3>
+              <p class="muted">
+                The program gets all files in the folder using a method like
+                <code>getAllFiles("Data")</code>.
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-num">2</div>
+            <div>
+              <h3>Scan one file at a time</h3>
+              <p class="muted">
+                Each file is opened with <code>Scanner</code>, and the integers are read one by one.
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-num">3</div>
+            <div>
+              <h3>Compute local min and max</h3>
+              <p class="muted">
+                The first number initializes both min and max. Every later number is compared against them.
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-num">4</div>
+            <div>
+              <h3>Store file summary</h3>
+              <p class="muted">
+                A <code>FileData</code> object stores the file and its <code>MaxMin</code> result.
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-num">5</div>
+            <div>
+              <h3>Combine all file summaries</h3>
+              <p class="muted">
+                The program compares file-level maximums and minimums to produce one final overall result.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="card" id="sec-active-flow">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 3.1</div>
+            <h2 class="speak" id="speak6">Flowchart of the Active Program</h2>
+          </div>
+          <span class="pill">Control flow</span>
+        </div>
+
+        <div class="flow">
+<pre>Start
+  |
+  v
+Read all files in "Data"
+  |
+  v
+For each file:
+  |
+  +-- Open file with Scanner
+  |
+  +-- Read first integer
+  |      |
+  |      +-- min = first integer
+  |      +-- max = first integer
+  |
+  +-- Read remaining integers one by one
+  |      |
+  |      +-- if n &gt; max, update max
+  |      +-- if n &lt; min, update min
+  |
+  +-- Create FileData(file, min, max)
+  |
+  v
+Store all FileData objects in array
+  |
+  v
+Compare all local min-max summaries
+  |
+  +-- global max = largest local max
+  +-- global min = smallest local min
+  |
+  v
+Print summaries and final result
+  |
+  v
+End</pre>
+        </div>
+      </section>
+
+      <section class="card" id="sec-active-dryrun">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 3.2</div>
+            <h2 class="speak" id="speak7">Dry Run of the Active Program</h2>
+          </div>
+          <span class="pill">Using real sample pattern</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Contents</th>
+                <th>Local Min</th>
+                <th>Local Max</th>
+                <th>Stored Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>0.txt</b></td>
+                <td>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td>
+                <td>0</td>
+                <td>9</td>
+                <td><code>FileData(0.txt, Max=9, Min=0)</code></td>
+              </tr>
+              <tr>
+                <td><b>1.txt</b></td>
+                <td>10, 11, 12, 13, 14, 15, 16, 17, 18, 19</td>
+                <td>10</td>
+                <td>19</td>
+                <td><code>FileData(1.txt, Max=19, Min=10)</code></td>
+              </tr>
+              <tr>
+                <td><b>2.txt</b></td>
+                <td>20 to 29</td>
+                <td>20</td>
+                <td>29</td>
+                <td><code>FileData(2.txt, Max=29, Min=20)</code></td>
+              </tr>
+              <tr>
+                <td><b>...</b></td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+              </tr>
+              <tr>
+                <td><b>9.txt</b></td>
+                <td>90, 91, 92, 93, 94, 95, 96, 97, 98, 99</td>
+                <td>90</td>
+                <td>99</td>
+                <td><code>FileData(9.txt, Max=99, Min=90)</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <h3>Final result of the active program</h3>
+          <p>
+            When all file summaries are combined, the program gets:
+            <b>Global Min = 0</b> and <b>Global Max = 99</b>.
+          </p>
+        </div>
+
+        <div class="code">Max=99 ,Min=0</div>
+      </section>
+
+      <section class="card" id="sec-backup">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 4</div>
+            <h2 class="speak" id="speak8">The Backup System: Recursive Range Partitioning</h2>
+          </div>
+          <span class="pill">Big-data design</span>
+        </div>
+
+        <div class="callout speak" id="speak9">
+          <h3>The main idea</h3>
+          <p>
+            Instead of sorting a huge file directly, the backup system splits the file by numeric range.
+            It uses the midpoint of the current range and sends numbers into two child files:
+            one for lower values and one for upper values.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <div class="box">
+            <h3>Generated first file</h3>
+            <div class="code">Data0,-1000,1000,10000000</div>
+            <p class="muted">
+              This means file name <code>Data0</code>, minimum possible value <code>-1000</code>,
+              maximum possible value <code>1000</code>, and size <code>10000000</code>.
+            </p>
+          </div>
+          <div class="box">
+            <h3>Stopping rule</h3>
+            <div class="code">if (fileSize &lt; maxSize) stop;</div>
+            <p class="muted">
+              If a file becomes smaller than the threshold, recursion ends for that file.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-backup-flow">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 4.1</div>
+            <h2 class="speak" id="speak10">Recursive Flow of the Backup Program</h2>
+          </div>
+          <span class="pill">Partition tree</span>
+        </div>
+
+        <div class="flow">
+<pre>Start
+  |
+  v
+Generate giant file
+  |
+  v
+Read metadata from file name
+  |
+  v
+Is file size &lt; maxSize?
+  |
+  +-- Yes --> Stop recursion
+  |
+  +-- No
+        |
+        v
+   avg = (min + max) / 2
+        |
+        v
+   Open current file
+        |
+        v
+   Create two temporary child files
+        |
+        v
+   Read each number x
+        |
+        +-- if x &lt; avg  --> child file 1
+        +-- else        --> child file 2
+        |
+        +-- while writing:
+              update child min, child max, child size
+        |
+        v
+   Delete original parent file
+        |
+        v
+   Rename child files using metadata
+        |
+        v
+   Recurse on child 1
+        |
+        v
+   Recurse on child 2
+        |
+        v
+Repeat until every file is small enough</pre>
+        </div>
+
+        <div class="diagram">
+          <div class="lane">
+            <div class="node">Data0,-1000,1000,10000000</div>
+          </div>
+          <div class="lane"><div class="arrow">↓ split at 0 ↓</div></div>
+          <div class="lane">
+            <div class="node">Negative side</div>
+            <div class="node">Zero and positive side</div>
+          </div>
+          <div class="lane"><div class="arrow">↓ recurse ↓</div></div>
+          <div class="lane">
+            <div class="node small">-1000 to -501</div>
+            <div class="node small">-500 to -1</div>
+            <div class="node small">0 to 500</div>
+            <div class="node small">501 to 1000</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-backup-dryrun">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 4.2</div>
+            <h2 class="speak" id="speak11">Dry Run of Recursive Partitioning</h2>
+          </div>
+          <span class="pill">Sample walkthrough</span>
+        </div>
+
+        <div class="grid-2">
+          <div class="box">
+            <h3>First split</h3>
+            <div class="code">avg = (-1000 + 1000) / 2 = 0</div>
+            <p class="muted">
+              All values less than 0 go to the left child. All values greater than or equal to 0 go to the right child.
+            </p>
+          </div>
+          <div class="box">
+            <h3>Example values</h3>
+            <div class="code">-700, 15, -2, 999, 0, -1000, 478</div>
+            <p class="muted">
+              These values show how numbers get distributed into child files.
+            </p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Value Read</th>
+                <th>Condition</th>
+                <th>Destination</th>
+                <th>Child State After Insert</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>-700</b></td>
+                <td><code>-700 &lt; 0</code></td>
+                <td>Child 1</td>
+                <td>min1=-700, max1=-700, n1=1</td>
+              </tr>
+              <tr>
+                <td><b>15</b></td>
+                <td><code>15 &lt; 0</code> is false</td>
+                <td>Child 2</td>
+                <td>min2=15, max2=15, n2=1</td>
+              </tr>
+              <tr>
+                <td><b>-2</b></td>
+                <td><code>-2 &lt; 0</code></td>
+                <td>Child 1</td>
+                <td>min1=-700, max1=-2, n1=2</td>
+              </tr>
+              <tr>
+                <td><b>999</b></td>
+                <td>false</td>
+                <td>Child 2</td>
+                <td>min2=15, max2=999, n2=2</td>
+              </tr>
+              <tr>
+                <td><b>0</b></td>
+                <td><code>0 &lt; 0</code> is false</td>
+                <td>Child 2</td>
+                <td>min2=0, max2=999, n2=3</td>
+              </tr>
+              <tr>
+                <td><b>-1000</b></td>
+                <td>true</td>
+                <td>Child 1</td>
+                <td>min1=-1000, max1=-2, n1=3</td>
+              </tr>
+              <tr>
+                <td><b>478</b></td>
+                <td>false</td>
+                <td>Child 2</td>
+                <td>min2=0, max2=999, n2=4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <h3>What real backup file names reveal</h3>
+          <p>
+            File names like <code>1,0,1000,5005229</code>, <code>3,-500,-1,2496765</code>,
+            and <code>16,-1000,-998,14978</code> show that the recursion really produced
+            smaller files with narrower numeric ranges.
+          </p>
+        </div>
+      </section>
+
+      <section class="card" id="sec-classes">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 5</div>
+            <h2 class="speak" id="speak12">Responsibilities of the Main Classes</h2>
+          </div>
+          <span class="pill">Who does what</span>
+        </div>
+
+        <div class="grid-3">
+          <div class="note">
+            <h3><code>BillionsAndBillions.java</code></h3>
+            <p class="muted">
+              Controls the active workflow. It gets all files, scans each file, stores file summaries,
+              and computes the final global min and max.
+            </p>
+          </div>
+          <div class="note">
+            <h3><code>FileData.java</code></h3>
+            <p class="muted">
+              Stores the file reference and the <code>MaxMin</code> result associated with that file.
+            </p>
+          </div>
+          <div class="note">
+            <h3><code>MaxMin.java</code></h3>
+            <p class="muted">
+              Holds two fields only: <code>max</code> and <code>min</code>.
+            </p>
+          </div>
+          <div class="note">
+            <h3><code>OneCroreBreakUp.java</code></h3>
+            <p class="muted">
+              Creates a huge dataset and recursively partitions it into smaller files based on midpoint splitting.
+            </p>
+          </div>
+          <div class="note">
+            <h3>Backup <code>FileData.java</code></h3>
+            <p class="muted">
+              Stores metadata such as file name, minimum, maximum, and size for a partitioned child file.
+            </p>
+          </div>
+          <div class="note">
+            <h3><code>Counting.java</code></h3>
+            <p class="muted">
+              Demonstrates counting sort separately. It is not the active large-file engine, but it shows another sorting idea.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-pseudocode">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 6</div>
+            <h2 class="speak" id="speak13">Pseudocode</h2>
+          </div>
+          <span class="pill">Algorithmic view</span>
+        </div>
+
+        <h3>6.1 Active file scan</h3>
+        <pre>function getMinMax(file):
+    read first number
+    min = first number
+    max = first number
+
+    while more numbers exist:
+        n = next number
+
+        if n &gt; max:
+            max = n
+
+        if n &lt; min:
+            min = n
+
+    return (min, max)</pre>
+
+        <h3>6.2 Active full workflow</h3>
+        <pre>function processAllFiles(directory):
+    files = getAllFiles(directory)
+    results = []
+
+    for each file in files:
+        summary = getMinMax(file)
+        results.append(summary)
+
+    globalMin = results[0].min
+    globalMax = results[0].max
+
+    for each result in results:
+        if result.min &lt; globalMin:
+            globalMin = result.min
+        if result.max &gt; globalMax:
+            globalMax = result.max
+
+    print(globalMin, globalMax)</pre>
+
+        <h3>6.3 Recursive partitioning</h3>
+        <pre>function breakFile(file, maxSize):
+    metadata = readMetadata(file)
+
+    if metadata.size &lt; maxSize:
+        return
+
+    avg = (metadata.min + metadata.max) / 2
+
+    create child1
+    create child2
+
+    for each value x in file:
+        if x &lt; avg:
+            write x to child1
+            update child1 metadata
+        else:
+            write x to child2
+            update child2 metadata
+
+    delete original file
+
+    rename child1 using child1 metadata
+    rename child2 using child2 metadata
+
+    breakFile(child1, maxSize)
+    breakFile(child2, maxSize)</pre>
+      </section>
+
+      <section class="card" id="sec-complexity">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 7</div>
+            <h2 class="speak" id="speak14">Complexity Analysis</h2>
+          </div>
+          <span class="pill">Time thinking</span>
+        </div>
+
+        <div class="grid-2">
+          <div class="note success">
+            <h3>Active program</h3>
+            <p>
+              Let <b>N</b> be the total count of numbers across all files and <b>F</b> be the number of files.
+            </p>
+            <div class="code">Scanning all numbers: O(N)
+Combining file summaries in current code: O(F²)
+Cleaner combine method possible: O(F)</div>
+          </div>
+          <div class="note">
+            <h3>Backup recursive system</h3>
+            <p class="muted">
+              Each splitting level scans data again, and the depth depends on how the value range gets narrowed.
+              A rough intuitive view is <b>O(N log R)</b>, where <b>R</b> is the value range.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <h3>Important observation</h3>
+          <p>
+            The active system is a <b>min-max reducer</b>, not a full sorter. The backup system is closer to a
+            file-based partitioning framework for very large data.
+          </p>
+        </div>
+      </section>
+
+      <section class="card" id="sec-strengths">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 8</div>
+            <h2 class="speak" id="speak15">Strengths and Limitations</h2>
+          </div>
+          <span class="pill">Critical view</span>
+        </div>
+
+        <div class="grid-2">
+          <div class="note success">
+            <h3>Strengths</h3>
+            <p class="muted">
+              File-based processing avoids loading everything at once. Local summaries are simple and effective.
+              Range-based recursive splitting is a smart way to shrink huge problems into smaller ones.
+            </p>
+          </div>
+          <div class="note warn">
+            <h3>Limitations</h3>
+            <p class="muted">
+              The current active code does not sort the entire dataset. There is no merge stage.
+              The combine phase is more repetitive than necessary. The system can also be improved with safer naming
+              and stronger file-handling practices.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-analogy">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 9</div>
+            <h2 class="speak" id="speak16">Simple Real-Life Analogy</h2>
+          </div>
+          <span class="pill">Easy understanding</span>
+        </div>
+
+        <div class="callout">
+          <h3>School marks analogy</h3>
+          <p>
+            Imagine an entire school has too many student mark sheets to handle together.
+            So first the school separates them into classrooms by mark range:
+            <b>0–25</b>, <b>26–50</b>, <b>51–75</b>, <b>76–100</b>.
+            Then each classroom becomes easier to process.
+          </p>
+          <p>
+            The active program is like asking every classroom teacher for the <b>highest</b> and
+            <b>lowest</b> marks in that room, and then combining those answers for the whole school.
+          </p>
+        </div>
+      </section>
+
+      <section class="card" id="sec-mcqs">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 10</div>
+            <h2 class="speak" id="speak17">Practice MCQs</h2>
+          </div>
+          <span class="pill">Check your understanding</span>
+        </div>
+
+        <div class="mcq" id="mcqWrap">
+          <div class="q" data-answer="b">
+            <h3>1. What does the active program mainly compute?</h3>
+            <label><input type="radio" name="q1" value="a"> Full merge sort of all files</label>
+            <label><input type="radio" name="q1" value="b"> Local min-max per file and then global min-max</label>
+            <label><input type="radio" name="q1" value="c"> Graph traversal across directories</label>
+            <label><input type="radio" name="q1" value="d"> String compression</label>
+          </div>
+
+          <div class="q" data-answer="c">
+            <h3>2. In the active file scan, what is done with the first number of a file?</h3>
+            <label><input type="radio" name="q2" value="a"> It is ignored</label>
+            <label><input type="radio" name="q2" value="b"> It is always sent to another file</label>
+            <label><input type="radio" name="q2" value="c"> It initializes both min and max</label>
+            <label><input type="radio" name="q2" value="d"> It is converted into metadata text</label>
+          </div>
+
+          <div class="q" data-answer="a">
+            <h3>3. In the backup partitioning logic, how is the split point chosen?</h3>
+            <label><input type="radio" name="q3" value="a"> By taking the midpoint of the current numeric range</label>
+            <label><input type="radio" name="q3" value="b"> By using the file creation date</label>
+            <label><input type="radio" name="q3" value="c"> By sorting the whole file first</label>
+            <label><input type="radio" name="q3" value="d"> By checking the operating system name</label>
+          </div>
+
+          <div class="q" data-answer="d">
+            <h3>4. What does a file name like <code>16,-1000,-998,14978</code> represent in the backup system?</h3>
+            <label><input type="radio" name="q4" value="a"> A Java package name</label>
+            <label><input type="radio" name="q4" value="b"> A class and method combination</label>
+            <label><input type="radio" name="q4" value="c"> A password and access rule</label>
+            <label><input type="radio" name="q4" value="d"> File id, min value, max value, and size</label>
+          </div>
+
+          <div class="q" data-answer="b">
+            <h3>5. Why is the backup idea useful for very large datasets?</h3>
+            <label><input type="radio" name="q5" value="a"> Because it converts numbers into images</label>
+            <label><input type="radio" name="q5" value="b"> Because it breaks a huge problem into smaller manageable files</label>
+            <label><input type="radio" name="q5" value="c"> Because it removes all duplicates automatically</label>
+            <label><input type="radio" name="q5" value="d"> Because it avoids reading any file at all</label>
+          </div>
+        </div>
+
+        <div class="mcq-actions" style="margin-top:14px">
+          <button class="btn btn-primary" id="checkMcqBtn" type="button">Check Answers</button>
+          <button class="btn btn-soft" id="resetMcqBtn" type="button">Reset</button>
+          <div class="scorebox" id="scoreBox" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-summary">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 11</div>
+            <h2 class="speak" id="speak18">Final Summary</h2>
+          </div>
+          <span class="pill">Takeaway</span>
+        </div>
+
+        <div class="callout">
+          <h3>One-line summary</h3>
+          <p>
+            This project studies how very large numeric datasets can be processed file by file:
+            the active code computes local and global min-max values, while the backup design
+            recursively partitions one giant file into smaller range-based files.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <div class="box">
+            <h3>What you should remember</h3>
+            <p class="muted">
+              File-based thinking helps when full in-memory processing becomes difficult.
+              Local summaries are cheap. Recursive partitioning narrows both file size and numeric range.
+            </p>
+          </div>
+          <div class="box">
+            <h3>Best next upgrade</h3>
+            <p class="muted">
+              Add a final stage that sorts or merges the final child files. That would turn the design
+              into a more complete large-data external sorting system.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="footer">
+    Built for learning large-data thinking with a clean Programmer’s Picnic style.
   </div>
 
   <script>
-    const V6 = (() => {
-      const state = {
-        project: null,
-        slides: []
-      };
+    (function(){
+      const questions = Array.from(document.querySelectorAll('.q'));
+      const scoreBox = document.getElementById('scoreBox');
+      const checkBtns = [document.getElementById('checkMcqBtn'), document.getElementById('checkMcqBtnTop')].filter(Boolean);
+      const resetBtn = document.getElementById('resetMcqBtn');
+      const toggleBtn = document.getElementById('toggleAllBtn');
 
-      const $ = id => document.getElementById(id);
+      function markAnswers(){
+        let score = 0;
+        questions.forEach((q, idx) => {
+          const correct = q.dataset.answer;
+          const picked = q.querySelector('input[type="radio"]:checked');
+          q.querySelectorAll('label').forEach(label => {
+            label.style.borderColor = '#efe2ba';
+            label.style.background = '#fffaf0';
+            label.style.color = '';
+            label.style.fontWeight = '600';
+          });
 
-      const ANIMATION_LIBRARY = {
-        transitions: {
-          balanced: [
-            "zoomIn","fadeIn","slideUp","bounceIn","flipY","spinIn",
-            "rotateX","slideLeft","slideRight","zoomOut","blurIn","popIn"
-          ],
-          dramatic: [
-            "spinIn","flipY","rotateX","slideLeft","slideRight","bounceIn",
-            "zoomIn","blurIn","popIn","swirlIn","swingIn","flashIn"
-          ],
-          calm: [
-            "fadeIn","zoomIn","slideUp","zoomOut","blurIn","softRise",
-            "slideLeft","slideRight"
-          ],
-          random: [
-            "zoomIn","fadeIn","slideUp","bounceIn","flipY","spinIn",
-            "rotateX","slideLeft","slideRight","zoomOut","blurIn","popIn",
-            "swirlIn","flashIn","softRise","swingIn"
-          ]
-        },
-        motions: {
-          balanced: [
-            "zoomText","floatUp","pulseText","none","floatDown",
-            "waveText","driftLeft","driftRight"
-          ],
-          energetic: [
-            "zoomText","pulseText","floatUp","floatDown",
-            "waveText","bounceText","driftLeft","driftRight"
-          ],
-          calm: [
-            "none","floatUp","driftLeft","driftRight","softPulse"
-          ],
-          random: [
-            "zoomText","floatUp","pulseText","none","floatDown",
-            "waveText","driftLeft","driftRight","bounceText","softPulse"
-          ]
-        },
-        kenBurns: [
-          "zoomInSlow","panLeft","panRight","zoomOutSlow","panUp","panDown","none"
-        ]
-      };
+          q.querySelectorAll('input[type="radio"]').forEach(inp => {
+            const label = inp.closest('label');
+            if(inp.value === correct){
+              label.style.borderColor = '#86d19b';
+              label.style.background = '#ecfdf3';
+              label.style.color = '#14532d';
+              label.style.fontWeight = '800';
+            }
+          });
 
-      const SAMPLE_BUBBLE_SORT_TEXT = {
-        "app": "Reel Maker V5 Ultra Pro",
-        "version": 5,
-        "ratio": "reel",
-        "coverIndex": 0,
-        "currentIndex": 0,
-        "slides": [
-          {"id":"bubble-001","name":"Bubble Sort Title","url":"","sourceType":"text","mediaKind":"text","caption":"Bubble Sort\nA simple way to sort numbers step by step","duration":3,"transition":"zoomIn","fontSize":30,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":16,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"zoomText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":true},
-          {"id":"bubble-002","name":"What It Does","url":"","sourceType":"text","mediaKind":"text","caption":"Bubble Sort compares nearby numbers\nand swaps them if they are in the wrong order","duration":4,"transition":"fadeIn","fontSize":26,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.25,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"floatUp","textBgStyle":"gradient","textBg1":"#0f766e","textBg2":"#2563eb","synthetic":true},
-          {"id":"bubble-003","name":"Idea","url":"","sourceType":"text","mediaKind":"text","caption":"In every pass\nbigger numbers move toward the end\nlike bubbles rising upward","duration":4,"transition":"slideUp","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.25,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"pulseText","textBgStyle":"radial","textBg1":"#f59e0b","textBg2":"#dc2626","synthetic":true},
-          {"id":"bubble-004","name":"Example Start","url":"","sourceType":"text","mediaKind":"text","caption":"Example list\n5  1  4  2  8","duration":3,"transition":"bounceIn","fontSize":34,"fontFamily":"'Trebuchet MS'","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":16,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"zoomText","textBgStyle":"gradient","textBg1":"#1d4ed8","textBg2":"#7c3aed","synthetic":true},
-          {"id":"bubble-005","name":"Pass 1 Step 1","url":"","sourceType":"text","mediaKind":"text","caption":"Compare 5 and 1\n5 is bigger\nSo swap them","duration":3,"transition":"flipY","fontSize":30,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"floatDown","textBgStyle":"gradient","textBg1":"#be123c","textBg2":"#f97316","synthetic":true},
-          {"id":"bubble-006","name":"After First Swap","url":"","sourceType":"text","mediaKind":"text","caption":"New list\n1  5  4  2  8","duration":3,"transition":"zoomIn","fontSize":34,"fontFamily":"'Trebuchet MS'","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":16,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"pulseText","textBgStyle":"gradient","textBg1":"#2563eb","textBg2":"#0f766e","synthetic":true},
-          {"id":"bubble-007","name":"Pass 2 Key Swap","url":"","sourceType":"text","mediaKind":"text","caption":"Compare 4 and 2\nSwap them\nList becomes\n1  2  4  5  8","duration":4,"transition":"bounceIn","fontSize":30,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":15,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"pulseText","textBgStyle":"gradient","textBg1":"#dc2626","textBg2":"#7c2d12","synthetic":true},
-          {"id":"bubble-008","name":"Sorted","url":"","sourceType":"text","mediaKind":"text","caption":"Sorted list\n1  2  4  5  8","duration":3,"transition":"zoomIn","fontSize":34,"fontFamily":"'Trebuchet MS'","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":16,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"zoomText","textBgStyle":"gradient","textBg1":"#059669","textBg2":"#2563eb","synthetic":true},
-          {"id":"bubble-009","name":"Rule","url":"","sourceType":"text","mediaKind":"text","caption":"Rule to remember\nCompare neighbors\nSwap if left is bigger","duration":4,"transition":"fadeIn","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.25,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"floatDown","textBgStyle":"gradient","textBg1":"#f59e0b","textBg2":"#7c3aed","synthetic":true},
-          {"id":"bubble-010","name":"Complexity","url":"","sourceType":"text","mediaKind":"text","caption":"Bubble Sort is easy to understand\nbut it is not the fastest for large lists","duration":4,"transition":"fadeIn","fontSize":26,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.25,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"none","textBgStyle":"gradient","textBg1":"#1d4ed8","textBg2":"#0f766e","synthetic":true},
-          {"id":"bubble-011","name":"Outro","url":"","sourceType":"text","mediaKind":"text","caption":"Bubble Sort explained\nSimple steps\nSimple swaps\nSimple learning","duration":4,"transition":"spinIn","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":15,"overlayOpacity":0,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"middle","textAlign":"center","lineHeight":1.25,"tintColor":"#000000","tintOpacity":0,"kenBurns":"none","textMotion":"pulseText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#1d4ed8","synthetic":true}
-        ]
-      };
+          if(picked){
+            if(picked.value === correct){
+              score++;
+            }else{
+              const wrongLabel = picked.closest('label');
+              wrongLabel.style.borderColor = '#ef9a9a';
+              wrongLabel.style.background = '#fff1f2';
+              wrongLabel.style.color = '#991b1b';
+              wrongLabel.style.fontWeight = '800';
+            }
+          }
+        });
 
-      const SAMPLE_PICS_IMAGE = {
-        "app": "Reel Maker V5 Ultra Pro",
-        "version": 5,
-        "ratio": "reel",
-        "coverIndex": 0,
-        "currentIndex": 0,
-        "slides": [
-          {"id":"s0","name":"Slide 1","url":"pics/0.jpg","sourceType":"url","mediaKind":"image","caption":"Let’s learn something powerful today","duration":2,"transition":"zoomIn","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":16,"overlayOpacity":0.4,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.1,"kenBurns":"zoomInSlow","textMotion":"zoomText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s1","name":"Slide 2","url":"pics/1.jpg","sourceType":"url","mediaKind":"image","caption":"Step by step visuals make learning easier","duration":2,"transition":"fadeIn","fontSize":26,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"panLeft","textMotion":"floatUp","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s2","name":"Slide 3","url":"pics/2.jpg","sourceType":"url","mediaKind":"image","caption":"Observe carefully what is happening","duration":2,"transition":"slideUp","fontSize":26,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"panRight","textMotion":"driftLeft","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s3","name":"Slide 4","url":"pics/3.jpg","sourceType":"url","mediaKind":"image","caption":"Compare elements one by one","duration":2,"transition":"flipY","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"zoomOutSlow","textMotion":"pulseText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s4","name":"Slide 5","url":"pics/4.jpg","sourceType":"url","mediaKind":"image","caption":"Swap if needed","duration":2,"transition":"bounceIn","fontSize":30,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"panUp","textMotion":"bounceText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s5","name":"Slide 6","url":"pics/5.jpg","sourceType":"url","mediaKind":"image","caption":"Repeat the process","duration":2,"transition":"zoomOut","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"panDown","textMotion":"driftRight","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s6","name":"Slide 7","url":"pics/6.jpg","sourceType":"url","mediaKind":"image","caption":"Patterns start to appear","duration":2,"transition":"blurIn","fontSize":26,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"zoomInSlow","textMotion":"waveText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s7","name":"Slide 8","url":"pics/7.jpg","sourceType":"url","mediaKind":"image","caption":"The system becomes clear","duration":2,"transition":"slideLeft","fontSize":26,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"zoomOutSlow","textMotion":"softPulse","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s8","name":"Slide 9","url":"pics/8.jpg","sourceType":"url","mediaKind":"image","caption":"Everything starts falling into place","duration":2,"transition":"slideRight","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"panLeft","textMotion":"floatUp","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s9","name":"Slide 10","url":"pics/9.jpg","sourceType":"url","mediaKind":"image","caption":"Final understanding achieved","duration":2,"transition":"popIn","fontSize":30,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":14,"overlayOpacity":0.45,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"panRight","textMotion":"pulseText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false},
-          {"id":"s10","name":"Slide 11","url":"pics/10.jpg","sourceType":"url","mediaKind":"image","caption":"Keep learning with Programmer’s Picnic","duration":3,"transition":"swirlIn","fontSize":28,"fontFamily":"Arial","textColor":"#ffffff","textStrokeColor":"#000000","textStrokeWidth":0,"textShadow":15,"overlayOpacity":0.5,"overlayBlur":4,"overlayColor":"#000000","overlayPosition":"bottom","textAlign":"center","lineHeight":1.2,"tintColor":"#000000","tintOpacity":0.08,"kenBurns":"zoomInSlow","textMotion":"zoomText","textBgStyle":"gradient","textBg1":"#d97706","textBg2":"#7c3aed","synthetic":false}
-        ]
-      };
-
-      const helpers = {
-        clamp(v, min, max){
-          return Math.max(min, Math.min(max, v));
-        },
-        titleCase(s){
-          return String(s || "")
-            .replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-        },
-        escapeHtml(str){
-          return String(str || "").replace(/[&<>"']/g, m => ({
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            '"':"&quot;",
-            "'":"&#39;"
-          })[m]);
-        },
-        setStatus(msg){
-          $("status").textContent = msg;
-        },
-        colorPair(index){
-          const colors = [$("bg1").value, $("bg2").value, $("bg3").value];
-          const pairs = [
-            [colors[0], colors[1]],
-            [colors[1], colors[2]],
-            [colors[2], colors[0]],
-            [colors[0], colors[2]],
-            [colors[1], colors[0]],
-            [colors[2], colors[1]]
-          ];
-          return pairs[index % pairs.length];
-        },
-        pickTransition(index){
-          const mode = $("transitionMode").value;
-          const list = ANIMATION_LIBRARY.transitions[mode] || ANIMATION_LIBRARY.transitions.balanced;
-          if (mode === "random") return list[Math.floor(Math.random() * list.length)];
-          return list[index % list.length];
-        },
-        pickMotion(index){
-          const mode = $("motionMode").value;
-          const list = ANIMATION_LIBRARY.motions[mode] || ANIMATION_LIBRARY.motions.balanced;
-          if (mode === "random") return list[Math.floor(Math.random() * list.length)];
-          return list[index % list.length];
-        },
-        pickKenBurns(index){
-          const list = ANIMATION_LIBRARY.kenBurns;
-          return list[index % list.length];
-        },
-        readConfig(){
-          return {
-            topic: $("topic").value.trim() || "Untitled Topic",
-            style: $("style").value,
-            audience: $("audience").value,
-            slideCount: helpers.clamp(parseInt($("slideCount").value || "11", 10), 3, 25),
-            duration: helpers.clamp(parseInt($("duration").value || "3", 10), 1, 20),
-            ratio: $("ratio").value,
-            sourceMode: $("sourceMode").value,
-            coverIndex: helpers.clamp(parseInt($("coverIndex").value || "0", 10), 0, 24),
-            imageTemplate: $("imageTemplate").value.trim() || "pics/{n}.jpg",
-            cta: $("cta").value.trim() || "Keep learning with Programmer’s Picnic",
-            notes: $("notes").value.trim(),
-            bg1: $("bg1").value,
-            bg2: $("bg2").value,
-            bg3: $("bg3").value
-          };
-        }
-      };
-
-      function makeCaptionSet(config){
-        const lesson = [
-          `${config.topic}\nSimple explanation in reel form`,
-          `What is ${config.topic}?\nLet us understand it in a very easy way`,
-          `${config.topic} works step by step\nSmall ideas make the big picture clear`,
-          `First understand the main rule\nThen follow the process carefully`,
-          `Let us take one example\nThis makes the topic easier to remember`,
-          `Watch what changes at each step\nThis is where real understanding comes`,
-          `Repeat the same logic again\nPatterns become visible now`,
-          `Now the result starts becoming clear`,
-          `This is the key thing to remember about ${config.topic}`,
-          `Easy summary\n${config.topic} becomes simple when broken into steps`,
-          config.cta
-        ];
-
-        const story = [
-          `Today’s mini story\n${config.topic}`,
-          `At first, ${config.topic} may look difficult`,
-          `But every big idea becomes easy\nwhen we slow down`,
-          `We begin with one small step`,
-          `Then we observe what changes`,
-          `Then we repeat the same logic`,
-          `Now the pattern becomes visible`,
-          `Now it feels much easier than before`,
-          `That is the power of step by step learning`,
-          `${config.topic}\nmade simple`,
-          config.cta
-        ];
-
-        const listicle = [
-          `${config.topic}\nTop points to remember`,
-          `Point 1\nKnow the basic meaning of ${config.topic}`,
-          `Point 2\nUnderstand the main rule`,
-          `Point 3\nSee one clear example`,
-          `Point 4\nNotice the repeated pattern`,
-          `Point 5\nRemember the final result`,
-          `Point 6\nAvoid common confusion`,
-          `Point 7\nPractice with one more example`,
-          `Point 8\nSay the rule in your own words`,
-          `Quick recap\n${config.topic} is now much easier`,
-          config.cta
-        ];
-
-        const algorithm = [
-          `${config.topic}\nStep by step algorithm reel`,
-          `What problem does ${config.topic} solve?`,
-          `Main idea\nFollow one repeated rule`,
-          `Input example\nStart with a simple case`,
-          `Step 1\nLook at the first action`,
-          `Step 2\nObserve what changes`,
-          `Step 3\nRepeat the same logic`,
-          `Important pattern\nWhat keeps happening?`,
-          `Final output\nThe result becomes clear`,
-          `Remember this rule\nAlgorithms become easy when seen in steps`,
-          config.cta
-        ];
-
-        const promo = [
-          `${config.topic}\nLearn faster with short reels`,
-          `Small concepts\nClear visuals\nBetter memory`,
-          `No confusion\nOnly simple steps`,
-          `Perfect for quick revision`,
-          `Useful for school, college, and coding learners`,
-          `Short lessons can build strong understanding`,
-          `Start with one topic today`,
-          `Stay consistent and keep learning`,
-          `Your next concept is waiting`,
-          `${config.topic}\ncan be learned simply`,
-          config.cta
-        ];
-
-        let base = lesson;
-        if (config.style === "story") base = story;
-        if (config.style === "listicle") base = listicle;
-        if (config.style === "algorithm") base = algorithm;
-        if (config.style === "promo") base = promo;
-
-        const notes = config.notes ? `\n${config.notes}` : "";
-        const adjusted = [];
-
-        for (let i = 0; i < config.slideCount; i++) {
-          const source = base[i] || base[base.length - 1];
-          adjusted.push(i === 0 || i === config.slideCount - 1 ? source : source.replace(/\s+/g, " ").trim());
-        }
-
-        if (config.audience === "school") {
-          return adjusted.map((x, i) => i === 0 || i === adjusted.length - 1 ? x : x + "\nVery easy version");
-        }
-        if (config.audience === "developer") {
-          return adjusted.map((x, i) => i === 0 || i === adjusted.length - 1 ? x : x + "\nLogic matters here");
-        }
-        if (config.audience === "college") {
-          return adjusted.map((x, i) => i === 0 || i === adjusted.length - 1 ? x : x + "\nExam friendly explanation");
-        }
-        return adjusted.map((x, i) => i === 0 || i === adjusted.length - 1 ? x : x + notes);
+        scoreBox.textContent = "Score: " + score + " / " + questions.length;
       }
 
-      function makeSlide(index, caption, config){
-        const pair = helpers.colorPair(index);
-        const imagePath = config.imageTemplate.replace(/\{n\}/g, String(index));
-        const mode = config.sourceMode;
-        const useImage = mode === "image" || (mode === "mixed" && index !== 0 && index !== config.slideCount - 1);
-        const mediaKind = useImage ? "image" : "text";
-        const sourceType = useImage ? "url" : "text";
-
-        return {
-          id: "v6-" + String(index).padStart(3, "0"),
-          name: `${helpers.titleCase(config.topic)} Slide ${index + 1}`,
-          url: useImage ? imagePath : "",
-          sourceType,
-          mediaKind,
-          caption,
-          duration: config.duration + ((index === 0 || index === config.slideCount - 1) ? 1 : 0),
-          transition: helpers.pickTransition(index),
-          fontSize: index === 0 ? 32 : 28,
-          fontFamily: index % 4 === 0 ? "Arial" : (index % 4 === 1 ? "Verdana" : (index % 4 === 2 ? "'Trebuchet MS'" : "Georgia")),
-          textColor: "#ffffff",
-          textStrokeColor: "#000000",
-          textStrokeWidth: 0,
-          textShadow: 15,
-          overlayOpacity: mediaKind === "image" ? 0.45 : 0,
-          overlayBlur: 4,
-          overlayColor: "#000000",
-          overlayPosition: "middle",
-          textAlign: "center",
-          lineHeight: 1.2,
-          tintColor: "#000000",
-          tintOpacity: mediaKind === "image" ? 0.08 : 0,
-          kenBurns: mediaKind === "image" ? helpers.pickKenBurns(index) : "none",
-          textMotion: helpers.pickMotion(index),
-          textBgStyle: index % 3 === 0 ? "gradient" : (index % 3 === 1 ? "radial" : "solid"),
-          textBg1: pair[0],
-          textBg2: pair[1],
-          synthetic: mediaKind !== "image"
-        };
+      function resetAnswers(){
+        questions.forEach(q => {
+          q.querySelectorAll('input[type="radio"]').forEach(inp => inp.checked = false);
+          q.querySelectorAll('label').forEach(label => {
+            label.style.borderColor = '#efe2ba';
+            label.style.background = '#fffaf0';
+            label.style.color = '';
+            label.style.fontWeight = '600';
+          });
+        });
+        scoreBox.textContent = "";
       }
 
-      function buildProject(config){
-        const captions = makeCaptionSet(config);
-        const slides = captions.map((caption, i) => makeSlide(i, caption, config));
+      checkBtns.forEach(btn => btn.addEventListener('click', markAnswers));
+      if(resetBtn) resetBtn.addEventListener('click', resetAnswers);
 
-        return {
-          app: "Reel Maker V6.1 Ultra Pro",
-          version: 6,
-          ratio: config.ratio,
-          coverIndex: helpers.clamp(config.coverIndex, 0, slides.length - 1),
-          currentIndex: 0,
-          slides
-        };
+      let collapsed = false;
+      if(toggleBtn){
+        toggleBtn.addEventListener('click', () => {
+          collapsed = !collapsed;
+          document.querySelectorAll('.flow, .diagram, .table-wrap, pre, .code').forEach(el => {
+            if(collapsed){
+              if(!el.dataset.oldDisplay) el.dataset.oldDisplay = getComputedStyle(el).display;
+              el.style.display = 'none';
+            }else{
+              el.style.display = el.dataset.oldDisplay || '';
+            }
+          });
+          toggleBtn.textContent = collapsed ? "Expand notes" : "Collapse notes";
+        });
       }
-
-      function applyProject(project, statusMessage){
-        state.project = JSON.parse(JSON.stringify(project));
-        state.slides = state.project.slides.slice();
-        renderSlides();
-        renderJson();
-        helpers.setStatus(statusMessage);
-      }
-
-      function renderSlides(){
-        const wrap = $("slidesPreview");
-        const slides = state.project?.slides || [];
-        $("metaSlides").textContent = "Slides: " + slides.length;
-        $("metaMode").textContent = "Mode: " + (state.project ? (slides[0]?.mediaKind === "image" && slides.every(s => s.mediaKind === "image") ? "image" : (slides.every(s => s.mediaKind === "text") ? "text" : "mixed")) : "-");
-        $("metaTopic").textContent = "Topic: " + ($("topic").value.trim() || "-");
-
-        if (!slides.length) {
-          wrap.innerHTML = `<div class="hint">Generate a project first.</div>`;
-          return;
-        }
-
-        wrap.innerHTML = slides.map((slide, index) => {
-          const bg = slide.mediaKind === "image"
-            ? `linear-gradient(135deg, rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg, ${slide.textBg1}, ${slide.textBg2})`
-            : (slide.textBgStyle === "solid"
-              ? slide.textBg1
-              : slide.textBgStyle === "radial"
-                ? `radial-gradient(circle at 25% 20%, ${slide.textBg1}, ${slide.textBg2})`
-                : `linear-gradient(135deg, ${slide.textBg1}, ${slide.textBg2})`);
-
-          return `
-            <div class="slide-card">
-              <div class="slide-thumb">
-                <div class="slide-thumb-bg" style="background:${bg}">
-                  ${slide.mediaKind === "image" ? helpers.escapeHtml(slide.url) : "TEXT"}
-                </div>
-                <div class="slide-badge">#${index + 1}</div>
-                <div class="slide-type">${slide.mediaKind.toUpperCase()}</div>
-              </div>
-              <div>
-                <div class="slide-title">${helpers.escapeHtml(slide.name)}</div>
-                <div class="slide-sub">${helpers.escapeHtml(slide.caption)}</div>
-                <div class="slide-sub">duration: ${slide.duration}s • transition: ${slide.transition} • motion: ${slide.textMotion}</div>
-              </div>
-            </div>
-          `;
-        }).join("");
-      }
-
-      function renderJson(){
-        $("jsonOutput").value = JSON.stringify(state.project, null, 2);
-      }
-
-      return {
-        generate(){
-          const config = helpers.readConfig();
-          applyProject(buildProject(config), "V6.1 project generated successfully.");
-        },
-
-        regenerateCaptions(){
-          if (!state.project) {
-            this.generate();
-            return;
-          }
-          const config = helpers.readConfig();
-          const captions = makeCaptionSet(config);
-          state.project.slides = state.project.slides.map((slide, i) => ({
-            ...slide,
-            caption: captions[i] || slide.caption,
-            transition: helpers.pickTransition(i),
-            textMotion: helpers.pickMotion(i)
-          }));
-          renderSlides();
-          renderJson();
-          helpers.setStatus("Captions and animations regenerated.");
-        },
-
-        reverseSlides(){
-          if (!state.project) return;
-          state.project.slides.reverse();
-          state.project.coverIndex = 0;
-          renderSlides();
-          renderJson();
-          helpers.setStatus("Slide order reversed.");
-        },
-
-        addEndingSlide(){
-          if (!state.project) {
-            this.generate();
-            return;
-          }
-          const config = helpers.readConfig();
-          const i = state.project.slides.length;
-          state.project.slides.push(makeSlide(i, config.cta, {
-            ...config,
-            slideCount: i + 1,
-            sourceMode: "text"
-          }));
-          renderSlides();
-          renderJson();
-          helpers.setStatus("Ending slide added.");
-        },
-
-        formatJson(){
-          try {
-            const parsed = JSON.parse($("jsonOutput").value);
-            $("jsonOutput").value = JSON.stringify(parsed, null, 2);
-            helpers.setStatus("JSON formatted.");
-          } catch (err) {
-            helpers.setStatus("JSON format failed. Fix the JSON first.");
-          }
-        },
-
-        copyJson(){
-          const text = $("jsonOutput").value.trim();
-          if (!text) {
-            helpers.setStatus("Nothing to copy yet.");
-            return;
-          }
-          navigator.clipboard.writeText(text)
-            .then(() => helpers.setStatus("JSON copied to clipboard."))
-            .catch(() => helpers.setStatus("Copy failed."));
-        },
-
-        downloadJson(){
-          const text = $("jsonOutput").value.trim();
-          if (!text) {
-            helpers.setStatus("Generate JSON first.");
-            return;
-          }
-          try {
-            JSON.parse(text);
-          } catch (err) {
-            helpers.setStatus("Download blocked because JSON is invalid.");
-            return;
-          }
-          const blob = new Blob([text], { type:"application/json" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "project.json";
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 1200);
-          helpers.setStatus("project.json downloaded.");
-        },
-
-        makeAlgorithmPreset(){
-          $("style").value = "algorithm";
-          $("sourceMode").value = "mixed";
-          $("slideCount").value = 11;
-          $("duration").value = 3;
-          $("notes").value = "use short lines and explain the logic clearly";
-          $("transitionMode").value = "balanced";
-          $("motionMode").value = "balanced";
-          helpers.setStatus("Algorithm preset applied.");
-        },
-
-        makePromoPreset(){
-          $("style").value = "promo";
-          $("sourceMode").value = "image";
-          $("slideCount").value = 9;
-          $("duration").value = 2;
-          $("notes").value = "keep the mood energetic and motivating";
-          $("transitionMode").value = "dramatic";
-          $("motionMode").value = "energetic";
-          helpers.setStatus("Promo preset applied.");
-        },
-
-        loadBubbleSortTextSample(){
-          $("topic").value = "Bubble Sort";
-          $("style").value = "algorithm";
-          $("audience").value = "beginner";
-          $("slideCount").value = 11;
-          $("duration").value = 3;
-          $("ratio").value = "reel";
-          $("sourceMode").value = "text";
-          $("coverIndex").value = 0;
-          $("transitionMode").value = "balanced";
-          $("motionMode").value = "balanced";
-          applyProject(SAMPLE_BUBBLE_SORT_TEXT, "Sample 1 loaded: Bubble Sort text-only JSON.");
-        },
-
-        loadPicsImageSample(){
-          $("topic").value = "Image Reel";
-          $("style").value = "lesson";
-          $("audience").value = "mixed";
-          $("slideCount").value = 11;
-          $("duration").value = 2;
-          $("ratio").value = "reel";
-          $("sourceMode").value = "image";
-          $("coverIndex").value = 0;
-          $("imageTemplate").value = "pics/{n}.jpg";
-          $("transitionMode").value = "dramatic";
-          $("motionMode").value = "energetic";
-          applyProject(SAMPLE_PICS_IMAGE, "Sample 2 loaded: pics folder image JSON.");
-        },
-
-        clearAll(){
-          $("topic").value = "";
-          $("notes").value = "";
-          $("cta").value = "";
-          $("jsonOutput").value = "";
-          $("slidesPreview").innerHTML = "";
-          $("metaSlides").textContent = "Slides: 0";
-          $("metaMode").textContent = "Mode: -";
-          $("metaTopic").textContent = "Topic: -";
-          state.project = null;
-          state.slides = [];
-          helpers.setStatus("Reset complete.");
-        }
-      };
     })();
-
-    V6.loadBubbleSortTextSample();
   </script>
+
+  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
 </body>
 </html>
