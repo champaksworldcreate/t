@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>One Crore Data Processing System — Ground Zero to Advanced | Programmer's Picnic</title>
+  <title>One Crore Data Processing System — Actual Code Lesson | Programmer's Picnic</title>
   <meta
     name="description"
-    content="A complete HTML lesson explaining the One Crore data processing system: file-wise min-max, recursive range partitioning, flowcharts, diagrams, pseudocode, dry runs, and complexity analysis."
+    content="A complete HTML lesson explaining the One Crore data processing system with actual Java code snippets at the relevant points, plus flowcharts, dry runs, pseudocode, and MCQs."
   />
   <meta name="theme-color" content="#f59e0b" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -27,7 +27,7 @@
       --blue:#2563eb;
       --shadow:0 18px 50px rgba(133,77,14,.12);
       --radius:22px;
-      --max:1200px;
+      --max:1240px;
       --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
 
@@ -214,13 +214,14 @@
     .box h3,.note h3,.callout h3{font-size:1.05rem; margin-bottom:8px}
     .muted{color:var(--muted)}
 
-    .code, pre{
+    .code, pre.codeblock{
       font-family:var(--mono);
       background:#1f2937; color:#f9fafb;
       border-radius:18px;
       padding:16px; overflow:auto;
       font-size:.93rem; line-height:1.55;
       border:1px solid rgba(255,255,255,.08);
+      margin:0;
     }
     code{font-family:var(--mono)}
 
@@ -305,6 +306,19 @@
     }
     .step h3{margin-bottom:6px}
 
+    .code-pair{
+      display:grid; grid-template-columns:1fr 1fr; gap:14px;
+      align-items:start;
+      margin-top:12px;
+    }
+    .code-caption{
+      font-size:.85rem;
+      font-weight:800;
+      color:#7a5310;
+      margin-bottom:8px;
+      letter-spacing:.02em;
+    }
+
     .mcq{
       display:grid; gap:12px;
     }
@@ -337,6 +351,10 @@
       scroll-margin-top:95px;
     }
 
+    @media (max-width: 1080px){
+      .code-pair{grid-template-columns:1fr}
+    }
+
     @media (max-width: 980px){
       .hero,
       .layout,
@@ -354,11 +372,11 @@
         <div class="logo">PP</div>
         <div class="brand-text">
           <strong>Programmer’s Picnic</strong>
-          <span>One Crore Data Processing System — HTML Lesson</span>
+          <span>One Crore Data Processing System — Actual Code Lesson</span>
         </div>
       </div>
       <div class="top-actions">
-        <button class="btn btn-soft" id="toggleAllBtn" type="button">Collapse notes</button>
+        <button class="btn btn-soft" id="toggleCodeBtn" type="button">Hide code blocks</button>
         <button class="btn btn-primary" id="checkMcqBtnTop" type="button">Check MCQs</button>
       </div>
     </div>
@@ -369,46 +387,44 @@
       <div class="eyebrow">Ground Zero to Advanced</div>
       <h1 class="speak" id="speak0">One Crore Data Processing System</h1>
       <p class="lead speak" id="speak1">
-        This lesson explains a Java project that works with very large numeric data. You will learn
-        the active file-wise min-max engine, the backup recursive range-partitioning design, dry runs,
-        flowcharts, pseudocode, complexity analysis, and the bigger system idea behind large-scale
-        file-based processing.
+        This version of the lesson shows the <b>actual Java code</b> exactly where each idea happens.
+        So when we say “this method reads every file” or “this part initializes min and max,” you can
+        immediately see the real lines that do it.
       </p>
       <div class="hero-stats">
         <div class="stat">
+          <b>Actual Java</b>
+          <span>Code shown at the relevant teaching points</span>
+        </div>
+        <div class="stat">
           <b>2 Core Designs</b>
-          <span>Min-max reduction + recursive partitioning</span>
+          <span>Active min-max engine + backup recursive splitter</span>
         </div>
         <div class="stat">
-          <b>10 Million</b>
-          <span>Possible dataset size handled by the backup approach</span>
-        </div>
-        <div class="stat">
-          <b>File-first Thinking</b>
-          <span>Process data in chunks instead of everything at once</span>
+          <b>Study Ready</b>
+          <span>Flowcharts, dry runs, code, and MCQs together</span>
         </div>
       </div>
     </div>
 
     <aside class="hero-card hero-side">
       <div class="mini">
-        <h3>What you will master</h3>
-        <p>How a large numeric dataset can be split, scanned, summarized, and recursively organized into manageable files.</p>
+        <h3>What changed</h3>
+        <p>The lesson now includes real snippets from <code>BillionsAndBillions.java</code>, <code>FileData.java</code>, <code>MaxMin.java</code>, <code>OneCroreBreakUp.java</code>, and <code>Counting.java</code>.</p>
       </div>
       <div class="mini">
-        <h3>Keywords</h3>
+        <h3>Best reading order</h3>
+        <p>Read the explanation, then inspect the code block under it, then check the dry run.</p>
+      </div>
+      <div class="mini">
+        <h3>Focus tags</h3>
         <div class="tagrow">
-          <span class="tag">Min-Max</span>
-          <span class="tag">Chunk Files</span>
-          <span class="tag">Recursion</span>
-          <span class="tag">Partitioning</span>
-          <span class="tag">External Processing</span>
-          <span class="tag">Counting Sort Demo</span>
+          <span class="tag">Actual Code</span>
+          <span class="tag">Flowchart</span>
+          <span class="tag">Dry Run</span>
+          <span class="tag">Pseudocode</span>
+          <span class="tag">MCQs</span>
         </div>
-      </div>
-      <div class="mini">
-        <h3>Best way to study</h3>
-        <p>Read the flowcharts first, then follow the dry run, then study the pseudocode, and finally solve the MCQs.</p>
       </div>
     </aside>
   </section>
@@ -417,20 +433,22 @@
     <nav class="toc">
       <h2>Lesson Map</h2>
       <a href="#sec-intro">1. Problem and Goal</a>
-      <a href="#sec-big-picture">2. Big Picture</a>
-      <a href="#sec-active">3. Active System</a>
-      <a class="sub" href="#sec-active-flow">3.1 Flowchart</a>
-      <a class="sub" href="#sec-active-dryrun">3.2 Dry Run</a>
-      <a href="#sec-backup">4. Backup System</a>
-      <a class="sub" href="#sec-backup-flow">4.1 Recursive Flow</a>
-      <a class="sub" href="#sec-backup-dryrun">4.2 Dry Run</a>
-      <a href="#sec-classes">5. Class Responsibilities</a>
-      <a href="#sec-pseudocode">6. Pseudocode</a>
-      <a href="#sec-complexity">7. Complexity</a>
-      <a href="#sec-strengths">8. Strengths and Limits</a>
-      <a href="#sec-analogy">9. Simple Analogy</a>
-      <a href="#sec-mcqs">10. MCQs</a>
-      <a href="#sec-summary">11. Final Summary</a>
+      <a href="#sec-active">2. Active System</a>
+      <a class="sub" href="#sec-active-files">2.1 Getting files</a>
+      <a class="sub" href="#sec-active-scan">2.2 Scanning one file</a>
+      <a class="sub" href="#sec-active-array">2.3 Building FileData[]</a>
+      <a class="sub" href="#sec-active-total">2.4 Global min-max</a>
+      <a class="sub" href="#sec-active-main">2.5 main()</a>
+      <a href="#sec-supporting">3. Supporting Classes</a>
+      <a href="#sec-backup">4. Backup Recursive System</a>
+      <a class="sub" href="#sec-backup-generate">4.1 Generating data</a>
+      <a class="sub" href="#sec-backup-meta">4.2 Metadata in filename</a>
+      <a class="sub" href="#sec-backup-break">4.3 breakTheFile()</a>
+      <a class="sub" href="#sec-backup-main">4.4 backup main()</a>
+      <a href="#sec-counting">5. Counting Sort Demo</a>
+      <a href="#sec-complexity">6. Complexity</a>
+      <a href="#sec-mcqs">7. MCQs</a>
+      <a href="#sec-summary">8. Final Summary</a>
     </nav>
 
     <main>
@@ -440,78 +458,28 @@
             <div class="section-kicker">Section 1</div>
             <h2 class="speak" id="speak2">Problem and Goal</h2>
           </div>
-          <span class="pill">Foundation first</span>
+          <span class="pill">Why this project exists</span>
         </div>
 
         <div class="callout speak" id="speak3">
-          <h3>The challenge</h3>
+          <h3>Core idea</h3>
           <p>
-            Suppose you have a huge dataset of integers. It may contain up to <b>1 crore numbers</b>,
-            which means <b>10 million values</b>. Loading everything into memory and sorting it in one
-            shot may be uncomfortable or inefficient. So the project explores a different idea:
-            <b>process the data file by file</b>.
+            This project explores how to process very large numeric data using files. The active version
+            computes <b>local min-max</b> for each file and then computes <b>global min-max</b>. The backup
+            version goes further and uses <b>recursive range-based partitioning</b> to break a giant file
+            into many smaller files.
           </p>
-        </div>
-
-        <div class="grid-2">
-          <div class="note">
-            <h3>Goal of the active program</h3>
-            <p class="muted">
-              Read all files in a folder, find the minimum and maximum inside each file, and then
-              combine those results to compute the overall minimum and maximum.
-            </p>
-          </div>
-          <div class="note">
-            <h3>Goal of the backup program</h3>
-            <p class="muted">
-              Start with one giant file, split it into smaller files by value range, and keep splitting
-              recursively until every file becomes manageable.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="sec-big-picture">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Section 2</div>
-            <h2 class="speak" id="speak4">Big Picture of the System</h2>
-          </div>
-          <span class="pill">Whole architecture</span>
         </div>
 
         <div class="diagram">
           <div class="lane">
-            <div class="node">Huge Numeric Data</div>
+            <div class="node">Huge Data</div>
             <div class="arrow">→</div>
-            <div class="node">Chunk or Split Into Files</div>
+            <div class="node">Split or Organize Into Files</div>
             <div class="arrow">→</div>
-            <div class="node">Process Each File</div>
+            <div class="node">Process File by File</div>
             <div class="arrow">→</div>
             <div class="node">Combine Results</div>
-          </div>
-          <div class="lane">
-            <div class="node small">Local Min-Max</div>
-            <div class="node small">Range Partitioning</div>
-            <div class="node small">Metadata in File Names</div>
-            <div class="node small">Recursive Splitting</div>
-          </div>
-        </div>
-
-        <div class="grid-2">
-          <div class="box">
-            <h3>Approach A: Active code</h3>
-            <p class="muted">
-              Many files already exist in the <code>Data</code> folder. The program scans them and
-              computes <b>local min-max</b>, then combines them into a <b>global min-max</b>.
-            </p>
-          </div>
-          <div class="box">
-            <h3>Approach B: Backup code</h3>
-            <p class="muted">
-              One giant file is generated first. Then the file is recursively broken into child files
-              using the midpoint of the numeric range.
-            </p>
           </div>
         </div>
       </section>
@@ -519,600 +487,813 @@
       <section class="card" id="sec-active">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 3</div>
-            <h2 class="speak" id="speak5">The Active System: File-wise Min-Max Engine</h2>
+            <div class="section-kicker">Section 2</div>
+            <h2 class="speak" id="speak4">Active System: What the Current Program Really Does</h2>
           </div>
-          <span class="pill">Working code path</span>
+          <span class="pill">Main working path</span>
+        </div>
+
+        <div class="flow">
+<pre>Read all files in Data
+   ↓
+For each file:
+   scan integers
+   find local min and max
+   store FileData(file, mm)
+   ↓
+After all files:
+   compare file summaries
+   get overall min and max
+   ↓
+Print results</pre>
+        </div>
+      </section>
+
+      <section class="card" id="sec-active-files">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 2.1</div>
+            <h2 class="speak" id="speak5">Getting All Files from the Data Folder</h2>
+          </div>
+          <span class="pill">Relevant code shown</span>
+        </div>
+
+        <div class="note">
+          <h3>Meaning</h3>
+          <p class="muted">
+            This method receives a directory name like <code>"Data"</code>, creates a <code>File</code>
+            object for that directory, and returns all files inside it.
+          </p>
+        </div>
+
+        <div class="code-caption">Actual code from <code>BillionsAndBillions.java</code></div>
+        <pre class="codeblock live-code">public static File[] getAllFiles(String directory)
+{
+    try
+    {
+        File f=new File(directory);
+        return f.listFiles();
+    }
+    catch(Exception ex)
+    {
+        System.out.println(ex);
+        return null;
+    }
+}</pre>
+      </section>
+
+      <section class="card" id="sec-active-scan">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 2.2</div>
+            <h2 class="speak" id="speak6">Scanning One File and Finding Its Min and Max</h2>
+          </div>
+          <span class="pill">Most important method</span>
         </div>
 
         <div class="step-list">
           <article class="step">
             <div class="step-num">1</div>
             <div>
-              <h3>Open the <code>Data</code> folder</h3>
-              <p class="muted">
-                The program gets all files in the folder using a method like
-                <code>getAllFiles("Data")</code>.
-              </p>
+              <h3>Open the file with <code>Scanner</code></h3>
+              <p class="muted">The file is read integer by integer.</p>
             </div>
           </article>
           <article class="step">
             <div class="step-num">2</div>
             <div>
-              <h3>Scan one file at a time</h3>
-              <p class="muted">
-                Each file is opened with <code>Scanner</code>, and the integers are read one by one.
-              </p>
+              <h3>Use the first number to initialize min and max</h3>
+              <p class="muted">This happens when <code>b</code> is false.</p>
             </div>
           </article>
           <article class="step">
             <div class="step-num">3</div>
             <div>
-              <h3>Compute local min and max</h3>
-              <p class="muted">
-                The first number initializes both min and max. Every later number is compared against them.
-              </p>
+              <h3>Compare every later number</h3>
+              <p class="muted">If it is bigger than current max, update max. If it is smaller than current min, update min.</p>
             </div>
           </article>
           <article class="step">
             <div class="step-num">4</div>
             <div>
-              <h3>Store file summary</h3>
-              <p class="muted">
-                A <code>FileData</code> object stores the file and its <code>MaxMin</code> result.
-              </p>
-            </div>
-          </article>
-          <article class="step">
-            <div class="step-num">5</div>
-            <div>
-              <h3>Combine all file summaries</h3>
-              <p class="muted">
-                The program compares file-level maximums and minimums to produce one final overall result.
-              </p>
+              <h3>Wrap the result in <code>FileData</code></h3>
+              <p class="muted">The method returns one summary object for one file.</p>
             </div>
           </article>
         </div>
-      </section>
 
-      <section class="card" id="sec-active-flow">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Section 3.1</div>
-            <h2 class="speak" id="speak6">Flowchart of the Active Program</h2>
+        <div class="code-caption">Actual code from <code>BillionsAndBillions.java</code></div>
+        <pre class="codeblock live-code">public static FileData getFileData(File file)
+{
+    try
+    {
+        MaxMin mm=new MaxMin();
+        boolean b=false;
+        Scanner s=new Scanner(file);
+        while(s.hasNextInt())
+        {
+            int n=s.nextInt();
+            if(!b)
+            {
+                mm.max=n;
+                mm.min=n;
+            }
+            else
+            {
+                if(n&gt;mm.max)
+                    mm.max=n;
+                if(n&lt;mm.min)
+                    mm.min=n;
+            }
+            b=true;
+        }
+        FileData fd=new FileData(file,mm);
+        return fd;
+    }
+    catch(Exception ex)
+    {
+        System.out.println(ex);
+        return null;
+    }
+}</pre>
+
+        <div class="code-pair">
+          <div class="box">
+            <div class="code-caption">The initialization part</div>
+            <pre class="codeblock live-code">if(!b)
+{
+    mm.max=n;
+    mm.min=n;
+}</pre>
+            <p class="muted">
+              On the first integer, both <code>max</code> and <code>min</code> become that value.
+            </p>
           </div>
-          <span class="pill">Control flow</span>
-        </div>
 
-        <div class="flow">
-<pre>Start
-  |
-  v
-Read all files in "Data"
-  |
-  v
-For each file:
-  |
-  +-- Open file with Scanner
-  |
-  +-- Read first integer
-  |      |
-  |      +-- min = first integer
-  |      +-- max = first integer
-  |
-  +-- Read remaining integers one by one
-  |      |
-  |      +-- if n &gt; max, update max
-  |      +-- if n &lt; min, update min
-  |
-  +-- Create FileData(file, min, max)
-  |
-  v
-Store all FileData objects in array
-  |
-  v
-Compare all local min-max summaries
-  |
-  +-- global max = largest local max
-  +-- global min = smallest local min
-  |
-  v
-Print summaries and final result
-  |
-  v
-End</pre>
-        </div>
-      </section>
-
-      <section class="card" id="sec-active-dryrun">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Section 3.2</div>
-            <h2 class="speak" id="speak7">Dry Run of the Active Program</h2>
+          <div class="box">
+            <div class="code-caption">The comparison part</div>
+            <pre class="codeblock live-code">else
+{
+    if(n&gt;mm.max)
+        mm.max=n;
+    if(n&lt;mm.min)
+        mm.min=n;
+}</pre>
+            <p class="muted">
+              Every later value is checked against the current best-known max and min.
+            </p>
           </div>
-          <span class="pill">Using real sample pattern</span>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>File</th>
-                <th>Contents</th>
-                <th>Local Min</th>
-                <th>Local Max</th>
-                <th>Stored Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><b>0.txt</b></td>
-                <td>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td>
-                <td>0</td>
-                <td>9</td>
-                <td><code>FileData(0.txt, Max=9, Min=0)</code></td>
-              </tr>
-              <tr>
-                <td><b>1.txt</b></td>
-                <td>10, 11, 12, 13, 14, 15, 16, 17, 18, 19</td>
-                <td>10</td>
-                <td>19</td>
-                <td><code>FileData(1.txt, Max=19, Min=10)</code></td>
-              </tr>
-              <tr>
-                <td><b>2.txt</b></td>
-                <td>20 to 29</td>
-                <td>20</td>
-                <td>29</td>
-                <td><code>FileData(2.txt, Max=29, Min=20)</code></td>
-              </tr>
-              <tr>
-                <td><b>...</b></td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-              </tr>
-              <tr>
-                <td><b>9.txt</b></td>
-                <td>90, 91, 92, 93, 94, 95, 96, 97, 98, 99</td>
-                <td>90</td>
-                <td>99</td>
-                <td><code>FileData(9.txt, Max=99, Min=90)</code></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
 
         <div class="callout">
-          <h3>Final result of the active program</h3>
+          <h3>Dry run with real file pattern</h3>
           <p>
-            When all file summaries are combined, the program gets:
-            <b>Global Min = 0</b> and <b>Global Max = 99</b>.
+            If <code>0.txt</code> contains <code>0 1 2 3 4 5 6 7 8 9</code>, then the first value sets
+            <code>min=0</code> and <code>max=0</code>, and the remaining values keep increasing the max
+            until it becomes <code>9</code>. The final summary becomes:
+            <code>FileData(0.txt, Max=9, Min=0)</code>.
+          </p>
+        </div>
+      </section>
+
+      <section class="card" id="sec-active-array">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 2.3</div>
+            <h2 class="speak" id="speak7">Building the Array of File Summaries</h2>
+          </div>
+          <span class="pill">How all local results are collected</span>
+        </div>
+
+        <div class="note">
+          <h3>Meaning</h3>
+          <p class="muted">
+            This method first gets all files. Then it loops through them, calls
+            <code>getFileData(f)</code> on each file, and stores the results in a
+            <code>FileData[]</code> array.
           </p>
         </div>
 
-        <div class="code">Max=99 ,Min=0</div>
+        <div class="code-caption">Actual code from <code>BillionsAndBillions.java</code></div>
+        <pre class="codeblock live-code">public static FileData[] getFilesData(String directory)
+{
+    File[] files=getAllFiles(directory);
+    FileData[] filedata=new FileData[files.length];
+    for(int i=0;i&lt;=files.length-1;i++)
+    {
+        File f=files[i];
+        FileData fd=getFileData(f);
+        filedata[i]=fd;
+    }
+    return filedata;
+}</pre>
+
+        <div class="callout">
+          <h3>What this array looks like conceptually</h3>
+          <div class="code">[
+  (0.txt, Max=9,  Min=0),
+  (1.txt, Max=19, Min=10),
+  (2.txt, Max=29, Min=20),
+  ...
+  (9.txt, Max=99, Min=90)
+]</div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-active-total">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 2.4</div>
+            <h2 class="speak" id="speak8">Computing the Overall Min and Max</h2>
+          </div>
+          <span class="pill">Global combine step</span>
+        </div>
+
+        <div class="note">
+          <h3>Meaning</h3>
+          <p class="muted">
+            This method takes the array of local summaries and repeatedly compares their
+            <code>mm.max</code> and <code>mm.min</code> values. It is correct, but the nested loop
+            makes it more repetitive than necessary.
+          </p>
+        </div>
+
+        <div class="code-caption">Actual code from <code>BillionsAndBillions.java</code></div>
+        <pre class="codeblock live-code">public static MaxMin getTotalMaxMin(FileData[] fd)
+{
+    boolean b=false;
+    int max=0;
+    int min=0;
+    for(int i=0;i&lt;=fd.length-1;i++)
+    {
+        max=fd[i].mm.max;
+        min=fd[i].mm.min;
+        for(int j=0;j&lt;=fd.length-1;j++)
+        {
+            if(fd[j].mm.max&gt;max)
+                max=fd[j].mm.max;
+            if(fd[j].mm.min&lt;min)
+                min=fd[j].mm.min;
+        }
+    }
+    MaxMin mm=new MaxMin();
+    mm.max=max;
+    mm.min=min;
+    return mm;
+}</pre>
+
+        <div class="code-pair">
+          <div class="box">
+            <div class="code-caption">Important comparison logic</div>
+            <pre class="codeblock live-code">if(fd[j].mm.max&gt;max)
+    max=fd[j].mm.max;
+if(fd[j].mm.min&lt;min)
+    min=fd[j].mm.min;</pre>
+            <p class="muted">
+              These lines are the heart of the global combine step.
+            </p>
+          </div>
+
+          <div class="box">
+            <div class="code-caption">Final object returned</div>
+            <pre class="codeblock live-code">MaxMin mm=new MaxMin();
+mm.max=max;
+mm.min=min;
+return mm;</pre>
+            <p class="muted">
+              The final global result is wrapped in a <code>MaxMin</code> object.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <h3>Dry run result for your sample files</h3>
+          <p>
+            Since the largest local maximum is <code>99</code> and the smallest local minimum is <code>0</code>,
+            the final result becomes:
+          </p>
+          <div class="code">Max=99 ,Min=0</div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-active-main">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 2.5</div>
+            <h2 class="speak" id="speak9">The Active Program Entry Point: <code>main()</code></h2>
+          </div>
+          <span class="pill">How it all starts</span>
+        </div>
+
+        <div class="code-caption">Actual code from <code>BillionsAndBillions.java</code></div>
+        <pre class="codeblock live-code">public static void main(String[] args)
+{
+    FileData[] data=getFilesData("Data");
+    for(FileData datum : data)
+        System.out.println(datum);
+
+    MaxMin totalmaxmin=getTotalMaxMin(data);
+    System.out.println(totalmaxmin);
+}</pre>
+
+        <div class="grid-2">
+          <div class="box">
+            <h3>What line 1 does</h3>
+            <p class="muted">
+              <code>getFilesData("Data")</code> reads the whole folder and prepares one summary per file.
+            </p>
+          </div>
+          <div class="box">
+            <h3>What line 2 does</h3>
+            <p class="muted">
+              The <code>for-each</code> loop prints every file summary before computing the global result.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="sec-supporting">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 3</div>
+            <h2 class="speak" id="speak10">Supporting Classes Used by the Active Program</h2>
+          </div>
+          <span class="pill">Data holders</span>
+        </div>
+
+        <div class="code-pair">
+          <div class="box">
+            <div class="code-caption">Actual code from <code>FileData.java</code></div>
+            <pre class="codeblock live-code">public class FileData
+{
+    public java.io.File file;
+    public MaxMin mm;
+
+    public FileData(java.io.File file,MaxMin mm)
+    {
+        this.file=file;
+        this.mm=mm;
+    }
+
+    public String toString()
+    {
+        return "" + file + " , " + mm;
+    }
+}</pre>
+            <p class="muted">
+              This class stores the file and the <code>MaxMin</code> object for that file.
+            </p>
+          </div>
+
+          <div class="box">
+            <div class="code-caption">Actual code from <code>MaxMin.java</code></div>
+            <pre class="codeblock live-code">public class MaxMin
+{
+    public int max,min;
+
+    public String toString()
+    {
+        return "Max=" + max + " ,Min=" + min;
+    }
+}</pre>
+            <p class="muted">
+              This class stores the two core values: <code>max</code> and <code>min</code>.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="card" id="sec-backup">
         <div class="section-head">
           <div>
             <div class="section-kicker">Section 4</div>
-            <h2 class="speak" id="speak8">The Backup System: Recursive Range Partitioning</h2>
+            <h2 class="speak" id="speak11">Backup System: Recursive Range-Based Partitioning</h2>
           </div>
-          <span class="pill">Big-data design</span>
-        </div>
-
-        <div class="callout speak" id="speak9">
-          <h3>The main idea</h3>
-          <p>
-            Instead of sorting a huge file directly, the backup system splits the file by numeric range.
-            It uses the midpoint of the current range and sends numbers into two child files:
-            one for lower values and one for upper values.
-          </p>
-        </div>
-
-        <div class="grid-2">
-          <div class="box">
-            <h3>Generated first file</h3>
-            <div class="code">Data0,-1000,1000,10000000</div>
-            <p class="muted">
-              This means file name <code>Data0</code>, minimum possible value <code>-1000</code>,
-              maximum possible value <code>1000</code>, and size <code>10000000</code>.
-            </p>
-          </div>
-          <div class="box">
-            <h3>Stopping rule</h3>
-            <div class="code">if (fileSize &lt; maxSize) stop;</div>
-            <p class="muted">
-              If a file becomes smaller than the threshold, recursion ends for that file.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="sec-backup-flow">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Section 4.1</div>
-            <h2 class="speak" id="speak10">Recursive Flow of the Backup Program</h2>
-          </div>
-          <span class="pill">Partition tree</span>
+          <span class="pill">Larger design idea</span>
         </div>
 
         <div class="flow">
-<pre>Start
-  |
-  v
-Generate giant file
-  |
-  v
-Read metadata from file name
-  |
-  v
-Is file size &lt; maxSize?
-  |
-  +-- Yes --> Stop recursion
-  |
-  +-- No
-        |
-        v
-   avg = (min + max) / 2
-        |
-        v
-   Open current file
-        |
-        v
-   Create two temporary child files
-        |
-        v
-   Read each number x
-        |
-        +-- if x &lt; avg  --> child file 1
-        +-- else        --> child file 2
-        |
-        +-- while writing:
-              update child min, child max, child size
-        |
-        v
-   Delete original parent file
-        |
-        v
-   Rename child files using metadata
-        |
-        v
-   Recurse on child 1
-        |
-        v
-   Recurse on child 2
-        |
-        v
-Repeat until every file is small enough</pre>
-        </div>
-
-        <div class="diagram">
-          <div class="lane">
-            <div class="node">Data0,-1000,1000,10000000</div>
-          </div>
-          <div class="lane"><div class="arrow">↓ split at 0 ↓</div></div>
-          <div class="lane">
-            <div class="node">Negative side</div>
-            <div class="node">Zero and positive side</div>
-          </div>
-          <div class="lane"><div class="arrow">↓ recurse ↓</div></div>
-          <div class="lane">
-            <div class="node small">-1000 to -501</div>
-            <div class="node small">-500 to -1</div>
-            <div class="node small">0 to 500</div>
-            <div class="node small">501 to 1000</div>
-          </div>
+<pre>Generate one giant file
+   ↓
+Read metadata from filename
+   ↓
+If file is small enough, stop
+   ↓
+Else:
+   split by midpoint of value range
+   create two child files
+   update child min/max/size
+   delete parent file
+   recurse on both child files</pre>
         </div>
       </section>
 
-      <section class="card" id="sec-backup-dryrun">
+      <section class="card" id="sec-backup-generate">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 4.2</div>
-            <h2 class="speak" id="speak11">Dry Run of Recursive Partitioning</h2>
+            <div class="section-kicker">Section 4.1</div>
+            <h2 class="speak" id="speak12">Generating the Huge Random Data File</h2>
           </div>
-          <span class="pill">Sample walkthrough</span>
+          <span class="pill">Where the data comes from</span>
         </div>
 
-        <div class="grid-2">
-          <div class="box">
-            <h3>First split</h3>
-            <div class="code">avg = (-1000 + 1000) / 2 = 0</div>
-            <p class="muted">
-              All values less than 0 go to the left child. All values greater than or equal to 0 go to the right child.
-            </p>
-          </div>
-          <div class="box">
-            <h3>Example values</h3>
-            <div class="code">-700, 15, -2, 999, 0, -1000, 478</div>
-            <p class="muted">
-              These values show how numbers get distributed into child files.
-            </p>
-          </div>
-        </div>
+        <div class="code-caption">Actual code from <code>OneCroreBreakUp.java</code></div>
+        <pre class="codeblock live-code">public static int getRandom(int lowerlimit,int upperlimit)
+{
+    if(lowerlimit==upperlimit)
+        return lowerlimit;
+    if(lowerlimit&gt;upperlimit)
+    {
+        int t=lowerlimit;
+        lowerlimit=upperlimit;
+        upperlimit=t;
+    }
+    int range=upperlimit-lowerlimit + 1;
+    int n=(int)(Math.random()*range);
+    return lowerlimit + n;
+}</pre>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Value Read</th>
-                <th>Condition</th>
-                <th>Destination</th>
-                <th>Child State After Insert</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><b>-700</b></td>
-                <td><code>-700 &lt; 0</code></td>
-                <td>Child 1</td>
-                <td>min1=-700, max1=-700, n1=1</td>
-              </tr>
-              <tr>
-                <td><b>15</b></td>
-                <td><code>15 &lt; 0</code> is false</td>
-                <td>Child 2</td>
-                <td>min2=15, max2=15, n2=1</td>
-              </tr>
-              <tr>
-                <td><b>-2</b></td>
-                <td><code>-2 &lt; 0</code></td>
-                <td>Child 1</td>
-                <td>min1=-700, max1=-2, n1=2</td>
-              </tr>
-              <tr>
-                <td><b>999</b></td>
-                <td>false</td>
-                <td>Child 2</td>
-                <td>min2=15, max2=999, n2=2</td>
-              </tr>
-              <tr>
-                <td><b>0</b></td>
-                <td><code>0 &lt; 0</code> is false</td>
-                <td>Child 2</td>
-                <td>min2=0, max2=999, n2=3</td>
-              </tr>
-              <tr>
-                <td><b>-1000</b></td>
-                <td>true</td>
-                <td>Child 1</td>
-                <td>min1=-1000, max1=-2, n1=3</td>
-              </tr>
-              <tr>
-                <td><b>478</b></td>
-                <td>false</td>
-                <td>Child 2</td>
-                <td>min2=0, max2=999, n2=4</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <div class="code-caption" style="margin-top:12px">Actual code that writes the random values</div>
+        <pre class="codeblock live-code">public static void saveArray(String onlyfilename,int n,int min,int max) 
+{
+    try
+    {
+        String filename=getFileName(onlyfilename + "0",min,max,n);
+        PrintWriter pw=new PrintWriter("Data\\\\" + filename);
+        for(int i=1;i&lt;=n;i++)
+        {
+            String str="" + getRandom(min,max);
+            pw.println(str);
+        }
+        pw.flush();
+        pw.close();
+    }
+    catch(Exception ex)
+    {
+        System.out.println(ex);
+    }
+}</pre>
 
         <div class="callout">
-          <h3>What real backup file names reveal</h3>
+          <h3>Meaning</h3>
           <p>
-            File names like <code>1,0,1000,5005229</code>, <code>3,-500,-1,2496765</code>,
-            and <code>16,-1000,-998,14978</code> show that the recursion really produced
-            smaller files with narrower numeric ranges.
+            This code creates a file of random integers. In the backup <code>main()</code>, it is called with
+            <code>10000000</code> values between <code>-1000</code> and <code>1000</code>.
           </p>
         </div>
       </section>
 
-      <section class="card" id="sec-classes">
+      <section class="card" id="sec-backup-meta">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 5</div>
-            <h2 class="speak" id="speak12">Responsibilities of the Main Classes</h2>
+            <div class="section-kicker">Section 4.2</div>
+            <h2 class="speak" id="speak13">Encoding Metadata Inside the File Name</h2>
           </div>
-          <span class="pill">Who does what</span>
+          <span class="pill">Very important design choice</span>
         </div>
 
-        <div class="grid-3">
-          <div class="note">
-            <h3><code>BillionsAndBillions.java</code></h3>
+        <div class="code-pair">
+          <div class="box">
+            <div class="code-caption">Actual code from <code>OneCroreBreakUp.java</code></div>
+            <pre class="codeblock live-code">public static String getFileName(String filename,int min,int max,int size)
+{
+    return filename + "," + min + "," + max + "," + size;
+}</pre>
             <p class="muted">
-              Controls the active workflow. It gets all files, scans each file, stores file summaries,
-              and computes the final global min and max.
+              This builds names like <code>Data0,-1000,1000,10000000</code>.
             </p>
           </div>
-          <div class="note">
-            <h3><code>FileData.java</code></h3>
+
+          <div class="box">
+            <div class="code-caption">Actual code that reads that metadata back</div>
+            <pre class="codeblock live-code">public static FileData getDataFromFileName(String fullfilename)
+{
+    String[] strings=fullfilename.split(",");
+    String filename=strings[0];
+    int min=Integer.parseInt(strings[1]);
+    int max=Integer.parseInt(strings[2]);
+    int size=Integer.parseInt(strings[3]);
+    return new FileData(min,max,size,filename,fullfilename);
+}</pre>
             <p class="muted">
-              Stores the file reference and the <code>MaxMin</code> result associated with that file.
+              This reconstructs the min, max, size, and simple filename from the full file name text.
             </p>
           </div>
-          <div class="note">
-            <h3><code>MaxMin.java</code></h3>
+        </div>
+
+        <div class="code-caption" style="margin-top:12px">Actual backup <code>FileData.java</code></div>
+        <pre class="codeblock live-code">public class FileData
+{
+    public int min,max,size;
+    public String filename,fullfilename;
+
+    public FileData(int min,int max,int size,String filename,String fullfilename)
+    {
+        this.min=min;
+        this.max=max;
+        this.size=size;
+        this.filename=filename;
+        this.fullfilename=fullfilename;
+    }
+
+    public String toString()
+    {
+        return "Min = " + min + ", Max = " + max + ", Size = " + size + ", FileName = " + filename + ", FullFileName = " + fullfilename;
+    }
+}</pre>
+      </section>
+
+      <section class="card" id="sec-backup-break">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 4.3</div>
+            <h2 class="speak" id="speak14">The Heart of the Backup System: <code>breakTheFile()</code></h2>
+          </div>
+          <span class="pill">Recursive splitting logic</span>
+        </div>
+
+        <div class="note">
+          <h3>What happens here</h3>
+          <p class="muted">
+            The method reads metadata from the file name, checks whether the file is already small enough,
+            computes a midpoint, splits the file into two child files, updates child metadata while writing,
+            deletes the parent file, and then calls itself recursively on both children.
+          </p>
+        </div>
+
+        <div class="code-caption">Actual code from <code>OneCroreBreakUp.java</code></div>
+        <pre class="codeblock live-code">public static void breakTheFile(String filename,int maxsize)
+{
+    try
+    {
+        FileData fd=getDataFromFileName(filename);
+        if(fd.size&lt;maxsize)
+            return;
+
+        int avg=(fd.min + fd.max)/2;
+        int n1=0,n2=0,min1=0,min2=0,max1=0,max2=0;
+        File f1=new File("Data\\\\t1");
+        File f2=new File("Data\\\\t2");
+        PrintWriter pw1=new PrintWriter(f1);
+        PrintWriter pw2=new PrintWriter(f2);
+        File currentfile=new File("Data\\\\" + filename);
+        Scanner s=new Scanner(currentfile);
+
+        while(s.hasNextInt())
+        {
+            int x=s.nextInt();
+            if(x&lt;avg)
+            {
+                pw1.println("" + x);
+                if(n1==0)
+                {
+                    max1=x;
+                    min1=x;
+                }
+                else
+                {
+                    if(x&gt;max1)
+                        max1=x;
+                    if(x&lt;min1)
+                        min1=x;
+                }
+                n1++;
+            }
+            else
+            {
+                pw2.println("" + x);
+                if(n2==0)
+                {
+                    max2=x;
+                    min2=x;
+                }
+                else
+                {
+                    if(x&gt;max2)
+                        max2=x;
+                    if(x&lt;min2)
+                        min2=x;
+                }
+                n2++;
+            }
+        }
+
+        if(n1&gt;0)
+        {
+            pw1.flush();
+            pw1.close();
+        }
+
+        if(n2&gt;0)
+        {
+            pw2.flush();
+            pw2.close();
+        }
+
+        s.close();
+        currentfile.delete();
+
+        String filename1=getFileName("" + fileno++,min1,max1,n1);
+        String filename2=getFileName("" + fileno++,min2,max2,n2);
+
+        totalfiles++;
+        f1.renameTo(new File("Data\\\\" + filename1));
+        System.out.println("File " + totalfiles);
+
+        totalfiles++;
+        f2.renameTo(new File("Data\\\\" + filename2));
+        System.out.println("File " + totalfiles);
+
+        if(n1&gt;0)
+            breakTheFile(filename1,maxsize);
+        if(n2&gt;0)
+            breakTheFile(filename2,maxsize);
+    }
+    catch(Exception ex)
+    {
+        System.out.println(ex);
+        System.exit(0);
+    }
+}</pre>
+
+        <div class="code-pair">
+          <div class="box">
+            <div class="code-caption">The stopping rule and split point</div>
+            <pre class="codeblock live-code">FileData fd=getDataFromFileName(filename);
+if(fd.size&lt;maxsize)
+    return;
+
+int avg=(fd.min + fd.max)/2;</pre>
             <p class="muted">
-              Holds two fields only: <code>max</code> and <code>min</code>.
+              If the file is already small, stop. Otherwise split using the midpoint of the range.
             </p>
           </div>
-          <div class="note">
-            <h3><code>OneCroreBreakUp.java</code></h3>
+
+          <div class="box">
+            <div class="code-caption">The core branching logic</div>
+            <pre class="codeblock live-code">if(x&lt;avg)
+{
+    pw1.println("" + x);
+    ...
+    n1++;
+}
+else
+{
+    pw2.println("" + x);
+    ...
+    n2++;
+}</pre>
             <p class="muted">
-              Creates a huge dataset and recursively partitions it into smaller files based on midpoint splitting.
+              Lower values go to child 1. Greater-or-equal values go to child 2.
             </p>
           </div>
-          <div class="note">
-            <h3>Backup <code>FileData.java</code></h3>
+        </div>
+
+        <div class="callout">
+          <h3>Dry run idea</h3>
+          <p>
+            If the file range is <code>-1000</code> to <code>1000</code>, then
+            <code>avg = 0</code>. So values like <code>-700</code> and <code>-2</code> go left,
+            while values like <code>0</code>, <code>15</code>, and <code>999</code> go right.
+          </p>
+        </div>
+      </section>
+
+      <section class="card" id="sec-backup-main">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Section 4.4</div>
+            <h2 class="speak" id="speak15">The Backup Entry Point: <code>main()</code></h2>
+          </div>
+          <span class="pill">Launching the whole recursive system</span>
+        </div>
+
+        <div class="code-caption">Actual code from <code>OneCroreBreakUp.java</code></div>
+        <pre class="codeblock live-code">public static void main(String[] args)
+{
+    saveArray("Data",10000000,-1000,1000);
+    breakTheFile("Data0,-1000,1000,10000000",25000);
+}</pre>
+
+        <div class="grid-2">
+          <div class="box">
+            <h3>First line</h3>
             <p class="muted">
-              Stores metadata such as file name, minimum, maximum, and size for a partitioned child file.
+              Create one giant file containing <b>10,000,000</b> random integers in the range
+              <b>-1000 to 1000</b>.
             </p>
           </div>
-          <div class="note">
-            <h3><code>Counting.java</code></h3>
+          <div class="box">
+            <h3>Second line</h3>
             <p class="muted">
-              Demonstrates counting sort separately. It is not the active large-file engine, but it shows another sorting idea.
+              Recursively split that file until each resulting file becomes smaller than <b>25,000</b> values.
             </p>
           </div>
         </div>
       </section>
 
-      <section class="card" id="sec-pseudocode">
+      <section class="card" id="sec-counting">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 6</div>
-            <h2 class="speak" id="speak13">Pseudocode</h2>
+            <div class="section-kicker">Section 5</div>
+            <h2 class="speak" id="speak16">Counting Sort Demo in the Backup Folder</h2>
           </div>
-          <span class="pill">Algorithmic view</span>
+          <span class="pill">Separate sorting example</span>
         </div>
 
-        <h3>6.1 Active file scan</h3>
-        <pre>function getMinMax(file):
-    read first number
-    min = first number
-    max = first number
+        <div class="note">
+          <h3>Why this file matters</h3>
+          <p class="muted">
+            <code>Counting.java</code> is not the active large-file system, but it shows another sorting method:
+            counting sort for an array in memory.
+          </p>
+        </div>
 
-    while more numbers exist:
-        n = next number
+        <div class="code-caption">Actual code from <code>Counting.java</code></div>
+        <pre class="codeblock live-code">class Counting
+{
+    public static void main(String[ ] args)
+    {
+        int max=0;
+        int b[ ];
+        int[] a={21,3,54,10,54,67,89,21};
+        for(int i=0;i&lt;=a.length-1;i++)
+        {
+            if(max&lt;a[i])
+                max=a[i];
+        }
+        countingsort(a,max);
+        for(int i=0;i&lt;=a.length-1;i++)
+            System.out.println(a[i]);
+    }
 
-        if n &gt; max:
-            max = n
+    public static void countingsort(int[ ] a,int max)
+    {
+        int[ ] f=new int[max+1];
+        for(int i=0;i&lt;=a.length-1;i++)
+        {
+            int p=a[i];
+            f[p]++;
+        }
+        for(int i=1;i&lt;=f.length-1;i++)
+            f[i]=f[i]+f[i-1];
 
-        if n &lt; min:
-            min = n
+        int[] b=new int[a.length];
+        for(int i=a.length-1;i&gt;=0;i--)
+        {
+            int value=a[i];
+            int pos=f[value];
+            f[value]--;
+            pos--;
+            b[pos]=value;
+        }
+        for(int i=0;i&lt;=a.length-1;i++)
+            a[i]=b[i];
+    }
+}</pre>
 
-    return (min, max)</pre>
-
-        <h3>6.2 Active full workflow</h3>
-        <pre>function processAllFiles(directory):
-    files = getAllFiles(directory)
-    results = []
-
-    for each file in files:
-        summary = getMinMax(file)
-        results.append(summary)
-
-    globalMin = results[0].min
-    globalMax = results[0].max
-
-    for each result in results:
-        if result.min &lt; globalMin:
-            globalMin = result.min
-        if result.max &gt; globalMax:
-            globalMax = result.max
-
-    print(globalMin, globalMax)</pre>
-
-        <h3>6.3 Recursive partitioning</h3>
-        <pre>function breakFile(file, maxSize):
-    metadata = readMetadata(file)
-
-    if metadata.size &lt; maxSize:
-        return
-
-    avg = (metadata.min + metadata.max) / 2
-
-    create child1
-    create child2
-
-    for each value x in file:
-        if x &lt; avg:
-            write x to child1
-            update child1 metadata
-        else:
-            write x to child2
-            update child2 metadata
-
-    delete original file
-
-    rename child1 using child1 metadata
-    rename child2 using child2 metadata
-
-    breakFile(child1, maxSize)
-    breakFile(child2, maxSize)</pre>
+        <div class="callout">
+          <h3>Meaning</h3>
+          <p>
+            The code first finds the maximum value, builds a frequency array, converts it into cumulative counts,
+            places values into the correct sorted positions, and then copies the sorted output back into the original array.
+          </p>
+        </div>
       </section>
 
       <section class="card" id="sec-complexity">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 7</div>
-            <h2 class="speak" id="speak14">Complexity Analysis</h2>
+            <div class="section-kicker">Section 6</div>
+            <h2 class="speak" id="speak17">Complexity and Interpretation</h2>
           </div>
-          <span class="pill">Time thinking</span>
+          <span class="pill">What the code costs</span>
         </div>
 
         <div class="grid-2">
           <div class="note success">
-            <h3>Active program</h3>
-            <p>
-              Let <b>N</b> be the total count of numbers across all files and <b>F</b> be the number of files.
+            <h3>Active system</h3>
+            <div class="code">Scanning all integers across files: O(N)
+Combining summaries in current code: O(F²)</div>
+            <p class="muted">
+              Here <code>N</code> is total integers and <code>F</code> is number of files.
             </p>
-            <div class="code">Scanning all numbers: O(N)
-Combining file summaries in current code: O(F²)
-Cleaner combine method possible: O(F)</div>
           </div>
+
           <div class="note">
-            <h3>Backup recursive system</h3>
+            <h3>Backup system</h3>
+            <div class="code">Rough intuition: O(N log R)</div>
             <p class="muted">
-              Each splitting level scans data again, and the depth depends on how the value range gets narrowed.
-              A rough intuitive view is <b>O(N log R)</b>, where <b>R</b> is the value range.
+              The data is scanned repeatedly across recursive levels as the value range narrows.
             </p>
           </div>
         </div>
 
         <div class="callout">
-          <h3>Important observation</h3>
+          <h3>Main conclusion</h3>
           <p>
-            The active system is a <b>min-max reducer</b>, not a full sorter. The backup system is closer to a
-            file-based partitioning framework for very large data.
-          </p>
-        </div>
-      </section>
-
-      <section class="card" id="sec-strengths">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Section 8</div>
-            <h2 class="speak" id="speak15">Strengths and Limitations</h2>
-          </div>
-          <span class="pill">Critical view</span>
-        </div>
-
-        <div class="grid-2">
-          <div class="note success">
-            <h3>Strengths</h3>
-            <p class="muted">
-              File-based processing avoids loading everything at once. Local summaries are simple and effective.
-              Range-based recursive splitting is a smart way to shrink huge problems into smaller ones.
-            </p>
-          </div>
-          <div class="note warn">
-            <h3>Limitations</h3>
-            <p class="muted">
-              The current active code does not sort the entire dataset. There is no merge stage.
-              The combine phase is more repetitive than necessary. The system can also be improved with safer naming
-              and stronger file-handling practices.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="sec-analogy">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Section 9</div>
-            <h2 class="speak" id="speak16">Simple Real-Life Analogy</h2>
-          </div>
-          <span class="pill">Easy understanding</span>
-        </div>
-
-        <div class="callout">
-          <h3>School marks analogy</h3>
-          <p>
-            Imagine an entire school has too many student mark sheets to handle together.
-            So first the school separates them into classrooms by mark range:
-            <b>0–25</b>, <b>26–50</b>, <b>51–75</b>, <b>76–100</b>.
-            Then each classroom becomes easier to process.
-          </p>
-          <p>
-            The active program is like asking every classroom teacher for the <b>highest</b> and
-            <b>lowest</b> marks in that room, and then combining those answers for the whole school.
+            The active code is a <b>min-max reducer</b>. The backup code is a <b>recursive file partitioner</b>.
+            Together, they show the beginnings of a large-data processing architecture.
           </p>
         </div>
       </section>
@@ -1120,51 +1301,51 @@ Cleaner combine method possible: O(F)</div>
       <section class="card" id="sec-mcqs">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 10</div>
-            <h2 class="speak" id="speak17">Practice MCQs</h2>
+            <div class="section-kicker">Section 7</div>
+            <h2 class="speak" id="speak18">Practice MCQs</h2>
           </div>
-          <span class="pill">Check your understanding</span>
+          <span class="pill">Quick self-test</span>
         </div>
 
         <div class="mcq" id="mcqWrap">
           <div class="q" data-answer="b">
-            <h3>1. What does the active program mainly compute?</h3>
-            <label><input type="radio" name="q1" value="a"> Full merge sort of all files</label>
-            <label><input type="radio" name="q1" value="b"> Local min-max per file and then global min-max</label>
-            <label><input type="radio" name="q1" value="c"> Graph traversal across directories</label>
-            <label><input type="radio" name="q1" value="d"> String compression</label>
+            <h3>1. Which method reads one file and computes its local min and max?</h3>
+            <label><input type="radio" name="q1" value="a"> <code>getAllFiles()</code></label>
+            <label><input type="radio" name="q1" value="b"> <code>getFileData()</code></label>
+            <label><input type="radio" name="q1" value="c"> <code>getRandom()</code></label>
+            <label><input type="radio" name="q1" value="d"> <code>countingsort()</code></label>
           </div>
 
           <div class="q" data-answer="c">
-            <h3>2. In the active file scan, what is done with the first number of a file?</h3>
-            <label><input type="radio" name="q2" value="a"> It is ignored</label>
-            <label><input type="radio" name="q2" value="b"> It is always sent to another file</label>
-            <label><input type="radio" name="q2" value="c"> It initializes both min and max</label>
-            <label><input type="radio" name="q2" value="d"> It is converted into metadata text</label>
+            <h3>2. In the active code, what does the boolean <code>b</code> help detect?</h3>
+            <label><input type="radio" name="q2" value="a"> Whether the file is deleted</label>
+            <label><input type="radio" name="q2" value="b"> Whether recursion should stop</label>
+            <label><input type="radio" name="q2" value="c"> Whether the current number is the first number</label>
+            <label><input type="radio" name="q2" value="d"> Whether the value is negative</label>
           </div>
 
           <div class="q" data-answer="a">
-            <h3>3. In the backup partitioning logic, how is the split point chosen?</h3>
-            <label><input type="radio" name="q3" value="a"> By taking the midpoint of the current numeric range</label>
-            <label><input type="radio" name="q3" value="b"> By using the file creation date</label>
-            <label><input type="radio" name="q3" value="c"> By sorting the whole file first</label>
-            <label><input type="radio" name="q3" value="d"> By checking the operating system name</label>
+            <h3>3. Which line decides the split point in the backup recursive algorithm?</h3>
+            <label><input type="radio" name="q3" value="a"> <code>int avg=(fd.min + fd.max)/2;</code></label>
+            <label><input type="radio" name="q3" value="b"> <code>currentfile.delete();</code></label>
+            <label><input type="radio" name="q3" value="c"> <code>return f.listFiles();</code></label>
+            <label><input type="radio" name="q3" value="d"> <code>pw.println(str);</code></label>
           </div>
 
           <div class="q" data-answer="d">
-            <h3>4. What does a file name like <code>16,-1000,-998,14978</code> represent in the backup system?</h3>
-            <label><input type="radio" name="q4" value="a"> A Java package name</label>
-            <label><input type="radio" name="q4" value="b"> A class and method combination</label>
-            <label><input type="radio" name="q4" value="c"> A password and access rule</label>
-            <label><input type="radio" name="q4" value="d"> File id, min value, max value, and size</label>
+            <h3>4. What does this method do: <code>getFileName(filename,min,max,size)</code>?</h3>
+            <label><input type="radio" name="q4" value="a"> It sorts integers</label>
+            <label><input type="radio" name="q4" value="b"> It opens the scanner</label>
+            <label><input type="radio" name="q4" value="c"> It deletes parent files</label>
+            <label><input type="radio" name="q4" value="d"> It creates a metadata-rich file name</label>
           </div>
 
           <div class="q" data-answer="b">
-            <h3>5. Why is the backup idea useful for very large datasets?</h3>
-            <label><input type="radio" name="q5" value="a"> Because it converts numbers into images</label>
-            <label><input type="radio" name="q5" value="b"> Because it breaks a huge problem into smaller manageable files</label>
-            <label><input type="radio" name="q5" value="c"> Because it removes all duplicates automatically</label>
-            <label><input type="radio" name="q5" value="d"> Because it avoids reading any file at all</label>
+            <h3>5. What is <code>Counting.java</code> mainly demonstrating?</h3>
+            <label><input type="radio" name="q5" value="a"> Network programming</label>
+            <label><input type="radio" name="q5" value="b"> Counting sort on an in-memory array</label>
+            <label><input type="radio" name="q5" value="c"> PDF parsing</label>
+            <label><input type="radio" name="q5" value="d"> Database indexing</label>
           </div>
         </div>
 
@@ -1178,34 +1359,32 @@ Cleaner combine method possible: O(F)</div>
       <section class="card" id="sec-summary">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Section 11</div>
-            <h2 class="speak" id="speak18">Final Summary</h2>
+            <div class="section-kicker">Section 8</div>
+            <h2 class="speak" id="speak19">Final Summary</h2>
           </div>
-          <span class="pill">Takeaway</span>
+          <span class="pill">Last takeaway</span>
         </div>
 
         <div class="callout">
-          <h3>One-line summary</h3>
+          <h3>What this lesson has now done</h3>
           <p>
-            This project studies how very large numeric datasets can be processed file by file:
-            the active code computes local and global min-max values, while the backup design
-            recursively partitions one giant file into smaller range-based files.
+            It did not just describe the project. It also placed the <b>actual code at the exact teaching points</b>:
+            reading files, scanning integers, building summary objects, combining min-max results, generating huge data,
+            encoding metadata in file names, recursively partitioning files, and demonstrating counting sort.
           </p>
         </div>
 
         <div class="grid-2">
           <div class="box">
-            <h3>What you should remember</h3>
+            <h3>Active code in one sentence</h3>
             <p class="muted">
-              File-based thinking helps when full in-memory processing becomes difficult.
-              Local summaries are cheap. Recursive partitioning narrows both file size and numeric range.
+              Read all chunk files, compute local min-max per file, then compute global min-max.
             </p>
           </div>
           <div class="box">
-            <h3>Best next upgrade</h3>
+            <h3>Backup code in one sentence</h3>
             <p class="muted">
-              Add a final stage that sorts or merges the final child files. That would turn the design
-              into a more complete large-data external sorting system.
+              Generate one giant file and recursively split it into smaller range-based files until manageable.
             </p>
           </div>
         </div>
@@ -1214,7 +1393,7 @@ Cleaner combine method possible: O(F)</div>
   </div>
 
   <div class="footer">
-    Built for learning large-data thinking with a clean Programmer’s Picnic style.
+    Built in Programmer’s Picnic lesson style, now with actual code shown where it matters.
   </div>
 
   <script>
@@ -1223,13 +1402,15 @@ Cleaner combine method possible: O(F)</div>
       const scoreBox = document.getElementById('scoreBox');
       const checkBtns = [document.getElementById('checkMcqBtn'), document.getElementById('checkMcqBtnTop')].filter(Boolean);
       const resetBtn = document.getElementById('resetMcqBtn');
-      const toggleBtn = document.getElementById('toggleAllBtn');
+      const toggleCodeBtn = document.getElementById('toggleCodeBtn');
+      const codeBlocks = Array.from(document.querySelectorAll('.live-code'));
 
       function markAnswers(){
         let score = 0;
-        questions.forEach((q, idx) => {
+        questions.forEach((q) => {
           const correct = q.dataset.answer;
           const picked = q.querySelector('input[type="radio"]:checked');
+
           q.querySelectorAll('label').forEach(label => {
             label.style.borderColor = '#efe2ba';
             label.style.background = '#fffaf0';
@@ -1276,24 +1457,22 @@ Cleaner combine method possible: O(F)</div>
         scoreBox.textContent = "";
       }
 
-      checkBtns.forEach(btn => btn.addEventListener('click', markAnswers));
-      if(resetBtn) resetBtn.addEventListener('click', resetAnswers);
-
-      let collapsed = false;
-      if(toggleBtn){
-        toggleBtn.addEventListener('click', () => {
-          collapsed = !collapsed;
-          document.querySelectorAll('.flow, .diagram, .table-wrap, pre, .code').forEach(el => {
-            if(collapsed){
-              if(!el.dataset.oldDisplay) el.dataset.oldDisplay = getComputedStyle(el).display;
-              el.style.display = 'none';
-            }else{
-              el.style.display = el.dataset.oldDisplay || '';
-            }
+      let codeHidden = false;
+      if(toggleCodeBtn){
+        toggleCodeBtn.addEventListener('click', () => {
+          codeHidden = !codeHidden;
+          codeBlocks.forEach(block => {
+            block.style.display = codeHidden ? 'none' : '';
           });
-          toggleBtn.textContent = collapsed ? "Expand notes" : "Collapse notes";
+          document.querySelectorAll('.code-caption').forEach(cap => {
+            cap.style.display = codeHidden ? 'none' : '';
+          });
+          toggleCodeBtn.textContent = codeHidden ? 'Show code blocks' : 'Hide code blocks';
         });
       }
+
+      checkBtns.forEach(btn => btn.addEventListener('click', markAnswers));
+      if(resetBtn) resetBtn.addEventListener('click', resetAnswers);
     })();
   </script>
 
