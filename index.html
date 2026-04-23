@@ -3,1219 +3,1156 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Learn Multi-Level Layouts by Building a Visit Varanasi Page</title>
-  <meta
-    name="description"
-    content="A complete lesson that teaches multi-level layouts using Flexbox and Grid by building a Visit Varanasi travel page."
-  />
-  <meta name="theme-color" content="#f59e0b" />
-
+  <title>Guided Care Wizard | Psychiatric Institution</title>
+  <meta name="description" content="A guided care wizard for a psychiatric institution website. Helps visitors choose the right mental health support step by step." />
   <style>
     :root{
-      --bg:#fffaf0;
-      --bg2:#fff4d6;
-      --panel:#ffffff;
-      --panel-soft:#fff7ea;
-      --text:#2b2112;
-      --muted:#6b5a3d;
-      --line:#efdfb2;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --brand3:#fbbf24;
-      --ok:#15803d;
-      --okbg:#ecfdf3;
-      --tipbg:#fff8e8;
-      --shadow:0 18px 50px rgba(128,81,0,.12);
-      --radius:22px;
-      --max:1240px;
-      --code:#111827;
-      --codeInk:#f9fafb;
+      --bg:#f7faf9;
+      --bg-soft:#eef7f3;
+      --card:#ffffff;
+      --text:#17342d;
+      --muted:#5d766f;
+      --line:#d7e8e2;
+      --brand:#1f8f6b;
+      --brand-2:#156f53;
+      --danger:#c43d3d;
+      --danger-bg:#fff1f1;
+      --warning:#b56b00;
+      --warning-bg:#fff6e7;
+      --success:#0b7a52;
+      --success-bg:#eefbf5;
+      --shadow:0 18px 50px rgba(14,41,33,.08);
+      --radius:24px;
+      --radius-sm:16px;
+      --max:980px;
     }
 
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-
+    html,body{margin:0;padding:0}
     body{
-      margin:0;
-      font-family:Arial,Helvetica,sans-serif;
-      line-height:1.7;
-      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       background:
-        radial-gradient(circle at top right, rgba(245,158,11,.10), transparent 24rem),
-        linear-gradient(180deg,#fff9f1 0%,var(--bg) 100%);
+        radial-gradient(circle at top left, #f3fbf8 0, transparent 35%),
+        linear-gradient(180deg,#f9fcfb 0%,#eff7f4 100%);
+      color:var(--text);
+      line-height:1.5;
     }
 
     a{color:inherit}
-    img{max-width:100%;display:block}
-    code,pre{font-family:Consolas,Monaco,"Courier New",monospace}
+    button,input,select,textarea{font:inherit}
 
-    .container{
-      width:min(var(--max), calc(100% - 28px));
+    .wrap{
+      max-width:var(--max);
       margin:0 auto;
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:100;
-      backdrop-filter:blur(10px);
-      background:rgba(255,250,240,.92);
-      border-bottom:1px solid var(--line);
-    }
-
-    .topbar-inner{
-      min-height:72px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      text-decoration:none;
-      color:var(--brand);
-      font-weight:900;
-    }
-
-    .brand-badge{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      color:#fff;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow:var(--shadow);
-      font-size:1.05rem;
-    }
-
-    .nav{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    .nav a{
-      text-decoration:none;
-      padding:10px 12px;
-      border-radius:999px;
-      color:var(--muted);
-      font-weight:700;
-      font-size:.95rem;
-    }
-
-    .nav a:hover{
-      background:#fff;
-      color:var(--brand);
+      padding:24px;
     }
 
     .hero{
-      padding:38px 0 24px;
-    }
-
-    .hero-grid{
       display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:22px;
+      grid-template-columns:1.2fr .8fr;
+      gap:20px;
       align-items:stretch;
-    }
-
-    .card,
-    .lesson-card,
-    .side-card,
-    .toc,
-    .mini-card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
+      margin:18px 0 22px;
     }
 
     .hero-card,
     .side-card,
-    .lesson-card{
-      padding:24px;
-    }
-
-    .hero h1{
-      margin:0 0 10px;
-      line-height:1.08;
-      font-size:clamp(2rem,5vw,3.5rem);
-    }
-
-    .eyebrow{
-      margin:0 0 8px;
-      color:var(--brand);
-      font-weight:800;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      font-size:.85rem;
-    }
-
-    .muted{color:var(--muted)}
-
-    .hero-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:18px;
-    }
-
-    .btn{
-      border:none;
-      border-radius:14px;
-      padding:12px 16px;
-      font-weight:800;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      transition:transform .2s ease, box-shadow .2s ease;
-    }
-
-    .btn:hover{transform:translateY(-2px)}
-
-    .btn-primary{
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      color:#fff;
-      box-shadow:0 10px 24px rgba(217,119,6,.24);
-    }
-
-    .btn-secondary{
-      background:#fff;
-      color:var(--brand);
-      border:1px solid var(--line);
-    }
-
-    .pill-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-
-    .pill{
-      background:var(--bg2);
-      border:1px solid var(--line);
-      color:var(--brand);
-      border-radius:999px;
-      padding:8px 12px;
-      font-weight:800;
-      font-size:.92rem;
-    }
-
-    .mini-list{
-      display:grid;
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .mini-item{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px 14px;
-    }
-
-    .main-grid{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 320px;
-      gap:22px;
-      margin:14px auto 36px;
-    }
-
-    .toc{
-      position:sticky;
-      top:88px;
-      align-self:start;
-      padding:18px;
-    }
-
-    .toc h3{
-      margin:0 0 12px;
-      font-size:1rem;
-    }
-
-    .toc a{
-      display:block;
-      text-decoration:none;
-      padding:10px 12px;
-      border-radius:12px;
-      color:var(--muted);
-      font-weight:700;
-    }
-
-    .toc a:hover{
-      background:var(--bg2);
-      color:var(--brand);
-    }
-
-    .lesson-card{
-      margin-bottom:20px;
-    }
-
-    .lesson-card h2{
-      margin:0 0 8px;
-      font-size:clamp(1.45rem,3vw,2rem);
-    }
-
-    .lesson-card h3{
-      margin-top:24px;
-      margin-bottom:8px;
-    }
-
-    .level-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:8px;
-    }
-
-    .level-no{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:52px;
-      height:52px;
-      border-radius:16px;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      color:#fff;
-      font-weight:900;
-      box-shadow:0 8px 20px rgba(217,119,6,.22);
-      font-size:1rem;
-    }
-
-    .explain,
-    .check-card,
-    .tip-card{
-      padding:16px 18px;
-      margin-top:14px;
-      border-radius:18px;
-    }
-
-    .explain{
-      border:1px solid var(--line);
-      background:#fffdf9;
-    }
-
-    .check-card{
-      background:var(--okbg);
-      border:1px solid #b7ebcb;
-    }
-
-    .tip-card{
-      background:var(--tipbg);
-      border:1px solid #f6dfb0;
-    }
-
-    .check-card h4,
-    .tip-card h4{
-      margin:0 0 8px;
-    }
-
-    .two-col,
-    .compare-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-    }
-
-    .code-wrap{
-      margin-top:14px;
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid #1f2937;
+    .wizard,
+    .footer-note{
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(215,232,226,.9);
+      backdrop-filter:blur(10px);
+      border-radius:var(--radius);
       box-shadow:var(--shadow);
     }
 
-    .code-top{
+    .hero-card{
+      padding:28px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      background:#ecf8f3;
+      color:var(--brand-2);
+      border:1px solid #cfe8dc;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    h1{
+      margin:14px 0 10px;
+      font-size:clamp(28px,4vw,44px);
+      line-height:1.1;
+    }
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      max-width:64ch;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      text-decoration:none;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:48px;
+      padding:0 18px;
+      border-radius:14px;
+      font-weight:700;
+      transition:.2s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn-primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      color:#fff;
+      box-shadow:0 10px 24px rgba(31,143,107,.22);
+    }
+    .btn-soft{
+      background:#f3faf7;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .btn-danger{
+      background:var(--danger);
+      color:#fff;
+      box-shadow:0 10px 24px rgba(196,61,61,.18);
+    }
+
+    .side-card{
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .side-card h3{
+      margin:0;
+      font-size:20px;
+    }
+
+    .side-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .pill-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .pill{
+      background:#f3faf7;
+      border:1px solid var(--line);
+      color:#24473e;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .wizard{
+      overflow:hidden;
+    }
+
+    .wizard-top{
+      padding:18px 22px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fbfefd,#f6fbf8);
+    }
+
+    .wizard-top-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      padding:10px 14px;
-      background:#0f172a;
-      color:#e5e7eb;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-
-    .code-title{
-      font-weight:800;
-      font-size:.95rem;
-    }
-
-    .copy-btn{
-      border:none;
-      border-radius:10px;
-      padding:9px 12px;
-      background:#1f2937;
-      color:#fff;
-      cursor:pointer;
-      font-weight:800;
-    }
-
-    .copy-btn:hover{
-      background:#374151;
-    }
-
-    pre{
-      margin:0;
-      padding:18px;
-      overflow:auto;
-      background:var(--code);
-      color:var(--codeInk);
-      font-size:.94rem;
-      line-height:1.6;
-      tab-size:2;
-    }
-
-    .demo{
-      margin-top:14px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      background:#fffdf9;
-    }
-
-    .demo-title{
-      font-weight:800;
-      color:var(--brand);
+      gap:16px;
       margin-bottom:12px;
     }
 
-    .stage{
-      border:2px dashed #efcfa6;
-      background:#fff8ee;
-      border-radius:18px;
-      padding:14px;
-      margin-top:10px;
-    }
-
-    .demo-box{
-      min-height:54px;
-      display:grid;
-      place-items:center;
-      border-radius:14px;
+    .wizard-title{
+      font-size:20px;
       font-weight:800;
-      color:#7c2d12;
-      background:linear-gradient(135deg,#fde7c0,#fff1dd);
-      border:1px solid #f0d6aa;
-      padding:12px;
-      text-align:center;
+      margin:0;
     }
 
-    .inline-code{
-      background:#fff2dd;
-      border:1px solid #f0d6aa;
-      padding:.1rem .4rem;
-      border-radius:8px;
-      font-family:Consolas,Monaco,monospace;
-      font-size:.95em;
+    .wizard-step-text{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+      white-space:nowrap;
     }
 
-    .hero-layout-demo{
+    .progress{
+      height:12px;
+      background:#e6f1ed;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid #d8e9e3;
+    }
+
+    .progress > span{
+      display:block;
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--brand),#4ec196);
+      transition:width .35s ease;
+    }
+
+    .wizard-body{
+      padding:24px;
+      min-height:420px;
+    }
+
+    .question-tag{
+      display:inline-block;
+      font-size:12px;
+      font-weight:800;
+      color:var(--brand-2);
+      background:#edf8f3;
+      border:1px solid #cfe7db;
+      border-radius:999px;
+      padding:7px 10px;
+      margin-bottom:12px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .question-title{
+      margin:0 0 8px;
+      font-size:32px;
+      line-height:1.15;
+    }
+
+    .question-help{
+      margin:0 0 18px;
+      color:var(--muted);
+      max-width:62ch;
+    }
+
+    .options{
       display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:12px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-top:16px;
     }
 
-    .hero-left-stack{
-      display:grid;
-      gap:12px;
+    .option{
+      width:100%;
+      text-align:left;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 16px;
+      cursor:pointer;
+      transition:.2s ease;
+      min-height:94px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:6px;
     }
 
-    .quick-info-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
+    .option:hover{
+      transform:translateY(-2px);
+      border-color:#b9ddd0;
+      box-shadow:0 14px 28px rgba(20,70,56,.08);
     }
 
-    .attractions-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
+    .option.active{
+      border:2px solid var(--brand);
+      background:#f2fbf7;
+      box-shadow:0 10px 24px rgba(31,143,107,.12);
     }
 
-    .plan-layout{
-      display:grid;
-      grid-template-columns:1.25fr .75fr;
-      gap:12px;
+    .option-title{
+      font-size:17px;
+      font-weight:800;
+      color:var(--text);
     }
 
-    .plan-main{
-      display:grid;
-      gap:12px;
+    .option-desc{
+      font-size:13px;
+      color:var(--muted);
     }
 
-    .day-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-    }
-
-    .page-shell-demo{
-      display:grid;
-      grid-template-columns:220px 1fr;
-      gap:12px;
-    }
-
-    .visit-main{
-      display:grid;
-      gap:12px;
-    }
-
-    .toolbar-demo{
+    .wizard-actions{
       display:flex;
       justify-content:space-between;
-      align-items:center;
       gap:12px;
-      flex-wrap:wrap;
+      margin-top:24px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
     }
 
-    .toolbar-group{
+    .wizard-actions .left,
+    .wizard-actions .right{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+    }
+
+    .notice{
+      margin:0 0 18px;
+      padding:16px 16px;
+      border-radius:18px;
+      font-size:14px;
+      border:1px solid transparent;
+    }
+
+    .notice.warning{
+      background:var(--warning-bg);
+      border-color:#f1d49a;
+      color:#6f4a00;
+    }
+
+    .notice.danger{
+      background:var(--danger-bg);
+      border-color:#f0b9b9;
+      color:#812c2c;
+    }
+
+    .notice.success{
+      background:var(--success-bg);
+      border-color:#cdebdc;
+      color:#14553d;
     }
 
     .summary-grid{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin:18px 0 22px;
     }
 
-    .content-split{
-      display:grid;
-      grid-template-columns:1.35fr .65fr;
-      gap:12px;
-    }
-
-    .widget-stack{
-      display:grid;
-      gap:12px;
-    }
-
-    .challenge{
-      margin-top:14px;
-      padding:16px 18px;
+    .mini-card{
+      background:#f8fcfa;
       border:1px solid var(--line);
       border-radius:18px;
-      background:#fffdf9;
+      padding:16px;
     }
 
-    details.answer{
-      margin-top:10px;
-      border:1px solid #f0d6aa;
-      border-radius:14px;
-      padding:12px 14px;
-      background:#fff7ea;
+    .mini-card h4{
+      margin:0 0 6px;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.04em;
     }
 
-    details.answer summary{
-      cursor:pointer;
-      font-weight:800;
-      color:var(--brand);
+    .mini-card p{
+      margin:0;
+      font-weight:700;
+      font-size:17px;
+      color:var(--text);
     }
 
-    ul.clean,
-    ol.clean{
-      padding-left:20px;
-      margin:10px 0 0;
+    .result-card{
+      border-radius:22px;
+      padding:20px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:0 16px 34px rgba(16,51,40,.06);
     }
 
-    .footer{
-      padding:28px 0 60px;
-      text-align:center;
+    .result-card + .result-card{
+      margin-top:14px;
+    }
+
+    .result-card h3{
+      margin:0 0 8px;
+      font-size:24px;
+    }
+
+    .result-card p{
+      margin:0 0 12px;
       color:var(--muted);
     }
 
-    @media (max-width: 1020px){
-      .hero-grid,
-      .main-grid,
-      .two-col,
-      .compare-grid,
-      .page-shell-demo,
-      .plan-layout,
-      .content-split,
-      .hero-layout-demo{
+    .result-list{
+      margin:0;
+      padding-left:18px;
+      color:#28463e;
+    }
+
+    .result-list li + li{margin-top:6px}
+
+    .cta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .footer-note{
+      margin:18px 0 30px;
+      padding:18px 20px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .hide{display:none !important}
+
+    @media (max-width:900px){
+      .hero{
         grid-template-columns:1fr;
       }
-
-      .toc{
-        position:relative;
-        top:0;
-        order:-1;
-      }
-
-      .quick-info-grid,
+      .options,
       .summary-grid{
-        grid-template-columns:repeat(2,1fr);
-      }
-
-      .attractions-grid{
-        grid-template-columns:1fr 1fr;
-      }
-
-      .day-grid{
         grid-template-columns:1fr;
+      }
+      .question-title{
+        font-size:28px;
       }
     }
 
-    @media (max-width: 760px){
-      .nav{display:none}
-      .hero-card,
-      .side-card,
-      .lesson-card{padding:18px}
-      .quick-info-grid,
-      .summary-grid,
-      .attractions-grid{
-        grid-template-columns:1fr;
+    @media (max-width:620px){
+      .wrap{padding:16px}
+      .hero-card,.side-card,.wizard,.footer-note{
+        border-radius:20px;
       }
-      pre{font-size:.88rem}
+      .wizard-body{padding:18px}
+      .wizard-top{padding:16px}
+      .wizard-top-row{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .wizard-actions{
+        flex-direction:column;
+      }
+      .wizard-actions .left,
+      .wizard-actions .right{
+        width:100%;
+      }
+      .wizard-actions .btn{
+        width:100%;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a class="brand" href="#top">
-        <span class="brand-badge">VS</span>
-        <span>Visit Varanasi Layout Lesson</span>
-      </a>
-
-      <nav class="nav">
-        <a href="#goal">Goal</a>
-        <a href="#level0">L0</a>
-        <a href="#level1">L1</a>
-        <a href="#level2">L2</a>
-        <a href="#level3">L3</a>
-        <a href="#level4">L4</a>
-        <a href="#challenge">Challenge</a>
-      </nav>
-    </div>
-  </header>
-
-  <section class="hero" id="top">
-    <div class="container hero-grid">
-      <div class="card hero-card">
-        <p class="eyebrow">Multi-Level Layout Lesson</p>
-        <h1>Learn Multi-Level Layouts by Building a Visit Varanasi Page</h1>
-        <p class="muted">
-          In this lesson, we will not learn layout in an abstract way only.
-          We will use a real topic: a travel page for Varanasi. Step by step,
-          we will build outer layout, nested hero layout, attraction cards,
-          travel planning sections, and a sidebar-based final travel page.
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Guided Mental Health Support</div>
+        <h1>Find the right next step, one question at a time.</h1>
+        <p class="lead">
+          This guided care wizard helps patients and family members choose the most suitable next step:
+          counselling, psychiatric consultation, child care, addiction support, admission guidance, or urgent help.
+          It is a support tool, not a diagnosis.
         </p>
-
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#goal">Start the Lesson</a>
-          <a class="btn btn-secondary" href="#level4">Jump to Final Layout</a>
-        </div>
-
-        <div class="pill-row">
-          <span class="pill">Grid + Flexbox</span>
-          <span class="pill">Nested Layouts</span>
-          <span class="pill">Travel Page</span>
-          <span class="pill">Varanasi Theme</span>
-          <span class="pill">Beginner Friendly</span>
+          <button class="btn btn-primary" id="startWizardTop">Start the wizard</button>
+          <a class="btn btn-danger" href="tel:+919999999999">Emergency call</a>
+          <a class="btn btn-soft" href="https://wa.me/919999999999?text=Hello%2C%20I%20need%20help%20choosing%20the%20right%20mental%20health%20service." target="_blank" rel="noopener noreferrer">WhatsApp help</a>
         </div>
       </div>
 
       <aside class="side-card">
-        <h3 style="margin-top:0">What this lesson builds</h3>
-        <div class="mini-list">
-          <div class="mini-item">
-            <strong>Hero Section</strong><br>
-            <span class="muted">Big intro plus side travel card</span>
-          </div>
-          <div class="mini-item">
-            <strong>Attraction Grid</strong><br>
-            <span class="muted">Cards for places to visit</span>
-          </div>
-          <div class="mini-item">
-            <strong>Trip Planner</strong><br>
-            <span class="muted">Day plan plus quick info sidebar</span>
-          </div>
-          <div class="mini-item">
-            <strong>Final Shell</strong><br>
-            <span class="muted">Sidebar navigation + main content</span>
-          </div>
-          <div class="mini-item">
-            <strong>Lesson Style</strong><br>
-            <span class="muted">Explains why each layout choice is used</span>
-          </div>
+        <div>
+          <h3>What this wizard helps with</h3>
+          <p>
+            Clear pathways for anxiety, depression, sleep problems, addiction, child behaviour concerns,
+            confusion about therapy vs doctor consultation, and urgent situations.
+          </p>
+        </div>
+        <div class="pill-list">
+          <span class="pill">New patient guidance</span>
+          <span class="pill">Doctor matching</span>
+          <span class="pill">Admission guidance</span>
+          <span class="pill">Crisis escalation</span>
+          <span class="pill">Family support</span>
+          <span class="pill">Online / offline care</span>
         </div>
       </aside>
+    </section>
+
+    <section class="wizard" id="wizard">
+      <div class="wizard-top">
+        <div class="wizard-top-row">
+          <h2 class="wizard-title">Care Navigation Wizard</h2>
+          <div class="wizard-step-text" id="stepText">Step 1 of 7</div>
+        </div>
+        <div class="progress">
+          <span id="progressBar"></span>
+        </div>
+      </div>
+
+      <div class="wizard-body" id="wizardBody"></div>
+    </section>
+
+    <div class="footer-note">
+      <strong>Important:</strong> This tool is only for guidance. It does not diagnose any condition.
+      If there is immediate danger, risk of self-harm, severe confusion, violence, unconsciousness,
+      or a medical emergency, contact emergency services or visit the nearest emergency facility immediately.
     </div>
-  </section>
-
-  <div class="container main-grid">
-    <main>
-      <section class="lesson-card" id="goal">
-        <h2>Lesson Goal</h2>
-        <p class="muted">
-          A multi-level layout means a layout inside another layout.
-          For example:
-        </p>
-
-        <div class="check-card">
-          <h4>Main idea</h4>
-          <ul class="clean">
-            <li>The whole page may use Grid.</li>
-            <li>The hero inside it may also use Grid.</li>
-            <li>The toolbar inside a section may use Flexbox.</li>
-            <li>The attraction cards inside the content may use Grid again.</li>
-          </ul>
-        </div>
-
-        <div class="tip-card">
-          <h4>Travel page reason</h4>
-          <p style="margin:0">
-            A travel page is a very good practice project because it naturally has
-            many layout levels: hero, highlights, attraction cards, itinerary,
-            travel notes, and sidebar information.
-          </p>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="level0">
-        <div class="level-header">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span class="level-no">0</span>
-            <div>
-              <h2 style="margin:0">Level 0 — Start with the page sections</h2>
-              <p class="muted" style="margin:4px 0 0">
-                First think in page parts, not in tiny boxes.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="explain">
-          Before writing Grid or Flexbox, decide the main content blocks.
-          Our Visit Varanasi page will have:
-          hero, highlights, attractions, trip plan, and final travel dashboard.
-        </div>
-
-        <div class="demo">
-          <div class="demo-title">Main page blocks</div>
-          <div class="stage">
-            <div class="demo-box" style="margin-bottom:10px">Hero Section</div>
-            <div class="demo-box" style="margin-bottom:10px">Quick Highlights</div>
-            <div class="demo-box" style="margin-bottom:10px">Attractions Grid</div>
-            <div class="demo-box" style="margin-bottom:10px">Trip Plan</div>
-            <div class="demo-box">Final Visit Varanasi Page Shell</div>
-          </div>
-        </div>
-
-        <div class="code-wrap">
-          <div class="code-top">
-            <span class="code-title">Basic HTML section structure</span>
-            <button class="copy-btn" data-copy-target="code-level0">Copy</button>
-          </div>
-          <pre id="code-level0"><code>&lt;main class="page"&gt;
-  &lt;section class="hero"&gt;&lt;/section&gt;
-  &lt;section class="highlights"&gt;&lt;/section&gt;
-  &lt;section class="attractions"&gt;&lt;/section&gt;
-  &lt;section class="trip-plan"&gt;&lt;/section&gt;
-  &lt;section class="visit-shell"&gt;&lt;/section&gt;
-&lt;/main&gt;</code></pre>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="level1">
-        <div class="level-header">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span class="level-no">1</span>
-            <div>
-              <h2 style="margin:0">Level 1 — Build the hero using nested Grid</h2>
-              <p class="muted" style="margin:4px 0 0">
-                The hero is our first multi-level layout.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="explain">
-          The outer hero section uses Grid with two columns:
-          the left side for title and text, and the right side for a travel summary card.
-          Inside the left side, we stack smaller pieces vertically.
-        </div>
-
-        <div class="demo">
-          <div class="demo-title">Visit Varanasi hero layout</div>
-          <div class="stage hero-layout-demo">
-            <div class="hero-left-stack">
-              <div class="demo-box" style="min-height:70px">Small Eyebrow + Heading</div>
-              <div class="demo-box" style="min-height:80px">Short Intro Text</div>
-              <div class="demo-box" style="min-height:60px">Buttons Row</div>
-            </div>
-            <div class="demo-box" style="min-height:240px">
-              Side Travel Card<br>
-              Best Time • Ghats • Temples • Food
-            </div>
-          </div>
-        </div>
-
-        <div class="tip-card">
-          <h4>Why Grid here?</h4>
-          <p style="margin:0">
-            Because we want two main zones together: a big content area and a side card.
-            That is a two-dimensional section layout, so Grid fits very well.
-          </p>
-        </div>
-
-        <div class="code-wrap">
-          <div class="code-top">
-            <span class="code-title">Hero layout code</span>
-            <button class="copy-btn" data-copy-target="code-level1">Copy</button>
-          </div>
-          <pre id="code-level1"><code>.hero-layout{
-  display:grid;
-  grid-template-columns:1.15fr .85fr;
-  gap:16px;
-}
-
-.hero-left{
-  display:grid;
-  gap:12px;
-}
-
-.hero-side{
-  padding:20px;
-  border-radius:18px;
-  background:#fff7ea;
-  border:1px solid #efdfb2;
-}</code></pre>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="level2">
-        <div class="level-header">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span class="level-no">2</span>
-            <div>
-              <h2 style="margin:0">Level 2 — Add quick highlights and attractions</h2>
-              <p class="muted" style="margin:4px 0 0">
-                Now we create inner grids inside the page.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="explain">
-          A travel page usually has quick information like best time, major experiences,
-          and key places. These small information blocks are perfect for a repeatable Grid layout.
-        </div>
-
-        <div class="compare-grid">
-          <div class="demo">
-            <div class="demo-title">Quick highlights grid</div>
-            <div class="stage quick-info-grid">
-              <div class="demo-box">Ganga Aarti</div>
-              <div class="demo-box">Kashi Vishwanath</div>
-              <div class="demo-box">Banarasi Food</div>
-            </div>
-          </div>
-
-          <div class="demo">
-            <div class="demo-title">Attractions cards grid</div>
-            <div class="stage attractions-grid">
-              <div class="demo-box">Dashashwamedh Ghat</div>
-              <div class="demo-box">Sarnath</div>
-              <div class="demo-box">Assi Ghat</div>
-              <div class="demo-box">Kashi Vishwanath Temple</div>
-              <div class="demo-box">Banaras Hindu University</div>
-              <div class="demo-box">Local Street Food</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="check-card">
-          <h4>Layout lesson</h4>
-          <p style="margin:0">
-            A page can contain many different grids. One grid does not control everything.
-            Each section can get its own layout rules depending on its purpose.
-          </p>
-        </div>
-
-        <div class="code-wrap">
-          <div class="code-top">
-            <span class="code-title">Cards grid code</span>
-            <button class="copy-btn" data-copy-target="code-level2">Copy</button>
-          </div>
-          <pre id="code-level2"><code>.quick-info{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:16px;
-}
-
-.attractions-grid{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:16px;
-}
-
-@media (max-width: 900px){
-  .quick-info,
-  .attractions-grid{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-@media (max-width: 640px){
-  .quick-info,
-  .attractions-grid{
-    grid-template-columns:1fr;
-  }
-}</code></pre>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="level3">
-        <div class="level-header">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span class="level-no">3</span>
-            <div>
-              <h2 style="margin:0">Level 3 — Build a trip plan with main area + side info</h2>
-              <p class="muted" style="margin:4px 0 0">
-                This section shows another layout inside the same page.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="explain">
-          The trip planner is a very natural two-column layout:
-          the left side can show day-wise itinerary,
-          and the right side can show quick travel notes, weather reminders, or transport tips.
-        </div>
-
-        <div class="demo">
-          <div class="demo-title">Trip planner layout</div>
-          <div class="stage plan-layout">
-            <div class="plan-main">
-              <div class="demo-box" style="min-height:70px">Trip Planner Heading</div>
-              <div class="day-grid">
-                <div class="demo-box" style="min-height:140px">Day 1 — Ghats + Temple</div>
-                <div class="demo-box" style="min-height:140px">Day 2 — Sarnath + BHU</div>
-                <div class="demo-box" style="min-height:140px">Day 3 — Food + Walks</div>
-                <div class="demo-box" style="min-height:140px">Day 4 — Shopping + Sunrise Boat Ride</div>
-              </div>
-            </div>
-            <div class="widget-stack">
-              <div class="demo-box" style="min-height:100px">Travel Tips</div>
-              <div class="demo-box" style="min-height:100px">Best Time to Visit</div>
-              <div class="demo-box" style="min-height:100px">What to Carry</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="tip-card">
-          <h4>Why not use one long column?</h4>
-          <p style="margin:0">
-            Because the user can understand the travel plan faster when the main content
-            and supporting notes are visually separated.
-          </p>
-        </div>
-
-        <div class="code-wrap">
-          <div class="code-top">
-            <span class="code-title">Trip planner layout code</span>
-            <button class="copy-btn" data-copy-target="code-level3">Copy</button>
-          </div>
-          <pre id="code-level3"><code>.trip-plan-layout{
-  display:grid;
-  grid-template-columns:1.25fr .75fr;
-  gap:16px;
-}
-
-.trip-main{
-  display:grid;
-  gap:16px;
-}
-
-.day-grid{
-  display:grid;
-  grid-template-columns:repeat(2, 1fr);
-  gap:16px;
-}
-
-.side-notes{
-  display:grid;
-  gap:16px;
-}</code></pre>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="level4">
-        <div class="level-header">
-          <div style="display:flex; align-items:center; gap:12px">
-            <span class="level-no">4</span>
-            <div>
-              <h2 style="margin:0">Level 4 — Final multi-level Visit Varanasi page shell</h2>
-              <p class="muted" style="margin:4px 0 0">
-                Now we combine everything into one final layout.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="explain">
-          This final design uses:
-          <span class="inline-code">Grid</span> for the outer page shell,
-          <span class="inline-code">Flexbox</span> for the toolbar,
-          and more <span class="inline-code">Grid</span> sections inside the main content.
-          This is exactly what multi-level layout means in real projects.
-        </div>
-
-        <div class="demo">
-          <div class="demo-title">Final Visit Varanasi layout map</div>
-          <div class="stage page-shell-demo">
-            <div class="demo-box" style="min-height:500px">
-              Left Sidebar<br>
-              Overview<br>
-              Places<br>
-              Itinerary<br>
-              Food<br>
-              Tips
-            </div>
-
-            <div class="visit-main">
-              <div class="stage toolbar-demo">
-                <div class="toolbar-group">
-                  <div class="demo-box">Visit Varanasi</div>
-                  <div class="demo-box">4 Day Plan</div>
-                </div>
-                <div class="toolbar-group">
-                  <div class="demo-box">Search</div>
-                  <div class="demo-box">Map</div>
-                  <div class="demo-box">Book</div>
-                </div>
-              </div>
-
-              <div class="summary-grid">
-                <div class="demo-box" style="min-height:100px">Temples</div>
-                <div class="demo-box" style="min-height:100px">Ghats</div>
-                <div class="demo-box" style="min-height:100px">Food Stops</div>
-                <div class="demo-box" style="min-height:100px">Heritage Walks</div>
-              </div>
-
-              <div class="content-split">
-                <div class="demo-box" style="min-height:220px">
-                  Main Attraction Story / Featured Place
-                </div>
-                <div class="widget-stack">
-                  <div class="demo-box" style="min-height:100px">Sunrise Boat Ride</div>
-                  <div class="demo-box" style="min-height:100px">Evening Aarti</div>
-                </div>
-              </div>
-
-              <div class="attractions-grid">
-                <div class="demo-box" style="min-height:120px">Assi Ghat</div>
-                <div class="demo-box" style="min-height:120px">Dashashwamedh</div>
-                <div class="demo-box" style="min-height:120px">Sarnath</div>
-                <div class="demo-box" style="min-height:120px">Temple Corridor</div>
-                <div class="demo-box" style="min-height:120px">Street Food</div>
-                <div class="demo-box" style="min-height:120px">Banarasi Sarees</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="two-col">
-          <div class="tip-card">
-            <h4>Use Grid for</h4>
-            <ul class="clean">
-              <li>whole page shell</li>
-              <li>hero columns</li>
-              <li>card collections</li>
-              <li>featured content sections</li>
-            </ul>
-          </div>
-
-          <div class="check-card">
-            <h4>Use Flexbox for</h4>
-            <ul class="clean">
-              <li>toolbar rows</li>
-              <li>button groups</li>
-              <li>small control groups</li>
-              <li>horizontal action sections</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="code-wrap">
-          <div class="code-top">
-            <span class="code-title">Final shell CSS</span>
-            <button class="copy-btn" data-copy-target="code-level4">Copy</button>
-          </div>
-          <pre id="code-level4"><code>.visit-page{
-  display:grid;
-  grid-template-columns:220px 1fr;
-  gap:16px;
-}
-
-.visit-main{
-  display:grid;
-  gap:16px;
-}
-
-.toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.toolbar-group{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.summary-grid{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:16px;
-}
-
-.content-split{
-  display:grid;
-  grid-template-columns:1.35fr .65fr;
-  gap:16px;
-}
-
-.side-widget-stack{
-  display:grid;
-  gap:16px;
-}</code></pre>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="challenge">
-        <h2>Practice Challenge</h2>
-        <p class="muted">
-          Try improving this Visit Varanasi page yourself.
-        </p>
-
-        <div class="challenge">
-          <strong>Challenge 1:</strong> Add a “Best Food in Varanasi” section using a 3-card grid.
-          <details class="answer">
-            <summary>Show idea</summary>
-            <p>
-              Create a new section and use
-              <span class="inline-code">display:grid</span> with
-              <span class="inline-code">grid-template-columns:repeat(3,1fr)</span>.
-            </p>
-          </details>
-        </div>
-
-        <div class="challenge">
-          <strong>Challenge 2:</strong> Add a sidebar box for “Travel Essentials”.
-          <details class="answer">
-            <summary>Show idea</summary>
-            <p>
-              Place a new card inside the sidebar widget stack so it aligns
-              with the other support cards.
-            </p>
-          </details>
-        </div>
-
-        <div class="challenge">
-          <strong>Challenge 3:</strong> Make the attraction cards responsive.
-          <details class="answer">
-            <summary>Show idea</summary>
-            <p>
-              Use media queries to reduce 3 columns to 2 columns and then 1 column on small screens.
-            </p>
-          </details>
-        </div>
-      </section>
-
-      <section class="lesson-card" id="final">
-        <h2>Final Summary</h2>
-        <p class="muted">
-          You used a real “Visit Varanasi” page to understand multi-level layouts.
-        </p>
-
-        <div class="check-card">
-          <h4>What you learned</h4>
-          <ol class="clean">
-            <li>Think in large page sections first.</li>
-            <li>Use Grid for outer and section-level structure.</li>
-            <li>Use Flexbox for smaller horizontal control rows.</li>
-            <li>Nest layouts inside layouts for real-world pages.</li>
-            <li>Travel pages are excellent practice for layout mastery.</li>
-          </ol>
-        </div>
-
-        <div class="tip-card">
-          <h4>Best next step</h4>
-          <p style="margin:0">
-            Convert this lesson into a real tourism page with images, maps,
-            day-wise itinerary, local food guide, and booking/contact sections.
-          </p>
-        </div>
-      </section>
-    </main>
-
-    <aside class="lesson-card toc">
-      <h3>Lesson Navigation</h3>
-      <a href="#goal">Lesson Goal</a>
-      <a href="#level0">Level 0 — Page Sections</a>
-      <a href="#level1">Level 1 — Hero Layout</a>
-      <a href="#level2">Level 2 — Highlights + Cards</a>
-      <a href="#level3">Level 3 — Trip Planner</a>
-      <a href="#level4">Level 4 — Final Page Shell</a>
-      <a href="#challenge">Challenge</a>
-      <a href="#final">Final Summary</a>
-    </aside>
   </div>
 
-  <footer class="footer">
-    <div class="container">
-      Build section by section, nest layouts carefully, and let each part of the page choose the layout system it truly needs.
-    </div>
-  </footer>
-
   <script>
-    function copyTextFromTarget(targetId, button) {
-      const el = document.getElementById(targetId);
-      if (!el) return;
+    const app = {
+      state: {
+        currentIndex: 0,
+        history: [],
+        answers: {}
+      },
 
-      const text = el.innerText;
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          const old = button.textContent;
-          button.textContent = "Copied";
-          setTimeout(() => {
-            button.textContent = old;
-          }, 1200);
-        })
-        .catch(() => {
-          const old = button.textContent;
-          button.textContent = "Copy failed";
-          setTimeout(() => {
-            button.textContent = old;
-          }, 1400);
+      questions: {
+        start: {
+          id: "start",
+          title: "Who is this help for?",
+          help: "Choose the option that best matches the situation right now.",
+          type: "options",
+          options: [
+            { value: "self", label: "Myself", desc: "I am looking for help for me.", next: "ageGroup" },
+            { value: "child", label: "My child", desc: "A child or teenager needs help.", next: "childConcern" },
+            { value: "family", label: "My spouse / family member", desc: "I am seeking help for someone close to me.", next: "ageGroupFamily" },
+            { value: "crisis", label: "Someone may be in crisis", desc: "There may be immediate danger or urgent distress.", next: "crisisImmediate" }
+          ]
+        },
+
+        ageGroup: {
+          id: "ageGroup",
+          title: "What is your age group?",
+          help: "This helps us guide you to the most suitable type of specialist.",
+          type: "options",
+          options: [
+            { value: "under18", label: "Under 18", desc: "Child or adolescent support", next: "childConcern" },
+            { value: "18to60", label: "18 to 60", desc: "Adult care pathway", next: "adultConcern" },
+            { value: "60plus", label: "60+", desc: "Senior / geriatric support", next: "adultConcern" },
+            { value: "preferNot", label: "Prefer not to say", desc: "Continue without sharing age", next: "adultConcern" }
+          ]
+        },
+
+        ageGroupFamily: {
+          id: "ageGroupFamily",
+          title: "What is the age group of the person who needs help?",
+          help: "Choose the nearest option.",
+          type: "options",
+          options: [
+            { value: "under18", label: "Under 18", desc: "Child or adolescent support", next: "childConcern" },
+            { value: "18to60", label: "18 to 60", desc: "Adult care pathway", next: "adultConcern" },
+            { value: "60plus", label: "60+", desc: "Senior / geriatric support", next: "adultConcern" },
+            { value: "unknown", label: "Not sure / prefer not to say", desc: "Continue with broad guidance", next: "adultConcern" }
+          ]
+        },
+
+        childConcern: {
+          id: "childConcern",
+          title: "What seems to be the main concern?",
+          help: "Choose the closest concern. This is only to guide the next step, not to diagnose.",
+          type: "options",
+          options: [
+            { value: "behaviour", label: "Behaviour / anger / aggression", desc: "Tantrums, defiance, aggression, intense behaviour change", next: "severity" },
+            { value: "anxiety", label: "Anxiety / fear / school stress", desc: "Worry, panic, school refusal, social fear", next: "severity" },
+            { value: "attention", label: "Attention / learning / hyperactivity", desc: "Concentration, impulsivity, restlessness, school concerns", next: "severity" },
+            { value: "mood", label: "Sadness / withdrawal / mood change", desc: "Low mood, isolation, crying, loss of interest", next: "severity" },
+            { value: "safety", label: "Self-harm concern / unsafe behaviour", desc: "Risk behaviour or serious concern for immediate safety", next: "crisisImmediate" },
+            { value: "other", label: "Not sure / something else", desc: "Broad child mental health guidance", next: "severity" }
+          ]
+        },
+
+        adultConcern: {
+          id: "adultConcern",
+          title: "What is the main concern right now?",
+          help: "Choose the closest option. You can still speak to a doctor if you are not sure.",
+          type: "options",
+          options: [
+            { value: "anxiety", label: "Anxiety / panic / overthinking", desc: "Worry, panic, racing thoughts, fear", next: "severity" },
+            { value: "depression", label: "Low mood / sadness / hopelessness", desc: "Persistent sadness, low energy, loss of interest", next: "severity" },
+            { value: "sleep", label: "Sleep problems / stress / burnout", desc: "Insomnia, stress, fatigue, mental exhaustion", next: "severity" },
+            { value: "addiction", label: "Alcohol / drugs / addiction", desc: "Substance use, dependence, relapse concern", next: "substanceUrgency" },
+            { value: "psychosis", label: "Confusion / unusual behaviour / hearing voices", desc: "Severe confusion, suspiciousness, loss of touch with reality", next: "crisisImmediate" },
+            { value: "relationship", label: "Relationship / family / emotional conflict", desc: "Home stress, interpersonal conflict, emotional strain", next: "severity" },
+            { value: "other", label: "Not sure / something else", desc: "General psychiatric guidance", next: "severity" }
+          ]
+        },
+
+        severity: {
+          id: "severity",
+          title: "How serious does it feel right now?",
+          help: "Choose the option that best matches the effect on daily life.",
+          type: "options",
+          options: [
+            { value: "mild", label: "Mild", desc: "It is difficult, but daily life is mostly manageable.", next: "preference" },
+            { value: "moderate", label: "Moderate", desc: "Daily routine, sleep, work, school, or relationships are clearly affected.", next: "preference" },
+            { value: "severe", label: "Serious", desc: "Functioning is badly affected or the situation feels unstable.", next: "safetyCheck" },
+            { value: "unsure", label: "Not sure", desc: "I am not able to judge the severity.", next: "safetyCheck" }
+          ]
+        },
+
+        substanceUrgency: {
+          id: "substanceUrgency",
+          title: "Which addiction situation is closer?",
+          help: "Choose the nearest option for the person who needs help.",
+          type: "options",
+          options: [
+            { value: "early", label: "Need help stopping / cutting down", desc: "Seeking counselling, guidance, or early intervention", next: "preference" },
+            { value: "dependence", label: "Dependence / frequent use", desc: "Strong habit, repeated use, relapse, family concern", next: "severity" },
+            { value: "withdrawal", label: "Withdrawal / medical concern", desc: "Shaking, severe agitation, confusion, physical risk", next: "crisisImmediate" },
+            { value: "admission", label: "May need rehab / admission", desc: "Looking for a structured de-addiction or rehab plan", next: "admissionReadiness" }
+          ]
+        },
+
+        safetyCheck: {
+          id: "safetyCheck",
+          title: "Is there any immediate safety concern?",
+          help: "Choose carefully. If there is urgent risk, emergency support is the safest next step.",
+          type: "options",
+          options: [
+            { value: "no", label: "No immediate safety concern", desc: "No current risk of harm or emergency", next: "preference" },
+            { value: "selfharm", label: "Possible self-harm or suicidal concern", desc: "Thoughts, statements, plans, or recent attempts", next: "crisisImmediate" },
+            { value: "violent", label: "Possible violence / severe agitation", desc: "Unsafe behaviour, aggression, or severe instability", next: "crisisImmediate" },
+            { value: "disoriented", label: "Severe confusion / not fully in touch with reality", desc: "Disorientation, hallucination, or severe mental disturbance", next: "crisisImmediate" }
+          ]
+        },
+
+        crisisImmediate: {
+          id: "crisisImmediate",
+          title: "This may need urgent attention.",
+          help: "Please choose the option that best describes the present situation.",
+          type: "options",
+          options: [
+            { value: "immediateDanger", label: "Immediate danger right now", desc: "The person may harm self/others or is medically unstable", next: "resultEmergency" },
+            { value: "urgentButStable", label: "Urgent, but stable at the moment", desc: "Needs same-day psychiatric evaluation", next: "resultUrgent" },
+            { value: "notActuallyCrisis", label: "Not immediate danger, just very distressed", desc: "Continue to guided care recommendations", next: "preference" },
+            { value: "unsure", label: "I am not sure", desc: "When in doubt, seek urgent professional help", next: "resultUrgent" }
+          ]
+        },
+
+        preference: {
+          id: "preference",
+          title: "What kind of support would you prefer first?",
+          help: "If you are unsure, choose the one that feels like the safest starting point.",
+          type: "options",
+          options: [
+            { value: "doctor", label: "Psychiatrist / doctor consultation", desc: "Medication review, diagnosis support, medical evaluation", next: "mode" },
+            { value: "therapy", label: "Therapy / counselling", desc: "Talk therapy, coping skills, emotional support", next: "mode" },
+            { value: "combined", label: "Both doctor and therapy", desc: "A combined plan may be best", next: "mode" },
+            { value: "guidance", label: "I want guidance first", desc: "Help deciding the best department", next: "mode" }
+          ]
+        },
+
+        mode: {
+          id: "mode",
+          title: "How would you like to receive support?",
+          help: "Choose the care format that works best for you or your family.",
+          type: "options",
+          options: [
+            { value: "online", label: "Online consultation", desc: "Good for guidance, follow-ups, and accessible support", next: "resultSmart" },
+            { value: "outpatient", label: "Visit the centre", desc: "For in-person doctor consultation or therapy", next: "resultSmart" },
+            { value: "home", label: "Need family guidance first", desc: "Talk to the team before deciding", next: "resultSmart" },
+            { value: "admission", label: "May need admission / inpatient care", desc: "Structured supervision or rehab support", next: "admissionReadiness" }
+          ]
+        },
+
+        admissionReadiness: {
+          id: "admissionReadiness",
+          title: "What is the main reason admission is being considered?",
+          help: "Choose the nearest reason.",
+          type: "options",
+          options: [
+            { value: "observation", label: "Needs close observation / safety", desc: "Risk, instability, or severe symptoms", next: "resultAdmission" },
+            { value: "rehab", label: "De-addiction / rehab program", desc: "Structured recovery and supervised treatment", next: "resultAdmission" },
+            { value: "severe", label: "Symptoms feel too severe for home management", desc: "Daily care at home feels difficult or unsafe", next: "resultAdmission" },
+            { value: "justExploring", label: "Just exploring whether admission is needed", desc: "Want doctor guidance first", next: "resultUrgent" }
+          ]
+        },
+
+        resultEmergency: {
+          id: "resultEmergency",
+          resultType: "emergency"
+        },
+
+        resultUrgent: {
+          id: "resultUrgent",
+          resultType: "urgent"
+        },
+
+        resultAdmission: {
+          id: "resultAdmission",
+          resultType: "admission"
+        },
+
+        resultSmart: {
+          id: "resultSmart",
+          resultType: "smart"
+        }
+      },
+
+      start() {
+        this.renderCurrent();
+        document.getElementById("startWizardTop").addEventListener("click", () => {
+          document.getElementById("wizard").scrollIntoView({ behavior: "smooth", block: "start" });
         });
-    }
+      },
 
-    document.querySelectorAll(".copy-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        copyTextFromTarget(btn.dataset.copyTarget, btn);
-      });
-    });
+      getCurrentQuestion() {
+        const key = this.state.history[this.state.currentIndex] || "start";
+        return this.questions[key];
+      },
+
+      pushNext(nextId) {
+        const currentKey = this.state.history[this.state.currentIndex] || "start";
+        if (this.state.history.length === 0) {
+          this.state.history.push("start");
+        }
+        this.state.history = this.state.history.slice(0, this.state.currentIndex + 1);
+
+        if (nextId) {
+          this.state.history.push(nextId);
+          this.state.currentIndex++;
+        }
+        this.renderCurrent();
+      },
+
+      goBack() {
+        if (this.state.currentIndex > 0) {
+          this.state.currentIndex--;
+          this.renderCurrent();
+        }
+      },
+
+      restart() {
+        this.state.currentIndex = 0;
+        this.state.history = [];
+        this.state.answers = {};
+        this.renderCurrent();
+      },
+
+      answer(questionId, value, label, nextId) {
+        this.state.answers[questionId] = { value, label };
+        this.pushNext(nextId);
+      },
+
+      renderCurrent() {
+        if (this.state.history.length === 0) {
+          this.state.history = ["start"];
+          this.state.currentIndex = 0;
+        }
+
+        const current = this.getCurrentQuestion();
+        const body = document.getElementById("wizardBody");
+        const stepText = document.getElementById("stepText");
+        const progressBar = document.getElementById("progressBar");
+
+        const displaySteps = Math.max(this.state.currentIndex + 1, 1);
+        const totalSteps = 7;
+        const progress = Math.min((displaySteps / totalSteps) * 100, 100);
+
+        stepText.textContent = "Step " + displaySteps + " of " + totalSteps;
+        progressBar.style.width = progress + "%";
+
+        if (current.resultType) {
+          body.innerHTML = this.renderResult(current.resultType);
+          this.bindResultActions();
+          return;
+        }
+
+        const saved = this.state.answers[current.id]?.value || "";
+
+        body.innerHTML = `
+          <div class="question-tag">Guided question</div>
+          <h3 class="question-title">${current.title}</h3>
+          <p class="question-help">${current.help}</p>
+
+          ${current.id === "crisisImmediate" ? `
+            <div class="notice danger">
+              If there is immediate danger, do not wait for the wizard to finish. Use the emergency call button now.
+            </div>
+          ` : ""}
+
+          ${current.id === "preference" ? `
+            <div class="notice success">
+              You do not need to know the exact medical term. This wizard is here to help you choose a reasonable next step.
+            </div>
+          ` : ""}
+
+          <div class="options">
+            ${current.options.map(opt => `
+              <button class="option ${saved === opt.value ? "active" : ""}"
+                data-question="${current.id}"
+                data-value="${opt.value}"
+                data-label="${this.escape(opt.label)}"
+                data-next="${opt.next}">
+                <span class="option-title">${opt.label}</span>
+                <span class="option-desc">${opt.desc}</span>
+              </button>
+            `).join("")}
+          </div>
+
+          <div class="wizard-actions">
+            <div class="left">
+              <button class="btn btn-soft" id="backBtn" ${this.state.currentIndex === 0 ? "disabled" : ""}>Back</button>
+              <button class="btn btn-soft" id="restartBtn">Start again</button>
+            </div>
+            <div class="right">
+              <a class="btn btn-danger" href="tel:+919999999999">Emergency call</a>
+              <a class="btn btn-soft" href="https://wa.me/919999999999?text=Hello%2C%20I%20need%20help%20with%20mental%20health%20support." target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            </div>
+          </div>
+        `;
+
+        body.querySelectorAll(".option").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const question = btn.dataset.question;
+            const value = btn.dataset.value;
+            const label = btn.dataset.label;
+            const next = btn.dataset.next;
+            this.answer(question, value, label, next);
+          });
+        });
+
+        const backBtn = document.getElementById("backBtn");
+        const restartBtn = document.getElementById("restartBtn");
+
+        if (backBtn) backBtn.addEventListener("click", () => this.goBack());
+        if (restartBtn) restartBtn.addEventListener("click", () => this.restart());
+      },
+
+      renderResult(type) {
+        const a = this.state.answers;
+
+        const who = a.start?.label || "Not specified";
+        const concern = a.childConcern?.label || a.adultConcern?.label || "Not specified";
+        const severity = a.severity?.label || a.substanceUrgency?.label || "Not specified";
+        const preference = a.preference?.label || "Not specified";
+        const mode = a.mode?.label || "Not specified";
+
+        const summary = `
+          <div class="summary-grid">
+            <div class="mini-card">
+              <h4>Who needs help</h4>
+              <p>${who}</p>
+            </div>
+            <div class="mini-card">
+              <h4>Main concern</h4>
+              <p>${concern}</p>
+            </div>
+            <div class="mini-card">
+              <h4>Severity / situation</h4>
+              <p>${severity}</p>
+            </div>
+            <div class="mini-card">
+              <h4>Preferred support</h4>
+              <p>${preference}${mode !== "Not specified" ? " • " + mode : ""}</p>
+            </div>
+          </div>
+        `;
+
+        if (type === "emergency") {
+          return `
+            <div class="question-tag">Urgent outcome</div>
+            <h3 class="question-title">Emergency support is the safest next step.</h3>
+            <p class="question-help">
+              Based on the answers, this situation may need immediate or emergency attention rather than routine booking.
+            </p>
+
+            <div class="notice danger">
+              Please seek urgent professional or emergency support now. Do not depend only on a website in a high-risk situation.
+            </div>
+
+            ${summary}
+
+            <div class="result-card">
+              <h3>What to do now</h3>
+              <ul class="result-list">
+                <li>Call the centre's emergency number or local emergency service immediately.</li>
+                <li>Do not leave the person alone if there is risk of self-harm, violence, or severe confusion.</li>
+                <li>Remove access to dangerous objects, medicines, or substances if safe to do so.</li>
+                <li>Go to the nearest emergency department or psychiatric emergency service.</li>
+              </ul>
+              <div class="cta-row">
+                <a class="btn btn-danger" href="tel:+919999999999">Call emergency now</a>
+                <a class="btn btn-soft" href="https://wa.me/919999999999?text=URGENT%20HELP%20NEEDED.%20Please%20assist%20immediately." target="_blank" rel="noopener noreferrer">Send urgent WhatsApp message</a>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <div class="left">
+                <button class="btn btn-soft" id="backBtn">Back</button>
+                <button class="btn btn-soft" id="restartBtn">Start again</button>
+              </div>
+            </div>
+          `;
+        }
+
+        if (type === "urgent") {
+          return `
+            <div class="question-tag">Priority outcome</div>
+            <h3 class="question-title">A same-day or early psychiatric evaluation is recommended.</h3>
+            <p class="question-help">
+              This appears more urgent than a routine enquiry. A doctor-led assessment is likely the best next step.
+            </p>
+
+            <div class="notice warning">
+              This may not be a full emergency, but it should not be delayed.
+            </div>
+
+            ${summary}
+
+            <div class="result-card">
+              <h3>Recommended next step</h3>
+              <ul class="result-list">
+                <li>Arrange a priority psychiatrist consultation as soon as possible.</li>
+                <li>If behaviour becomes unsafe, escalate to emergency support immediately.</li>
+                <li>Bring a family member or caregiver if the person is confused, fearful, or unstable.</li>
+                <li>Prepare a short symptom timeline: when it started, medicines used, sleep/appetite changes, and any risk concerns.</li>
+              </ul>
+              <div class="cta-row">
+                <a class="btn btn-primary" href="#book">Book priority consultation</a>
+                <a class="btn btn-soft" href="https://wa.me/919999999999?text=Hello%2C%20I%20need%20an%20urgent%20psychiatric%20consultation." target="_blank" rel="noopener noreferrer">WhatsApp the care team</a>
+                <a class="btn btn-soft" href="tel:+919999999999">Call the front desk</a>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <div class="left">
+                <button class="btn btn-soft" id="backBtn">Back</button>
+                <button class="btn btn-soft" id="restartBtn">Start again</button>
+              </div>
+            </div>
+          `;
+        }
+
+        if (type === "admission") {
+          return `
+            <div class="question-tag">Admission guidance</div>
+            <h3 class="question-title">Admission or structured supervised care may be worth discussing.</h3>
+            <p class="question-help">
+              Based on the answers, a more structured setting such as inpatient care, observation, or rehab may be appropriate.
+            </p>
+
+            <div class="notice warning">
+              Admission decisions should always be confirmed by a qualified clinician after assessment.
+            </div>
+
+            ${summary}
+
+            <div class="result-card">
+              <h3>Recommended next step</h3>
+              <ul class="result-list">
+                <li>Speak to the admissions or psychiatric care team for an assessment.</li>
+                <li>Ask whether the case needs inpatient care, observation, rehab, or an urgent outpatient plan.</li>
+                <li>Keep previous prescriptions, reports, and substance-use history ready if applicable.</li>
+                <li>Clarify expected duration, safety policy, visiting rules, and family involvement.</li>
+              </ul>
+              <div class="cta-row">
+                <a class="btn btn-primary" href="#admission">Request admission guidance</a>
+                <a class="btn btn-soft" href="https://wa.me/919999999999?text=Hello%2C%20I%20need%20information%20about%20admission%20or%20rehab%20support." target="_blank" rel="noopener noreferrer">WhatsApp admissions</a>
+                <a class="btn btn-soft" href="tel:+919999999999">Call admissions desk</a>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <div class="left">
+                <button class="btn btn-soft" id="backBtn">Back</button>
+                <button class="btn btn-soft" id="restartBtn">Start again</button>
+              </div>
+            </div>
+          `;
+        }
+
+        const recommendation = this.getSmartRecommendation();
+        return `
+          <div class="question-tag">Guided recommendation</div>
+          <h3 class="question-title">${recommendation.title}</h3>
+          <p class="question-help">${recommendation.subtitle}</p>
+
+          <div class="notice success">
+            This is a guidance result based on the selected options. A clinician can refine the recommendation after proper assessment.
+          </div>
+
+          ${summary}
+
+          <div class="result-card">
+            <h3>Suggested care path</h3>
+            <p>${recommendation.description}</p>
+            <ul class="result-list">
+              ${recommendation.points.map(p => `<li>${p}</li>`).join("")}
+            </ul>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="${recommendation.primaryHref}">${recommendation.primaryText}</a>
+              <a class="btn btn-soft" href="${recommendation.secondaryHref}" target="_blank" rel="noopener noreferrer">${recommendation.secondaryText}</a>
+              <a class="btn btn-soft" href="tel:+919999999999">Call the centre</a>
+            </div>
+          </div>
+
+          <div class="result-card">
+            <h3>Helpful note</h3>
+            <p>${recommendation.note}</p>
+          </div>
+
+          <div class="wizard-actions">
+            <div class="left">
+              <button class="btn btn-soft" id="backBtn">Back</button>
+              <button class="btn btn-soft" id="restartBtn">Start again</button>
+            </div>
+          </div>
+        `;
+      },
+
+      getSmartRecommendation() {
+        const a = this.state.answers;
+        const concern = a.childConcern?.value || a.adultConcern?.value || "";
+        const preference = a.preference?.value || "";
+        const mode = a.mode?.value || "";
+
+        let title = "A routine mental health consultation is a good next step.";
+        let subtitle = "A structured first consultation can help the team understand symptoms, severity, and the best treatment plan.";
+        let description = "Based on the selected answers, starting with a professional consultation appears appropriate.";
+        let points = [
+          "Book an initial appointment with the relevant specialist.",
+          "Prepare a brief history of symptoms, sleep, stress, and previous treatment if any.",
+          "Bring a family member if the person feels overwhelmed or has difficulty explaining symptoms."
+        ];
+        let note = "If symptoms worsen quickly, or if safety becomes a concern, do not wait for a routine slot.";
+        let primaryText = "Book consultation";
+        let primaryHref = "#book";
+        let secondaryText = "Chat on WhatsApp";
+        let secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20would%20like%20guidance%20for%20booking%20the%20right%20mental%20health%20service.";
+
+        if (concern === "addiction") {
+          title = "Addiction-focused counselling or psychiatric de-addiction care is recommended.";
+          subtitle = "A structured addiction pathway can help with withdrawal risk, relapse prevention, and long-term recovery.";
+          description = "The answers suggest a substance-use support pathway rather than general emotional counselling alone.";
+          points = [
+            "Book a de-addiction or psychiatrist consultation.",
+            "Ask about detox, relapse prevention, family counselling, and rehab if needed.",
+            "Do not abruptly stop substances if withdrawal risk is present without medical guidance."
+          ];
+          primaryText = "Book de-addiction consultation";
+          secondaryText = "WhatsApp addiction support";
+          secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20need%20help%20with%20addiction%20support%20or%20de-addiction%20care.";
+          note = "Withdrawal can sometimes be medically dangerous. If there is shaking, confusion, collapse, or severe agitation, seek urgent care.";
+        } else if (concern === "behaviour" || concern === "attention" || a.childConcern) {
+          title = "A child and adolescent mental health consultation is recommended.";
+          subtitle = "The answers suggest that a child-focused specialist may be the most suitable starting point.";
+          description = "Child behaviour, mood, school stress, or attention concerns are often best assessed through a child psychiatry or child psychology pathway.";
+          points = [
+            "Book a child psychiatry or child psychology appointment.",
+            "Carry school observations, behaviour notes, and any previous assessments if available.",
+            "Parents or caregivers should attend the first consultation."
+          ];
+          primaryText = "Book child consultation";
+          secondaryText = "WhatsApp child care desk";
+          secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20need%20help%20for%20a%20child%20or%20teenager.";
+          note = "Children often show emotional distress through behaviour, school refusal, anger, or withdrawal. Early support can make a big difference.";
+        } else if (concern === "relationship") {
+          title = "Counselling or therapy is a suitable first step.";
+          subtitle = "Relationship and emotional conflict often responds well to therapy, family sessions, or guided counselling.";
+          description = "The selected pattern suggests that talk-based support may help first, with psychiatric consultation added if needed.";
+          points = [
+            "Consider individual counselling, family counselling, or couple-focused support depending on the situation.",
+            "If sleep, appetite, panic, or severe low mood are also present, add a psychiatrist consultation.",
+            "A supportive, non-judgmental first session can clarify the best plan."
+          ];
+          primaryText = "Book counselling session";
+          secondaryText = "WhatsApp counselling desk";
+          secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20would%20like%20to%20book%20a%20counselling%20session.";
+          note = "Therapy can be a very good first step when the situation is emotionally painful but not medically urgent.";
+        } else if (concern === "anxiety" || concern === "sleep") {
+          if (preference === "therapy") {
+            title = "Therapy or counselling is a reasonable first step.";
+            subtitle = "Anxiety, stress, and sleep-related distress often improves with guided therapy and coping strategies.";
+            description = "The current answers fit a therapy-first pathway, especially if the person is safe and functional enough for routine care.";
+            points = [
+              "Book a counselling or therapy appointment.",
+              "Ask about stress management, sleep support, panic management, and coping tools.",
+              "Consider psychiatric consultation too if symptoms are severe, persistent, or worsening."
+            ];
+            primaryText = "Book therapy session";
+            secondaryText = "WhatsApp therapy desk";
+            secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20want%20to%20book%20a%20therapy%20session%20for%20anxiety%2C%20stress%2C%20or%20sleep%20problems.";
+            note = "If panic becomes severe or functioning drops quickly, upgrade to a psychiatric evaluation.";
+          } else {
+            title = "A psychiatrist consultation is a good starting point.";
+            subtitle = "Anxiety, sleep problems, or burnout may benefit from medical assessment along with emotional support.";
+            description = "The selected answers suggest a doctor-led first step, especially if symptoms are persistent or affecting daily life.";
+            points = [
+              "Book a psychiatrist consultation.",
+              "Review sleep, stress level, panic episodes, and any medication history.",
+              "Therapy can be added to strengthen long-term recovery."
+            ];
+            primaryText = "Book psychiatrist consultation";
+            secondaryText = "WhatsApp booking desk";
+            secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20would%20like%20to%20book%20a%20psychiatrist%20consultation.";
+            note = "Combined care often works well for anxiety and stress-related concerns.";
+          }
+        } else if (concern === "depression" || concern === "mood") {
+          title = "A psychiatrist consultation with therapy support is recommended.";
+          subtitle = "Low mood, hopelessness, withdrawal, or a major change in functioning should be evaluated properly.";
+          description = "The selected pathway suggests that a combined doctor-and-therapy approach may be the strongest starting point.";
+          points = [
+            "Book a psychiatric consultation soon.",
+            "Add therapy or counselling to support emotional recovery.",
+            "Seek urgent help sooner if self-harm risk appears or functioning drops sharply."
+          ];
+          primaryText = "Book combined care";
+          secondaryText = "WhatsApp care coordinator";
+          secondaryHref = "https://wa.me/919999999999?text=Hello%2C%20I%20need%20help%20with%20low%20mood%20or%20depression-related%20symptoms.";
+          note = "Persistent sadness, hopelessness, or withdrawal should not be ignored.";
+        }
+
+        if (mode === "online") {
+          note += " Since online support was selected, start with a tele-consultation if the case is stable.";
+        } else if (mode === "outpatient") {
+          note += " Since visiting the centre was selected, choose the earliest suitable in-person slot.";
+        } else if (mode === "home") {
+          note += " Since family guidance was selected, begin with a counselling or intake call and let the team guide the next step.";
+        }
+
+        return {
+          title,
+          subtitle,
+          description,
+          points,
+          note,
+          primaryText,
+          primaryHref,
+          secondaryText,
+          secondaryHref
+        };
+      },
+
+      bindResultActions() {
+        const backBtn = document.getElementById("backBtn");
+        const restartBtn = document.getElementById("restartBtn");
+        if (backBtn) backBtn.addEventListener("click", () => this.goBack());
+        if (restartBtn) restartBtn.addEventListener("click", () => this.restart());
+      },
+
+      escape(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+    };
+
+    app.start();
   </script>
 </body>
 </html>
