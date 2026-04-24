@@ -1,1596 +1,222 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Direct Sell Buildcon — V2 Plot Search</title>
-  <meta
-    name="description"
-    content="Premium real-estate style landing page with step-based plot search, theme toggle, WhatsApp enquiry links, and elegant cards."
-  />
-  <meta name="theme-color" content="#d97706" />
-  <style>
-    :root{
-      --bg: #fff8ef;
-      --bg-soft: #fff3df;
-      --panel: rgba(255,255,255,.82);
-      --panel-2: rgba(255,255,255,.62);
-      --text: #1f2937;
-      --muted: #6b7280;
-      --line: rgba(217,119,6,.18);
-      --brand: #d97706;
-      --brand-2: #f59e0b;
-      --accent: #7c2d12;
-      --ok: #0f766e;
-      --shadow: 0 16px 50px rgba(180, 83, 9, .12);
-      --shadow-soft: 0 10px 30px rgba(15, 23, 42, .08);
-      --radius: 22px;
-      --radius-sm: 14px;
-      --hero-grad:
-        radial-gradient(circle at top left, rgba(245,158,11,.22), transparent 28%),
-        radial-gradient(circle at top right, rgba(217,119,6,.16), transparent 22%),
-        linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,248,239,.96));
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Website Builder V7</title>
 
-    body.dark{
-      --bg: #0f172a;
-      --bg-soft: #111827;
-      --panel: rgba(17,24,39,.82);
-      --panel-2: rgba(17,24,39,.64);
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --line: rgba(245,158,11,.18);
-      --brand: #f59e0b;
-      --brand-2: #fb923c;
-      --accent: #fdba74;
-      --ok: #14b8a6;
-      --shadow: 0 18px 60px rgba(2,6,23,.42);
-      --shadow-soft: 0 12px 36px rgba(2,6,23,.34);
-      --hero-grad:
-        radial-gradient(circle at top left, rgba(251,191,36,.10), transparent 28%),
-        radial-gradient(circle at top right, rgba(249,115,22,.10), transparent 22%),
-        linear-gradient(180deg, rgba(15,23,42,.88), rgba(2,6,23,.98));
-    }
+<style>
+body{margin:0;font-family:Arial;background:#fffaf0;color:#2b2112}
+.box{max-width:1150px;margin:24px auto;padding:20px;background:#fff;border:1px solid #f0dcc2;border-radius:16px}
 
-    *{ box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 20% 0%, rgba(245,158,11,.11), transparent 24%),
-        radial-gradient(circle at 80% 10%, rgba(217,119,6,.08), transparent 18%),
-        linear-gradient(180deg, var(--bg), var(--bg-soft));
-      min-height:100vh;
-    }
+button{padding:10px 14px;border:0;border-radius:10px;background:#d97706;color:white;font-weight:bold;cursor:pointer;margin:4px}
+button.secondary{background:#fff6e6;color:#2b2112;border:1px solid #f0dcc2}
+button.active{background:#f59e0b}
 
-    a{ color:inherit; text-decoration:none; }
-    img{ max-width:100%; display:block; }
+input,textarea{width:100%;max-width:500px;padding:10px;border:1px solid #f0dcc2;border-radius:10px}
+textarea{min-height:90px}
 
-    .container{
-      width:min(1200px, calc(100% - 28px));
-      margin-inline:auto;
-    }
+.options{display:flex;flex-wrap:wrap;gap:8px}
 
-    .glass{
-      background:var(--panel);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-    }
+.progress{height:10px;background:#f7e6c8;border-radius:999px;overflow:hidden;margin:12px 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,#d97706,#f59e0b)}
 
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      padding:12px 0;
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0));
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    body.dark .topbar{
-      background:linear-gradient(180deg, rgba(2,6,23,.28), rgba(2,6,23,0));
-    }
+iframe{width:100%;height:460px;border:1px solid #f0dcc2;border-radius:14px;margin-top:16px;background:white}
 
-    .nav{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      padding:14px 18px;
-      border-radius:999px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
-
-    .logo{
-      width:46px;
-      height:46px;
-      border-radius:16px;
-      display:grid;
-      place-items:center;
-      color:white;
-      font-weight:800;
-      letter-spacing:.5px;
-      background:linear-gradient(135deg, var(--brand), var(--brand-2));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 8px 20px rgba(217,119,6,.22);
-      flex:0 0 auto;
-    }
-
-    .brand-text{
-      min-width:0;
-    }
-    .brand-title{
-      font-weight:800;
-      line-height:1.1;
-      font-size:1rem;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .brand-sub{
-      color:var(--muted);
-      font-size:.84rem;
-      margin-top:3px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .nav-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .chip, .btn{
-      border:none;
-      cursor:pointer;
-      transition:.24s ease;
-      font:inherit;
-    }
-
-    .chip{
-      border-radius:999px;
-      padding:10px 14px;
-      background:var(--panel-2);
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-
-    .chip:hover{
-      transform:translateY(-1px);
-      box-shadow:var(--shadow-soft);
-    }
-
-    .btn{
-      padding:12px 16px;
-      border-radius:999px;
-      font-weight:700;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-
-    .btn-brand{
-      color:#fff;
-      background:linear-gradient(135deg, var(--brand), var(--brand-2));
-      box-shadow:0 12px 28px rgba(217,119,6,.26);
-    }
-
-    .btn-brand:hover{ transform:translateY(-2px); filter:saturate(1.05); }
-
-    .btn-soft{
-      background:var(--panel-2);
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-
-    .btn-soft:hover{ transform:translateY(-2px); }
-
-    .hero{
-      padding:26px 0 18px;
-    }
-
-    .hero-card{
-      position:relative;
-      overflow:hidden;
-      border-radius:32px;
-      padding:28px;
-      background:var(--hero-grad);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-    }
-
-    .hero-grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:24px;
-      align-items:stretch;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.54);
-      border:1px solid var(--line);
-      color:var(--accent);
-      font-weight:700;
-      font-size:.88rem;
-    }
-    body.dark .eyebrow{ background:rgba(15,23,42,.48); }
-
-    .hero h1{
-      margin:16px 0 12px;
-      font-size:clamp(2rem, 4.2vw, 4rem);
-      line-height:1.04;
-      letter-spacing:-.03em;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      font-size:1.06rem;
-      line-height:1.75;
-      max-width:62ch;
-    }
-
-    .hero-ctas{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .hero-badges{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:20px;
-    }
-
-    .mini-badge{
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.52);
-      border:1px solid var(--line);
-      color:var(--text);
-      font-size:.93rem;
-      font-weight:600;
-    }
-    body.dark .mini-badge{ background:rgba(15,23,42,.48); }
-
-    .hero-panel{
-      border-radius:26px;
-      padding:18px;
-      background:var(--panel);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow-soft);
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      justify-content:space-between;
-    }
-
-    .panel-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-    }
-    .panel-title{
-      font-size:1.02rem;
-      font-weight:800;
-    }
-    .panel-sub{
-      font-size:.9rem;
-      color:var(--muted);
-      margin-top:3px;
-    }
-
-    .score{
-      min-width:72px;
-      padding:12px 10px;
-      border-radius:18px;
-      text-align:center;
-      background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.18));
-      border:1px solid var(--line);
-    }
-    .score strong{
-      display:block;
-      font-size:1.35rem;
-      line-height:1;
-    }
-    .score span{
-      font-size:.76rem;
-      color:var(--muted);
-      display:block;
-      margin-top:5px;
-    }
-
-    .facts{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    .fact{
-      padding:14px;
-      border-radius:18px;
-      background:var(--panel-2);
-      border:1px solid var(--line);
-    }
-    .fact .k{
-      color:var(--muted);
-      font-size:.83rem;
-      margin-bottom:4px;
-    }
-    .fact .v{
-      font-weight:800;
-      line-height:1.35;
-    }
-
-    .layout{
-      padding:18px 0 30px;
-    }
-
-    .section{
-      margin-top:18px;
-    }
-
-    .section-card{
-      border-radius:28px;
-      padding:22px;
-    }
-
-    .section-head{
-      display:flex;
-      flex-wrap:wrap;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:16px;
-    }
-    .section-head h2{
-      margin:0;
-      font-size:clamp(1.35rem, 2.4vw, 2rem);
-      line-height:1.1;
-    }
-    .section-head p{
-      margin:6px 0 0;
-      color:var(--muted);
-      max-width:70ch;
-      line-height:1.7;
-    }
-
-    .search-shell{
-      display:grid;
-      grid-template-columns: 340px 1fr;
-      gap:18px;
-      align-items:start;
-    }
-
-    .steps-card{
-      position:sticky;
-      top:92px;
-      border-radius:24px;
-      padding:18px;
-      background:var(--panel-2);
-      border:1px solid var(--line);
-    }
-
-    .steps-title{
-      margin:0 0 10px;
-      font-size:1.05rem;
-      font-weight:800;
-    }
-    .steps-sub{
-      margin:0 0 18px;
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.65;
-    }
-
-    .progress{
-      height:10px;
-      border-radius:999px;
-      background:rgba(148,163,184,.18);
-      overflow:hidden;
-      margin-bottom:16px;
-    }
-    .progress > span{
-      display:block;
-      height:100%;
-      width:25%;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--brand), var(--brand-2));
-      transition:width .28s ease;
-    }
-
-    .step-list{
-      display:grid;
-      gap:12px;
-    }
-
-    .step-item{
-      display:grid;
-      grid-template-columns:42px 1fr;
-      gap:12px;
-      padding:12px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:transparent;
-      cursor:pointer;
-      transition:.22s ease;
-    }
-    .step-item:hover{ transform:translateY(-1px); background:rgba(255,255,255,.2); }
-    body.dark .step-item:hover{ background:rgba(15,23,42,.36); }
-
-    .step-item.active{
-      background:linear-gradient(135deg, rgba(245,158,11,.10), rgba(217,119,6,.12));
-      box-shadow:var(--shadow-soft);
-    }
-
-    .step-no{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      background:var(--panel);
-      border:1px solid var(--line);
-    }
-
-    .step-name{
-      font-weight:800;
-      line-height:1.2;
-    }
-    .step-hint{
-      color:var(--muted);
-      font-size:.88rem;
-      margin-top:4px;
-      line-height:1.55;
-    }
-
-    .wizard{
-      border-radius:24px;
-      padding:18px;
-      background:var(--panel-2);
-      border:1px solid var(--line);
-    }
-
-    .step-screen{
-      display:none;
-      animation:fadeIn .28s ease;
-    }
-    .step-screen.active{ display:block; }
-
-    @keyframes fadeIn{
-      from{ opacity:0; transform:translateY(8px); }
-      to{ opacity:1; transform:none; }
-    }
-
-    .screen-title{
-      margin:0;
-      font-size:1.18rem;
-      font-weight:800;
-    }
-    .screen-sub{
-      margin:8px 0 0;
-      color:var(--muted);
-      line-height:1.7;
-    }
-
-    .option-grid{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:14px;
-      margin-top:18px;
-    }
-
-    .opt{
-      position:relative;
-      padding:16px;
-      border-radius:20px;
-      border:1px solid var(--line);
-      background:var(--panel);
-      cursor:pointer;
-      transition:.22s ease;
-      min-height:92px;
-    }
-    .opt:hover{ transform:translateY(-2px); box-shadow:var(--shadow-soft); }
-    .opt.selected{
-      outline:2px solid rgba(245,158,11,.55);
-      background:linear-gradient(135deg, rgba(245,158,11,.10), rgba(217,119,6,.12));
-    }
-
-    .opt b{
-      display:block;
-      font-size:1rem;
-      line-height:1.3;
-    }
-    .opt span{
-      display:block;
-      margin-top:7px;
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.55;
-    }
-
-    .range-wrap{
-      display:grid;
-      gap:14px;
-      margin-top:18px;
-    }
-
-    .range-box{
-      padding:18px;
-      border-radius:20px;
-      border:1px solid var(--line);
-      background:var(--panel);
-    }
-
-    .range-box label{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      font-weight:800;
-      margin-bottom:10px;
-    }
-
-    .range-box output{
-      color:var(--brand);
-      font-weight:900;
-    }
-
-    input[type="range"]{
-      width:100%;
-      accent-color: var(--brand);
-      cursor:pointer;
-    }
-
-    .search-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:20px;
-    }
-
-    .result-top{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:10px;
-      margin-bottom:12px;
-    }
-
-    .summary{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    .pill{
-      border-radius:999px;
-      padding:10px 14px;
-      border:1px solid var(--line);
-      background:var(--panel);
-      font-size:.92rem;
-      font-weight:700;
-    }
-
-    .muted{
-      color:var(--muted);
-    }
-
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:16px;
-    }
-
-    .card{
-      position:relative;
-      overflow:hidden;
-      border-radius:24px;
-      border:1px solid var(--line);
-      background:var(--panel);
-      box-shadow:var(--shadow-soft);
-      display:flex;
-      flex-direction:column;
-      min-height:100%;
-    }
-
-    .card-media{
-      padding:18px;
-      background:
-        linear-gradient(135deg, rgba(245,158,11,.20), rgba(251,146,60,.14)),
-        radial-gradient(circle at top right, rgba(255,255,255,.45), transparent 35%);
-      border-bottom:1px solid var(--line);
-    }
-
-    .card-art{
-      height:170px;
-      border-radius:20px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.16)),
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.75), transparent 20%),
-        linear-gradient(135deg, rgba(217,119,6,.85), rgba(245,158,11,.92));
-      position:relative;
-      overflow:hidden;
-    }
-
-    .card-art::before,
-    .card-art::after{
-      content:"";
-      position:absolute;
-      border-radius:999px;
-      background:rgba(255,255,255,.14);
-      filter:blur(1px);
-    }
-
-    .card-art::before{
-      width:180px;height:180px; right:-40px; top:-40px;
-    }
-    .card-art::after{
-      width:140px;height:140px; left:-25px; bottom:-45px;
-    }
-
-    .plot-lines{
-      position:absolute;
-      inset:20px;
-      border-radius:16px;
-      border:1px dashed rgba(255,255,255,.55);
-    }
-
-    .road{
-      position:absolute;
-      left:8%;
-      right:8%;
-      bottom:18%;
-      height:16px;
-      border-radius:999px;
-      background:rgba(255,255,255,.82);
-      box-shadow:0 8px 24px rgba(0,0,0,.12);
-    }
-
-    .tree, .house{
-      position:absolute;
-      bottom:34%;
-    }
-
-    .tree{
-      width:18px;height:42px; left:22%;
-      background:
-        linear-gradient(180deg, transparent 0 58%, #6b4f3a 58% 100%);
-    }
-    .tree::before{
-      content:"";
-      position:absolute;
-      width:36px;height:28px; left:-9px; top:0;
-      border-radius:50% 50% 42% 42%;
-      background:rgba(255,255,255,.85);
-    }
-
-    .house{
-      width:58px;height:42px; right:18%;
-      background:rgba(255,255,255,.88);
-      border-radius:8px;
-    }
-    .house::before{
-      content:"";
-      position:absolute;
-      left:-6px; right:-6px; top:-22px; height:28px;
-      clip-path:polygon(50% 0%, 100% 100%, 0% 100%);
-      background:rgba(255,255,255,.92);
-    }
-
-    .card-body{
-      padding:18px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      flex:1;
-    }
-
-    .card-head{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-    }
-
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      width:max-content;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(245,158,11,.12);
-      border:1px solid var(--line);
-      color:var(--accent);
-      font-size:.82rem;
-      font-weight:800;
-    }
-
-    .card h3{
-      margin:0;
-      font-size:1.15rem;
-      line-height:1.25;
-    }
-
-    .price{
-      font-size:1.2rem;
-      font-weight:900;
-      color:var(--brand);
-      white-space:nowrap;
-    }
-
-    .meta{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:10px;
-    }
-
-    .meta .m{
-      padding:12px;
-      border-radius:16px;
-      background:var(--panel-2);
-      border:1px solid var(--line);
-    }
-    .meta .m small{
-      display:block;
-      color:var(--muted);
-      margin-bottom:4px;
-    }
-    .meta .m b{
-      line-height:1.35;
-    }
-
-    .card-desc{
-      color:var(--muted);
-      line-height:1.72;
-      font-size:.96rem;
-    }
-
-    .card-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:auto;
-    }
-
-    .empty{
-      padding:28px;
-      border-radius:24px;
-      border:1px dashed var(--line);
-      text-align:center;
-      color:var(--muted);
-      background:var(--panel);
-    }
-
-    .info-grid{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:16px;
-    }
-
-    .info-card{
-      border-radius:24px;
-      padding:20px;
-      background:var(--panel);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow-soft);
-    }
-    .info-card h3{
-      margin:0 0 10px;
-      font-size:1.08rem;
-    }
-    .info-card p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.75;
-    }
-
-    .cta-band{
-      margin-top:18px;
-      padding:22px;
-      border-radius:28px;
-      background:
-        linear-gradient(135deg, rgba(217,119,6,.14), rgba(245,158,11,.18)),
-        var(--panel);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      display:flex;
-      flex-wrap:wrap;
-      gap:16px;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    .cta-band h3{
-      margin:0;
-      font-size:1.35rem;
-      line-height:1.2;
-    }
-    .cta-band p{
-      margin:8px 0 0;
-      color:var(--muted);
-      line-height:1.7;
-    }
-
-    .footer{
-      padding:18px 0 34px;
-      color:var(--muted);
-    }
-    .footer-card{
-      border-radius:24px;
-      padding:18px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    .toast{
-      position:fixed;
-      right:14px;
-      bottom:14px;
-      z-index:70;
-      max-width:min(420px, calc(100vw - 28px));
-      padding:14px 16px;
-      border-radius:18px;
-      background:var(--panel);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      opacity:0;
-      transform:translateY(12px);
-      pointer-events:none;
-      transition:.25s ease;
-    }
-    .toast.show{
-      opacity:1;
-      transform:none;
-    }
-
-    @media (max-width: 1050px){
-      .hero-grid,
-      .search-shell{
-        grid-template-columns:1fr;
-      }
-      .steps-card{
-        position:relative;
-        top:0;
-      }
-      .cards,
-      .info-grid{
-        grid-template-columns:repeat(2, minmax(0,1fr));
-      }
-    }
-
-    @media (max-width: 720px){
-      .nav{
-        border-radius:26px;
-      }
-      .hero-card{
-        border-radius:26px;
-        padding:20px;
-      }
-      .section-card{
-        padding:16px;
-        border-radius:22px;
-      }
-      .wizard, .steps-card{
-        padding:14px;
-      }
-      .option-grid,
-      .cards,
-      .info-grid,
-      .facts,
-      .meta{
-        grid-template-columns:1fr;
-      }
-      .card-art{
-        height:150px;
-      }
-      .brand-sub{ display:none; }
-      .nav-actions{
-        width:100%;
-        justify-content:flex-start;
-      }
-    }
-  </style>
+.card{border:1px solid #f0dcc2;padding:10px;border-radius:10px;margin:10px 0;background:#fff8ef}
+</style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="container">
-      <div class="nav glass">
-        <div class="brand">
-          <div class="logo">DS</div>
-          <div class="brand-text">
-            <div class="brand-title">Direct Sell Buildcon — V2</div>
-            <div class="brand-sub">Step-based plot discovery • WhatsApp enabled • Elegant experience</div>
-          </div>
-        </div>
-
-        <div class="nav-actions">
-          <button class="chip" id="themeToggle" type="button" aria-label="Toggle theme">🌙 Dark</button>
-          <a class="btn btn-soft" href="#search">Explore plots</a>
-          <a class="btn btn-brand" id="topWhatsAppBtn" href="#" target="_blank" rel="noopener">WhatsApp now</a>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container">
-        <div class="hero-card">
-          <div class="hero-grid">
-            <div>
-              <div class="eyebrow">✨ Premium Search Experience</div>
-              <h1>Find your ideal plot through a graceful, guided, step-by-step journey.</h1>
-              <p>
-                A refined V2 interface for real-estate discovery with area-first filtering, budget guidance,
-                possession priorities, a fast visual shortlist, and direct WhatsApp enquiries for every serious lead.
-              </p>
-
-              <div class="hero-ctas">
-                <a class="btn btn-brand" href="#search">Start guided search</a>
-                <a class="btn btn-soft" id="heroWhatsAppBtn" href="#" target="_blank" rel="noopener">Talk on WhatsApp</a>
-              </div>
-
-              <div class="hero-badges">
-                <div class="mini-badge">Step-based search</div>
-                <div class="mini-badge">Theme toggle</div>
-                <div class="mini-badge">Elegant cards</div>
-                <div class="mini-badge">Mobile friendly</div>
-              </div>
-            </div>
-
-            <aside class="hero-panel">
-              <div class="panel-head">
-                <div>
-                  <div class="panel-title">Quick preference snapshot</div>
-                  <div class="panel-sub">A premium first impression for plot buyers.</div>
-                </div>
-                <div class="score">
-                  <strong>V2</strong>
-                  <span>Premium UI</span>
-                </div>
-              </div>
-
-              <div class="facts">
-                <div class="fact">
-                  <div class="k">Search mode</div>
-                  <div class="v">Guided step wizard</div>
-                </div>
-                <div class="fact">
-                  <div class="k">Lead channel</div>
-                  <div class="v">WhatsApp CTA</div>
-                </div>
-                <div class="fact">
-                  <div class="k">Theme support</div>
-                  <div class="v">Light + Dark</div>
-                </div>
-                <div class="fact">
-                  <div class="k">Designed for</div>
-                  <div class="v">Plots, sites, premium leads</div>
-                </div>
-              </div>
-
-              <a class="btn btn-brand" id="panelWhatsAppBtn" href="#" target="_blank" rel="noopener">Enquire now</a>
-            </aside>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="layout" id="search">
-      <div class="container">
-        <div class="section">
-          <div class="section-card glass">
-            <div class="section-head">
-              <div>
-                <h2>Step-based plots search</h2>
-                <p>
-                  Choose location, purpose, budget, and possession preference. The system filters the shortlist
-                  instantly and prepares a WhatsApp enquiry message for each property.
-                </p>
-              </div>
-            </div>
-
-            <div class="search-shell">
-              <aside class="steps-card">
-                <h3 class="steps-title">Your discovery path</h3>
-                <p class="steps-sub">
-                  Move in order or jump directly to any step. Your progress updates automatically.
-                </p>
-
-                <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
-
-                <div class="step-list" id="stepList">
-                  <button class="step-item active" type="button" data-step="0">
-                    <div class="step-no">1</div>
-                    <div>
-                      <div class="step-name">Choose area</div>
-                      <div class="step-hint">Select where you want to search.</div>
-                    </div>
-                  </button>
-
-                  <button class="step-item" type="button" data-step="1">
-                    <div class="step-no">2</div>
-                    <div>
-                      <div class="step-name">Purpose</div>
-                      <div class="step-hint">Residential, investment, commercial.</div>
-                    </div>
-                  </button>
-
-                  <button class="step-item" type="button" data-step="2">
-                    <div class="step-no">3</div>
-                    <div>
-                      <div class="step-name">Budget</div>
-                      <div class="step-hint">Define your preferred budget range.</div>
-                    </div>
-                  </button>
-
-                  <button class="step-item" type="button" data-step="3">
-                    <div class="step-no">4</div>
-                    <div>
-                      <div class="step-name">Possession</div>
-                      <div class="step-hint">Immediate, soon, or flexible.</div>
-                    </div>
-                  </button>
-                </div>
-
-                <div class="search-actions">
-                  <button class="btn btn-soft" type="button" id="prevBtn">← Previous</button>
-                  <button class="btn btn-brand" type="button" id="nextBtn">Next →</button>
-                </div>
-              </aside>
-
-              <div class="wizard">
-                <div class="step-screen active" data-screen="0">
-                  <h3 class="screen-title">Step 1 — Where do you want your plot?</h3>
-                  <p class="screen-sub">
-                    Pick one area. The search will prioritize matching locations.
-                  </p>
-
-                  <div class="option-grid" id="areaOptions"></div>
-                </div>
-
-                <div class="step-screen" data-screen="1">
-                  <h3 class="screen-title">Step 2 — What is the purpose?</h3>
-                  <p class="screen-sub">
-                    Tell us how you intend to use the property so the recommendations feel more relevant.
-                  </p>
-
-                  <div class="option-grid" id="purposeOptions"></div>
-                </div>
-
-                <div class="step-screen" data-screen="2">
-                  <h3 class="screen-title">Step 3 — What is your budget comfort zone?</h3>
-                  <p class="screen-sub">
-                    Use the sliders for a practical budget bracket. Results update after every change.
-                  </p>
-
-                  <div class="range-wrap">
-                    <div class="range-box">
-                      <label for="minBudget">
-                        <span>Minimum budget</span>
-                        <output id="minBudgetOut">₹ 5 lakh</output>
-                      </label>
-                      <input type="range" id="minBudget" min="5" max="120" step="1" value="5" />
-                    </div>
-
-                    <div class="range-box">
-                      <label for="maxBudget">
-                        <span>Maximum budget</span>
-                        <output id="maxBudgetOut">₹ 60 lakh</output>
-                      </label>
-                      <input type="range" id="maxBudget" min="5" max="120" step="1" value="60" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="step-screen" data-screen="3">
-                  <h3 class="screen-title">Step 4 — When do you want possession?</h3>
-                  <p class="screen-sub">
-                    Let us know your urgency. This helps in prioritizing completed or near-ready offerings.
-                  </p>
-
-                  <div class="option-grid" id="possessionOptions"></div>
-                </div>
-
-                <div class="result-top">
-                  <div class="summary" id="summaryPills"></div>
-                  <div class="muted" id="resultCount">0 matching properties</div>
-                </div>
-
-                <div id="cardsWrap" class="cards"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-card glass">
-            <div class="section-head">
-              <div>
-                <h2>Why this V2 feels better</h2>
-                <p>
-                  The page is shaped to feel calmer, clearer, and more premium while still staying practical for
-                  lead generation.
-                </p>
-              </div>
-            </div>
-
-            <div class="info-grid">
-              <div class="info-card">
-                <h3>Guided intent capture</h3>
-                <p>
-                  Instead of a plain filter bar, users move through a gentle journey. This improves clarity and
-                  creates a more luxury, assisted-buying feel.
-                </p>
-              </div>
-
-              <div class="info-card">
-                <h3>Better lead quality</h3>
-                <p>
-                  Every shortlisted card carries context-aware WhatsApp enquiry text, so conversations start with
-                  the property already identified.
-                </p>
-              </div>
-
-              <div class="info-card">
-                <h3>Exquisite visual rhythm</h3>
-                <p>
-                  Soft glass panels, rounded geometry, warm gradients, and premium spacing make the interface feel
-                  elevated rather than crowded.
-                </p>
-              </div>
-            </div>
-
-            <div class="cta-band">
-              <div>
-                <h3>Need a buyer-ready conversation?</h3>
-                <p>
-                  Tap once and begin a WhatsApp enquiry with the project name, budget context, and preference details.
-                </p>
-              </div>
-              <a class="btn btn-brand" id="bandWhatsAppBtn" href="#" target="_blank" rel="noopener">Open WhatsApp</a>
-            </div>
-          </div>
-        </div>
-
-        <footer class="footer">
-          <div class="footer-card glass">
-            <div>Direct Sell Buildcon — V2 premium concept</div>
-            <div>Replace the WhatsApp number in the script before going live.</div>
-          </div>
-        </footer>
-      </div>
-    </section>
-  </main>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    const WHATSAPP_NUMBER = "919999999999";
-
-    const DATA = [
-      {
-        id: "mc-patna-premium",
-        name: "Metro City Patna",
-        area: "Patna",
-        purpose: ["residential", "investment"],
-        priceLakh: 28,
-        size: "1200 sq ft",
-        possession: "immediate",
-        road: "30 ft road",
-        location: "Near fast-growing city corridor",
-        badge: "Premium plotted development",
-        desc: "A buyer-friendly plotted project aimed at families and long-term investors seeking stronger city-side appreciation."
-      },
-      {
-        id: "muz-growth-enclave",
-        name: "Metro City Muzaffarpur",
-        area: "Muzaffarpur",
-        purpose: ["residential", "investment"],
-        priceLakh: 18,
-        size: "1000 sq ft",
-        possession: "soon",
-        road: "25 ft road",
-        location: "Growing suburban belt",
-        badge: "Growth-focused option",
-        desc: "A value-driven choice for buyers looking for entry-level pricing, medium-term growth, and a calmer plotted environment."
-      },
-      {
-        id: "patna-commerce-square",
-        name: "Patna Commerce Square",
-        area: "Patna",
-        purpose: ["commercial", "investment"],
-        priceLakh: 55,
-        size: "1500 sq ft",
-        possession: "immediate",
-        road: "40 ft road",
-        location: "Strategic urban access zone",
-        badge: "Commercial emphasis",
-        desc: "Built for buyers who want stronger frontage appeal, business potential, and higher positioning within a city market."
-      },
-      {
-        id: "gaya-green-fields",
-        name: "Gaya Green Fields",
-        area: "Gaya",
-        purpose: ["residential", "investment"],
-        priceLakh: 14,
-        size: "900 sq ft",
-        possession: "flexible",
-        road: "20 ft road",
-        location: "Peaceful outer growth pocket",
-        badge: "Budget-friendly plotted site",
-        desc: "A gentle-entry option for first-time land buyers seeking affordability, future appreciation, and simpler decision making."
-      },
-      {
-        id: "varanasi-gateway",
-        name: "Varanasi Gateway Plots",
-        area: "Varanasi",
-        purpose: ["residential", "investment", "commercial"],
-        priceLakh: 34,
-        size: "1100 sq ft",
-        possession: "soon",
-        road: "30 ft road",
-        location: "Expanding road-linked belt",
-        badge: "Balanced city-edge choice",
-        desc: "Useful for buyers who want a stronger mix of livability, connectivity, and flexible resale or usage potential."
-      },
-      {
-        id: "buxar-value-zone",
-        name: "Buxar Value Zone",
-        area: "Buxar",
-        purpose: ["investment", "residential"],
-        priceLakh: 11,
-        size: "800 sq ft",
-        possession: "flexible",
-        road: "18 ft road",
-        location: "Emerging value corridor",
-        badge: "Low-entry investment pick",
-        desc: "A practical budget investment option for those wanting lower entry pricing and patient appreciation over time."
-      }
-    ];
-
-    const AREA_OPTIONS = [
-      { value: "all", label: "All areas", hint: "See every available option." },
-      { value: "Patna", label: "Patna", hint: "Urban growth and stronger city demand." },
-      { value: "Muzaffarpur", label: "Muzaffarpur", hint: "Balanced pricing with growth potential." },
-      { value: "Gaya", label: "Gaya", hint: "Budget-friendly and calmer buying." },
-      { value: "Varanasi", label: "Varanasi", hint: "City-edge flexibility and demand." },
-      { value: "Buxar", label: "Buxar", hint: "Entry-level investment territory." }
-    ];
-
-    const PURPOSE_OPTIONS = [
-      { value: "all", label: "Any purpose", hint: "Keep all options open." },
-      { value: "residential", label: "Residential", hint: "For home construction and family use." },
-      { value: "investment", label: "Investment", hint: "For appreciation and future resale." },
-      { value: "commercial", label: "Commercial", hint: "For shop, office, or business potential." }
-    ];
-
-    const POSSESSION_OPTIONS = [
-      { value: "all", label: "Any timeline", hint: "Show everything." },
-      { value: "immediate", label: "Immediate", hint: "Ready to act now." },
-      { value: "soon", label: "Soon", hint: "Near-term readiness preferred." },
-      { value: "flexible", label: "Flexible", hint: "Open to patient opportunities." }
-    ];
-
-    const state = {
-      step: 0,
-      area: "all",
-      purpose: "all",
-      minBudget: 5,
-      maxBudget: 60,
-      possession: "all"
-    };
-
-    const els = {
-      body: document.body,
-      themeToggle: document.getElementById("themeToggle"),
-      progressBar: document.getElementById("progressBar"),
-      stepItems: [...document.querySelectorAll(".step-item")],
-      screens: [...document.querySelectorAll(".step-screen")],
-      prevBtn: document.getElementById("prevBtn"),
-      nextBtn: document.getElementById("nextBtn"),
-      areaOptions: document.getElementById("areaOptions"),
-      purposeOptions: document.getElementById("purposeOptions"),
-      possessionOptions: document.getElementById("possessionOptions"),
-      minBudget: document.getElementById("minBudget"),
-      maxBudget: document.getElementById("maxBudget"),
-      minBudgetOut: document.getElementById("minBudgetOut"),
-      maxBudgetOut: document.getElementById("maxBudgetOut"),
-      summaryPills: document.getElementById("summaryPills"),
-      resultCount: document.getElementById("resultCount"),
-      cardsWrap: document.getElementById("cardsWrap"),
-      toast: document.getElementById("toast"),
-      waBtns: [
-        document.getElementById("topWhatsAppBtn"),
-        document.getElementById("heroWhatsAppBtn"),
-        document.getElementById("panelWhatsAppBtn"),
-        document.getElementById("bandWhatsAppBtn")
-      ]
-    };
-
-    const moneyText = (lakh) => `₹ ${Number(lakh).toLocaleString("en-IN")} lakh`;
-
-    function showToast(msg){
-      els.toast.textContent = msg;
-      els.toast.classList.add("show");
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => els.toast.classList.remove("show"), 2100);
-    }
-
-    function buildWhatsAppLink(message){
-      const clean = String(WHATSAPP_NUMBER || "").replace(/[^\d]/g, "");
-      return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
-    }
-
-    function setGlobalWhatsAppLinks(){
-      const msg = [
-        "Hello, I want to know more about your available plots.",
-        `Preferred area: ${state.area === "all" ? "Any" : state.area}`,
-        `Purpose: ${state.purpose === "all" ? "Any" : state.purpose}`,
-        `Budget: ${moneyText(state.minBudget)} to ${moneyText(state.maxBudget)}`,
-        `Possession: ${state.possession === "all" ? "Any" : state.possession}`
-      ].join("\n");
-
-      els.waBtns.forEach(btn => {
-        btn.href = buildWhatsAppLink(msg);
-      });
-    }
-
-    function createOptions(container, options, key){
-      container.innerHTML = options.map(opt => `
-        <button class="opt ${state[key] === opt.value ? "selected" : ""}" type="button" data-key="${key}" data-value="${opt.value}">
-          <b>${opt.label}</b>
-          <span>${opt.hint}</span>
-        </button>
-      `).join("");
-
-      container.querySelectorAll(".opt").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state[key] = btn.dataset.value;
-          createOptions(container, options, key);
-          renderSummary();
-          renderCards();
-          setGlobalWhatsAppLinks();
-        });
-      });
-    }
-
-    function renderWizard(){
-      els.screens.forEach((screen, i) => screen.classList.toggle("active", i === state.step));
-      els.stepItems.forEach((item, i) => item.classList.toggle("active", i === state.step));
-      els.progressBar.style.width = `${((state.step + 1) / 4) * 100}%`;
-      els.prevBtn.disabled = state.step === 0;
-      els.nextBtn.textContent = state.step === 3 ? "Finish ✓" : "Next →";
-    }
-
-    function renderSummary(){
-      const items = [
-        `Area: ${state.area === "all" ? "Any" : state.area}`,
-        `Purpose: ${state.purpose === "all" ? "Any" : state.purpose}`,
-        `Budget: ${moneyText(state.minBudget)} – ${moneyText(state.maxBudget)}`,
-        `Possession: ${state.possession === "all" ? "Any" : state.possession}`
-      ];
-
-      els.summaryPills.innerHTML = items.map(t => `<div class="pill">${t}</div>`).join("");
-    }
-
-    function filterData(){
-      return DATA.filter(item => {
-        const areaOk = state.area === "all" || item.area === state.area;
-        const purposeOk = state.purpose === "all" || item.purpose.includes(state.purpose);
-        const budgetOk = item.priceLakh >= state.minBudget && item.priceLakh <= state.maxBudget;
-        const possessionOk = state.possession === "all" || item.possession === state.possession;
-        return areaOk && purposeOk && budgetOk && possessionOk;
-      });
-    }
-
-    function makePropertyMessage(item){
-      return [
-        `Hello, I am interested in: ${item.name}`,
-        `Area: ${item.area}`,
-        `Purpose: ${state.purpose === "all" ? "Open to suggestions" : state.purpose}`,
-        `Budget range: ${moneyText(state.minBudget)} to ${moneyText(state.maxBudget)}`,
-        `Possession preference: ${state.possession === "all" ? "Open" : state.possession}`,
-        `Please share more details, exact pricing, and next steps.`
-      ].join("\n");
-    }
-
-    function renderCards(){
-      const list = filterData();
-      els.resultCount.textContent = `${list.length} matching propert${list.length === 1 ? "y" : "ies"}`;
-
-      if(!list.length){
-        els.cardsWrap.innerHTML = `
-          <div class="empty">
-            <h3 style="margin:0 0 8px; color:var(--text);">No exact match found</h3>
-            <p style="margin:0;">Try widening the budget range, changing possession preference, or selecting “All areas”.</p>
-          </div>
-        `;
-        els.cardsWrap.className = "";
-        return;
-      }
-
-      els.cardsWrap.className = "cards";
-      els.cardsWrap.innerHTML = list.map(item => `
-        <article class="card">
-          <div class="card-media">
-            <div class="card-art">
-              <div class="plot-lines"></div>
-              <div class="road"></div>
-              <div class="tree"></div>
-              <div class="house"></div>
-            </div>
-          </div>
-
-          <div class="card-body">
-            <div class="card-head">
-              <div>
-                <div class="tag">${item.badge}</div>
-                <h3 style="margin-top:10px;">${item.name}</h3>
-              </div>
-              <div class="price">${moneyText(item.priceLakh)}</div>
-            </div>
-
-            <div class="meta">
-              <div class="m">
-                <small>Area</small>
-                <b>${item.area}</b>
-              </div>
-              <div class="m">
-                <small>Size</small>
-                <b>${item.size}</b>
-              </div>
-              <div class="m">
-                <small>Road</small>
-                <b>${item.road}</b>
-              </div>
-              <div class="m">
-                <small>Possession</small>
-                <b style="text-transform:capitalize;">${item.possession}</b>
-              </div>
-            </div>
-
-            <div class="card-desc">
-              ${item.desc}
-              <div style="margin-top:8px;"><strong style="color:var(--text);">Location note:</strong> ${item.location}</div>
-            </div>
-
-            <div class="card-actions">
-              <a class="btn btn-brand" href="${buildWhatsAppLink(makePropertyMessage(item))}" target="_blank" rel="noopener">WhatsApp enquiry</a>
-              <button class="btn btn-soft copy-btn" type="button" data-copy="${encodeURIComponent(makePropertyMessage(item))}">Copy enquiry text</button>
-            </div>
-          </div>
-        </article>
-      `).join("");
-
-      els.cardsWrap.querySelectorAll(".copy-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          try{
-            const txt = decodeURIComponent(btn.dataset.copy);
-            await navigator.clipboard.writeText(txt);
-            showToast("Enquiry text copied.");
-          }catch{
-            showToast("Could not copy. Please try again.");
-          }
-        });
-      });
-    }
-
-    function syncBudgetOutputs(){
-      if(+els.minBudget.value > +els.maxBudget.value){
-        if(document.activeElement === els.minBudget){
-          els.maxBudget.value = els.minBudget.value;
-        }else{
-          els.minBudget.value = els.maxBudget.value;
-        }
-      }
-      state.minBudget = +els.minBudget.value;
-      state.maxBudget = +els.maxBudget.value;
-      els.minBudgetOut.textContent = moneyText(state.minBudget);
-      els.maxBudgetOut.textContent = moneyText(state.maxBudget);
-      renderSummary();
-      renderCards();
-      setGlobalWhatsAppLinks();
-    }
-
-    function initTheme(){
-      const saved = localStorage.getItem("directsell-v2-theme");
-      if(saved === "dark"){
-        els.body.classList.add("dark");
-        els.themeToggle.textContent = "☀️ Light";
-      }else{
-        els.themeToggle.textContent = "🌙 Dark";
-      }
-
-      els.themeToggle.addEventListener("click", () => {
-        els.body.classList.toggle("dark");
-        const isDark = els.body.classList.contains("dark");
-        localStorage.setItem("directsell-v2-theme", isDark ? "dark" : "light");
-        els.themeToggle.textContent = isDark ? "☀️ Light" : "🌙 Dark";
-      });
-    }
-
-    function initWizardNav(){
-      els.stepItems.forEach(item => {
-        item.addEventListener("click", () => {
-          state.step = +item.dataset.step;
-          renderWizard();
-        });
-      });
-
-      els.prevBtn.addEventListener("click", () => {
-        if(state.step > 0){
-          state.step--;
-          renderWizard();
-        }
-      });
-
-      els.nextBtn.addEventListener("click", () => {
-        if(state.step < 3){
-          state.step++;
-          renderWizard();
-        }else{
-          document.getElementById("cardsWrap").scrollIntoView({ behavior: "smooth", block: "start" });
-          showToast("Your guided shortlist is ready.");
-        }
-      });
-    }
-
-    function init(){
-      createOptions(els.areaOptions, AREA_OPTIONS, "area");
-      createOptions(els.purposeOptions, PURPOSE_OPTIONS, "purpose");
-      createOptions(els.possessionOptions, POSSESSION_OPTIONS, "possession");
-
-      els.minBudget.addEventListener("input", syncBudgetOutputs);
-      els.maxBudget.addEventListener("input", syncBudgetOutputs);
-
-      syncBudgetOutputs();
-      renderSummary();
-      renderCards();
-      renderWizard();
-      setGlobalWhatsAppLinks();
-      initWizardNav();
-      initTheme();
-
-      if(String(WHATSAPP_NUMBER) === "919999999999"){
-        setTimeout(() => {
-          showToast("Replace the placeholder WhatsApp number before publishing.");
-        }, 900);
-      }
-    }
-
-    init();
-  </script>
+
+<div class="box">
+<h1>Website Builder V7</h1>
+
+<h2 id="stepTitle"></h2>
+<div class="progress"><span id="progressBar"></span></div>
+<p id="question"></p>
+
+<div id="stepArea"></div>
+
+<br>
+<button class="secondary" onclick="back()">Back</button>
+<button onclick="next()">Next</button>
+<button class="secondary" onclick="generateAI()">⚡ Auto Fill (AI)</button>
+
+<hr>
+
+<button onclick="downloadHTML()">Download HTML</button>
+<button onclick="downloadJSON()">Download JSON</button>
+
+<iframe id="preview"></iframe>
+</div>
+
+<script>
+
+const steps=[
+{key:"brand",q:"Brand name?",type:"text"},
+{key:"tagline",q:"Tagline?",type:"text"},
+{key:"type",q:"Website type?",type:"options",opt:["Business","Healthcare","Education","Portfolio"]},
+{key:"sections",q:"Sections?",type:"multi",opt:["Hero","About","Services","Contact"]},
+
+{key:"heroText",q:"Hero text",type:"textarea"},
+{key:"aboutText",q:"About text",type:"textarea"},
+{key:"servicesText",q:"Services text",type:"textarea"},
+{key:"contactText",q:"Contact text",type:"textarea"}
+];
+
+let state={
+step:0,
+data:{
+brand:"My Site",
+tagline:"Your tagline here",
+type:"Business",
+sections:["Hero","About","Services","Contact"],
+heroText:"",
+aboutText:"",
+servicesText:"",
+contactText:""
+}
+};
+
+function render(){
+let s=steps[state.step];
+
+stepTitle.innerText="Step "+(state.step+1)+" of "+steps.length;
+question.innerText=s.q;
+progressBar.style.width=((state.step+1)/steps.length*100)+"%";
+
+let html="";
+
+if(s.type==="text"){
+html=`<input id="inp" value="${safe(state.data[s.key])}">`;
+}
+
+if(s.type==="textarea"){
+html=`<textarea id="inp">${safe(state.data[s.key])}</textarea>`;
+}
+
+if(s.type==="options"){
+html='<div class="options">';
+s.opt.forEach(o=>{
+let a=state.data[s.key]===o?"active":"";
+html+=`<button class="${a}" onclick="setVal('${o}')">${o}</button>`;
+});
+html+='</div>';
+}
+
+if(s.type==="multi"){
+html='<div class="options">';
+s.opt.forEach(o=>{
+let a=state.data.sections.includes(o)?"active":"";
+html+=`<button class="${a}" onclick="toggle('${o}')">${o}</button>`;
+});
+html+='</div>';
+}
+
+stepArea.innerHTML=html;
+update();
+}
+
+function saveInput(){
+let s=steps[state.step];
+if(s.type==="text"||s.type==="textarea"){
+let el=document.getElementById("inp");
+if(el) state.data[s.key]=el.value;
+}
+}
+
+function next(){saveInput(); if(state.step<steps.length-1){state.step++;render();}}
+function back(){saveInput(); if(state.step>0){state.step--;render();}}
+
+function setVal(v){state.data[steps[state.step].key]=v;render();}
+
+function toggle(v){
+let arr=state.data.sections;
+let i=arr.indexOf(v);
+if(i>=0)arr.splice(i,1);else arr.push(v);
+render();
+}
+
+function safe(s){
+return String(s||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;");
+}
+
+/* 🤖 AI GENERATOR */
+function generateAI(){
+let d=state.data;
+
+d.tagline=`Welcome to ${d.brand} — your trusted ${d.type} solution.`;
+
+d.heroText=`At ${d.brand}, we provide high-quality ${d.type.toLowerCase()} services designed to help you grow and succeed.`;
+
+d.aboutText=`${d.brand} is a dedicated ${d.type.toLowerCase()} platform focused on delivering value, trust, and excellence to every customer.`;
+
+d.servicesText=`We offer a range of ${d.type.toLowerCase()} services including consultation, execution, and ongoing support.`;
+
+d.contactText=`Contact ${d.brand} today to get started. We are here to help you succeed.`;
+
+render();
+}
+
+/* BUILD WEBSITE */
+function build(){
+let d=state.data;
+
+let html='<!doctype html><html><head><meta charset="utf-8">';
+html+='<meta name="viewport" content="width=device-width">';
+html+='<title>'+safe(d.brand)+'</title>';
+html+='<style>body{margin:0;font-family:Arial;background:#fffaf0}section{padding:40px}header{background:#d97706;color:white;padding:15px}</style></head><body>';
+
+html+='<header>'+safe(d.brand)+'</header>';
+
+if(d.sections.includes("Hero")){
+html+='<section><h1>'+safe(d.heroText||d.brand)+'</h1><p>'+safe(d.tagline)+'</p></section>';
+}
+
+if(d.sections.includes("About")){
+html+='<section><h2>About</h2><p>'+safe(d.aboutText)+'</p></section>';
+}
+
+if(d.sections.includes("Services")){
+html+='<section><h2>Services</h2><p>'+safe(d.servicesText)+'</p></section>';
+}
+
+if(d.sections.includes("Contact")){
+html+='<section><h2>Contact</h2><p>'+safe(d.contactText)+'</p></section>';
+}
+
+html+='</body></html>';
+
+return html;
+}
+
+function update(){
+preview.srcdoc=build();
+}
+
+function downloadHTML(){
+let blob=new Blob([build()],{type:"text/html"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="site.html";
+a.click();
+}
+
+function downloadJSON(){
+let blob=new Blob([JSON.stringify(state.data,null,2)],{type:"application/json"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="config.json";
+a.click();
+}
+
+render();
+
+</script>
+
 </body>
 </html>
