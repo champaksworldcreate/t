@@ -3,15 +3,26 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Sorting Identifier V7 Ultra | Programmer's Picnic</title>
+<title>Sorting Identifier V6 Ultra | Programmer's Picnic</title>
 
 <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#fffaf0;color:#2b2112}
-.wrap{max-width:1200px;margin:auto;padding:20px}
+body{
+  margin:0;
+  font-family:Arial;
+  background:#fffaf0;
+  color:#2b2112;
+}
+.wrap{max-width:1100px;margin:auto;padding:20px}
 
-textarea{width:100%;height:180px;padding:12px;border-radius:10px;border:1px solid #f1d7a8}
+textarea{
+  width:100%;
+  height:200px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #f1d7a8;
+}
 
 button{
   margin:8px 5px 0 0;
@@ -21,7 +32,7 @@ button{
   background:#f59e0b;
   color:#fff;
   font-weight:bold;
-  cursor:pointer
+  cursor:pointer;
 }
 
 .card{
@@ -29,12 +40,21 @@ button{
   padding:15px;
   background:#fff;
   border-radius:12px;
-  border:1px solid #f1d7a8
+  border:1px solid #f1d7a8;
 }
 
-.result{font-size:28px;font-weight:900;color:#d97706}
+.result{
+  font-size:28px;
+  font-weight:900;
+  color:#d97706;
+}
 
-.barrow{display:flex;gap:6px}
+.barrow{
+  display:flex;
+  gap:6px;
+  margin:8px 0;
+}
+
 .bar{
   min-width:40px;
   background:#f59e0b;
@@ -42,7 +62,7 @@ button{
   display:flex;
   justify-content:center;
   align-items:flex-end;
-  border-radius:6px
+  border-radius:6px;
 }
 
 .correct{outline:3px solid green}
@@ -51,19 +71,11 @@ button{
 .good{color:green;font-weight:bold}
 .bad{color:red;font-weight:bold}
 
-.quiz-option{
-  padding:8px;
-  margin:6px 0;
-  border:1px solid #f1d7a8;
-  border-radius:8px;
-  cursor:pointer
-}
-.quiz-option:hover{background:#fff3d0}
-
-.leader{
-  display:flex;
-  justify-content:space-between;
-  padding:6px 0;
+.explain{
+  background:#fff8e6;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -71,7 +83,7 @@ button{
 <body>
 <div class="wrap">
 
-<h1 data-pp-speak-title>Sorting Algorithm Identifier — V7 Ultra</h1>
+<h1 data-pp-speak-title>Sorting Algorithm Identifier — V6 Ultra</h1>
 
 <textarea id="input">Start: [5,1,4,2,8]
 Pass1:[1,4,2,5,8]
@@ -88,22 +100,6 @@ Pass2:[1,2,4,5,8]</textarea>
 <div class="card" id="scores"></div>
 <div class="card" id="viz"></div>
 <div class="card" id="explain"></div>
-
-<!-- QUIZ -->
-<div class="card">
-<h2>Quiz</h2>
-<div id="quiz"></div>
-<button onclick="submitQuiz()">Submit Quiz</button>
-<div id="quizResult"></div>
-</div>
-
-<!-- LEADERBOARD -->
-<div class="card">
-<h2>Leaderboard</h2>
-<input id="username" placeholder="Enter your name"/>
-<button onclick="saveScore()">Save Score</button>
-<div id="leaderboard"></div>
-</div>
 
 </div>
 
@@ -127,9 +123,6 @@ function selection(a){a=[...a];let s=[];for(let i=0;i<a.length;i++){let m=i;for(
 function insertion(a){a=[...a];let s=[];for(let i=1;i<a.length;i++){let k=a[i],j=i-1;while(j>=0&&a[j]>k){a[j+1]=a[j];j--}a[j+1]=k;s.push([...a])}return s}
 function counting(a){if(a.some(x=>x<0))return[];let max=Math.max(...a),c=Array(max+1).fill(0),arr=[...a],s=[];for(let x of arr)c[x]++;let i=0;for(let v=0;v<c.length;v++){while(c[v]--){arr[i++]=v;s.push([...arr])}}return s}
 function radix(a){if(a.some(x=>x<0))return[];let arr=[...a],s=[],max=Math.max(...a);for(let exp=1;Math.floor(max/exp)>0;exp*=10){let b=Array.from({length:10},()=>[]);for(let x of arr)b[Math.floor(x/exp)%10].push(x);arr=[].concat(...b);s.push([...arr])}return s}
-function mergeSteps(arr){let s=[];function ms(a){if(a.length<=1)return a;let m=Math.floor(a.length/2),l=ms(a.slice(0,m)),r=ms(a.slice(m)),res=[];while(l.length&&r.length)res.push(l[0]<r[0]?l.shift():r.shift());res=res.concat(l,r);s.push([...res]);return res}ms([...arr]);return s}
-function quickSteps(a){let s=[];function q(x){if(x.length<=1)return x;let p=x[0],l=x.slice(1).filter(v=>v<p),r=x.slice(1).filter(v=>v>=p),res=[...q(l),p,...q(r)];s.push([...res]);return res}q([...a]);return s}
-function heapSteps(a){a=[...a];let s=[];function h(n,i){let m=i,l=2*i+1,r=2*i+2;if(l<n&&a[l]>a[m])m=l;if(r<n&&a[r]>a[m])m=r;if(m!=i){[a[i],a[m]]=[a[m],a[i]];h(n,m)}}let n=a.length;for(let i=Math.floor(n/2)-1;i>=0;i--){h(n,i);s.push([...a])}for(let i=n-1;i>0;i--){[a[0],a[i]]=[a[i],a[0]];h(i,0);s.push([...a])}return s}
 
 /* -------- SCORE -------- */
 function score(exp,act){
@@ -140,135 +133,97 @@ function score(exp,act){
   return Math.round(p/a.length*100);
 }
 
-/* -------- IDENTIFY -------- */
-let lastScore=0;
+/* -------- AI EXPLANATION -------- */
+function explainSteps(steps){
+  let txt="";
+  for(let i=1;i<steps.length;i++){
+    txt+=`<div class="explain">Step ${i}: `;
+    if(JSON.stringify(steps[i])===JSON.stringify([...steps[i]].sort((a,b)=>a-b))){
+      txt+="Array is sorted or nearly sorted.";
+    }else{
+      txt+="Elements are being repositioned — likely comparing/swapping.";
+    }
+    txt+="</div>";
+  }
+  return txt;
+}
 
+/* -------- IDENTIFY -------- */
 function identify(){
+
   let steps=parse(document.getElementById("input").value);
   if(steps.length<2)return;
 
   let start=steps[0];
 
   let algos={
-    Bubble:bubble(start),
-    Selection:selection(start),
-    Insertion:insertion(start),
-    Counting:counting(start),
-    Radix:radix(start),
-    Merge:mergeSteps(start),
-    Quick:quickSteps(start),
-    Heap:heapSteps(start)
+    "Bubble":bubble(start),
+    "Selection":selection(start),
+    "Insertion":insertion(start),
+    "Counting":counting(start),
+    "Radix":radix(start)
   };
 
-  let res=Object.entries(algos).map(([n,e])=>({name:n,exp:e,score:score(e,steps)}))
-  .sort((a,b)=>b.score-a.score);
+  let res=Object.entries(algos).map(([n,e])=>({
+    name:n,
+    exp:e,
+    score:score(e,steps)
+  })).sort((a,b)=>b.score-a.score);
 
   let best=res[0];
-  lastScore=best.score;
 
   document.getElementById("result").innerText=best.name+" Sort";
 
   document.getElementById("reason").innerText={
-    Bubble:"Largest moves right",
+    Bubble:"Largest bubbles to right",
     Selection:"Min selected",
     Insertion:"Sorted grows",
     Counting:"Frequency based",
-    Radix:"Digit sorting",
-    Merge:"Divide & merge",
-    Quick:"Pivot partition",
-    Heap:"Heap extraction"
+    Radix:"Digit sorting"
   }[best.name];
 
   document.getElementById("scores").innerHTML=
     res.map(r=>`${r.name}: <span class="${r.score>60?'good':'bad'}">${r.score}%</span>`).join("<br>");
 
   visualize(steps,best.exp);
-  explain(steps);
+  document.getElementById("explain").innerHTML=explainSteps(steps);
 }
 
-/* -------- VISUAL -------- */
-function visualize(steps,exp){
+/* -------- VISUAL WITH ERROR DETECTION -------- */
+function visualize(steps,expected){
   let max=Math.max(...steps.flat());
 
   document.getElementById("viz").innerHTML=
     steps.map((a,i)=>{
+
       let cls="";
-      if(exp&&i>0) cls=same(a,exp[i-1])?"correct":"wrong";
+      if(expected && i>0){
+        cls = same(a,expected[i-1]) ? "correct" : "wrong";
+      }
+
       return `
-      <div class="${cls}">
+        <div class="${cls}">
         <h3>${i===0?"Start":"Pass "+i}</h3>
         <div class="barrow">
-        ${a.map(x=>`<div class="bar" style="height:${40+(x/max)*120}px">${x}</div>`).join("")}
+          ${a.map(x=>`<div class="bar" style="height:${40+(x/max)*120}px">${x}</div>`).join("")}
         </div>
-      </div>`;
+        </div>
+      `;
     }).join("");
 }
 
-/* -------- EXPLAIN -------- */
-function explain(steps){
-  let out="";
-  for(let i=1;i<steps.length;i++){
-    out+=`<div>Step ${i}: rearrangement observed</div>`;
-  }
-  document.getElementById("explain").innerHTML=out;
-}
-
-/* -------- PLAY -------- */
+/* -------- ANIMATION -------- */
 function play(){
   let steps=parse(document.getElementById("input").value);
   let i=0;
+
   let t=setInterval(()=>{
     visualize([steps[i]]);
     i++;
     if(i>=steps.length)clearInterval(t);
-  },700);
+  },800);
 }
 
-/* -------- QUIZ -------- */
-const QUESTIONS=[
-{q:"Which is fastest avg?",o:["Bubble","Quick","Insertion"],a:1},
-{q:"Stable sort?",o:["Bubble","Selection","Heap"],a:0},
-{q:"Non-comparison?",o:["Counting","Quick","Merge"],a:0}
-];
-
-let answers=[];
-
-function loadQuiz(){
-  document.getElementById("quiz").innerHTML=
-    QUESTIONS.map((q,i)=>`
-      <div>
-        <b>${q.q}</b>
-        ${q.o.map((o,j)=>`
-          <div class="quiz-option" onclick="answers[${i}]=${j};this.style.background='#ffe4a3'">${o}</div>
-        `).join("")}
-      </div>
-    `).join("");
-}
-
-function submitQuiz(){
-  let score=0;
-  QUESTIONS.forEach((q,i)=>{if(answers[i]==q.a)score++});
-  document.getElementById("quizResult").innerText="Score: "+score+"/"+QUESTIONS.length;
-}
-
-/* -------- LEADERBOARD -------- */
-function saveScore(){
-  let name=document.getElementById("username").value||"Anonymous";
-  let data=JSON.parse(localStorage.getItem("leader")||"[]");
-  data.push({name,score:lastScore});
-  localStorage.setItem("leader",JSON.stringify(data));
-  showBoard();
-}
-
-function showBoard(){
-  let data=JSON.parse(localStorage.getItem("leader")||"[]");
-  data.sort((a,b)=>b.score-a.score);
-  document.getElementById("leaderboard").innerHTML=
-    data.map(d=>`<div class="leader"><span>${d.name}</span><span>${d.score}</span></div>`).join("");
-}
-
-loadQuiz();
-showBoard();
 identify();
 
 </script>
