@@ -3,24 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Sorting Algorithm Identifier V4 Ultra</title>
+<title>Sorting Algorithm Identifier V5 Ultra</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#fffaf0;
-  color:#2b2112;
-}
-.wrap{max-width:1100px;margin:auto;padding:20px;}
-textarea{
-  width:100%;
-  height:200px;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #f1d7a8;
-}
-button{
+body{margin:0;font-family:Arial;background:#fffaf0;color:#2b2112}
+.wrap{max-width:1100px;margin:auto;padding:20px}
+textarea{width:100%;height:200px;padding:12px;border-radius:10px;border:1px solid #f1d7a8}
+button,select{
   margin:8px 5px 0 0;
   padding:10px 16px;
   border-radius:999px;
@@ -28,66 +17,137 @@ button{
   background:#f59e0b;
   color:#fff;
   font-weight:bold;
-  cursor:pointer;
+  cursor:pointer
 }
-.card{
-  margin-top:15px;
-  padding:15px;
-  background:#fff;
-  border-radius:12px;
-  border:1px solid #f1d7a8;
-}
-.result{
-  font-size:28px;
-  font-weight:900;
-  color:#d97706;
-}
-.barrow{
-  display:flex;
-  gap:6px;
-}
-.bar{
-  min-width:40px;
-  background:#f59e0b;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:flex-end;
-  border-radius:6px;
-}
-.good{color:green;font-weight:bold;}
-.bad{color:red;font-weight:bold;}
+.card{margin-top:15px;padding:15px;background:#fff;border-radius:12px;border:1px solid #f1d7a8}
+.result{font-size:28px;font-weight:900;color:#d97706}
+.barrow{display:flex;gap:6px}
+.bar{min-width:40px;background:#f59e0b;color:#fff;display:flex;justify-content:center;align-items:flex-end;border-radius:6px}
+.good{color:green;font-weight:bold}
+.bad{color:red;font-weight:bold}
 </style>
 </head>
 
 <body>
 <div class="wrap">
 
-<h1>Sorting Algorithm Identifier — V4 Ultra</h1>
+<h1>Sorting Algorithm Identifier — V5 Ultra</h1>
 
-<textarea id="input">Start: [5,1,4,2,8]
-Pass 1: [1,4,2,5,8]
-Pass 2: [1,2,4,5,8]
-Pass 3: [1,2,4,5,8]</textarea>
+<select id="exampleSelect"></select>
+<button onclick="loadExample()">Load Example</button>
 
-<br>
+<textarea id="input"></textarea>
+
 <button onclick="identify()">Identify</button>
 <button onclick="play()">Animate</button>
 
 <div class="card">
-<div id="result" class="result">Bubble Sort</div>
+<div id="result" class="result">Waiting...</div>
 <div id="reason"></div>
 </div>
 
 <div class="card" id="scores"></div>
-
 <div class="card" id="viz"></div>
 
 </div>
 
 <script>
 
-/* -------- PARSE -------- */
+/* ---------------- EXAMPLES ---------------- */
+const EXAMPLES = [
+
+/* Bubble */
+["Bubble 1",`Start: [5,1,4,2,8]
+Pass1:[1,4,2,5,8]
+Pass2:[1,2,4,5,8]
+Pass3:[1,2,4,5,8]`],
+
+["Bubble 2",`Start:[9,7,3,1]
+Pass1:[7,3,1,9]
+Pass2:[3,1,7,9]
+Pass3:[1,3,7,9]`],
+
+/* Selection */
+["Selection 1",`Start:[5,1,4,2,8]
+Pass1:[1,5,4,2,8]
+Pass2:[1,2,4,5,8]`],
+
+["Selection 2",`Start:[64,25,12,22,11]
+Pass1:[11,25,12,22,64]
+Pass2:[11,12,25,22,64]
+Pass3:[11,12,22,25,64]`],
+
+/* Insertion */
+["Insertion 1",`Start:[5,1,4,2,8]
+Pass1:[1,5,4,2,8]
+Pass2:[1,4,5,2,8]
+Pass3:[1,2,4,5,8]`],
+
+["Insertion 2",`Start:[9,3,6,2]
+Pass1:[3,9,6,2]
+Pass2:[3,6,9,2]
+Pass3:[2,3,6,9]`],
+
+/* Counting */
+["Counting 1",`Start:[4,2,2,8,3]
+Pass1:[2,2,2,8,3]
+Pass2:[2,2,3,8,3]
+Pass3:[2,2,3,4,3]
+Pass4:[2,2,3,4,8]`],
+
+["Counting 2",`Start:[3,1,2,1]
+Pass1:[1,1,2,1]
+Pass2:[1,1,2,3]`],
+
+/* Radix */
+["Radix 1",`Start:[170,45,75,90]
+Pass1:[170,90,45,75]
+Pass2:[170,45,75,90]
+Pass3:[45,75,90,170]`],
+
+["Radix 2",`Start:[329,457,657,839]
+Pass1:[720,355,436,457]
+Pass2:[329,436,457,657]
+Pass3:[329,436,457,657]`],
+
+/* Merge */
+["Merge 1",`Start:[5,1,4,2]
+Pass1:[1,5]
+Pass2:[2,4]
+Pass3:[1,2,4,5]`],
+
+["Merge 2",`Start:[8,3,7,4]
+Pass1:[3,8]
+Pass2:[4,7]
+Pass3:[3,4,7,8]`],
+
+/* Quick */
+["Quick 1",`Start:[5,1,4,2]
+Pass1:[1,2,4,5]`],
+
+["Quick 2",`Start:[8,3,7,4]
+Pass1:[3,4,7,8]`],
+
+/* Heap */
+["Heap 1",`Start:[4,10,3,5,1]
+Pass1:[10,5,3,4,1]
+Pass2:[5,4,3,1,10]`],
+
+["Heap 2",`Start:[12,11,13,5,6,7]
+Pass1:[13,11,12,5,6,7]
+Pass2:[12,11,7,5,6,13]`]
+
+];
+
+/* init */
+const select=document.getElementById("exampleSelect");
+select.innerHTML=EXAMPLES.map((e,i)=>`<option value="${i}">${e[0]}</option>`).join("");
+
+function loadExample(){
+  document.getElementById("input").value=EXAMPLES[select.value][1];
+}
+
+/* ---------- CORE ---------- */
 function parse(text){
   return text.split("\n")
     .map(l=>l.match(/\[(.*?)\]/))
@@ -95,194 +155,61 @@ function parse(text){
     .map(m=>m[1].split(",").map(x=>+x));
 }
 
-function same(a,b){
-  return a.length===b.length && a.every((v,i)=>v===b[i]);
-}
+function same(a,b){return a.length===b.length && a.every((v,i)=>v===b[i]);}
 
-/* -------- BASIC SORTS -------- */
-function bubble(a){
-  a=[...a]; let s=[];
+/* ---------- SORTS ---------- */
+function bubble(a){a=[...a];let s=[];for(let i=0;i<a.length;i++){for(let j=0;j<a.length-1-i;j++){if(a[j]>a[j+1])[a[j],a[j+1]]=[a[j+1],a[j]]}s.push([...a])}return s}
+function selection(a){a=[...a];let s=[];for(let i=0;i<a.length;i++){let m=i;for(let j=i+1;j<a.length;j++){if(a[j]<a[m])m=j}[a[i],a[m]]=[a[m],a[i]];s.push([...a])}return s}
+function insertion(a){a=[...a];let s=[];for(let i=1;i<a.length;i++){let k=a[i],j=i-1;while(j>=0&&a[j]>k){a[j+1]=a[j];j--}a[j+1]=k;s.push([...a])}return s}
+function counting(a){if(a.some(x=>x<0))return[];let max=Math.max(...a),c=Array(max+1).fill(0),arr=[...a],s=[];for(let x of arr)c[x]++;let i=0;for(let v=0;v<c.length;v++){while(c[v]--){arr[i++]=v;s.push([...arr])}}return s}
+function radix(a){if(a.some(x=>x<0))return[];let arr=[...a],s=[],max=Math.max(...a);for(let exp=1;Math.floor(max/exp)>0;exp*=10){let b=Array.from({length:10},()=>[]);for(let x of arr)b[Math.floor(x/exp)%10].push(x);arr=[].concat(...b);s.push([...arr])}return s}
+function mergeSteps(arr){let s=[];function ms(a){if(a.length<=1)return a;let m=Math.floor(a.length/2),l=ms(a.slice(0,m)),r=ms(a.slice(m)),res=[];while(l.length&&r.length)res.push(l[0]<r[0]?l.shift():r.shift());res=res.concat(l,r);s.push([...res]);return res}ms([...arr]);return s}
+function quickSteps(a){let s=[];function q(x){if(x.length<=1)return x;let p=x[0],l=x.slice(1).filter(v=>v<p),r=x.slice(1).filter(v=>v>=p),res=[...q(l),p,...q(r)];s.push([...res]);return res}q([...a]);return s}
+function heapSteps(a){a=[...a];let s=[];function h(n,i){let m=i,l=2*i+1,r=2*i+2;if(l<n&&a[l]>a[m])m=l;if(r<n&&a[r]>a[m])m=r;if(m!=i){[a[i],a[m]]=[a[m],a[i]];h(n,m)}}let n=a.length;for(let i=Math.floor(n/2)-1;i>=0;i--){h(n,i);s.push([...a])}for(let i=n-1;i>0;i--){[a[0],a[i]]=[a[i],a[0]];h(i,0);s.push([...a])}return s}
+
+/* ---------- SCORE ---------- */
+function score(exp,act){
+  let a=act.slice(1),p=0;
   for(let i=0;i<a.length;i++){
-    for(let j=0;j<a.length-1-i;j++){
-      if(a[j]>a[j+1]) [a[j],a[j+1]]=[a[j+1],a[j]];
-    }
-    s.push([...a]);
-  }
-  return s;
-}
-
-function selection(a){
-  a=[...a]; let s=[];
-  for(let i=0;i<a.length;i++){
-    let m=i;
-    for(let j=i+1;j<a.length;j++){
-      if(a[j]<a[m]) m=j;
-    }
-    [a[i],a[m]]=[a[m],a[i]];
-    s.push([...a]);
-  }
-  return s;
-}
-
-function insertion(a){
-  a=[...a]; let s=[];
-  for(let i=1;i<a.length;i++){
-    let key=a[i],j=i-1;
-    while(j>=0 && a[j]>key){
-      a[j+1]=a[j]; j--;
-    }
-    a[j+1]=key;
-    s.push([...a]);
-  }
-  return s;
-}
-
-/* -------- COUNTING -------- */
-function counting(a){
-  if(a.some(x=>x<0)) return [];
-  let max=Math.max(...a);
-  let c=Array(max+1).fill(0);
-  let arr=[...a], s=[];
-
-  for(let x of arr) c[x]++;
-  let i=0;
-
-  for(let v=0;v<c.length;v++){
-    while(c[v]--){
-      arr[i++]=v;
-      s.push([...arr]);
-    }
-  }
-  return s;
-}
-
-/* -------- RADIX -------- */
-function radix(a){
-  if(a.some(x=>x<0)) return [];
-  let arr=[...a], s=[];
-  let max=Math.max(...arr);
-
-  for(let exp=1;Math.floor(max/exp)>0;exp*=10){
-    let b=Array.from({length:10},()=>[]);
-    for(let x of arr){
-      b[Math.floor(x/exp)%10].push(x);
-    }
-    arr=[].concat(...b);
-    s.push([...arr]);
-  }
-  return s;
-}
-
-/* -------- MERGE -------- */
-function mergeSteps(arr){
-  let steps=[];
-  function mergeSort(a){
-    if(a.length<=1) return a;
-    let mid=Math.floor(a.length/2);
-    let left=mergeSort(a.slice(0,mid));
-    let right=mergeSort(a.slice(mid));
-    let merged=[];
-    while(left.length && right.length){
-      merged.push(left[0]<right[0]?left.shift():right.shift());
-    }
-    merged=merged.concat(left,right);
-    steps.push([...merged]);
-    return merged;
-  }
-  mergeSort([...arr]);
-  return steps;
-}
-
-/* -------- QUICK -------- */
-function quickSteps(arr){
-  let steps=[];
-  function quick(a){
-    if(a.length<=1) return a;
-    let pivot=a[0];
-    let left=a.slice(1).filter(x=>x<pivot);
-    let right=a.slice(1).filter(x=>x>=pivot);
-    let result=[...quick(left),pivot,...quick(right)];
-    steps.push([...result]);
-    return result;
-  }
-  quick([...arr]);
-  return steps;
-}
-
-/* -------- HEAP -------- */
-function heapSteps(arr){
-  let a=[...arr], s=[];
-  function heapify(n,i){
-    let largest=i;
-    let l=2*i+1,r=2*i+2;
-    if(l<n && a[l]>a[largest]) largest=l;
-    if(r<n && a[r]>a[largest]) largest=r;
-    if(largest!==i){
-      [a[i],a[largest]]=[a[largest],a[i]];
-      heapify(n,largest);
-    }
-  }
-  let n=a.length;
-
-  for(let i=Math.floor(n/2)-1;i>=0;i--){
-    heapify(n,i);
-    s.push([...a]);
-  }
-
-  for(let i=n-1;i>0;i--){
-    [a[0],a[i]]=[a[i],a[0]];
-    heapify(i,0);
-    s.push([...a]);
-  }
-  return s;
-}
-
-/* -------- SCORE -------- */
-function score(exp, act){
-  let a=act.slice(1);
-  let p=0;
-  for(let i=0;i<a.length;i++){
-    if(exp[i] && same(exp[i],a[i])) p++;
+    if(exp[i]&&same(exp[i],a[i]))p++;
   }
   return Math.round(p/a.length*100);
 }
 
-/* -------- IDENTIFY -------- */
+/* ---------- IDENTIFY ---------- */
 function identify(){
   let steps=parse(document.getElementById("input").value);
-  if(steps.length<2) return;
+  if(steps.length<2)return;
 
   let start=steps[0];
 
   let algos={
-    "Bubble Sort":bubble(start),
-    "Selection Sort":selection(start),
-    "Insertion Sort":insertion(start),
-    "Counting Sort":counting(start),
-    "Radix Sort":radix(start),
-    "Merge Sort":mergeSteps(start),
-    "Quick Sort":quickSteps(start),
-    "Heap Sort":heapSteps(start)
+    "Bubble":bubble(start),
+    "Selection":selection(start),
+    "Insertion":insertion(start),
+    "Counting":counting(start),
+    "Radix":radix(start),
+    "Merge":mergeSteps(start),
+    "Quick":quickSteps(start),
+    "Heap":heapSteps(start)
   };
 
-  let res=Object.entries(algos).map(([n,e])=>({
-    name:n,
-    score:score(e,steps)
-  })).sort((a,b)=>b.score-a.score);
+  let res=Object.entries(algos).map(([n,e])=>({name:n,score:score(e,steps)}))
+  .sort((a,b)=>b.score-a.score);
 
   let best=res[0];
 
-  document.getElementById("result").innerText=best.name;
+  document.getElementById("result").innerText=best.name+" Sort";
 
   document.getElementById("reason").innerText={
-    "Bubble Sort":"Largest moves right",
-    "Selection Sort":"Min selected",
-    "Insertion Sort":"Sorted grows left",
-    "Counting Sort":"Frequency based",
-    "Radix Sort":"Digit sorting",
-    "Merge Sort":"Divide & merge",
-    "Quick Sort":"Pivot partition",
-    "Heap Sort":"Heap extraction"
+    Bubble:"Largest bubbles to right",
+    Selection:"Min picked each pass",
+    Insertion:"Sorted grows left",
+    Counting:"Frequency based",
+    Radix:"Digit-wise",
+    Merge:"Divide & merge",
+    Quick:"Pivot partition",
+    Heap:"Heap extraction"
   }[best.name];
 
   document.getElementById("scores").innerHTML=
@@ -291,35 +218,32 @@ function identify(){
   visualize(steps);
 }
 
-/* -------- VISUAL -------- */
+/* ---------- VISUAL ---------- */
 function visualize(steps){
   let max=Math.max(...steps.flat());
-
   document.getElementById("viz").innerHTML=
     steps.map((a,i)=>`
       <h3>${i===0?"Start":"Pass "+i}</h3>
       <div class="barrow">
-        ${a.map(x=>`
-          <div class="bar" style="height:${40+(x/max)*120}px">${x}</div>
-        `).join("")}
+        ${a.map(x=>`<div class="bar" style="height:${40+(x/max)*120}px">${x}</div>`).join("")}
       </div>
     `).join("");
 }
 
-/* -------- PLAY -------- */
+/* ---------- PLAY ---------- */
 function play(){
   let steps=parse(document.getElementById("input").value);
   let i=0;
   let t=setInterval(()=>{
     visualize([steps[i]]);
     i++;
-    if(i>=steps.length) clearInterval(t);
+    if(i>=steps.length)clearInterval(t);
   },700);
 }
 
+loadExample();
 identify();
 
 </script>
-
 </body>
 </html>
