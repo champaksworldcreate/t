@@ -1,187 +1,153 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+<div class="swiper-wrapper">
 
-  <title>404 - Page Not Found | Learn With Champak</title>
-
-  <meta name="description" content="Oops! The page you are looking for does not exist. Continue learning with Programmer's Picnic and Learn With Champak." />
-
-  <!-- Adsense -->
-  <script async
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494"
-    crossorigin="anonymous"></script>
-
-  <!-- Speak Engine -->
-  <script src="https://programmer-s-picnic.github.io/json-images/find-on-page.js"></script>
-
-  <style>
-    :root{
-      --bg:#fffaf0;
-      --card:#ffffff;
-      --accent:#f59e0b;
-      --accent-dark:#d97706;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --border:#fde68a;
-    }
-
-    *{box-sizing:border-box;margin:0;padding:0}
-
-    body{
-      font-family:system-ui,Segoe UI,Roboto,Arial;
-      background:linear-gradient(135deg,#fff7ed,#fffaf0);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:100vh;
-      padding:20px;
-    }
-
-    .card{
-      max-width:700px;
-      width:100%;
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:30px;
-      text-align:center;
-      box-shadow:0 10px 40px rgba(0,0,0,0.08);
-      animation:fadeIn 0.6s ease;
-    }
-
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(20px)}
-      to{opacity:1; transform:translateY(0)}
-    }
-
-    .code{
-      font-size:72px;
-      font-weight:800;
-      color:var(--accent-dark);
-    }
-
-    h1{
-      font-size:28px;
-      margin:10px 0;
-    }
-
-    p{
-      color:var(--muted);
-      margin-bottom:20px;
-    }
-
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      justify-content:center;
-      margin-top:20px;
-    }
-
-    .btn{
-      padding:12px 18px;
-      border-radius:10px;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-      text-decoration:none;
-      transition:0.2s;
-    }
-
-    .btn-primary{
-      background:var(--accent);
-      color:white;
-    }
-
-    .btn-primary:hover{
-      background:var(--accent-dark);
-    }
-
-    .btn-outline{
-      background:white;
-      border:1px solid var(--border);
-      color:var(--text);
-    }
-
-    .btn-outline:hover{
-      background:#fff7ed;
-    }
-
-    .search-box{
-      margin-top:20px;
-      display:flex;
-      gap:10px;
-    }
-
-    input{
-      flex:1;
-      padding:12px;
-      border-radius:10px;
-      border:1px solid var(--border);
-    }
-
-    footer{
-      margin-top:25px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    @media(max-width:500px){
-      .code{font-size:56px}
-      h1{font-size:22px}
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="card">
-
-  <div id="speak0" class="code">404</div>
-
-  <h1 id="speak1">Page Not Found</h1>
-
-  <p id="speak2">
-    The page you are looking for does not exist or has been moved.
-    But your learning journey does not stop here.
-  </p>
-
-  <p id="speak3">
-    Think of this like a bug in code — we debug and move forward.
-  </p>
-
-  <!-- Search -->
-  <div class="search-box">
-    <input id="searchInput" placeholder="Search lessons..." />
-    <button class="btn btn-primary" onclick="searchSite()">Search</button>
+<!-- 1. VARANASI -->
+<div class="swiper-slide active" data-val="7">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/varanasi/gangaarti.jpg);"></div>
   </div>
-
-  <!-- Actions -->
-  <div class="actions">
-    <a href="/" class="btn btn-primary" id="speak4">Go Home</a>
-    <a href="/course/course-map.html" class="btn btn-outline" id="speak5">Course Map</a>
-    <a href="https://www.learnwithchampak.live" class="btn btn-outline" id="speak6">All Lessons</a>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Varanasi (Kashi) Package</h1>
+        <p>Varanasi, Gaya, Prayagraj, Ayodhya, Chitrakoot, Naimisharanya, Lucknow</p>
+        <a href="varanasi.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
   </div>
-
-  <footer id="speak7">
-    © Learn With Champak | Programmer's Picnic
-  </footer>
-
 </div>
 
-<script>
-function searchSite(){
-  var q = document.getElementById("searchInput").value.trim();
-  if(!q){
-    alert("Enter something to search");
-    return;
-  }
-  window.location.href = "/search?q=" + encodeURIComponent(q);
-}
-</script>
+<!-- 2. GOLDEN TRIANGLE -->
+<div class="swiper-slide" data-val="0">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/goldentriangle/tajmahal2.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Golden Triangle</h1>
+        <p>Delhi, Agra, Jaipur</p>
+        <a href="goldentriangle.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
 
-</body>
-</html>
+<!-- 3. HIMACHAL -->
+<div class="swiper-slide" data-val="17">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/himachal/himachaltrain1.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Himachal Package</h1>
+        <p>Shimla, Manali, Dharmashala, Dalhousie, Amritsar</p>
+        <a href="himachal.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. RAJASTHAN -->
+<div class="swiper-slide" data-val="1">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/goldentriangle/jalmahal2.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Rajasthan Package</h1>
+        <p>Jaipur, Udaipur, Jodhpur, Jaisalmer, Mount Abu</p>
+        <a href="rajasthan.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. UTTARANCHAL -->
+<div class="swiper-slide" data-val="2">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/uttaranchal/rishikesh1.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Uttaranchal Package</h1>
+        <p>Haridwar, Rishikesh, Mussoorie, Nainital, Jim Corbett</p>
+        <a href="uttaranchal.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. CHARDHAM -->
+<div class="swiper-slide" data-val="8">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/chardham/chardham1.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Chardham Package</h1>
+        <a href="chardham.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. KASHMIR -->
+<div class="swiper-slide" data-val="6">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/JAndK/dallake1.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Kashmir, Katra & Vaishno Devi</h1>
+        <a href="kashmir.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. BUDDHIST -->
+<div class="swiper-slide" data-val="9">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/buddhist/sarnath1.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Buddhist Circuit</h1>
+        <a href="buddhistcircuit.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9. SHIRDI -->
+<div class="swiper-slide" data-val="10">
+  <div class="clip">
+    <div class="bg bg-bg-chrome act" style="background-image:url(img/shirdi/shirdi1.jpg);"></div>
+  </div>
+  <div class="vertical-align">
+    <div class="container">
+      <div class="main-title vert-title">
+        <h1 class="color-white">Shirdi Sai Baba Package</h1>
+        <a href="shirdisaibabashanishingnapur.html" class="c-button bg-aqua delay-2"><span>View Tour</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10–17 KEEP YOUR ORIGINAL SLIDES BELOW EXACTLY -->
+<!-- Goa -->
+<!-- Gujarat -->
+<!-- Nepal -->
+<!-- Student -->
+<!-- Pilgrimage -->
+<!-- Corporate -->
+<!-- Family -->
+<!-- Conference -->
+
+</div>
