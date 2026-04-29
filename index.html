@@ -1,274 +1,236 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DNS Entries — V2 Ultra Lesson | Programmer's Picnic</title>
-  <meta name="description" content="Ground-zero to expert DNS lesson covering A, CNAME, NS, MX, TXT, TTL, GitHub Pages, HTTPS, propagation, and common mistakes." />
-  <meta name="theme-color" content="#f59e0b" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DNS Entries — V3 Premium | Programmer's Picnic</title>
+<meta name="description" content="DNS Entries V3 Premium lesson from ground zero to expert with dummy domain examples, GitHub Pages setup, HTTPS flow, diagrams, quiz, and practice lab."/>
+<meta name="theme-color" content="#f59e0b"/>
 
-  <style>
-    :root{
-      --bg:#fff7e6;
-      --bg2:#fffaf0;
-      --card:#ffffff;
-      --text:#1f1608;
-      --muted:#6b4a1d;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --green:#16a34a;
-      --red:#dc2626;
-      --blue:#2563eb;
-      --line:#f3c76f;
-      --soft:#fff1c7;
-      --shadow:0 18px 45px rgba(120,72,0,.13);
-      --radius:24px;
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:
-        radial-gradient(circle at top left,#fff1c7 0,#fff7e6 35%,#fffaf0 100%);
-      color:var(--text);
-      line-height:1.65;
-    }
-
-    header{
-      padding:34px 18px;
-      background:linear-gradient(135deg,#7c2d12,#d97706,#f59e0b);
-      color:white;
-    }
-
-    .wrap{max-width:1180px;margin:auto}
-    .hero{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:24px;
-      align-items:center;
-    }
-
-    .badge{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      background:rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.35);
-      padding:8px 13px;
-      border-radius:999px;
-      font-weight:800;
-      margin-bottom:14px;
-    }
-
-    h1{
-      font-size:clamp(2.1rem,5vw,4.4rem);
-      line-height:1.05;
-      margin:0 0 14px;
-    }
-
-    h2{font-size:2rem;margin:0 0 12px}
-    h3{font-size:1.35rem;margin:0 0 10px}
-    p{margin:0 0 12px}
-    a{color:#b45309;font-weight:800}
-
-    .hero-card{
-      background:rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.35);
-      border-radius:28px;
-      padding:22px;
-      box-shadow:var(--shadow);
-    }
-
-    .dns-flow{
-      display:grid;
-      gap:12px;
-    }
-
-    .flow-box{
-      background:white;
-      color:var(--text);
-      border-radius:18px;
-      padding:14px;
-      font-weight:850;
-      text-align:center;
-      box-shadow:0 10px 22px rgba(0,0,0,.12);
-    }
-
-    main{padding:28px 18px 60px}
-
-    .nav{
-      position:sticky;
-      top:0;
-      z-index:10;
-      background:rgba(255,250,240,.94);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line);
-      padding:12px 18px;
-    }
-
-    .nav .wrap{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .nav a,.btn{
-      border:0;
-      background:white;
-      color:#7c2d12;
-      padding:9px 13px;
-      border-radius:999px;
-      text-decoration:none;
-      font-weight:850;
-      box-shadow:0 6px 18px rgba(120,72,0,.08);
-      cursor:pointer;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:18px;
-    }
-
-    .card{
-      grid-column:span 12;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:22px;
-      box-shadow:var(--shadow);
-    }
-
-    .half{grid-column:span 6}
-    .third{grid-column:span 4}
-
-    .level{
-      display:inline-block;
-      background:var(--soft);
-      color:#92400e;
-      padding:6px 11px;
-      border-radius:999px;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    code,pre{
-      background:#1f1608;
-      color:#fff7e6;
-      border-radius:16px;
-    }
-
-    pre{
-      padding:16px;
-      overflow:auto;
-      line-height:1.5;
-      border:1px solid rgba(255,255,255,.1);
-    }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      overflow:hidden;
-      border-radius:18px;
-      background:white;
-      border:1px solid var(--line);
-    }
-
-    th,td{
-      padding:12px;
-      border-bottom:1px solid #f5d78a;
-      text-align:left;
-      vertical-align:top;
-    }
-
-    th{
-      background:#fff1c7;
-      color:#7c2d12;
-    }
-
-    .good{color:var(--green);font-weight:900}
-    .bad{color:var(--red);font-weight:900}
-    .note{
-      background:#ecfdf5;
-      border:1px solid #bbf7d0;
-      color:#14532d;
-      border-radius:18px;
-      padding:14px;
-      font-weight:750;
-    }
-
-    .warn{
-      background:#fff7ed;
-      border:1px solid #fed7aa;
-      color:#7c2d12;
-      border-radius:18px;
-      padding:14px;
-      font-weight:750;
-    }
-
-    details{
-      background:#fffaf0;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-      margin:12px 0;
-    }
-
-    summary{
-      cursor:pointer;
-      font-weight:900;
-      color:#92400e;
-    }
-
-    .quiz-option{
-      display:block;
-      margin:8px 0;
-      padding:10px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fffaf0;
-      cursor:pointer;
-      font-weight:750;
-    }
-
-    .quiz-option:hover{background:#fff1c7}
-    .result{
-      margin-top:12px;
-      padding:12px;
-      border-radius:14px;
-      font-weight:900;
-      display:none;
-    }
-
-    .copy-row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:center;
-      margin-bottom:8px;
-    }
-
-    .mini{
-      font-size:.92rem;
-      color:var(--muted);
-    }
-
-    footer{
-      text-align:center;
-      padding:24px;
-      background:#1f1608;
-      color:#fff7e6;
-    }
-
-    @media(max-width:800px){
-      .hero{grid-template-columns:1fr}
-      .half,.third{grid-column:span 12}
-      .nav{position:static}
-    }
-  </style>
+<style>
+:root{
+  --bg:#fff7e6;
+  --bg2:#fffaf0;
+  --card:#ffffff;
+  --text:#1f1608;
+  --muted:#6b4a1d;
+  --brand:#d97706;
+  --brand2:#f59e0b;
+  --soft:#fff1c7;
+  --line:#f3c76f;
+  --green:#16a34a;
+  --red:#dc2626;
+  --blue:#2563eb;
+  --shadow:0 18px 45px rgba(120,72,0,.13);
+  --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:radial-gradient(circle at top left,#fff1c7 0,#fff7e6 42%,#fffaf0 100%);
+  color:var(--text);
+  line-height:1.65;
+}
+header{
+  background:linear-gradient(135deg,#7c2d12,#d97706,#f59e0b);
+  color:white;
+  padding:42px 18px;
+}
+.wrap{max-width:1180px;margin:auto}
+.hero{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:24px;
+  align-items:center;
+}
+.badge{
+  display:inline-flex;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.35);
+  padding:8px 13px;
+  border-radius:999px;
+  font-weight:900;
+  margin-bottom:14px;
+}
+h1{
+  font-size:clamp(2.1rem,5vw,4.5rem);
+  line-height:1.05;
+  margin:0 0 14px;
+}
+h2{font-size:2rem;margin:0 0 12px;color:#7c2d12}
+h3{margin:0 0 10px;color:#92400e}
+p{margin:0 0 12px}
+.hero-card,.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.hero-card{
+  background:rgba(255,255,255,.18);
+  color:white;
+  padding:22px;
+}
+main{padding:24px 18px 70px}
+nav{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(255,250,240,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  padding:12px 18px;
+}
+nav .wrap{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+nav a,.btn{
+  border:0;
+  background:white;
+  color:#7c2d12;
+  padding:9px 13px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:900;
+  box-shadow:0 6px 18px rgba(120,72,0,.08);
+  cursor:pointer;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:18px;
+}
+.card{
+  grid-column:span 12;
+  padding:22px;
+  margin-bottom:18px;
+}
+.half{grid-column:span 6}
+.third{grid-column:span 4}
+.level{
+  display:inline-block;
+  background:var(--soft);
+  color:#92400e;
+  padding:6px 11px;
+  border-radius:999px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+pre{
+  background:#1f1608;
+  color:#fff7e6;
+  padding:16px;
+  border-radius:16px;
+  overflow:auto;
+  line-height:1.5;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  overflow:hidden;
+  border-radius:18px;
+  background:white;
+}
+th,td{
+  padding:12px;
+  border-bottom:1px solid #f5d78a;
+  text-align:left;
+}
+th{background:#fff1c7;color:#7c2d12}
+.note{
+  background:#ecfdf5;
+  border:1px solid #bbf7d0;
+  color:#14532d;
+  border-radius:18px;
+  padding:14px;
+  font-weight:750;
+}
+.warn{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#7c2d12;
+  border-radius:18px;
+  padding:14px;
+  font-weight:750;
+}
+.diagram{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  align-items:center;
+}
+.node{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+  font-weight:900;
+  min-height:88px;
+  display:grid;
+  place-items:center;
+  box-shadow:0 10px 22px rgba(120,72,0,.09);
+}
+.arrow{
+  font-size:2rem;
+  text-align:center;
+  color:#7c2d12;
+  font-weight:900;
+}
+.lab input,.lab select{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  font-size:1rem;
+  margin-bottom:10px;
+}
+.output{
+  background:#fffaf0;
+  border:1px dashed #d97706;
+  border-radius:18px;
+  padding:14px;
+  min-height:70px;
+  font-weight:800;
+}
+.quiz-option{
+  display:block;
+  width:100%;
+  text-align:left;
+  margin:8px 0;
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fffaf0;
+  cursor:pointer;
+  font-weight:800;
+}
+.quiz-option:hover{background:#fff1c7}
+.result{
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  display:none;
+  font-weight:900;
+}
+footer{
+  text-align:center;
+  background:#1f1608;
+  color:#fff7e6;
+  padding:24px;
+}
+@media(max-width:850px){
+  .hero{grid-template-columns:1fr}
+  .half,.third{grid-column:span 12}
+  .diagram{grid-template-columns:1fr}
+  .arrow{transform:rotate(90deg)}
+  nav{position:static}
+}
+</style>
 </head>
 
 <body>
@@ -276,427 +238,380 @@
 <header>
   <div class="wrap hero">
     <section>
-      <div class="badge">🌐 Programmer's Picnic | DNS V2 Ultra</div>
-      <h1 id="speak01">DNS Entries: From Level 0 to Expert</h1>
+      <div class="badge">🌐 Programmer's Picnic | V3 Premium</div>
+      <h1 id="speak01">DNS Entries from Ground Zero to Expert</h1>
       <p id="speak02">
-        Learn A records, CNAME, NS, MX, TXT, TTL, GitHub Pages setup, HTTPS, propagation,
-        common mistakes, and real-world debugging using simple examples.
+        Learn DNS records using safe dummy names like
+        <b>champakhavingprogrammerspicnic.now</b> and <b>champak-demo.github.io</b>.
       </p>
     </section>
 
     <section class="hero-card">
-      <h3>DNS mental model</h3>
-      <div class="dns-flow">
-        <div class="flow-box">You type: curesiahealth.com</div>
-        <div class="flow-box">DNS checks: where should this go?</div>
-        <div class="flow-box">DNS returns: server address</div>
-        <div class="flow-box">Website opens ✅</div>
-      </div>
+      <h3 style="color:white">Today’s Goal</h3>
+      <p>By the end, you can confidently set up a domain, GitHub Pages, www, HTTPS, email records, and debug DNS mistakes.</p>
     </section>
   </div>
 </header>
 
-<nav class="nav">
+<nav>
   <div class="wrap">
-    <a href="#level0">Level 0</a>
+    <a href="#zero">Zero</a>
     <a href="#records">Records</a>
     <a href="#github">GitHub Pages</a>
     <a href="#https">HTTPS</a>
-    <a href="#debug">Debug</a>
+    <a href="#lab">Lab</a>
     <a href="#quiz">Quiz</a>
-    <button class="btn" onclick="window.print()">Print Lesson</button>
+    <button class="btn" onclick="window.print()">Print</button>
   </div>
 </nav>
 
 <main class="wrap">
 
-  <section id="level0" class="grid">
-    <article class="card">
-      <span class="level">Level 0</span>
-      <h2 id="speak03">What is DNS?</h2>
-      <p>
-        DNS means <b>Domain Name System</b>. It is like the phonebook or address book of the internet.
-      </p>
+<section id="zero" class="grid">
+  <article class="card">
+    <span class="level">Level 0</span>
+    <h2 id="speak03">What is DNS?</h2>
+    <p>DNS means <b>Domain Name System</b>. It converts a domain name into the real address of the server.</p>
+    <pre><code>You type:
+champakhavingprogrammerspicnic.now
 
-      <pre><code>You remember: curesiahealth.com
-Computer needs: 185.199.108.153</code></pre>
+DNS answers:
+Go to the correct server.</code></pre>
+  </article>
 
-      <div class="note">
-        Simple idea: DNS converts human-friendly domain names into machine-friendly server addresses.
-      </div>
-    </article>
+  <article class="card">
+    <span class="level">Animated Mental Model</span>
+    <h2>Browser to Website Flow</h2>
+    <div class="diagram">
+      <div class="node">Browser</div>
+      <div class="arrow">→</div>
+      <div class="node">DNS</div>
+      <div class="arrow">→</div>
+      <div class="node">Website Server</div>
+    </div>
+  </article>
+</section>
 
-    <article class="card half">
-      <span class="level">Level 1</span>
-      <h2>DNS flow</h2>
-      <pre><code>Browser
-  ↓
-DNS Resolver
-  ↓
-Nameserver
-  ↓
-DNS Record
-  ↓
-Server
-  ↓
-Website loads</code></pre>
-    </article>
+<section id="records" class="grid">
+  <article class="card">
+    <span class="level">Level 1 to 4</span>
+    <h2 id="speak04">Important DNS Record Types</h2>
+    <table>
+      <tr>
+        <th>Record</th>
+        <th>Meaning</th>
+        <th>Dummy Example</th>
+        <th>Used For</th>
+      </tr>
+      <tr>
+        <td><b>A</b></td>
+        <td>Domain to IPv4 address</td>
+        <td>@ → 185.199.108.153</td>
+        <td>Website hosting</td>
+      </tr>
+      <tr>
+        <td><b>AAAA</b></td>
+        <td>Domain to IPv6 address</td>
+        <td>@ → IPv6 address</td>
+        <td>IPv6 hosting</td>
+      </tr>
+      <tr>
+        <td><b>CNAME</b></td>
+        <td>Name to another domain</td>
+        <td>www → champak-demo.github.io</td>
+        <td>Subdomain mapping</td>
+      </tr>
+      <tr>
+        <td><b>MX</b></td>
+        <td>Email routing</td>
+        <td>@ → mail provider</td>
+        <td>Business email</td>
+      </tr>
+      <tr>
+        <td><b>TXT</b></td>
+        <td>Verification/security text</td>
+        <td>google-site-verification=demo</td>
+        <td>Google, SPF, DKIM, DMARC</td>
+      </tr>
+      <tr>
+        <td><b>NS</b></td>
+        <td>Nameserver</td>
+        <td>ns1.exampledns.com</td>
+        <td>Who controls DNS</td>
+      </tr>
+      <tr>
+        <td><b>SOA</b></td>
+        <td>Zone authority info</td>
+        <td>Primary DNS admin info</td>
+        <td>DNS system management</td>
+      </tr>
+    </table>
+  </article>
 
-    <article class="card half">
-      <span class="level">Level 2</span>
-      <h2>What is a DNS entry?</h2>
-      <p>A DNS entry is an instruction.</p>
-      <pre><code>If someone asks for this name,
-send them to this address.</code></pre>
-    </article>
-  </section>
-
-  <section id="records" class="grid">
-    <article class="card">
-      <span class="level">Level 3</span>
-      <h2 id="speak04">Main DNS Record Types</h2>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Record</th>
-            <th>Meaning</th>
-            <th>Example</th>
-            <th>Used for</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>A</b></td>
-            <td>Domain to IPv4 address</td>
-            <td>@ → 185.199.108.153</td>
-            <td>Website hosting</td>
-          </tr>
-          <tr>
-            <td><b>AAAA</b></td>
-            <td>Domain to IPv6 address</td>
-            <td>@ → 2606:50c0:8000::153</td>
-            <td>IPv6 hosting</td>
-          </tr>
-          <tr>
-            <td><b>CNAME</b></td>
-            <td>Name to another domain</td>
-            <td>www → champak-s-world.github.io</td>
-            <td>Subdomains</td>
-          </tr>
-          <tr>
-            <td><b>MX</b></td>
-            <td>Email routing</td>
-            <td>@ → mail provider</td>
-            <td>Business email</td>
-          </tr>
-          <tr>
-            <td><b>TXT</b></td>
-            <td>Text verification/security</td>
-            <td>google-site-verification=...</td>
-            <td>Google, SPF, DKIM</td>
-          </tr>
-          <tr>
-            <td><b>NS</b></td>
-            <td>Nameserver</td>
-            <td>ns19.domaincontrol.com</td>
-            <td>Who controls DNS</td>
-          </tr>
-          <tr>
-            <td><b>SOA</b></td>
-            <td>Zone authority info</td>
-            <td>Primary nameserver info</td>
-            <td>DNS administration</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="card third">
-      <h3>A Record</h3>
-      <p>Use A record when you want a domain to point directly to an IPv4 server address.</p>
-      <pre><code>Type: A
+  <article class="card third">
+    <h3>A Record</h3>
+    <pre><code>Type: A
 Host: @
 Value: 185.199.108.153</code></pre>
-    </article>
+    <p>Use it for root domain hosting.</p>
+  </article>
 
-    <article class="card third">
-      <h3>CNAME Record</h3>
-      <p>Use CNAME when one name should point to another domain name.</p>
-      <pre><code>Type: CNAME
+  <article class="card third">
+    <h3>CNAME Record</h3>
+    <pre><code>Type: CNAME
 Host: www
-Value: champak-s-world.github.io</code></pre>
-    </article>
+Value: champak-demo.github.io</code></pre>
+    <p>Use it for www and other subdomains.</p>
+  </article>
 
-    <article class="card third">
-      <h3>NS Record</h3>
-      <p>NS decides where DNS is controlled.</p>
-      <pre><code>NS:
-ns19.domaincontrol.com
-ns20.domaincontrol.com</code></pre>
-    </article>
-  </section>
-
-  <section id="github" class="grid">
-    <article class="card">
-      <span class="level">Level 4</span>
-      <h2 id="speak05">GitHub Pages DNS Setup</h2>
-
-      <p>For GitHub Pages root domain like:</p>
-      <pre><code>curesiahealth.com</code></pre>
-
-      <p>Add these A records:</p>
-
-      <pre><code>Type: A
+  <article class="card third">
+    <h3>TXT Record</h3>
+    <pre><code>Type: TXT
 Host: @
-Value: 185.199.108.153
+Value: google-site-verification=demo123</code></pre>
+    <p>Use it for verification and email security.</p>
+  </article>
+</section>
 
-Type: A
-Host: @
-Value: 185.199.109.153
+<section id="github" class="grid">
+  <article class="card">
+    <span class="level">GitHub Pages Setup</span>
+    <h2 id="speak05">Dummy GitHub Pages DNS</h2>
 
-Type: A
-Host: @
-Value: 185.199.110.153
+    <pre><code>Domain:
+champakhavingprogrammerspicnic.now
 
-Type: A
-Host: @
-Value: 185.199.111.153</code></pre>
+Root domain A Records:
+@ → 185.199.108.153
+@ → 185.199.109.153
+@ → 185.199.110.153
+@ → 185.199.111.153
 
-      <p>Add this CNAME for www:</p>
+WWW CNAME:
+www → champak-demo.github.io
 
-      <pre><code>Type: CNAME
-Host: www
-Value: champak-s-world.github.io</code></pre>
+GitHub Pages Custom Domain:
+champakhavingprogrammerspicnic.now
 
-      <div class="warn">
-        Do not use CNAME for the root domain @ when setting up GitHub Pages apex domain.
-        Use the four A records for @.
-      </div>
-    </article>
+Repository CNAME file:
+champakhavingprogrammerspicnic.now</code></pre>
 
-    <article class="card half">
-      <h2>Your screenshot explained</h2>
-      <p>You currently have something like:</p>
-      <pre><code>CNAME
-Host: www
-Value: champak-s-world.github.io.</code></pre>
-      <p class="good">This is correct for www.</p>
-    </article>
+    <div class="warn">
+      For root domain, use A records. For www, use CNAME.
+    </div>
+  </article>
 
-    <article class="card half">
-      <h2>Possible issue</h2>
-      <p>You also have a random CNAME like:</p>
-      <pre><code>CNAME
-Host: c3ld2dp6eco4
-Value: champak-s-world.github.io.</code></pre>
-      <p>
-        This may be a verification or accidental record. It usually does not affect the main domain,
-        but for a clean DNS zone you can remove it if you do not need it.
-      </p>
-    </article>
-  </section>
+  <article class="card half">
+    <h2>Correct Setup</h2>
+    <p class="note">Root domain points to GitHub IPs. www points to your GitHub Pages domain.</p>
+  </article>
 
-  <section id="https" class="grid">
-    <article class="card">
-      <span class="level">Level 5</span>
-      <h2 id="speak06">DNS and HTTPS</h2>
+  <article class="card half">
+    <h2>Wrong Setup</h2>
+    <p class="warn">Do not point @ to a random CNAME when GitHub requires A records for apex/root domain.</p>
+  </article>
+</section>
 
-      <p>HTTPS does not work immediately after DNS setup. The usual order is:</p>
+<section id="https" class="grid">
+  <article class="card">
+    <span class="level">HTTPS Flow</span>
+    <h2 id="speak06">Why HTTPS Takes Time</h2>
 
-      <pre><code>1. DNS records added
-2. DNS propagation
-3. GitHub verifies domain
-4. GitHub issues SSL certificate
+    <pre><code>1. DNS records are added
+2. DNS starts propagating
+3. GitHub checks the domain
+4. GitHub creates SSL certificate
 5. Enforce HTTPS becomes available
-6. Website opens securely</code></pre>
+6. Website opens with lock icon</code></pre>
 
-      <div class="note">
-        If HTTP works but HTTPS does not, your DNS may be almost correct. GitHub may still be checking or issuing the certificate.
-      </div>
-    </article>
+    <p class="note">HTTP may work before HTTPS. That is normal.</p>
+  </article>
 
-    <article class="card half">
-      <h2>TTL</h2>
-      <p>TTL means Time To Live. It controls how long DNS results are cached.</p>
-      <pre><code>TTL: 1 Hour</code></pre>
-      <p>This means updates may take time to appear everywhere.</p>
-    </article>
+  <article class="card half">
+    <h2>TTL</h2>
+    <pre><code>TTL = Time To Live
+Example: 1 Hour</code></pre>
+    <p>TTL controls how long DNS answers stay cached.</p>
+  </article>
 
-    <article class="card half">
-      <h2>Propagation</h2>
-      <p>Propagation means DNS changes spreading across internet resolvers.</p>
-      <pre><code>Fast: 5 minutes
-Common: 30 minutes to 6 hours
-Maximum: 24 to 48 hours</code></pre>
-    </article>
-  </section>
+  <article class="card half">
+    <h2>Propagation</h2>
+    <pre><code>Fast: 5 minutes
+Normal: 30 minutes to 6 hours
+Sometimes: 24 to 48 hours</code></pre>
+  </article>
+</section>
 
-  <section id="debug" class="grid">
-    <article class="card">
-      <span class="level">Level 6</span>
-      <h2 id="speak07">DNS Debugging Commands</h2>
+<section id="lab" class="grid">
+  <article class="card">
+    <span class="level">Interactive Practice Lab</span>
+    <h2 id="speak07">DNS Record Builder</h2>
+    <div class="lab">
+      <label>Record Type</label>
+      <select id="rtype">
+        <option>A</option>
+        <option>CNAME</option>
+        <option>MX</option>
+        <option>TXT</option>
+        <option>NS</option>
+      </select>
 
-      <div class="copy-row">
-        <b>Windows command prompt</b>
-        <button class="btn" onclick="copyText('nslookup curesiahealth.com')">Copy</button>
-      </div>
-      <pre><code>nslookup curesiahealth.com</code></pre>
+      <label>Host / Name</label>
+      <input id="host" value="@"/>
 
-      <div class="copy-row">
-        <b>Check www</b>
-        <button class="btn" onclick="copyText('nslookup www.curesiahealth.com')">Copy</button>
-      </div>
-      <pre><code>nslookup www.curesiahealth.com</code></pre>
+      <label>Value / Target</label>
+      <input id="value" value="185.199.108.153"/>
 
-      <div class="copy-row">
-        <b>Check nameserver</b>
-        <button class="btn" onclick="copyText('nslookup -type=ns curesiahealth.com')">Copy</button>
-      </div>
-      <pre><code>nslookup -type=ns curesiahealth.com</code></pre>
-    </article>
+      <button class="btn" onclick="buildRecord()">Generate Record</button>
 
-    <article class="card half">
-      <h2>Common mistakes</h2>
-      <p><span class="bad">❌</span> Wrong nameserver</p>
-      <p><span class="bad">❌</span> Missing GitHub A records</p>
-      <p><span class="bad">❌</span> Wrong CNAME value</p>
-      <p><span class="bad">❌</span> Expecting HTTPS immediately</p>
-      <p><span class="bad">❌</span> Mixing parking DNS with real hosting DNS</p>
-    </article>
+      <div class="output" id="recordOutput">Your DNS record will appear here.</div>
+    </div>
+  </article>
 
-    <article class="card half">
-      <h2>Correct GitHub checklist</h2>
-      <p><span class="good">✅</span> Four A records for @</p>
-      <p><span class="good">✅</span> www CNAME to GitHub username domain</p>
-      <p><span class="good">✅</span> GitHub Pages custom domain added</p>
-      <p><span class="good">✅</span> CNAME file exists in repo</p>
-      <p><span class="good">✅</span> HTTPS enabled after DNS check</p>
-    </article>
-  </section>
+  <article class="card half">
+    <h2>Debug Commands</h2>
+    <pre><code>nslookup champakhavingprogrammerspicnic.now
 
-  <section class="grid">
-    <article class="card">
-      <span class="level">Level 7</span>
-      <h2>Expert Concepts</h2>
+nslookup www.champakhavingprogrammerspicnic.now
 
-      <details open>
-        <summary>Authoritative DNS</summary>
-        <p>
-          The authoritative DNS server is the final source of truth for your domain’s records.
-          If your nameserver is domaincontrol.com, then that DNS provider controls your DNS entries.
-        </p>
-      </details>
+nslookup -type=ns champakhavingprogrammerspicnic.now</code></pre>
+  </article>
 
-      <details>
-        <summary>Recursive resolver</summary>
-        <p>
-          A recursive resolver is usually provided by ISP, Google DNS, Cloudflare DNS, or your operating system.
-          It asks other DNS servers and returns the answer to your browser.
-        </p>
-      </details>
+  <article class="card half">
+    <h2>Common Mistakes</h2>
+    <p>❌ Missing A records</p>
+    <p>❌ Wrong CNAME target</p>
+    <p>❌ Wrong nameservers</p>
+    <p>❌ Expecting instant HTTPS</p>
+    <p>❌ Deleting MX records accidentally</p>
+  </article>
+</section>
 
-      <details>
-        <summary>Wildcard DNS</summary>
-        <pre><code>*.example.com → one server</code></pre>
-        <p>This sends all subdomains to one target.</p>
-      </details>
+<section class="grid">
+  <article class="card">
+    <span class="level">Expert Level</span>
+    <h2>Advanced DNS Concepts</h2>
 
-      <details>
-        <summary>CDN DNS</summary>
-        <p>
-          A CDN like Cloudflare can sit between your visitors and your website to improve speed and security.
-        </p>
-      </details>
+    <h3>1. Authoritative DNS</h3>
+    <p>The DNS provider that actually controls your records.</p>
 
-      <details>
-        <summary>Email security DNS</summary>
-        <p>SPF, DKIM, and DMARC are TXT-based DNS records used to protect email identity.</p>
-      </details>
-    </article>
-  </section>
+    <h3>2. Recursive Resolver</h3>
+    <p>The resolver that asks DNS servers and returns the final answer to your browser.</p>
 
-  <section id="quiz" class="grid">
-    <article class="card">
-      <span class="level">Practice</span>
-      <h2 id="speak08">DNS Quiz</h2>
+    <h3>3. Wildcard DNS</h3>
+    <pre><code>*.champakhavingprogrammerspicnic.now → one target</code></pre>
 
-      <div class="quiz" data-answer="b">
-        <h3>1. Which record points a domain to an IPv4 address?</h3>
-        <button class="quiz-option" data-value="a">CNAME</button>
-        <button class="quiz-option" data-value="b">A Record</button>
-        <button class="quiz-option" data-value="c">MX</button>
-        <div class="result"></div>
-      </div>
+    <h3>4. Email DNS Security</h3>
+    <p>SPF, DKIM, and DMARC protect email from spoofing.</p>
 
-      <div class="quiz" data-answer="a">
-        <h3>2. Which record is used for www → GitHub Pages?</h3>
-        <button class="quiz-option" data-value="a">CNAME</button>
-        <button class="quiz-option" data-value="b">SOA</button>
-        <button class="quiz-option" data-value="c">MX</button>
-        <div class="result"></div>
-      </div>
+    <h3>5. CDN DNS</h3>
+    <p>Cloudflare and similar services can speed up and protect websites.</p>
+  </article>
+</section>
 
-      <div class="quiz" data-answer="c">
-        <h3>3. What does TTL control?</h3>
-        <button class="quiz-option" data-value="a">Website design</button>
-        <button class="quiz-option" data-value="b">Email password</button>
-        <button class="quiz-option" data-value="c">DNS cache duration</button>
-        <div class="result"></div>
-      </div>
+<section id="quiz" class="grid">
+  <article class="card">
+    <span class="level">MCQ Quiz</span>
+    <h2 id="speak08">Test Your DNS Knowledge</h2>
 
-      <div class="quiz" data-answer="b">
-        <h3>4. Why may HTTPS not work immediately?</h3>
-        <button class="quiz-option" data-value="a">HTML is wrong</button>
-        <button class="quiz-option" data-value="b">SSL certificate is still being issued</button>
-        <button class="quiz-option" data-value="c">CSS is missing</button>
-        <div class="result"></div>
-      </div>
+    <div class="quiz" data-answer="A Record">
+      <h3>1. Which DNS record points a domain to an IPv4 address?</h3>
+      <button class="quiz-option">CNAME</button>
+      <button class="quiz-option">A Record</button>
+      <button class="quiz-option">MX</button>
+      <div class="result"></div>
+    </div>
 
-      <div class="quiz" data-answer="a">
-        <h3>5. Which DNS record handles email routing?</h3>
-        <button class="quiz-option" data-value="a">MX</button>
-        <button class="quiz-option" data-value="b">A</button>
-        <button class="quiz-option" data-value="c">NS</button>
-        <div class="result"></div>
-      </div>
-    </article>
-  </section>
+    <div class="quiz" data-answer="CNAME">
+      <h3>2. Which record is normally used for www?</h3>
+      <button class="quiz-option">TXT</button>
+      <button class="quiz-option">CNAME</button>
+      <button class="quiz-option">SOA</button>
+      <div class="result"></div>
+    </div>
+
+    <div class="quiz" data-answer="MX">
+      <h3>3. Which record handles email routing?</h3>
+      <button class="quiz-option">A</button>
+      <button class="quiz-option">MX</button>
+      <button class="quiz-option">NS</button>
+      <div class="result"></div>
+    </div>
+
+    <div class="quiz" data-answer="TXT">
+      <h3>4. Which record is commonly used for verification?</h3>
+      <button class="quiz-option">TXT</button>
+      <button class="quiz-option">AAAA</button>
+      <button class="quiz-option">SOA</button>
+      <div class="result"></div>
+    </div>
+
+    <div class="quiz" data-answer="Time To Live">
+      <h3>5. What does TTL mean?</h3>
+      <button class="quiz-option">Total Traffic Link</button>
+      <button class="quiz-option">Time To Live</button>
+      <button class="quiz-option">Text Transfer Level</button>
+      <div class="result"></div>
+    </div>
+
+    <button class="btn" onclick="showScore()">Show Score</button>
+    <div class="output" id="scoreBox">Score will appear here.</div>
+  </article>
+</section>
 
 </main>
 
 <footer>
   <p>Programmer's Picnic | Champak Roy</p>
-  <p class="mini">DNS Entries V2 Ultra Lesson</p>
+  <p>DNS Entries V3 Premium Lesson</p>
 </footer>
 
 <script>
-  function copyText(text){
-    navigator.clipboard.writeText(text).then(function(){
-      alert("Copied: " + text);
-    });
-  }
+let score = 0;
+let answered = new WeakSet();
 
-  document.querySelectorAll(".quiz").forEach(function(box){
-    const answer = box.dataset.answer;
-    const result = box.querySelector(".result");
+function buildRecord(){
+  const type = document.getElementById("rtype").value;
+  const host = document.getElementById("host").value.trim();
+  const value = document.getElementById("value").value.trim();
 
-    box.querySelectorAll(".quiz-option").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        if(btn.dataset.value === answer){
-          result.style.display = "block";
-          result.style.background = "#dcfce7";
-          result.style.color = "#14532d";
-          result.textContent = "Correct ✅";
-        }else{
-          result.style.display = "block";
-          result.style.background = "#fee2e2";
-          result.style.color = "#7f1d1d";
-          result.textContent = "Not correct ❌ Try again.";
+  document.getElementById("recordOutput").innerHTML =
+    "<b>Generated DNS Record:</b><br>" +
+    "Type: " + type + "<br>" +
+    "Host: " + host + "<br>" +
+    "Value: " + value + "<br>" +
+    "TTL: 1 Hour";
+}
+
+document.querySelectorAll(".quiz").forEach(function(q){
+  const answer = q.dataset.answer;
+  const result = q.querySelector(".result");
+
+  q.querySelectorAll(".quiz-option").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      if(btn.textContent.trim() === answer){
+        result.style.display = "block";
+        result.style.background = "#dcfce7";
+        result.style.color = "#14532d";
+        result.textContent = "Correct ✅";
+        if(!answered.has(q)){
+          score++;
+          answered.add(q);
         }
-      });
+      }else{
+        result.style.display = "block";
+        result.style.background = "#fee2e2";
+        result.style.color = "#7f1d1d";
+        result.textContent = "Not correct ❌ Try again.";
+      }
     });
   });
+});
+
+function showScore(){
+  document.getElementById("scoreBox").innerHTML =
+    "Your score: <b>" + score + " / 5</b>";
+}
 </script>
 
 </body>
