@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Curesia — Calm Clinical Style</title>
+<title>Curesia Mental Health</title>
 
 <link href="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" rel="stylesheet">
 
@@ -16,14 +16,14 @@ body{
   background:
     radial-gradient(circle at top left,#ffe7d1,transparent),
     radial-gradient(circle at top right,#d8f5e4,transparent),
-    linear-gradient(#fffaf4,#f0fdf4);
+    linear-gradient(#fffaf4,#eefcf3);
 }
 
 .spline{font-family:"Spline Sans";}
 
 .card{
   background: rgba(255,255,255,.85);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
   border-radius:28px;
   box-shadow:0 30px 80px rgba(0,0,0,.08);
 }
@@ -36,68 +36,181 @@ body{
   font-weight:700;
 }
 
-.hero{
-  min-height:90vh;
+.section-title{
+  font-family:"Spline Sans";
+  font-size:2.5rem;
+  font-weight:700;
+  color:#14532d;
 }
 </style>
 </head>
 
 <body>
 
-<section class="hero flex items-center px-6">
-<div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+<!-- HERO -->
+<section class="min-h-screen flex items-center px-6">
+<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
 
 <div class="card p-10">
 <h1 class="spline text-5xl font-bold text-green-900">
 Break from Stress & Anxiety
 </h1>
 
-<p class="mt-4 text-gray-700">
+<h3 class="mt-4 text-xl text-gray-700">
 Feeling low, anxious, or emotionally stuck?
-</p>
+</h3>
 
 <p class="mt-4 text-gray-600">
 Our clinic brings together neuro-psychiatrists, clinical psychologists,
-and healing experts to offer personalized therapy.
+and healing experts to offer personalized therapy, evaluation, and evidence-based care.
 </p>
 
-<a href="#" class="btn inline-block mt-6">Book Session</a>
+<a href="#" class="btn mt-6 inline-block">Book Session</a>
 </div>
 
 <div>
-<img src="assets/gallery/img1.JPG" class="rounded-3xl shadow-xl">
+<img src="assets/gallery/img1.JPG" class="rounded-3xl shadow-2xl">
 </div>
 
 </div>
 </section>
 
+<!-- DOCTOR -->
 <section class="py-20 px-6">
-<div class="max-w-6xl mx-auto text-center">
+<div class="max-w-5xl mx-auto card p-10 flex flex-col md:flex-row gap-8 items-center">
 
-<h2 class="text-4xl spline font-bold text-green-900">
-Our Services
-</h2>
+<img src="assets/team/dr.Omi.JPG" class="w-56 rounded-3xl shadow-xl">
+
+<div>
+<h2 class="text-3xl spline font-bold text-green-900">Dr. Omi Singh</h2>
+
+<p class="text-orange-500 font-semibold mt-1">Founder of Curesia</p>
+
+<p class="mt-2 text-gray-600">
+M.Phil & PhD (RINPAS) • Medical Psychologist • Child & Youth Expert
+</p>
+
+<blockquote class="mt-4 italic border-l-4 border-orange-500 pl-4">
+“Every child deserves to be heard and every mind deserves to heal.”
+</blockquote>
+
+<a href="#" class="btn mt-6 inline-block">Know More</a>
+</div>
+
+</div>
+</section>
+
+<!-- SERVICES -->
+<section class="py-20 px-6">
+<div class="max-w-7xl mx-auto text-center">
+
+<h2 class="section-title">Our Services</h2>
 
 <div class="grid md:grid-cols-3 gap-8 mt-10">
 
 <div class="card p-6">
-<h3 class="font-bold text-lg text-green-800">Child Psychology</h3>
-<p class="text-gray-600 mt-2">Behavioral and developmental support</p>
+<h3 class="font-bold text-green-800">Child Psychology</h3>
+<p class="text-gray-600 mt-2">ADHD, autism, trauma, school stress</p>
 </div>
 
 <div class="card p-6">
-<h3 class="font-bold text-lg text-green-800">Therapy</h3>
-<p class="text-gray-600 mt-2">CBT, DBT and counseling</p>
+<h3 class="font-bold text-green-800">Psychiatric Support</h3>
+<p class="text-gray-600 mt-2">Depression, anxiety, PTSD</p>
 </div>
 
 <div class="card p-6">
-<h3 class="font-bold text-lg text-green-800">Online Sessions</h3>
-<p class="text-gray-600 mt-2">Remote therapy anywhere</p>
+<h3 class="font-bold text-green-800">Therapy & Counseling</h3>
+<p class="text-gray-600 mt-2">CBT, DBT, family therapy</p>
+</div>
+
+<div class="card p-6">
+<h3 class="font-bold text-green-800">Wellness Programs</h3>
+<p class="text-gray-600 mt-2">Meditation & stress management</p>
+</div>
+
+<div class="card p-6">
+<h3 class="font-bold text-green-800">Online Therapy</h3>
+<p class="text-gray-600 mt-2">Virtual sessions</p>
+</div>
+
+<div class="card p-6">
+<h3 class="font-bold text-green-800">Family Therapy</h3>
+<p class="text-gray-600 mt-2">Relationship & marriage counseling</p>
 </div>
 
 </div>
 
 </div>
+</section>
+
+<!-- ABOUT -->
+<section class="py-20 px-6">
+<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+
+<div>
+<h2 class="section-title">About Curesia</h2>
+
+<p class="mt-4 text-gray-600">
+Mental health is not a privilege—it’s a right. Since 2015,
+we’ve transformed lives across countries with evidence-based care.
+</p>
+
+<p class="mt-4 text-gray-600">
+Over 10,000 lives impacted with a 94% success rate.
+</p>
+
+<a href="#" class="btn mt-6 inline-block">Book Session</a>
+</div>
+
+<img src="assets/session.JPG" class="rounded-3xl shadow-xl">
+
+</div>
+</section>
+
+<!-- TEAM -->
+<section class="py-20 px-6">
+<div class="max-w-7xl mx-auto text-center">
+
+<h2 class="section-title">Our Doctors</h2>
+
+<div class="grid md:grid-cols-4 gap-8 mt-12">
+
+<div class="card p-6 text-center">
+<img src="assets/team/dr.Omi.JPG" class="w-28 mx-auto rounded-full mb-4">
+<h3 class="font-bold">Dr. Omi Singh</h3>
+</div>
+
+<div class="card p-6 text-center">
+<img src="assets/team/SubodhKumar.png" class="w-28 mx-auto rounded-full mb-4">
+<h3 class="font-bold">Dr. Subodh Kumar</h3>
+</div>
+
+<div class="card p-6 text-center">
+<img src="assets/team/Anilkumar.jpeg" class="w-28 mx-auto rounded-full mb-4">
+<h3 class="font-bold">Dr. Anil Kumar</h3>
+</div>
+
+<div class="card p-6 text-center">
+<img src="assets/team/sonali.png" class="w-28 mx-auto rounded-full mb-4">
+<h3 class="font-bold">Sonali Sinku</h3>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<!-- CTA -->
+<section class="py-20 text-center px-6">
+<h2 class="text-4xl spline font-bold text-green-900">
+Start Healing Today
+</h2>
+
+<p class="mt-4 text-gray-600">
+Get expert care backed by science
+</p>
+
+<a href="#" class="btn mt-6 inline-block">Talk to Therapist</a>
 </section>
 
 </body>
