@@ -4,24 +4,13 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>DNS Entries — V3 Premium | Programmer's Picnic</title>
-<meta name="description" content="DNS Entries V3 Premium lesson from ground zero to expert with dummy domain examples, GitHub Pages setup, HTTPS flow, diagrams, quiz, and practice lab."/>
 <meta name="theme-color" content="#f59e0b"/>
 
 <style>
 :root{
-  --bg:#fff7e6;
-  --bg2:#fffaf0;
-  --card:#ffffff;
-  --text:#1f1608;
-  --muted:#6b4a1d;
-  --brand:#d97706;
-  --brand2:#f59e0b;
-  --soft:#fff1c7;
-  --line:#f3c76f;
-  --green:#16a34a;
-  --red:#dc2626;
-  --blue:#2563eb;
-  --shadow:0 18px 45px rgba(120,72,0,.13);
+  --bg:#fff7e6; --card:#fff; --text:#1f1608; --muted:#6b4a1d;
+  --brand:#d97706; --brand2:#f59e0b; --soft:#fff1c7; --line:#f3c76f;
+  --green:#16a34a; --red:#dc2626; --shadow:0 18px 45px rgba(120,72,0,.13);
   --radius:24px;
 }
 *{box-sizing:border-box}
@@ -83,11 +72,7 @@ nav{
   border-bottom:1px solid var(--line);
   padding:12px 18px;
 }
-nav .wrap{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
+nav .wrap{display:flex;gap:10px;flex-wrap:wrap}
 nav a,.btn{
   border:0;
   background:white;
@@ -241,14 +226,19 @@ footer{
       <div class="badge">🌐 Programmer's Picnic | V3 Premium</div>
       <h1 id="speak01">DNS Entries from Ground Zero to Expert</h1>
       <p id="speak02">
-        Learn DNS records using safe dummy names like
-        <b>champakhavingprogrammerspicnic.now</b> and <b>champak-demo.github.io</b>.
+        This lesson uses only <b>DUMMY</b> names and <b>DUMMY</b> IP addresses:
+        <b>champakhavingprogrammerspicnic.now</b>,
+        <b>champakspicnicdummyhub</b>, and
+        <b>203.0.113.10</b>.
       </p>
     </section>
 
     <section class="hero-card">
       <h3 style="color:white">Today’s Goal</h3>
-      <p>By the end, you can confidently set up a domain, GitHub Pages, www, HTTPS, email records, and debug DNS mistakes.</p>
+      <p>
+        Understand DNS records, nameservers, subdomains, HTTPS flow, email records,
+        debugging, and safe DNS planning without using any real hosting provider example.
+      </p>
     </section>
   </div>
 </header>
@@ -257,7 +247,7 @@ footer{
   <div class="wrap">
     <a href="#zero">Zero</a>
     <a href="#records">Records</a>
-    <a href="#github">GitHub Pages</a>
+    <a href="#hosting">Hosting</a>
     <a href="#https">HTTPS</a>
     <a href="#lab">Lab</a>
     <a href="#quiz">Quiz</a>
@@ -271,12 +261,20 @@ footer{
   <article class="card">
     <span class="level">Level 0</span>
     <h2 id="speak03">What is DNS?</h2>
-    <p>DNS means <b>Domain Name System</b>. It converts a domain name into the real address of the server.</p>
+    <p>
+      DNS means <b>Domain Name System</b>. It converts a human-friendly name into
+      a server address.
+    </p>
     <pre><code>You type:
 champakhavingprogrammerspicnic.now
 
 DNS answers:
-Go to the correct server.</code></pre>
+Go to DUMMY IP 203.0.113.10
+
+Website opens.</code></pre>
+    <div class="note">
+      DUMMY means this is only for learning. Do not copy dummy IP addresses into a live production domain.
+    </div>
   </article>
 
   <article class="card">
@@ -287,7 +285,7 @@ Go to the correct server.</code></pre>
       <div class="arrow">→</div>
       <div class="node">DNS</div>
       <div class="arrow">→</div>
-      <div class="node">Website Server</div>
+      <div class="node">DUMMY Web Server<br>203.0.113.10</div>
     </div>
   </article>
 </section>
@@ -300,43 +298,43 @@ Go to the correct server.</code></pre>
       <tr>
         <th>Record</th>
         <th>Meaning</th>
-        <th>Dummy Example</th>
+        <th>DUMMY Example</th>
         <th>Used For</th>
       </tr>
       <tr>
         <td><b>A</b></td>
         <td>Domain to IPv4 address</td>
-        <td>@ → 185.199.108.153</td>
+        <td>@ → 203.0.113.10</td>
         <td>Website hosting</td>
       </tr>
       <tr>
         <td><b>AAAA</b></td>
         <td>Domain to IPv6 address</td>
-        <td>@ → IPv6 address</td>
+        <td>@ → 2001:db8::10</td>
         <td>IPv6 hosting</td>
       </tr>
       <tr>
         <td><b>CNAME</b></td>
-        <td>Name to another domain</td>
-        <td>www → champak-demo.github.io</td>
+        <td>Name to another domain name</td>
+        <td>www → champakspicnicdummyhub.example</td>
         <td>Subdomain mapping</td>
       </tr>
       <tr>
         <td><b>MX</b></td>
         <td>Email routing</td>
-        <td>@ → mail provider</td>
+        <td>@ → mail.champakhavingprogrammerspicnic.now</td>
         <td>Business email</td>
       </tr>
       <tr>
         <td><b>TXT</b></td>
-        <td>Verification/security text</td>
-        <td>google-site-verification=demo</td>
-        <td>Google, SPF, DKIM, DMARC</td>
+        <td>Verification and security text</td>
+        <td>dummy-site-verification=abc123</td>
+        <td>Verification, SPF, DKIM, DMARC</td>
       </tr>
       <tr>
         <td><b>NS</b></td>
         <td>Nameserver</td>
-        <td>ns1.exampledns.com</td>
+        <td>ns1.dummy-dns-provider.example</td>
         <td>Who controls DNS</td>
       </tr>
       <tr>
@@ -352,63 +350,68 @@ Go to the correct server.</code></pre>
     <h3>A Record</h3>
     <pre><code>Type: A
 Host: @
-Value: 185.199.108.153</code></pre>
-    <p>Use it for root domain hosting.</p>
+Value: 203.0.113.10
+Note: DUMMY IP</code></pre>
+    <p>Use it when the domain should point directly to a server IP.</p>
   </article>
 
   <article class="card third">
     <h3>CNAME Record</h3>
     <pre><code>Type: CNAME
 Host: www
-Value: champak-demo.github.io</code></pre>
-    <p>Use it for www and other subdomains.</p>
+Value: champakspicnicdummyhub.example
+Note: DUMMY target</code></pre>
+    <p>Use it when one name should point to another domain name.</p>
   </article>
 
   <article class="card third">
     <h3>TXT Record</h3>
     <pre><code>Type: TXT
 Host: @
-Value: google-site-verification=demo123</code></pre>
-    <p>Use it for verification and email security.</p>
+Value: dummy-site-verification=abc123
+Note: DUMMY verification</code></pre>
+    <p>Use it for verification and email security rules.</p>
   </article>
 </section>
 
-<section id="github" class="grid">
+<section id="hosting" class="grid">
   <article class="card">
-    <span class="level">GitHub Pages Setup</span>
-    <h2 id="speak05">Dummy GitHub Pages DNS</h2>
+    <span class="level">Generic Hosting Setup</span>
+    <h2 id="speak05">DUMMY DNS Setup for Any Hosting Platform</h2>
 
     <pre><code>Domain:
 champakhavingprogrammerspicnic.now
 
-Root domain A Records:
-@ → 185.199.108.153
-@ → 185.199.109.153
-@ → 185.199.110.153
-@ → 185.199.111.153
+DUMMY Root Domain A Records:
+@ → 203.0.113.10
+@ → 203.0.113.11
 
-WWW CNAME:
-www → champak-demo.github.io
+DUMMY WWW CNAME:
+www → champakspicnicdummyhub.example
 
-GitHub Pages Custom Domain:
-champakhavingprogrammerspicnic.now
+DUMMY App Subdomain:
+app → champakspicnicdummyhub.example
 
-Repository CNAME file:
-champakhavingprogrammerspicnic.now</code></pre>
+DUMMY API Subdomain:
+api → 203.0.113.20</code></pre>
 
     <div class="warn">
-      For root domain, use A records. For www, use CNAME.
+      This is not provider-specific. Replace DUMMY IPs and DUMMY hostnames with the real values given by your actual hosting provider.
     </div>
   </article>
 
   <article class="card half">
-    <h2>Correct Setup</h2>
-    <p class="note">Root domain points to GitHub IPs. www points to your GitHub Pages domain.</p>
+    <h2>Correct Generic Setup</h2>
+    <p class="note">
+      Root domain points to hosting IPs. Subdomains can point to hostnames or different servers.
+    </p>
   </article>
 
   <article class="card half">
-    <h2>Wrong Setup</h2>
-    <p class="warn">Do not point @ to a random CNAME when GitHub requires A records for apex/root domain.</p>
+    <h2>Wrong Generic Setup</h2>
+    <p class="warn">
+      Do not guess IP addresses. Always use the values from your hosting control panel or DNS provider.
+    </p>
   </article>
 </section>
 
@@ -419,12 +422,14 @@ champakhavingprogrammerspicnic.now</code></pre>
 
     <pre><code>1. DNS records are added
 2. DNS starts propagating
-3. GitHub checks the domain
-4. GitHub creates SSL certificate
-5. Enforce HTTPS becomes available
+3. Hosting platform verifies the domain
+4. SSL certificate is created
+5. HTTPS option becomes available
 6. Website opens with lock icon</code></pre>
 
-    <p class="note">HTTP may work before HTTPS. That is normal.</p>
+    <p class="note">
+      HTTP may work before HTTPS. That is normal during setup.
+    </p>
   </article>
 
   <article class="card half">
@@ -445,11 +450,12 @@ Sometimes: 24 to 48 hours</code></pre>
 <section id="lab" class="grid">
   <article class="card">
     <span class="level">Interactive Practice Lab</span>
-    <h2 id="speak07">DNS Record Builder</h2>
+    <h2 id="speak07">DUMMY DNS Record Builder</h2>
     <div class="lab">
       <label>Record Type</label>
       <select id="rtype">
         <option>A</option>
+        <option>AAAA</option>
         <option>CNAME</option>
         <option>MX</option>
         <option>TXT</option>
@@ -460,11 +466,11 @@ Sometimes: 24 to 48 hours</code></pre>
       <input id="host" value="@"/>
 
       <label>Value / Target</label>
-      <input id="value" value="185.199.108.153"/>
+      <input id="value" value="203.0.113.10"/>
 
-      <button class="btn" onclick="buildRecord()">Generate Record</button>
+      <button class="btn" onclick="buildRecord()">Generate DUMMY Record</button>
 
-      <div class="output" id="recordOutput">Your DNS record will appear here.</div>
+      <div class="output" id="recordOutput">Your DUMMY DNS record will appear here.</div>
     </div>
   </article>
 
@@ -474,7 +480,11 @@ Sometimes: 24 to 48 hours</code></pre>
 
 nslookup www.champakhavingprogrammerspicnic.now
 
-nslookup -type=ns champakhavingprogrammerspicnic.now</code></pre>
+nslookup -type=ns champakhavingprogrammerspicnic.now
+
+nslookup -type=mx champakhavingprogrammerspicnic.now
+
+nslookup -type=txt champakhavingprogrammerspicnic.now</code></pre>
   </article>
 
   <article class="card half">
@@ -484,6 +494,7 @@ nslookup -type=ns champakhavingprogrammerspicnic.now</code></pre>
     <p>❌ Wrong nameservers</p>
     <p>❌ Expecting instant HTTPS</p>
     <p>❌ Deleting MX records accidentally</p>
+    <p>❌ Copying DUMMY IPs into a real domain</p>
   </article>
 </section>
 
@@ -499,13 +510,14 @@ nslookup -type=ns champakhavingprogrammerspicnic.now</code></pre>
     <p>The resolver that asks DNS servers and returns the final answer to your browser.</p>
 
     <h3>3. Wildcard DNS</h3>
-    <pre><code>*.champakhavingprogrammerspicnic.now → one target</code></pre>
+    <pre><code>*.champakhavingprogrammerspicnic.now → 203.0.113.10
+Note: DUMMY wildcard setup</code></pre>
 
     <h3>4. Email DNS Security</h3>
     <p>SPF, DKIM, and DMARC protect email from spoofing.</p>
 
     <h3>5. CDN DNS</h3>
-    <p>Cloudflare and similar services can speed up and protect websites.</p>
+    <p>A CDN can sit between visitors and your website to improve speed and security.</p>
   </article>
 </section>
 
@@ -523,7 +535,7 @@ nslookup -type=ns champakhavingprogrammerspicnic.now</code></pre>
     </div>
 
     <div class="quiz" data-answer="CNAME">
-      <h3>2. Which record is normally used for www?</h3>
+      <h3>2. Which record points one name to another domain name?</h3>
       <button class="quiz-option">TXT</button>
       <button class="quiz-option">CNAME</button>
       <button class="quiz-option">SOA</button>
@@ -563,7 +575,7 @@ nslookup -type=ns champakhavingprogrammerspicnic.now</code></pre>
 
 <footer>
   <p>Programmer's Picnic | Champak Roy</p>
-  <p>DNS Entries V3 Premium Lesson</p>
+  <p>DNS Entries V3 Premium Lesson — DUMMY examples only</p>
 </footer>
 
 <script>
@@ -576,11 +588,12 @@ function buildRecord(){
   const value = document.getElementById("value").value.trim();
 
   document.getElementById("recordOutput").innerHTML =
-    "<b>Generated DNS Record:</b><br>" +
+    "<b>Generated DUMMY DNS Record:</b><br>" +
     "Type: " + type + "<br>" +
     "Host: " + host + "<br>" +
     "Value: " + value + "<br>" +
-    "TTL: 1 Hour";
+    "TTL: 1 Hour<br>" +
+    "<small>Reminder: DUMMY record for learning only.</small>";
 }
 
 document.querySelectorAll(".quiz").forEach(function(q){
