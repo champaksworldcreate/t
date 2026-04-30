@@ -1,217 +1,570 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image & Screen Crop Editor</title>
 
-<title>Curesia Mental Health</title>
+  <style>
+    :root {
+      --bg: #fff7e6;
+      --card: #ffffff;
+      --text: #1f1608;
+      --muted: #6b4a1d;
+      --brand: #d97706;
+      --brand2: #f59e0b;
+      --line: #f3c76f;
+      --soft: #fff1c7;
+      --shadow: 0 18px 45px rgba(120, 72, 0, 0.15);
+      --radius: 22px;
+    }
 
-<link href="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" rel="stylesheet">
+    * { box-sizing: border-box; }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Spline+Sans:wght@300..700&display=swap" rel="stylesheet">
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(135deg, #fff7e6, #fffaf0);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
 
-<style>
-body{
-  font-family: Inter, sans-serif;
-  background:
-    radial-gradient(circle at top left,#ffe7d1,transparent),
-    radial-gradient(circle at top right,#d8f5e4,transparent),
-    linear-gradient(#fffaf4,#eefcf3);
-}
+    .app {
+      max-width: 1150px;
+      margin: auto;
+    }
 
-.spline{font-family:"Spline Sans";}
+    header {
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: white;
+      padding: 28px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
 
-.card{
-  background: rgba(255,255,255,.85);
-  backdrop-filter: blur(20px);
-  border-radius:28px;
-  box-shadow:0 30px 80px rgba(0,0,0,.08);
-}
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 44px);
+    }
 
-.btn{
-  background: linear-gradient(135deg,#f97316,#fb923c);
-  color:white;
-  padding:14px 30px;
-  border-radius:14px;
-  font-weight:700;
-}
+    header p {
+      margin: 0;
+      font-size: 17px;
+    }
 
-.section-title{
-  font-family:"Spline Sans";
-  font-size:2.5rem;
-  font-weight:700;
-  color:#14532d;
-}
-</style>
+    .grid {
+      display: grid;
+      grid-template-columns: 1.5fr 0.8fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    button,
+    label.file-btn {
+      border: 0;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: white;
+      padding: 11px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(217, 119, 6, 0.25);
+      font-size: 14px;
+    }
+
+    button.secondary {
+      background: #fff1c7;
+      color: #7c3f00;
+      border: 1px solid #f3c76f;
+      box-shadow: none;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .canvas-wrap {
+      width: 100%;
+      min-height: 420px;
+      background: #fff1c7;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px dashed #eab308;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .hint {
+      color: var(--muted);
+      text-align: center;
+      padding: 40px;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: grid;
+      gap: 14px;
+    }
+
+    .control {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .control label {
+      font-weight: 800;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .control input,
+    .control select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #e2a83a;
+      font-size: 15px;
+      background: white;
+    }
+
+    .preview-box {
+      margin-top: 14px;
+      background: #fffaf0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .preview-box img {
+      max-width: 100%;
+      border-radius: 14px;
+      border: 1px solid #f3c76f;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="app">
+    <header>
+      <h1>Image & Screen Crop Editor</h1>
+      <p>Upload an image or capture your screen, then drag to crop any part.</p>
+    </header>
 
-<!-- HERO -->
-<section class="min-h-screen flex items-center px-6">
-<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div class="grid">
+      <section class="card">
+        <div class="toolbar">
+          <label class="file-btn">
+            Upload Image
+            <input type="file" id="imageInput" accept="image/*" />
+          </label>
 
-<div class="card p-10">
-<h1 class="spline text-5xl font-bold text-green-900">
-Break from Stress & Anxiety
-</h1>
+          <button id="screenBtn">Crop Part of Screen</button>
+          <button id="cropBtn" disabled>Crop Preview</button>
+          <button id="downloadBtn" disabled>Download Crop</button>
+          <button id="resetBtn" class="secondary" disabled>Reset</button>
+        </div>
 
-<h3 class="mt-4 text-xl text-gray-700">
-Feeling low, anxious, or emotionally stuck?
-</h3>
+        <div class="canvas-wrap">
+          <div class="hint" id="hint">
+            Upload an image or click “Crop Part of Screen”.
+          </div>
+          <canvas id="canvas"></canvas>
+        </div>
+      </section>
 
-<p class="mt-4 text-gray-600">
-Our clinic brings together neuro-psychiatrists, clinical psychologists,
-and healing experts to offer personalized therapy, evaluation, and evidence-based care.
-</p>
+      <aside class="card">
+        <div class="controls">
+          <div class="control">
+            <label for="aspectRatio">Aspect Ratio</label>
+            <select id="aspectRatio">
+              <option value="free">Free Crop</option>
+              <option value="1">Square 1:1</option>
+              <option value="1.7777777778">Landscape 16:9</option>
+              <option value="0.5625">Portrait 9:16</option>
+              <option value="1.3333333333">Classic 4:3</option>
+              <option value="1.91">OG Image 1.91:1</option>
+            </select>
+          </div>
 
-<a href="#" class="btn mt-6 inline-block">Book Session</a>
-</div>
+          <div class="control">
+            <label for="outputWidth">Output Width</label>
+            <input type="number" id="outputWidth" value="1200" min="50" />
+          </div>
 
-<div>
-<img src="assets/gallery/img1.JPG" class="rounded-3xl shadow-2xl">
-</div>
+          <div class="control">
+            <label for="outputFormat">Output Format</label>
+            <select id="outputFormat">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPG</option>
+              <option value="image/webp">WEBP</option>
+            </select>
+          </div>
 
-</div>
-</section>
+          <div class="preview-box">
+            <strong>Preview</strong>
+            <div class="small">Your cropped image will appear here.</div>
+            <br />
+            <img id="preview" alt="" />
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
 
-<!-- DOCTOR -->
-<section class="py-20 px-6">
-<div class="max-w-5xl mx-auto card p-10 flex flex-col md:flex-row gap-8 items-center">
+  <script>
+    const imageInput = document.getElementById("imageInput");
+    const screenBtn = document.getElementById("screenBtn");
 
-<img src="assets/team/dr.Omi.JPG" class="w-56 rounded-3xl shadow-xl">
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const hint = document.getElementById("hint");
 
-<div>
-<h2 class="text-3xl spline font-bold text-green-900">Dr. Omi Singh</h2>
+    const cropBtn = document.getElementById("cropBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const resetBtn = document.getElementById("resetBtn");
 
-<p class="text-orange-500 font-semibold mt-1">Founder of Curesia</p>
+    const aspectRatioSelect = document.getElementById("aspectRatio");
+    const outputWidthInput = document.getElementById("outputWidth");
+    const outputFormat = document.getElementById("outputFormat");
+    const preview = document.getElementById("preview");
 
-<p class="mt-2 text-gray-600">
-M.Phil & PhD (RINPAS) • Medical Psychologist • Child & Youth Expert
-</p>
+    let image = new Image();
+    let imageLoaded = false;
 
-<blockquote class="mt-4 italic border-l-4 border-orange-500 pl-4">
-“Every child deserves to be heard and every mind deserves to heal.”
-</blockquote>
+    let scale = 1;
+    let displayWidth = 0;
+    let displayHeight = 0;
 
-<a href="#" class="btn mt-6 inline-block">Know More</a>
-</div>
+    let crop = null;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let croppedDataUrl = null;
 
-</div>
-</section>
+    imageInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (!file) return;
 
-<!-- SERVICES -->
-<section class="py-20 px-6">
-<div class="max-w-7xl mx-auto text-center">
+      const reader = new FileReader();
 
-<h2 class="section-title">Our Services</h2>
+      reader.onload = function (e) {
+        loadImageToEditor(e.target.result);
+      };
 
-<div class="grid md:grid-cols-3 gap-8 mt-10">
+      reader.readAsDataURL(file);
+    });
 
-<div class="card p-6">
-<h3 class="font-bold text-green-800">Child Psychology</h3>
-<p class="text-gray-600 mt-2">ADHD, autism, trauma, school stress</p>
-</div>
+    screenBtn.addEventListener("click", captureScreen);
 
-<div class="card p-6">
-<h3 class="font-bold text-green-800">Psychiatric Support</h3>
-<p class="text-gray-600 mt-2">Depression, anxiety, PTSD</p>
-</div>
+    async function captureScreen() {
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+          alert("Screen capture is not supported in this browser.");
+          return;
+        }
 
-<div class="card p-6">
-<h3 class="font-bold text-green-800">Therapy & Counseling</h3>
-<p class="text-gray-600 mt-2">CBT, DBT, family therapy</p>
-</div>
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false
+        });
 
-<div class="card p-6">
-<h3 class="font-bold text-green-800">Wellness Programs</h3>
-<p class="text-gray-600 mt-2">Meditation & stress management</p>
-</div>
+        const video = document.createElement("video");
+        video.srcObject = stream;
 
-<div class="card p-6">
-<h3 class="font-bold text-green-800">Online Therapy</h3>
-<p class="text-gray-600 mt-2">Virtual sessions</p>
-</div>
+        video.onloadedmetadata = function () {
+          video.play();
 
-<div class="card p-6">
-<h3 class="font-bold text-green-800">Family Therapy</h3>
-<p class="text-gray-600 mt-2">Relationship & marriage counseling</p>
-</div>
+          setTimeout(() => {
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = video.videoWidth;
+            tempCanvas.height = video.videoHeight;
 
-</div>
+            const tempCtx = tempCanvas.getContext("2d");
+            tempCtx.drawImage(video, 0, 0);
 
-</div>
-</section>
+            stream.getTracks().forEach(track => track.stop());
 
-<!-- ABOUT -->
-<section class="py-20 px-6">
-<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            const screenshotData = tempCanvas.toDataURL("image/png");
+            loadImageToEditor(screenshotData);
+          }, 300);
+        };
+      } catch (error) {
+        alert("Screen capture was cancelled or blocked.");
+      }
+    }
 
-<div>
-<h2 class="section-title">About Curesia</h2>
+    function loadImageToEditor(src) {
+      image = new Image();
 
-<p class="mt-4 text-gray-600">
-Mental health is not a privilege—it’s a right. Since 2015,
-we’ve transformed lives across countries with evidence-based care.
-</p>
+      image.onload = function () {
+        imageLoaded = true;
+        hint.style.display = "none";
 
-<p class="mt-4 text-gray-600">
-Over 10,000 lives impacted with a 94% success rate.
-</p>
+        fitImageToCanvas();
+        crop = null;
+        croppedDataUrl = null;
+        preview.src = "";
 
-<a href="#" class="btn mt-6 inline-block">Book Session</a>
-</div>
+        draw();
 
-<img src="assets/session.JPG" class="rounded-3xl shadow-xl">
+        cropBtn.disabled = false;
+        resetBtn.disabled = false;
+        downloadBtn.disabled = true;
+      };
 
-</div>
-</section>
+      image.src = src;
+    }
 
-<!-- TEAM -->
-<section class="py-20 px-6">
-<div class="max-w-7xl mx-auto text-center">
+    function fitImageToCanvas() {
+      const maxWidth = document.querySelector(".canvas-wrap").clientWidth - 20;
+      const maxHeight = 620;
 
-<h2 class="section-title">Our Doctors</h2>
+      scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
 
-<div class="grid md:grid-cols-4 gap-8 mt-12">
+      displayWidth = image.width * scale;
+      displayHeight = image.height * scale;
 
-<div class="card p-6 text-center">
-<img src="assets/team/dr.Omi.JPG" class="w-28 mx-auto rounded-full mb-4">
-<h3 class="font-bold">Dr. Omi Singh</h3>
-</div>
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+    }
 
-<div class="card p-6 text-center">
-<img src="assets/team/SubodhKumar.png" class="w-28 mx-auto rounded-full mb-4">
-<h3 class="font-bold">Dr. Subodh Kumar</h3>
-</div>
+    function getMousePos(e) {
+      const rect = canvas.getBoundingClientRect();
 
-<div class="card p-6 text-center">
-<img src="assets/team/Anilkumar.jpeg" class="w-28 mx-auto rounded-full mb-4">
-<h3 class="font-bold">Dr. Anil Kumar</h3>
-</div>
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-<div class="card p-6 text-center">
-<img src="assets/team/sonali.png" class="w-28 mx-auto rounded-full mb-4">
-<h3 class="font-bold">Sonali Sinku</h3>
-</div>
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    }
 
-</div>
+    function startCrop(e) {
+      if (!imageLoaded) return;
 
-</div>
-</section>
+      e.preventDefault();
 
-<!-- CTA -->
-<section class="py-20 text-center px-6">
-<h2 class="text-4xl spline font-bold text-green-900">
-Start Healing Today
-</h2>
+      const pos = getMousePos(e);
 
-<p class="mt-4 text-gray-600">
-Get expert care backed by science
-</p>
+      isDragging = true;
+      startX = pos.x;
+      startY = pos.y;
 
-<a href="#" class="btn mt-6 inline-block">Talk to Therapist</a>
-</section>
+      crop = {
+        x: startX,
+        y: startY,
+        w: 0,
+        h: 0
+      };
+    }
 
+    function moveCrop(e) {
+      if (!isDragging || !imageLoaded) return;
+
+      e.preventDefault();
+
+      const pos = getMousePos(e);
+
+      let w = pos.x - startX;
+      let h = pos.y - startY;
+
+      const ratioValue = aspectRatioSelect.value;
+
+      if (ratioValue !== "free") {
+        const ratio = Number(ratioValue);
+        h = Math.abs(w) / ratio * Math.sign(h || 1);
+      }
+
+      crop = normalizeCrop({
+        x: startX,
+        y: startY,
+        w,
+        h
+      });
+
+      draw();
+    }
+
+    function endCrop() {
+      isDragging = false;
+    }
+
+    function normalizeCrop(c) {
+      let x = c.w < 0 ? c.x + c.w : c.x;
+      let y = c.h < 0 ? c.y + c.h : c.y;
+      let w = Math.abs(c.w);
+      let h = Math.abs(c.h);
+
+      if (x < 0) {
+        w += x;
+        x = 0;
+      }
+
+      if (y < 0) {
+        h += y;
+        y = 0;
+      }
+
+      if (x + w > canvas.width) {
+        w = canvas.width - x;
+      }
+
+      if (y + h > canvas.height) {
+        h = canvas.height - y;
+      }
+
+      return { x, y, w, h };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, displayWidth, displayHeight);
+
+      if (crop && crop.w > 5 && crop.h > 5) {
+        ctx.save();
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.clearRect(crop.x, crop.y, crop.w, crop.h);
+
+        ctx.strokeStyle = "#f59e0b";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(crop.x, crop.y, crop.w, crop.h);
+
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.font = "14px system-ui";
+        ctx.fillText(
+          `${Math.round(crop.w / scale)} × ${Math.round(crop.h / scale)}`,
+          crop.x + 10,
+          crop.y + 24
+        );
+
+        ctx.restore();
+      }
+    }
+
+    function cropImage() {
+      if (!crop || crop.w < 10 || crop.h < 10) {
+        alert("Please drag on the image or screen capture to select a crop area.");
+        return;
+      }
+
+      const sourceX = crop.x / scale;
+      const sourceY = crop.y / scale;
+      const sourceW = crop.w / scale;
+      const sourceH = crop.h / scale;
+
+      const outputWidth = Number(outputWidthInput.value) || sourceW;
+      const outputHeight = outputWidth * (sourceH / sourceW);
+
+      const outputCanvas = document.createElement("canvas");
+      outputCanvas.width = outputWidth;
+      outputCanvas.height = outputHeight;
+
+      const outputCtx = outputCanvas.getContext("2d");
+
+      outputCtx.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        sourceW,
+        sourceH,
+        0,
+        0,
+        outputWidth,
+        outputHeight
+      );
+
+      croppedDataUrl = outputCanvas.toDataURL(outputFormat.value, 0.92);
+      preview.src = croppedDataUrl;
+      downloadBtn.disabled = false;
+    }
+
+    function downloadCrop() {
+      if (!croppedDataUrl) return;
+
+      let ext = "png";
+
+      if (outputFormat.value === "image/jpeg") ext = "jpg";
+      if (outputFormat.value === "image/webp") ext = "webp";
+
+      const a = document.createElement("a");
+      a.href = croppedDataUrl;
+      a.download = `cropped-screen-or-image.${ext}`;
+      a.click();
+    }
+
+    function resetEditor() {
+      crop = null;
+      croppedDataUrl = null;
+      preview.src = "";
+      downloadBtn.disabled = true;
+
+      if (imageLoaded) draw();
+    }
+
+    canvas.addEventListener("mousedown", startCrop);
+    canvas.addEventListener("mousemove", moveCrop);
+    canvas.addEventListener("mouseup", endCrop);
+    canvas.addEventListener("mouseleave", endCrop);
+
+    canvas.addEventListener("touchstart", startCrop, { passive: false });
+    canvas.addEventListener("touchmove", moveCrop, { passive: false });
+    canvas.addEventListener("touchend", endCrop);
+
+    cropBtn.addEventListener("click", cropImage);
+    downloadBtn.addEventListener("click", downloadCrop);
+    resetBtn.addEventListener("click", resetEditor);
+
+    window.addEventListener("resize", function () {
+      if (!imageLoaded) return;
+      fitImageToCanvas();
+      crop = null;
+      draw();
+    });
+  </script>
 </body>
 </html>
