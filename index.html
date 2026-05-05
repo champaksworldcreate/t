@@ -1,469 +1,139 @@
 <!doctype html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Programmer's Picnic Search Centre</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Stocks Live Portfolio Tracker</title>
   <style>
     :root{
-      --bg:#fff7e6;
-      --bg2:#fff1c7;
-      --card:#ffffff;
-      --text:#1f1608;
-      --muted:#6b4a1d;
-      --brand:#d97706;
-      --brand2:#f59e0b;
-      --line:#f3c76f;
-      --soft:#fffaf0;
-      --shadow:0 25px 70px rgba(120,72,0,.16);
-      --radius:28px;
+      --bg:#fff7e6;--card:#ffffff;--saffron:#ff9933;--saffron2:#ffc36b;--dark:#2b1600;
+      --green:#059669;--red:#dc2626;--text:#222;--muted:#666;--border:#f1d4a6;
     }
-
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(245,158,11,.30), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(217,119,6,.22), transparent 38%),
-        linear-gradient(135deg,var(--bg),var(--soft));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
-
-    .search-centre{
-      width:min(1120px,100%);
-      background:rgba(255,255,255,.82);
-      backdrop-filter:blur(18px);
-      border:1px solid rgba(243,199,111,.9);
-      border-radius:36px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .hero{
-      padding:38px;
-      background:
-        linear-gradient(135deg,rgba(217,119,6,.16),rgba(245,158,11,.08)),
-        #fff;
-      border-bottom:1px solid var(--line);
-      text-align:center;
-    }
-
-    .badge{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      background:var(--bg2);
-      border:1px solid var(--line);
-      padding:8px 14px;
-      border-radius:999px;
-      color:#7c4700;
-      font-size:14px;
-      font-weight:700;
-    }
-
-    h1{
-      margin:18px 0 10px;
-      font-size:clamp(32px,5vw,64px);
-      line-height:1.02;
-      letter-spacing:-2px;
-    }
-
-    .hero p{
-      margin:0 auto;
-      max-width:720px;
-      color:var(--muted);
-      font-size:18px;
-      line-height:1.6;
-    }
-
-    .search-box{
-      margin:30px auto 0;
-      max-width:820px;
-      display:flex;
-      gap:12px;
-      background:#fff;
-      border:2px solid var(--line);
-      border-radius:999px;
-      padding:10px;
-      box-shadow:0 14px 35px rgba(217,119,6,.12);
-    }
-
-    .search-box input{
-      flex:1;
-      border:0;
-      outline:0;
-      font-size:18px;
-      padding:15px 20px;
-      background:transparent;
-      color:var(--text);
-    }
-
-    .search-box button{
-      border:0;
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      color:white;
-      font-weight:800;
-      padding:14px 24px;
-      border-radius:999px;
-      cursor:pointer;
-      box-shadow:0 10px 25px rgba(217,119,6,.28);
-    }
-
-    .panel{
-      padding:28px;
-      display:grid;
-      grid-template-columns:260px 1fr;
-      gap:24px;
-    }
-
-    .filters,
-    .results-wrap{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:22px;
-    }
-
-    .filters h2,
-    .results-head h2{
-      margin:0 0 14px;
-      font-size:20px;
-    }
-
-    .filter-btn{
-      width:100%;
-      border:1px solid var(--line);
-      background:var(--soft);
-      color:var(--text);
-      padding:12px 14px;
-      border-radius:16px;
-      margin-bottom:10px;
-      cursor:pointer;
-      text-align:left;
-      font-weight:700;
-    }
-
-    .filter-btn.active{
-      background:linear-gradient(135deg,var(--brand),var(--brand2));
-      color:#fff;
-      border-color:transparent;
-    }
-
-    .results-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:18px;
-    }
-
-    .count{
-      color:var(--muted);
-      font-weight:700;
-      font-size:14px;
-    }
-
-    .results{
-      display:grid;
-      gap:16px;
-    }
-
-    .card{
-      border:1px solid #f4d28c;
-      border-radius:22px;
-      padding:20px;
-      background:
-        linear-gradient(135deg,rgba(255,250,240,.96),rgba(255,255,255,.96));
-      transition:.25s ease;
-    }
-
-    .card:hover{
-      transform:translateY(-3px);
-      box-shadow:0 18px 40px rgba(120,72,0,.13);
-    }
-
-    .card-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-    }
-
-    .card h3{
-      margin:0;
-      font-size:21px;
-    }
-
-    .type{
-      background:var(--bg2);
-      color:#8a4d00;
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:5px 10px;
-      font-size:12px;
-      font-weight:800;
-      white-space:nowrap;
-    }
-
-    .card p{
-      margin:10px 0 14px;
-      color:var(--muted);
-      line-height:1.55;
-    }
-
-    .tags{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:14px;
-    }
-
-    .tag{
-      background:#fff1c7;
-      color:#714000;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-    }
-
-    .card a{
-      display:inline-flex;
-      text-decoration:none;
-      background:#1f1608;
-      color:#fff;
-      padding:10px 14px;
-      border-radius:14px;
-      font-weight:800;
-    }
-
-    .empty{
-      text-align:center;
-      padding:40px 16px;
-      color:var(--muted);
-      border:1px dashed var(--line);
-      border-radius:22px;
-      background:var(--soft);
-    }
-
-    mark{
-      background:#fde68a;
-      color:#1f1608;
-      border-radius:5px;
-      padding:0 3px;
-    }
-
-    @media(max-width:800px){
-      body{
-        align-items:flex-start;
-      }
-
-      .hero{
-        padding:28px 18px;
-      }
-
-      .search-box{
-        border-radius:24px;
-        flex-direction:column;
-      }
-
-      .search-box button{
-        width:100%;
-      }
-
-      .panel{
-        grid-template-columns:1fr;
-        padding:18px;
-      }
-
-      .results-head{
-        align-items:flex-start;
-        flex-direction:column;
-      }
-    }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#fff7e6,#ffe0ad);color:var(--text)}
+    .wrap{max-width:1250px;margin:auto;padding:16px}.hero{background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:var(--dark);padding:22px;border-radius:24px;box-shadow:0 12px 30px rgba(0,0,0,.12)}
+    h1{margin:0 0 8px;font-size:28px}.hero p{margin:0;font-weight:700}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:15px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .label{font-size:13px;color:var(--muted);margin-bottom:6px}.value{font-size:23px;font-weight:850}.green{color:var(--green)}.red{color:var(--red)}.section{margin-top:14px}
+    input,button,select,textarea{width:100%;padding:11px;border-radius:14px;border:1px solid var(--border);font-size:15px}button{background:var(--saffron);color:var(--dark);font-weight:850;cursor:pointer;border:none}.secondary{background:#fff3d8;border:1px solid #cc6b00}.danger{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+    .formgrid{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr .8fr .8fr .8fr;gap:9px}.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px}
+    table{width:100%;border-collapse:collapse;margin-top:12px;background:white;border-radius:16px;overflow:hidden}th,td{padding:9px;border-bottom:1px solid #eee;text-align:left;font-size:13px}th{background:#fff0cf;color:#5c3200}.note{font-size:14px;color:var(--muted);line-height:1.5}.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#fff0cf;font-weight:750;margin:3px}.small{font-size:12px;color:var(--muted)}textarea{min-height:160px}.stockRow:hover{background:#fffaf0}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{width:auto;padding:9px 13px;background:#fff3d8}.tab.active{background:var(--saffron)}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.actions{grid-template-columns:1fr}h1{font-size:23px}th,td{font-size:12px;padding:7px}}
   </style>
 </head>
-
 <body>
-  <main class="search-centre">
-    <section class="hero">
-      <div class="badge">Programmer's Picnic Search Centre</div>
-
-      <h1>Find lessons, tools, projects and notes instantly.</h1>
-
-      <p>
-        A beautiful JSON-powered search system using fetch. Add your data in one
-        or more JSON files and this centre page will search everything.
-      </p>
-
-      <form class="search-box" id="searchForm">
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Search Python, NumPy, Firebase, Flutter, DNS..."
-          autocomplete="off"
-        />
-        <button type="submit">Search</button>
-      </form>
-    </section>
-
-    <section class="panel">
-      <aside class="filters">
-        <h2>Filter</h2>
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="lesson">Lessons</button>
-        <button class="filter-btn" data-filter="tool">Tools</button>
-        <button class="filter-btn" data-filter="project">Projects</button>
-        <button class="filter-btn" data-filter="note">Notes</button>
-      </aside>
-
-      <section class="results-wrap">
-        <div class="results-head">
-          <h2>Search Results</h2>
-          <div class="count" id="resultCount">Loading data...</div>
-        </div>
-
-        <div class="results" id="results"></div>
-      </section>
-    </section>
-  </main>
-
-  <script>
-    const DATA_FILES = [
-      "t.json"
-    ];
-
-    let allItems = [];
-    let activeFilter = "all";
-
-    const input = document.getElementById("searchInput");
-    const results = document.getElementById("results");
-    const resultCount = document.getElementById("resultCount");
-    const form = document.getElementById("searchForm");
-    const filterButtons = document.querySelectorAll(".filter-btn");
-
-    async function loadData() {
-      try {
-        const responses = await Promise.all(
-          DATA_FILES.map(file => fetch(file))
-        );
-
-        const jsonFiles = await Promise.all(
-          responses.map(response => {
-            if (!response.ok) {
-              throw new Error("Could not load JSON file");
-            }
-            return response.json();
-          })
-        );
-
-        allItems = jsonFiles.flatMap(file => file.items || []);
-        renderResults();
-      } catch (error) {
-        results.innerHTML = `
-          <div class="empty">
-            Could not load search data. Please check your JSON file path.
-          </div>
-        `;
-        resultCount.textContent = "Data loading failed";
-      }
-    }
-
-    function normalize(text) {
-      return String(text || "").toLowerCase().trim();
-    }
-
-    function highlight(text, query) {
-      if (!query) return text;
-
-      const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(`(${safeQuery})`, "gi");
-
-      return String(text).replace(regex, "<mark>$1</mark>");
-    }
-
-    function searchItems() {
-      const query = normalize(input.value);
-
-      return allItems.filter(item => {
-        const matchesFilter =
-          activeFilter === "all" || item.type === activeFilter;
-
-        const searchableText = normalize(`
-          ${item.title}
-          ${item.description}
-          ${item.type}
-          ${(item.tags || []).join(" ")}
-        `);
-
-        const matchesSearch =
-          !query || searchableText.includes(query);
-
-        return matchesFilter && matchesSearch;
-      });
-    }
-
-    function renderResults() {
-      const query = input.value.trim();
-      const filteredItems = searchItems();
-
-      resultCount.textContent =
-        `${filteredItems.length} result${filteredItems.length !== 1 ? "s" : ""} found`;
-
-      if (!filteredItems.length) {
-        results.innerHTML = `
-          <div class="empty">
-            No result found. Try another keyword.
-          </div>
-        `;
-        return;
-      }
-
-      results.innerHTML = filteredItems.map(item => `
-        <article class="card">
-          <div class="card-top">
-            <h3>${highlight(item.title, query)}</h3>
-            <span class="type">${item.type}</span>
-          </div>
-
-          <p>${highlight(item.description, query)}</p>
-
-          <div class="tags">
-            ${(item.tags || []).map(tag => `
-              <span class="tag">${highlight(tag, query)}</span>
-            `).join("")}
-          </div>
-
-          <a href="${item.url}" target="champak">Open</a>
-        </article>
-      `).join("");
-    }
-
-    form.addEventListener("submit", event => {
-      event.preventDefault();
-      renderResults();
-    });
-
-    input.addEventListener("input", renderResults);
-
-    filterButtons.forEach(button => {
-      button.addEventListener("click", () => {
-        filterButtons.forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
-        activeFilter = button.dataset.filter;
-        renderResults();
-      });
-    });
-
-    loadData();
-  </script>
-</body>
+<div class="wrap">
+  <div class="hero"><h1>📊 All Stocks Live Portfolio Tracker</h1><p>Buy on dip · Sell on rise · Weekly update · JSON backup</p></div>  <div class="grid">
+    <div class="card"><div class="label">Total Investment</div><div class="value" id="totalInvestment">₹0</div></div>
+    <div class="card"><div class="label">Cash Received</div><div class="value" id="totalCash">₹0</div></div>
+    <div class="card"><div class="label">Current Holding Value</div><div class="value" id="totalHolding">₹0</div></div>
+    <div class="card"><div class="label">Net Profit / Loss</div><div class="value" id="totalProfit">₹0</div></div>
+  </div>  <div class="section card">
+    <h2>⚡ Weekly Price Update</h2>
+    <p class="note">Enter today’s price for each stock. The tracker will calculate remaining shares, profit/loss, buy zone, sell zone and action.</p>
+    <div class="actions">
+      <button onclick="calculate()">Update All</button>
+      <button class="secondary" onclick="downloadJSON()">Download JSON</button>
+      <button class="secondary" onclick="copyJSON()">Copy JSON</button>
+      <button class="danger" onclick="resetData()">Reset Demo Data</button>
+    </div>
+  </div>  <div class="section card">
+    <h2>📈 Portfolio Table</h2>
+    <table>
+      <thead><tr><th>Stock</th><th>Type</th><th>Live Price</th><th>Bought</th><th>Sold</th><th>Left</th><th>Avg Buy</th><th>Invested</th><th>Cash</th><th>Holding</th><th>P/L</th><th>Action</th></tr></thead>
+      <tbody id="portfolioBody"></tbody>
+    </table>
+  </div>  <div class="section card">
+    <h2>➕ Add New Trade</h2>
+    <div class="formgrid">
+      <select id="stockName"></select>
+      <select id="tradeType"><option value="BUY">BUY</option><option value="SELL">SELL</option></select>
+      <input id="tradeDate" type="date" />
+      <input id="tradeQty" type="number" placeholder="Qty" />
+      <input id="tradePrice" type="number" step="0.01" placeholder="Avg price" />
+      <select id="stockKind"><option value="Core">Core</option><option value="Trading">Trading</option></select>
+      <button onclick="addTrade()">Add Trade</button>
+    </div>
+    <p class="note">Core rule: buy 5–8% dip, sell partial at +10% / +20%. Trading rule: buy 10–15% dip, sell fast at +8–12%.</p>
+  </div>  <div class="section card">
+    <h2>🎯 Rules</h2>
+    <span class="pill">Core: SBI, Reliance, NTPC, Tata Power</span>
+    <span class="pill">Trading: VI, Zomato, Jio Fin, Lemon Tree</span>
+    <span class="pill">Book partial profit on rise</span>
+    <span class="pill">Never average losers blindly</span>
+  </div>  <div class="section card">
+    <h2>🧾 Trade History</h2>
+    <div class="tabs" id="stockTabs"></div>
+    <table>
+      <thead><tr><th>Date</th><th>Stock</th><th>Type</th><th>Qty</th><th>Price</th><th>Value</th></tr></thead>
+      <tbody id="tradeBody"></tbody>
+    </table>
+  </div>  <div class="section card"><h2>📦 JSON Data</h2><textarea id="jsonBox" readonly></textarea></div>
+</div><script>
+const initialStocks = {
+  'Vodafone Idea': {kind:'Trading', live:14.00, trades:[
+    ['2024-11-01','BUY',10,8.38],['2024-12-13','BUY',1,7.76],['2024-12-18','BUY',4,7.78],['2024-12-31','BUY',35,7.64],['2025-01-16','BUY',1,8.81],['2025-04-15','BUY',10,7.33],['2025-05-20','BUY',3,6.49],['2025-05-30','BUY',1,6.89],['2025-08-06','BUY',5,6.81],['2025-09-24','BUY',2,8.70],['2025-10-06','BUY',3,8.50],['2025-10-21','BUY',5,9.04],['2026-03-09','BUY',9,9.84],['2026-05-05','SELL',59,10.83],['2026-05-05','SELL',6,10.77]
+  ]},
+  'SBI': {kind:'Core', live:1068, trades:[['2026-05-05','BUY',6,781.72]]},
+  'NTPC': {kind:'Core', live:400, trades:[['2026-05-05','BUY',2,333.22]]},
+  'Tata Power': {kind:'Core', live:420, trades:[['2026-05-05','BUY',2,385.01]]},
+  'Reliance Industries': {kind:'Core', live:1420, trades:[['2026-05-05','BUY',3,1328.72]]},
+  'Indian Hotel': {kind:'Trading', live:650, trades:[['2026-05-05','BUY',7,676.00]]},
+  'Eternal (Zomato)': {kind:'Trading', live:170, trades:[['2026-05-05','BUY',10,180.40]]},
+  'Exide Industries': {kind:'Trading', live:362, trades:[['2026-05-05','BUY',1,381.00]]},
+  'Lemon Tree Hotels': {kind:'Trading', live:120, trades:[['2026-05-05','BUY',6,147.50]]},
+  'JIO Financial Serv.': {kind:'Trading', live:252, trades:[['2026-05-05','BUY',8,311.59]]}
+};
+let data = JSON.parse(localStorage.getItem('allStockTracker') || 'null') || initialStocks;
+let selectedStock = 'All';
+function money(n){return '₹' + Number(n||0).toFixed(2)}
+function pct(n){return Number(n||0).toFixed(2)+'%'}
+function names(){return Object.keys(data)}
+function fillSelects(){
+  const s=document.getElementById('stockName'); s.innerHTML=''; names().forEach(n=>{let o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o)});
+  const tabs=document.getElementById('stockTabs'); tabs.innerHTML=''; ['All',...names()].forEach(n=>{let b=document.createElement('button');b.className='tab '+(selectedStock===n?'active':'');b.textContent=n;b.onclick=()=>{selectedStock=n;renderTrades()};tabs.appendChild(b)});
+}
+function summary(stock){
+  let bq=0,bv=0,sq=0,sv=0; stock.trades.forEach(t=>{let [d,type,qty,price]=t; if(type==='BUY'){bq+=+qty;bv+=qty*price}else{sq+=+qty;sv+=qty*price}});
+  let left=bq-sq, avg=bq?bv/bq:0, hold=left*stock.live, total=sv+hold, pl=total-bv, plp=bv?pl/bv*100:0;
+  return {bq,bv,sq,sv,left,avg,hold,total,pl,plp};
+}
+function action(stock,s){
+  if(s.left<=0) return 'No holding';
+  const gainFromAvg = stock.live>=s.avg*1.10;
+  const lossFromAvg = stock.live<=s.avg*(stock.kind==='Core'?0.92:0.95);
+  if(gainFromAvg && stock.kind==='Core') return 'Book 25% profit / Hold rest';
+  if(gainFromAvg && stock.kind==='Trading') return 'Book partial / Fast exit';
+  if(lossFromAvg) return 'Risk zone: review/exit';
+  return 'Hold / wait for dip';
+}
+function calculate(){
+  let TI=0,TC=0,TH=0,TP=0; const body=document.getElementById('portfolioBody'); body.innerHTML='';
+  names().forEach(n=>{
+    data[n].live = Number(document.getElementById('live_'+safe(n))?.value || data[n].live);
+    const s=summary(data[n]); TI+=s.bv; TC+=s.sv; TH+=s.hold; TP+=s.pl;
+    const buyLow = data[n].kind==='Core'? data[n].live*.92 : data[n].live*.85;
+    const buyHigh = data[n].kind==='Core'? data[n].live*.95 : data[n].live*.90;
+    const sell1 = data[n].kind==='Core'? s.avg*1.10 : s.avg*1.08;
+    const tr=document.createElement('tr'); tr.className='stockRow';
+    tr.innerHTML=`<td><b>${n}</b><div class="small">Buy zone: ${money(buyLow)}–${money(buyHigh)}<br>Sell zone: ${money(sell1)}+</div></td><td>${data[n].kind}</td><td><input id="live_${safe(n)}" type="number" step="0.01" value="${data[n].live}" onchange="calculate()"></td><td>${s.bq}</td><td>${s.sq}</td><td><b>${s.left}</b></td><td>${money(s.avg)}</td><td>${money(s.bv)}</td><td>${money(s.sv)}</td><td>${money(s.hold)}</td><td class="${s.pl>=0?'green':'red'}"><b>${money(s.pl)}</b><br>${pct(s.plp)}</td><td>${action(data[n],s)}</td>`;
+    body.appendChild(tr);
+  });
+  document.getElementById('totalInvestment').textContent=money(TI);document.getElementById('totalCash').textContent=money(TC);document.getElementById('totalHolding').textContent=money(TH);
+  const p=document.getElementById('totalProfit');p.textContent=money(TP)+' ('+pct(TI?TP/TI*100:0)+')';p.className='value '+(TP>=0?'green':'red');
+  save(); renderTrades();
+}
+function safe(n){return n.replace(/[^a-z0-9]/gi,'_')}
+function addTrade(){
+  const n=document.getElementById('stockName').value,type=document.getElementById('tradeType').value,date=document.getElementById('tradeDate').value||new Date().toISOString().slice(0,10),qty=+document.getElementById('tradeQty').value,price=+document.getElementById('tradePrice').value,kind=document.getElementById('stockKind').value;
+  if(!qty||!price){alert('Enter quantity and price');return} data[n].kind=kind; data[n].trades.push([date,type,qty,price]); data[n].live=price; document.getElementById('tradeQty').value='';document.getElementById('tradePrice').value=''; calculate();
+}
+function renderTrades(){
+  fillSelects(); const body=document.getElementById('tradeBody'); body.innerHTML=''; let rows=[]; names().forEach(n=>data[n].trades.forEach(t=>rows.push([n,...t]))); if(selectedStock!=='All') rows=rows.filter(r=>r[0]===selectedStock); rows.reverse().forEach(r=>{const [n,d,type,qty,price]=r;let tr=document.createElement('tr');tr.innerHTML=`<td>${d}</td><td>${n}</td><td class="${type==='BUY'?'green':'red'}"><b>${type}</b></td><td>${qty}</td><td>${money(price)}</td><td>${money(qty*price)}</td>`;body.appendChild(tr)});
+}
+function save(){localStorage.setItem('allStockTracker',JSON.stringify(data));document.getElementById('jsonBox').value=JSON.stringify(data,null,2)}
+function copyJSON(){navigator.clipboard.writeText(document.getElementById('jsonBox').value);alert('JSON copied')}
+function downloadJSON(){const blob=new Blob([document.getElementById('jsonBox').value],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='all-stocks-portfolio-tracker.json';a.click()}
+function resetData(){if(confirm('Reset all data?')){data=initialStocks;localStorage.removeItem('allStockTracker');calculate()}}
+fillSelects(); calculate();
+</script></body>
 </html>
