@@ -3,69 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Angular Dashboard Roadmap | Programmer's Picnic</title>
 
-  
+  <title>Angular Folders and Files | Level 0 to Expert</title>
 
-<style>
-  .lesson-visual {
-    margin: 14px 0;
-    background: #fff7ed;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 12px;
-  }
+  <meta
+    name="description"
+    content="A comprehensive beginner-to-expert lesson on Angular folders and files after installation."
+  />
 
-  .lesson-visual svg {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .code-box {
-    margin-top: 12px;
-    background: #1f1308;
-    color: #ffedd5;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid #7c2d12;
-  }
-
-  .code-title {
-    background: #7c2d12;
-    color: #fff7ed;
-    padding: 8px 12px;
-    font-size: 13px;
-    font-weight: 800;
-  }
-
-  .code-box pre {
-    margin: 0;
-    padding: 14px;
-    overflow-x: auto;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-
-  .code-box code {
-    font-family: Consolas, Monaco, monospace;
-  }
-
-
-
+  <style>
     :root {
       --bg: #fff7ed;
-      --bg-soft: #ffedd5;
       --card: #ffffff;
-      --text: #2b1606;
+      --text: #241407;
       --muted: #7c5b35;
       --primary: #d97706;
-      --primary-dark: #9a3412;
+      --primary-dark: #92400e;
       --accent: #f59e0b;
-      --red: #b4232c;
-      --green: #16a34a;
-      --border: #f2d6ad;
-      --shadow: 0 18px 45px rgba(146, 64, 14, 0.12);
+      --soft: #ffedd5;
+      --line: #fed7aa;
+      --code-bg: #1f1308;
+      --code-text: #fff7ed;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --info: #0369a1;
+      --shadow: 0 18px 45px rgba(120, 53, 15, 0.14);
+      --radius: 24px;
     }
 
     * {
@@ -80,23 +43,34 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at top left, #fed7aa 0, transparent 32%),
-        linear-gradient(135deg, #fff7ed 0%, #fffbeb 55%, #fff7ed 100%);
+        radial-gradient(circle at top left, #fed7aa 0, transparent 28%),
+        radial-gradient(circle at top right, #fde68a 0, transparent 24%),
+        var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.7;
+    }
+
+    a {
+      color: var(--primary-dark);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: rgba(255, 247, 237, 0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      z-index: 10;
+      background: rgba(255, 247, 237, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
     }
 
     .topbar-inner {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: auto;
       padding: 14px 20px;
       display: flex;
@@ -109,370 +83,403 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--primary-dark);
+      line-height: 1.25;
     }
 
-    .logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--primary), var(--red));
       color: white;
-      box-shadow: var(--shadow);
       font-weight: 900;
+      box-shadow: 0 10px 22px rgba(217, 119, 6, 0.28);
     }
 
     .nav {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
       justify-content: flex-end;
     }
 
-    .nav a,
-    .print-btn {
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--primary-dark);
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 999px;
+    .nav a {
       font-size: 14px;
-      cursor: pointer;
-    }
-
-    .print-btn {
-      font-family: inherit;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--primary-dark);
     }
 
     .hero {
-      max-width: 1200px;
-      margin: auto;
-      padding: 46px 20px 24px;
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 56px 20px 28px;
     }
 
     .hero-card {
-      background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #fff, #ffedd5);
+      border: 1px solid var(--line);
+      border-radius: 34px;
       box-shadow: var(--shadow);
-      border-radius: 28px;
-      padding: 34px;
-      display: grid;
-      grid-template-columns: 1.5fr 0.8fr;
-      gap: 24px;
-      align-items: center;
+      padding: 44px;
+      overflow: hidden;
+      position: relative;
     }
 
-    .eyebrow {
-      color: var(--red);
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(32px, 5vw, 56px);
-      line-height: 1.08;
-      color: var(--primary-dark);
-    }
-
-    .subtitle {
-      max-width: 720px;
-      color: var(--muted);
-      font-size: 18px;
-      margin: 18px 0 0;
-    }
-
-    .hero-box {
-      background: var(--primary-dark);
-      color: white;
-      border-radius: 24px;
-      padding: 24px;
-    }
-
-    .hero-box h2 {
-      margin: 0 0 12px;
-      font-size: 22px;
-    }
-
-    .hero-box p {
-      margin: 6px 0;
-      color: #ffedd5;
-    }
-
-    .badges {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 18px;
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      right: -90px;
+      top: -90px;
+      background: rgba(245, 158, 11, 0.22);
     }
 
     .badge {
-      background: #dcfce7;
-      color: #166534;
-      border: 1px solid #bbf7d0;
-      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff7ed;
+      border: 1px solid var(--line);
+      color: var(--primary-dark);
+      padding: 8px 14px;
       border-radius: 999px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      color: var(--primary-dark);
+      max-width: 900px;
+    }
+
+    .hero p {
+      max-width: 840px;
+      font-size: 20px;
+      color: var(--muted);
+      margin: 0 0 24px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 18px;
+      border-radius: 16px;
+      font-weight: 900;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(217, 119, 6, 0.25);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary-dark);
+      border: 1px solid var(--line);
+    }
+
+    .container {
+      max-width: 1220px;
+      margin: auto;
+      padding: 22px 20px 70px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 86px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 110px);
+      overflow: auto;
+    }
+
+    .sidebar h3 {
+      margin: 0 0 12px;
+      color: var(--primary-dark);
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 9px 10px;
+      border-radius: 12px;
+      color: var(--muted);
       font-weight: 700;
       font-size: 14px;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 16px;
-      margin: 28px 0 16px;
-    }
-
-    .section-title h2 {
-      margin: 0;
+    .sidebar a:hover {
+      background: var(--soft);
+      text-decoration: none;
       color: var(--primary-dark);
-      font-size: 30px;
     }
 
-    .section-title p {
-      margin: 4px 0 0;
-      color: var(--muted);
-    }
-
-    .progress-panel {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
-    }
-
-    .progress-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .progress-track {
-      height: 16px;
-      background: #ffedd5;
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--primary), var(--red));
-      border-radius: 999px;
-      transition: width 0.25s ease;
-    }
-
-    .progress-text {
-      font-weight: 800;
-      color: var(--primary-dark);
-      white-space: nowrap;
-    }
-
-    .weeks {
+    .content {
       display: grid;
       gap: 22px;
     }
 
-    .week {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .week-header {
-      background: linear-gradient(135deg, var(--primary), var(--red));
-      color: white;
-      padding: 20px 24px;
-    }
-
-    .week-header h3 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    .week-header p {
-      margin: 6px 0 0;
-      color: #ffedd5;
-    }
-
-    .days {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-    }
-
-    .day {
-      padding: 20px;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      min-height: 230px;
-    }
-
-    .day:nth-child(4n) {
-      border-right: none;
-    }
-
-    .day h4 {
-      margin: 0 0 8px;
-      color: var(--primary-dark);
-      font-size: 18px;
-    }
-
-    .day .topic {
-      color: var(--red);
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .checklist {
-      list-style: none;
-      padding: 0;
-      margin: 12px 0 0;
-      display: grid;
-      gap: 8px;
-    }
-
-    .checklist li {
-      display: grid;
-      grid-template-columns: 24px 1fr;
-      gap: 8px;
-      align-items: start;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-      margin-top: 2px;
-      cursor: pointer;
-    }
-
-    .output {
-      background: #fff7ed;
-      border: 1px dashed var(--accent);
-      padding: 10px 12px;
-      border-radius: 14px;
-      color: var(--primary-dark);
-      font-weight: 700;
-      margin-top: 12px;
-      font-size: 14px;
-    }
-
-    .final-box {
-      margin: 30px 0;
-      background: linear-gradient(135deg, #431407, #9a3412);
-      color: white;
-      border-radius: 28px;
+    section.lesson {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
       padding: 28px;
       box-shadow: var(--shadow);
     }
 
-    .final-box h2 {
+    section.lesson h2 {
       margin: 0 0 12px;
+      color: var(--primary-dark);
       font-size: 30px;
+      line-height: 1.2;
     }
 
-    .final-grid {
+    section.lesson h3 {
+      margin-top: 24px;
+      color: var(--primary-dark);
+    }
+
+    section.lesson h4 {
+      margin-top: 18px;
+      color: #78350f;
+    }
+
+    .goal-grid,
+    .card-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin-top: 18px;
     }
 
-    .final-item {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 16px;
+    .two-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .mini-card {
+      background: #fff7ed;
+      border: 1px solid var(--line);
       border-radius: 18px;
+      padding: 16px;
     }
 
-    .final-item strong {
+    .mini-card strong {
+      color: var(--primary-dark);
       display: block;
-      margin-bottom: 4px;
-      color: #fed7aa;
+      margin-bottom: 6px;
     }
 
-    footer {
-      text-align: center;
+    .note {
+      background: #fffbeb;
+      border-left: 5px solid var(--accent);
+      padding: 16px 18px;
+      border-radius: 16px;
+      margin: 18px 0;
+    }
+
+    .success {
+      background: #f0fdf4;
+      border-left: 5px solid var(--success);
+      padding: 16px 18px;
+      border-radius: 16px;
+      margin: 18px 0;
+    }
+
+    .warning {
+      background: #fef2f2;
+      border-left: 5px solid var(--danger);
+      padding: 16px 18px;
+      border-radius: 16px;
+      margin: 18px 0;
+    }
+
+    .info {
+      background: #f0f9ff;
+      border-left: 5px solid var(--info);
+      padding: 16px 18px;
+      border-radius: 16px;
+      margin: 18px 0;
+    }
+
+    pre {
+      position: relative;
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 18px;
+      border-radius: 18px;
+      overflow-x: auto;
+      border: 1px solid #3b220f;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 14px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border-radius: 10px;
+      padding: 6px 9px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      margin-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      min-width: 780px;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+      color: var(--primary-dark);
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .check {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: #fff7ed;
+      border: 1px solid var(--line);
+      padding: 13px;
+      border-radius: 16px;
+    }
+
+    .check input {
+      transform: scale(1.25);
+      margin-top: 5px;
+      accent-color: var(--primary);
+    }
+
+    .diagram {
+      background: #fffaf3;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      margin: 22px 0;
+      overflow-x: auto;
+    }
+
+    .diagram svg {
+      width: 100%;
+      min-width: 760px;
+      height: auto;
+      display: block;
+    }
+
+    .footer {
+      max-width: 1220px;
+      margin: 0 auto 36px;
+      padding: 24px 20px;
       color: var(--muted);
-      padding: 30px 20px 50px;
+      text-align: center;
     }
 
-    @media (max-width: 950px) {
-      .hero-card {
-        grid-template-columns: 1fr;
-      }
-
-      .days {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .day:nth-child(2n) {
-        border-right: none;
-      }
-
-      .day:nth-child(4n) {
-        border-right: none;
-      }
-
-      .final-grid {
-        grid-template-columns: 1fr;
-      }
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
     }
 
-    @media (max-width: 600px) {
-      .topbar-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+    .pill {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 800;
+      font-size: 14px;
+    }
 
-      .nav {
-        justify-content: flex-start;
-      }
-
-      .hero-card {
-        padding: 24px;
-      }
-
-      .days {
+    @media (max-width: 980px) {
+      .container {
         grid-template-columns: 1fr;
       }
 
-      .day {
-        border-right: none;
+      .sidebar {
+        position: static;
+        max-height: none;
       }
 
-      .section-title {
-        align-items: flex-start;
-        flex-direction: column;
+      .goal-grid,
+      .card-grid,
+      .two-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        padding: 28px;
       }
     }
 
     @media print {
       .topbar,
-      .print-btn {
+      .sidebar,
+      .hero-actions,
+      .copy-btn {
         display: none;
       }
 
@@ -480,28 +487,14 @@
         background: white;
       }
 
-      .hero,
       .container {
-        padding: 10px;
+        display: block;
       }
 
-      .week,
-      .hero-card,
-      .progress-panel,
-      .final-box {
+      section.lesson,
+      .hero-card {
         box-shadow: none;
         break-inside: avoid;
-      }
-
-      .day {
-        min-height: auto;
-      }
-
-      input[type="checkbox"] {
-        appearance: none;
-        border: 2px solid #333;
-        width: 14px;
-        height: 14px;
       }
     }
   </style>
@@ -511,769 +504,1349 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="logo">PP</div>
+        <div class="brand-icon">NG</div>
         <div>
-          <div>Programmer's Picnic</div>
-          <small>Angular Dashboard Roadmap</small>
+          Programmers Picnic<br />
+          <small>AI-ML Classes by Champak Roy</small>
         </div>
       </div>
 
       <nav class="nav">
-        <a href="#roadmap">Roadmap</a>
-        <a href="#final">Final Target</a>
-        <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+        <a href="#level0">Level 0</a>
+        <a href="#root">Root Files</a>
+        <a href="#src">src</a>
+        <a href="#app">app</a>
+        <a href="#flow">Flow</a>
+        <a href="#expert">Expert</a>
       </nav>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-card">
-      <div>
-        <div class="eyebrow">Level 0 to Angular Dashboard</div>
-        <h1>8 Week Angular Roadmap</h1>
-        <p class="subtitle">
-          A beginner-friendly 4-days-a-week roadmap to build a Programmer's Picnic Angular admin dashboard
-          like the reference screen.
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <div class="badge">New Angular Lesson</div>
+
+        <h1>Angular Folders and Files</h1>
+
+        <p>
+          A complete Level 0 to expert lesson on what is created after Angular installation,
+          why each file exists, what beginners should edit, and what advanced developers must understand.
         </p>
 
-        <div class="badges">
-          <span class="badge">Champak Roy</span>
-          <span class="badge">Admin</span>
-          <span class="badge">Teacher</span>
-          <span class="badge">Course Creator</span>
-        </div>
-      </div>
-
-      <div class="hero-box">
-        <h2>Recommended Duration</h2>
-        <p><strong>8 weeks</strong></p>
-        <p><strong>4 days per week</strong></p>
-        <p><strong>32 total sessions</strong></p>
-        <p>Best pace: 1 to 1.5 hours per session</p>
-      </div>
-    </div>
-  </section>
-
-  <main class="container" id="roadmap">
-    <div class="section-title">
-      <div>
-        <h2>Roadmap Checklist</h2>
-        <p>Tick each task as you complete it. Progress is saved in this browser.</p>
-      </div>
-    </div>
-
-    <section class="progress-panel">
-      <div class="progress-row">
-        <div class="progress-track">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-text" id="progressText">0% Complete</div>
-      </div>
-    </section>
-
-    <section class="weeks">
-
-      <!-- Week 1 -->
-    
-
-<!-- Week 1 -->
-<article class="week">
-  <div class="week-header">
-    <h3>Week 1: HTML and Page Structure</h3>
-    <p>Goal: Build the basic dashboard skeleton without CSS perfection.</p>
-  </div>
-
-  <div class="days">
-
-    <!-- Day 1 -->
-    <div class="day">
-      <h4>Day 1</h4>
-      <div class="topic">HTML Level 0</div>
-
-      <div class="lesson-visual">
-        <svg viewBox="0 0 520 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Basic HTML page structure">
-          <rect x="20" y="20" width="480" height="190" rx="18" fill="#fff7ed" stroke="#d97706" stroke-width="3"/>
-          <rect x="50" y="50" width="420" height="32" rx="8" fill="#fed7aa"/>
-          <text x="260" y="72" text-anchor="middle" font-size="16" font-family="Arial" fill="#7c2d12">head</text>
-
-          <rect x="50" y="100" width="420" height="78" rx="10" fill="#ffedd5" stroke="#f59e0b"/>
-          <text x="260" y="128" text-anchor="middle" font-size="17" font-family="Arial" font-weight="700" fill="#9a3412">body</text>
-          <text x="260" y="154" text-anchor="middle" font-size="14" font-family="Arial" fill="#7c5b35">Visible page content</text>
-
-          <text x="260" y="205" text-anchor="middle" font-size="14" font-family="Arial" fill="#7c5b35">HTML is the structure of the page</text>
-        </svg>
-      </div>
-
-      <ul class="checklist">
-        <li><input type="checkbox" data-check="d1-1"><span>Learn html, head, body, div, section, header, main</span></li>
-        <li><input type="checkbox" data-check="d1-2"><span>Create a basic page title</span></li>
-        <li><input type="checkbox" data-check="d1-3"><span>Add Programmer's Picnic and Welcome Champak Roy</span></li>
-      </ul>
-
-      <div class="code-box">
-        <div class="code-title">Day 1 Starter HTML</div>
-        <pre><code>&lt;!doctype html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-  &lt;meta charset="UTF-8"&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-  &lt;title&gt;Programmer's Picnic Dashboard&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;h1&gt;Programmer's Picnic&lt;/h1&gt;
-  &lt;p&gt;Welcome Champak Roy&lt;/p&gt;
-  &lt;p&gt;Angular Dashboard Learning Project&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-      </div>
-
-      <div class="output">Output: Simple welcome page</div>
-    </div>
-
-    <!-- Day 2 -->
-    <div class="day">
-      <h4>Day 2</h4>
-      <div class="topic">Dashboard Skeleton</div>
-
-      <div class="lesson-visual">
-        <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dashboard skeleton layout">
-          <rect x="20" y="20" width="480" height="220" rx="18" fill="#ffffff" stroke="#d97706" stroke-width="3"/>
-
-          <rect x="45" y="45" width="430" height="38" rx="8" fill="#9a3412"/>
-          <text x="260" y="69" text-anchor="middle" font-size="15" font-family="Arial" fill="#ffffff">Top Bar</text>
-
-          <rect x="45" y="100" width="430" height="52" rx="10" fill="#fed7aa"/>
-          <text x="260" y="131" text-anchor="middle" font-size="15" font-family="Arial" fill="#7c2d12">Welcome Area</text>
-
-          <rect x="45" y="170" width="430" height="48" rx="10" fill="#ffedd5"/>
-          <text x="260" y="199" text-anchor="middle" font-size="15" font-family="Arial" fill="#7c2d12">Module Area</text>
-        </svg>
-      </div>
-
-      <ul class="checklist">
-        <li><input type="checkbox" data-check="d2-1"><span>Create top bar</span></li>
-        <li><input type="checkbox" data-check="d2-2"><span>Create welcome area</span></li>
-        <li><input type="checkbox" data-check="d2-3"><span>Create module area</span></li>
-      </ul>
-
-      <div class="code-box">
-        <div class="code-title">Day 2 Dashboard Skeleton</div>
-        <pre><code>&lt;body&gt;
-  &lt;header&gt;
-    &lt;h1&gt;Programmer's Picnic&lt;/h1&gt;
-  &lt;/header&gt;
-
-  &lt;main&gt;
-    &lt;section&gt;
-      &lt;h2&gt;Welcome Champak Roy&lt;/h2&gt;
-      &lt;p&gt;Admin | Teacher | Course Creator&lt;/p&gt;
-    &lt;/section&gt;
-
-    &lt;section&gt;
-      &lt;h2&gt;Select Module&lt;/h2&gt;
-    &lt;/section&gt;
-  &lt;/main&gt;
-&lt;/body&gt;</code></pre>
-      </div>
-
-      <div class="output">Output: Page divided into sections</div>
-    </div>
-
-    <!-- Day 3 -->
-    <div class="day">
-      <h4>Day 3</h4>
-      <div class="topic">Module Cards in HTML</div>
-
-      <div class="lesson-visual">
-        <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Module cards layout">
-          <rect x="20" y="20" width="480" height="260" rx="18" fill="#fff7ed" stroke="#d97706" stroke-width="3"/>
-          <text x="260" y="52" text-anchor="middle" font-size="18" font-family="Arial" font-weight="700" fill="#9a3412">Select Module</text>
-
-          <rect x="55" y="80" width="125" height="70" rx="12" fill="#ffffff" stroke="#f59e0b"/>
-          <text x="118" y="112" text-anchor="middle" font-size="14" font-family="Arial" font-weight="700" fill="#7c2d12">Students</text>
-          <text x="118" y="134" text-anchor="middle" font-size="11" font-family="Arial" fill="#7c5b35">Manage students</text>
-
-          <rect x="198" y="80" width="125" height="70" rx="12" fill="#ffffff" stroke="#f59e0b"/>
-          <text x="260" y="112" text-anchor="middle" font-size="14" font-family="Arial" font-weight="700" fill="#7c2d12">Courses</text>
-          <text x="260" y="134" text-anchor="middle" font-size="11" font-family="Arial" fill="#7c5b35">Manage courses</text>
-
-          <rect x="340" y="80" width="125" height="70" rx="12" fill="#ffffff" stroke="#f59e0b"/>
-          <text x="403" y="112" text-anchor="middle" font-size="14" font-family="Arial" font-weight="700" fill="#7c2d12">Classes</text>
-          <text x="403" y="134" text-anchor="middle" font-size="11" font-family="Arial" fill="#7c5b35">Manage classes</text>
-
-          <rect x="55" y="175" width="125" height="70" rx="12" fill="#ffffff" stroke="#f59e0b"/>
-          <text x="118" y="207" text-anchor="middle" font-size="14" font-family="Arial" font-weight="700" fill="#7c2d12">Assignments</text>
-
-          <rect x="198" y="175" width="125" height="70" rx="12" fill="#ffffff" stroke="#f59e0b"/>
-          <text x="260" y="207" text-anchor="middle" font-size="14" font-family="Arial" font-weight="700" fill="#7c2d12">Payments</text>
-
-          <rect x="340" y="175" width="125" height="70" rx="12" fill="#ffffff" stroke="#f59e0b"/>
-          <text x="403" y="207" text-anchor="middle" font-size="14" font-family="Arial" font-weight="700" fill="#7c2d12">Reports</text>
-        </svg>
-      </div>
-
-      <ul class="checklist">
-        <li><input type="checkbox" data-check="d3-1"><span>Add Students card</span></li>
-        <li><input type="checkbox" data-check="d3-2"><span>Add Courses, Classes, Assignments cards</span></li>
-        <li><input type="checkbox" data-check="d3-3"><span>Add Payments and Reports cards</span></li>
-      </ul>
-
-      <div class="code-box">
-        <div class="code-title">Day 3 Module Cards</div>
-        <pre><code>&lt;section&gt;
-  &lt;h2&gt;Select Module&lt;/h2&gt;
-
-  &lt;div class="module-card"&gt;
-    &lt;h3&gt;Students&lt;/h3&gt;
-    &lt;p&gt;Student Registration and Management&lt;/p&gt;
-  &lt;/div&gt;
-
-  &lt;div class="module-card"&gt;
-    &lt;h3&gt;Courses&lt;/h3&gt;
-    &lt;p&gt;Manage AI, ML, Python and DSA Courses&lt;/p&gt;
-  &lt;/div&gt;
-
-  &lt;div class="module-card"&gt;
-    &lt;h3&gt;Classes&lt;/h3&gt;
-    &lt;p&gt;Daily Class Schedule and Attendance&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</code></pre>
-      </div>
-
-      <div class="output">Output: Static card list</div>
-    </div>
-
-    <!-- Day 4 -->
-    <div class="day">
-      <h4>Day 4</h4>
-      <div class="topic">Review HTML</div>
-
-      <div class="lesson-visual">
-        <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Clean HTML review checklist">
-          <rect x="20" y="20" width="480" height="220" rx="18" fill="#ffffff" stroke="#d97706" stroke-width="3"/>
-          <text x="260" y="55" text-anchor="middle" font-size="19" font-family="Arial" font-weight="700" fill="#9a3412">Review Before Moving to CSS</text>
-
-          <circle cx="85" cy="100" r="16" fill="#16a34a"/>
-          <path d="M76 100 L83 107 L96 92" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="120" y="106" font-size="15" font-family="Arial" fill="#7c2d12">Clean indentation</text>
-
-          <circle cx="85" cy="145" r="16" fill="#16a34a"/>
-          <path d="M76 145 L83 152 L96 137" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="120" y="151" font-size="15" font-family="Arial" fill="#7c2d12">Meaningful section names</text>
-
-          <circle cx="85" cy="190" r="16" fill="#16a34a"/>
-          <path d="M76 190 L83 197 L96 182" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="120" y="196" font-size="15" font-family="Arial" fill="#7c2d12">Page opens correctly in browser</text>
-        </svg>
-      </div>
-
-      <ul class="checklist">
-        <li><input type="checkbox" data-check="d4-1"><span>Clean indentation</span></li>
-        <li><input type="checkbox" data-check="d4-2"><span>Use meaningful class names</span></li>
-        <li><input type="checkbox" data-check="d4-3"><span>Check page in browser</span></li>
-      </ul>
-
-      <div class="code-box">
-        <div class="code-title">Day 4 Clean Final HTML Structure</div>
-        <pre><code>&lt;body&gt;
-  &lt;header class="topbar"&gt;
-    &lt;h1&gt;Programmer's Picnic&lt;/h1&gt;
-  &lt;/header&gt;
-
-  &lt;main class="dashboard"&gt;
-    &lt;section class="welcome-section"&gt;
-      &lt;h2&gt;Welcome Champak Roy&lt;/h2&gt;
-      &lt;p&gt;Admin | Teacher | Course Creator&lt;/p&gt;
-    &lt;/section&gt;
-
-    &lt;section class="module-section"&gt;
-      &lt;h2&gt;Select Module&lt;/h2&gt;
-
-      &lt;div class="module-grid"&gt;
-        &lt;div class="module-card"&gt;
-          &lt;h3&gt;Students&lt;/h3&gt;
-          &lt;p&gt;Student Registration and Management&lt;/p&gt;
-        &lt;/div&gt;
-
-        &lt;div class="module-card"&gt;
-          &lt;h3&gt;Courses&lt;/h3&gt;
-          &lt;p&gt;Manage Courses&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
-  &lt;/main&gt;
-&lt;/body&gt;</code></pre>
-      </div>
-
-      <div class="output">Output: Clean HTML dashboard structure</div>
-    </div>
-
-  </div>
-</article>
-
-
-
-      <!-- Week 2 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 2: CSS and Dashboard Design</h3>
-          <p>Goal: Make the static dashboard beautiful and responsive.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 5</h4>
-            <div class="topic">CSS Basics</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d5-1"><span>Learn color, background, padding, margin</span></li>
-              <li><input type="checkbox" data-check="d5-2"><span>Style body and main container</span></li>
-              <li><input type="checkbox" data-check="d5-3"><span>Add saffron theme colors</span></li>
-            </ul>
-            <div class="output">Output: Styled welcome section</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 6</h4>
-            <div class="topic">Card Styling</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d6-1"><span>Add card background and border</span></li>
-              <li><input type="checkbox" data-check="d6-2"><span>Add border radius and shadow</span></li>
-              <li><input type="checkbox" data-check="d6-3"><span>Add hover effect</span></li>
-            </ul>
-            <div class="output">Output: Professional module cards</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 7</h4>
-            <div class="topic">CSS Grid</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d7-1"><span>Learn display grid</span></li>
-              <li><input type="checkbox" data-check="d7-2"><span>Create 3-column layout</span></li>
-              <li><input type="checkbox" data-check="d7-3"><span>Add gap between cards</span></li>
-            </ul>
-            <div class="output">Output: Dashboard card grid</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 8</h4>
-            <div class="topic">Responsive Design</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d8-1"><span>Learn media queries</span></li>
-              <li><input type="checkbox" data-check="d8-2"><span>Make tablet layout 2 columns</span></li>
-              <li><input type="checkbox" data-check="d8-3"><span>Make mobile layout 1 column</span></li>
-            </ul>
-            <div class="output">Output: Responsive static dashboard</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Week 3 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 3: JavaScript Basics and Angular Setup</h3>
-          <p>Goal: Understand data and create the Angular project.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 9</h4>
-            <div class="topic">JavaScript Level 0</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d9-1"><span>Learn variables and functions</span></li>
-              <li><input type="checkbox" data-check="d9-2"><span>Learn arrays and objects</span></li>
-              <li><input type="checkbox" data-check="d9-3"><span>Learn click events</span></li>
-            </ul>
-            <div class="output">Output: Basic JavaScript practice</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 10</h4>
-            <div class="topic">Dashboard Data</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d10-1"><span>Create modules array</span></li>
-              <li><input type="checkbox" data-check="d10-2"><span>Create user object</span></li>
-              <li><input type="checkbox" data-check="d10-3"><span>Understand data driven UI idea</span></li>
-            </ul>
-            <div class="output">Output: Dashboard data ready</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 11</h4>
-            <div class="topic">Install Angular</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d11-1"><span>Install Node.js</span></li>
-              <li><input type="checkbox" data-check="d11-2"><span>Check node -v and npm -v</span></li>
-              <li><input type="checkbox" data-check="d11-3"><span>Install Angular CLI</span></li>
-            </ul>
-            <div class="output">Output: Angular CLI installed</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 12</h4>
-            <div class="topic">Create Angular Project</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d12-1"><span>Run ng new programmers-picnic-dashboard</span></li>
-              <li><input type="checkbox" data-check="d12-2"><span>Run ng serve</span></li>
-              <li><input type="checkbox" data-check="d12-3"><span>Open localhost:4200</span></li>
-            </ul>
-            <div class="output">Output: Angular app running</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Week 4 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 4: Angular Basics</h3>
-          <p>Goal: Show dynamic user, roles, and modules.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 13</h4>
-            <div class="topic">Interpolation</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d13-1"><span>Create user object</span></li>
-              <li><input type="checkbox" data-check="d13-2"><span>Show {{ user.name }}</span></li>
-              <li><input type="checkbox" data-check="d13-3"><span>Show Programmer's Picnic brand</span></li>
-            </ul>
-            <div class="output">Output: Dynamic welcome text</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 14</h4>
-            <div class="topic">Arrays and Loop</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d14-1"><span>Create modules array in TypeScript</span></li>
-              <li><input type="checkbox" data-check="d14-2"><span>Use ngFor</span></li>
-              <li><input type="checkbox" data-check="d14-3"><span>Display all module cards</span></li>
-            </ul>
-            <div class="output">Output: Dynamic cards from array</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 15</h4>
-            <div class="topic">Click Events</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d15-1"><span>Learn click event syntax</span></li>
-              <li><input type="checkbox" data-check="d15-2"><span>Create toggle function</span></li>
-              <li><input type="checkbox" data-check="d15-3"><span>Test button click</span></li>
-            </ul>
-            <div class="output">Output: Click interaction working</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 16</h4>
-            <div class="topic">Conditional Display</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d16-1"><span>Learn ngIf</span></li>
-              <li><input type="checkbox" data-check="d16-2"><span>Show and hide menu</span></li>
-              <li><input type="checkbox" data-check="d16-3"><span>Apply to Students card</span></li>
-            </ul>
-            <div class="output">Output: Expandable Students card</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Week 5 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 5: Angular Components</h3>
-          <p>Goal: Split dashboard into clean reusable parts.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 17</h4>
-            <div class="topic">Dashboard Page</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d17-1"><span>Generate dashboard component</span></li>
-              <li><input type="checkbox" data-check="d17-2"><span>Move dashboard HTML</span></li>
-              <li><input type="checkbox" data-check="d17-3"><span>Move dashboard CSS</span></li>
-            </ul>
-            <div class="output">Output: Dashboard page component</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 18</h4>
-            <div class="topic">Top Bar Component</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d18-1"><span>Generate top-bar component</span></li>
-              <li><input type="checkbox" data-check="d18-2"><span>Add Programmer's Picnic logo text</span></li>
-              <li><input type="checkbox" data-check="d18-3"><span>Add Champak Roy user label</span></li>
-            </ul>
-            <div class="output">Output: Reusable top bar</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 19</h4>
-            <div class="topic">Dashboard Header Component</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d19-1"><span>Generate dashboard-header component</span></li>
-              <li><input type="checkbox" data-check="d19-2"><span>Add welcome message</span></li>
-              <li><input type="checkbox" data-check="d19-3"><span>Add role badges</span></li>
-            </ul>
-            <div class="output">Output: Header component</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 20</h4>
-            <div class="topic">Module Card Component</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d20-1"><span>Generate module-card component</span></li>
-              <li><input type="checkbox" data-check="d20-2"><span>Use @Input for module data</span></li>
-              <li><input type="checkbox" data-check="d20-3"><span>Test one card</span></li>
-            </ul>
-            <div class="output">Output: Reusable module card</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Week 6 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 6: Module Grid and Expandable Menu</h3>
-          <p>Goal: Build the screenshot-like module dashboard.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 21</h4>
-            <div class="topic">Module Grid Component</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d21-1"><span>Generate module-grid component</span></li>
-              <li><input type="checkbox" data-check="d21-2"><span>Move grid logic into component</span></li>
-              <li><input type="checkbox" data-check="d21-3"><span>Display all cards</span></li>
-            </ul>
-            <div class="output">Output: Module grid component</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 22</h4>
-            <div class="topic">Module Data Model</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d22-1"><span>Create module interface</span></li>
-              <li><input type="checkbox" data-check="d22-2"><span>Add id, title, description, children</span></li>
-              <li><input type="checkbox" data-check="d22-3"><span>Use clean module data</span></li>
-            </ul>
-            <div class="output">Output: Strong module structure</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 23</h4>
-            <div class="topic">Expandable Students Card</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d23-1"><span>Add children menu items</span></li>
-              <li><input type="checkbox" data-check="d23-2"><span>Open and close card</span></li>
-              <li><input type="checkbox" data-check="d23-3"><span>Style expanded menu</span></li>
-            </ul>
-            <div class="output">Output: Expandable menu like screenshot</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 24</h4>
-            <div class="topic">All Modules</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d24-1"><span>Add Students, Courses, Classes</span></li>
-              <li><input type="checkbox" data-check="d24-2"><span>Add Assignments, Payments, Reports</span></li>
-              <li><input type="checkbox" data-check="d24-3"><span>Add Content Library, Users, Settings</span></li>
-            </ul>
-            <div class="output">Output: Complete dashboard modules</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Week 7 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 7: Routing and Pages</h3>
-          <p>Goal: Turn the dashboard into a multi-page Angular app.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 25</h4>
-            <div class="topic">Create Pages</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d25-1"><span>Create students page</span></li>
-              <li><input type="checkbox" data-check="d25-2"><span>Create courses and classes pages</span></li>
-              <li><input type="checkbox" data-check="d25-3"><span>Create payments and reports pages</span></li>
-            </ul>
-            <div class="output">Output: Basic pages created</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 26</h4>
-            <div class="topic">Configure Routes</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d26-1"><span>Add /dashboard route</span></li>
-              <li><input type="checkbox" data-check="d26-2"><span>Add /students and /courses routes</span></li>
-              <li><input type="checkbox" data-check="d26-3"><span>Test routes in browser</span></li>
-            </ul>
-            <div class="output">Output: Angular routing working</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 27</h4>
-            <div class="topic">Card Navigation</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d27-1"><span>Add route link to each card</span></li>
-              <li><input type="checkbox" data-check="d27-2"><span>Click Students card to open page</span></li>
-              <li><input type="checkbox" data-check="d27-3"><span>Click Reports card to open page</span></li>
-            </ul>
-            <div class="output">Output: Cards navigate to pages</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 28</h4>
-            <div class="topic">Page Layout</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d28-1"><span>Add Back to Dashboard button</span></li>
-              <li><input type="checkbox" data-check="d28-2"><span>Add simple table placeholder</span></li>
-              <li><input type="checkbox" data-check="d28-3"><span>Add simple form placeholder</span></li>
-            </ul>
-            <div class="output">Output: Useful module pages</div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Week 8 -->
-      <article class="week">
-        <div class="week-header">
-          <h3>Week 8: Polish and Final Build</h3>
-          <p>Goal: Make the project clean, responsive, and screenshot-ready.</p>
-        </div>
-
-        <div class="days">
-          <div class="day">
-            <h4>Day 29</h4>
-            <div class="topic">Visual Polish</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d29-1"><span>Improve spacing</span></li>
-              <li><input type="checkbox" data-check="d29-2"><span>Improve card alignment</span></li>
-              <li><input type="checkbox" data-check="d29-3"><span>Add clean hover effects</span></li>
-            </ul>
-            <div class="output">Output: Better looking dashboard</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 30</h4>
-            <div class="topic">Mobile Testing</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d30-1"><span>Test laptop layout</span></li>
-              <li><input type="checkbox" data-check="d30-2"><span>Test tablet layout</span></li>
-              <li><input type="checkbox" data-check="d30-3"><span>Test mobile layout</span></li>
-            </ul>
-            <div class="output">Output: Responsive app</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 31</h4>
-            <div class="topic">Final Review</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d31-1"><span>Check Programmer's Picnic branding</span></li>
-              <li><input type="checkbox" data-check="d31-2"><span>Check Champak Roy welcome text</span></li>
-              <li><input type="checkbox" data-check="d31-3"><span>Remove unused code</span></li>
-            </ul>
-            <div class="output">Output: Clean final project</div>
-          </div>
-
-          <div class="day">
-            <h4>Day 32</h4>
-            <div class="topic">Final Build</div>
-            <ul class="checklist">
-              <li><input type="checkbox" data-check="d32-1"><span>Run ng build</span></li>
-              <li><input type="checkbox" data-check="d32-2"><span>Check build output</span></li>
-              <li><input type="checkbox" data-check="d32-3"><span>Take final screenshot</span></li>
-            </ul>
-            <div class="output">Output: Final Angular dashboard</div>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <section class="final-box" id="final">
-      <h2>Final Target</h2>
-      <p>
-        At the end of this roadmap, the learner should have a working Angular dashboard with
-        Programmer's Picnic branding.
-      </p>
-
-      <div class="final-grid">
-        <div class="final-item">
-          <strong>Brand</strong>
-          Programmer's Picnic
-        </div>
-        <div class="final-item">
-          <strong>User</strong>
-          Welcome Champak Roy
-        </div>
-        <div class="final-item">
-          <strong>Roles</strong>
-          Admin, Teacher, Course Creator
-        </div>
-        <div class="final-item">
-          <strong>Dashboard</strong>
-          Module cards with clean layout
-        </div>
-        <div class="final-item">
-          <strong>Angular</strong>
-          Components, routing, ngFor, ngIf
-        </div>
-        <div class="final-item">
-          <strong>Design</strong>
-          Responsive saffron-red theme
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#level0">Start Lesson</a>
+          <button class="btn btn-secondary" onclick="window.print()">Print Lesson</button>
         </div>
       </div>
     </section>
+
+    <div class="container">
+      <aside class="sidebar">
+        <h3>Lesson Menu</h3>
+        <a href="#goal">Goal</a>
+        <a href="#level0">1. Level 0 Idea</a>
+        <a href="#big-picture">2. Big Picture Diagram</a>
+        <a href="#tree">3. Folder Tree</a>
+        <a href="#root">4. Root Files</a>
+        <a href="#src">5. src Folder</a>
+        <a href="#app">6. app Folder</a>
+        <a href="#component">7. Component Files</a>
+        <a href="#flow">8. App Start Flow</a>
+        <a href="#assets">9. Assets and Public</a>
+        <a href="#config">10. Configuration Files</a>
+        <a href="#generated">11. Generated Folders</a>
+        <a href="#beginner">12. Beginner Editing Map</a>
+        <a href="#intermediate">13. Intermediate Structure</a>
+        <a href="#expert">14. Expert Structure</a>
+        <a href="#mistakes">15. Common Mistakes</a>
+        <a href="#assignment">16. Assignment</a>
+      </aside>
+
+      <div class="content">
+        <section class="lesson" id="goal">
+          <h2>Lesson Goal</h2>
+
+          <p>
+            After creating an Angular app, many students see many folders and files and become confused.
+            This lesson explains the purpose of every important folder and file.
+          </p>
+
+          <div class="goal-grid">
+            <div class="mini-card">
+              <strong>Beginner Goal</strong>
+              Know where to edit HTML, CSS, and TypeScript.
+            </div>
+
+            <div class="mini-card">
+              <strong>Intermediate Goal</strong>
+              Know routes, components, assets, and services.
+            </div>
+
+            <div class="mini-card">
+              <strong>Expert Goal</strong>
+              Understand build configuration, environments, libraries, and scalable structure.
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson" id="level0">
+          <h2>1. Level 0 Idea</h2>
+
+          <p>
+            An Angular project is not one single file. It is a complete workspace.
+            The workspace contains configuration files, source code, assets, dependencies, and build output.
+          </p>
+
+          <div class="note">
+            <strong>Simple meaning:</strong>
+            Angular gives us a ready-made workshop. Some files are for writing our app.
+            Some files are for telling Angular how to build the app. Some folders are created automatically.
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Area</th>
+                  <th>Simple Meaning</th>
+                  <th>Beginner Should Edit?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>src/app</code></td>
+                  <td>Your Angular components, pages, routes, and logic.</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><code>src/styles.css</code></td>
+                  <td>Global CSS for the whole app.</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><code>public</code></td>
+                  <td>Static public files like favicon, images, or CNAME.</td>
+                  <td>Sometimes</td>
+                </tr>
+                <tr>
+                  <td><code>angular.json</code></td>
+                  <td>Angular build and project configuration.</td>
+                  <td>Carefully</td>
+                </tr>
+                <tr>
+                  <td><code>package.json</code></td>
+                  <td>Project scripts and dependencies.</td>
+                  <td>Carefully</td>
+                </tr>
+                <tr>
+                  <td><code>node_modules</code></td>
+                  <td>Downloaded packages.</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><code>dist</code></td>
+                  <td>Final build output.</td>
+                  <td>No manual editing</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lesson" id="big-picture">
+          <h2>2. Big Picture Diagram</h2>
+
+          <p>
+            This diagram shows the Angular project as a complete system.
+          </p>
+
+          <div class="diagram">
+            <svg viewBox="0 0 1050 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Angular project big picture diagram">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#d97706"/>
+                  <stop offset="100%" stop-color="#f59e0b"/>
+                </linearGradient>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#92400e" flood-opacity="0.22"/>
+                </filter>
+              </defs>
+
+              <rect x="20" y="20" width="1010" height="480" rx="28" fill="#fff7ed" stroke="#fed7aa" stroke-width="3"/>
+
+              <text x="525" y="62" text-anchor="middle" font-size="30" font-weight="800" fill="#92400e">
+                Angular Workspace
+              </text>
+
+              <rect x="70" y="105" width="250" height="120" rx="22" fill="#ffffff" stroke="#fed7aa" filter="url(#shadow)"/>
+              <text x="195" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">Root Config</text>
+              <text x="195" y="177" text-anchor="middle" font-size="16" fill="#7c5b35">angular.json</text>
+              <text x="195" y="202" text-anchor="middle" font-size="16" fill="#7c5b35">package.json</text>
+
+              <rect x="400" y="105" width="250" height="120" rx="22" fill="#ffffff" stroke="#fed7aa" filter="url(#shadow)"/>
+              <text x="525" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">Source Code</text>
+              <text x="525" y="177" text-anchor="middle" font-size="16" fill="#7c5b35">src/app</text>
+              <text x="525" y="202" text-anchor="middle" font-size="16" fill="#7c5b35">components, routes</text>
+
+              <rect x="730" y="105" width="250" height="120" rx="22" fill="#ffffff" stroke="#fed7aa" filter="url(#shadow)"/>
+              <text x="855" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">Public Files</text>
+              <text x="855" y="177" text-anchor="middle" font-size="16" fill="#7c5b35">public</text>
+              <text x="855" y="202" text-anchor="middle" font-size="16" fill="#7c5b35">images, favicon, CNAME</text>
+
+              <rect x="230" y="310" width="250" height="120" rx="22" fill="#ffffff" stroke="#fed7aa" filter="url(#shadow)"/>
+              <text x="355" y="350" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">Dependencies</text>
+              <text x="355" y="382" text-anchor="middle" font-size="16" fill="#7c5b35">node_modules</text>
+              <text x="355" y="407" text-anchor="middle" font-size="16" fill="#7c5b35">installed packages</text>
+
+              <rect x="570" y="310" width="250" height="120" rx="22" fill="url(#g1)" filter="url(#shadow)"/>
+              <text x="695" y="350" text-anchor="middle" font-size="22" font-weight="800" fill="#ffffff">Build Output</text>
+              <text x="695" y="382" text-anchor="middle" font-size="16" fill="#fff7ed">dist</text>
+              <text x="695" y="407" text-anchor="middle" font-size="16" fill="#fff7ed">final website files</text>
+
+              <path d="M320 165 C350 165 370 165 400 165" stroke="#d97706" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+              <path d="M650 165 C680 165 700 165 730 165" stroke="#d97706" stroke-width="4" fill="none"/>
+              <path d="M525 225 C525 270 605 285 650 310" stroke="#d97706" stroke-width="4" fill="none"/>
+              <path d="M355 310 C390 270 465 260 525 225" stroke="#d97706" stroke-width="4" fill="none"/>
+
+              <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L9,3 z" fill="#d97706"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+
+          <div class="success">
+            The most important beginner folder is <strong>src/app</strong>.
+            The most important expert file is usually <strong>angular.json</strong>.
+          </div>
+        </section>
+
+        <section class="lesson" id="tree">
+          <h2>3. Angular Folder Tree</h2>
+
+          <p>
+            A fresh Angular project may look similar to this.
+            Exact files can vary slightly depending on Angular version, routing, CSS choice, SSR choice, and selected tools.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>programmers-picnic-angular-demo/
+│
+├── .angular/
+├── .vscode/
+├── node_modules/
+├── public/
+│   ├── favicon.ico
+│   └── CNAME
+│
+├── src/
+│   ├── app/
+│   │   ├── app.config.ts
+│   │   ├── app.css
+│   │   ├── app.html
+│   │   ├── app.routes.ts
+│   │   ├── app.spec.ts
+│   │   └── app.ts
+│   │
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.css
+│
+├── angular.json
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.spec.json
+├── README.md
+└── .gitignore</code></pre>
+
+          <div class="note">
+            In older Angular projects, you may see files like <code>app.component.ts</code>,
+            <code>app.component.html</code>, and <code>app.module.ts</code>.
+            In newer standalone Angular projects, you may see <code>app.ts</code>,
+            <code>app.html</code>, <code>app.css</code>, <code>app.config.ts</code>, and <code>app.routes.ts</code>.
+          </div>
+        </section>
+
+        <section class="lesson" id="root">
+          <h2>4. Root-Level Files and Folders</h2>
+
+          <p>
+            Root-level files live directly inside the project folder. They control the whole Angular project.
+          </p>
+
+          <div class="diagram">
+            <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Angular root files diagram">
+              <rect x="20" y="20" width="960" height="460" rx="30" fill="#fff7ed" stroke="#fed7aa" stroke-width="3"/>
+              <text x="500" y="60" text-anchor="middle" font-size="28" font-weight="800" fill="#92400e">
+                Root Folder Controls the Project
+              </text>
+
+              <g>
+                <rect x="70" y="110" width="250" height="95" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+                <text x="195" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">angular.json</text>
+                <text x="195" y="175" text-anchor="middle" font-size="15" fill="#7c5b35">Build, serve, assets, styles</text>
+              </g>
+
+              <g>
+                <rect x="375" y="110" width="250" height="95" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+                <text x="500" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">package.json</text>
+                <text x="500" y="175" text-anchor="middle" font-size="15" fill="#7c5b35">Scripts and dependencies</text>
+              </g>
+
+              <g>
+                <rect x="680" y="110" width="250" height="95" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+                <text x="805" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">tsconfig.json</text>
+                <text x="805" y="175" text-anchor="middle" font-size="15" fill="#7c5b35">TypeScript rules</text>
+              </g>
+
+              <g>
+                <rect x="70" y="275" width="250" height="95" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+                <text x="195" y="310" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">src</text>
+                <text x="195" y="340" text-anchor="middle" font-size="15" fill="#7c5b35">Main application code</text>
+              </g>
+
+              <g>
+                <rect x="375" y="275" width="250" height="95" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+                <text x="500" y="310" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">public</text>
+                <text x="500" y="340" text-anchor="middle" font-size="15" fill="#7c5b35">Static public files</text>
+              </g>
+
+              <g>
+                <rect x="680" y="275" width="250" height="95" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+                <text x="805" y="310" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">node_modules</text>
+                <text x="805" y="340" text-anchor="middle" font-size="15" fill="#7c5b35">Downloaded packages</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File or Folder</th>
+                  <th>Purpose</th>
+                  <th>Edit Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>angular.json</code></td>
+                  <td>Main Angular workspace configuration. It controls build options, assets, styles, scripts, output path, and project targets.</td>
+                  <td>Intermediate to Expert</td>
+                </tr>
+                <tr>
+                  <td><code>package.json</code></td>
+                  <td>Contains project dependencies and npm scripts like <code>start</code>, <code>build</code>, and <code>test</code>.</td>
+                  <td>Beginner to Expert</td>
+                </tr>
+                <tr>
+                  <td><code>package-lock.json</code></td>
+                  <td>Locks exact package versions installed by npm.</td>
+                  <td>Do not manually edit</td>
+                </tr>
+                <tr>
+                  <td><code>tsconfig.json</code></td>
+                  <td>Main TypeScript configuration for the workspace.</td>
+                  <td>Advanced</td>
+                </tr>
+                <tr>
+                  <td><code>tsconfig.app.json</code></td>
+                  <td>TypeScript configuration specifically for the Angular app build.</td>
+                  <td>Advanced</td>
+                </tr>
+                <tr>
+                  <td><code>tsconfig.spec.json</code></td>
+                  <td>TypeScript configuration for test files.</td>
+                  <td>Advanced</td>
+                </tr>
+                <tr>
+                  <td><code>.gitignore</code></td>
+                  <td>Tells Git which files and folders should not be committed.</td>
+                  <td>Sometimes</td>
+                </tr>
+                <tr>
+                  <td><code>README.md</code></td>
+                  <td>Project notes and instructions.</td>
+                  <td>Yes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lesson" id="src">
+          <h2>5. The src Folder</h2>
+
+          <p>
+            The <code>src</code> folder contains the actual application source code.
+            This is where most real Angular development happens.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>src/
+├── app/
+├── index.html
+├── main.ts
+└── styles.css</code></pre>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File or Folder</th>
+                  <th>Purpose</th>
+                  <th>Beginner Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>src/app</code></td>
+                  <td>Main Angular app code: components, routes, services, pages.</td>
+                  <td>Your app lives here.</td>
+                </tr>
+                <tr>
+                  <td><code>src/index.html</code></td>
+                  <td>Main HTML shell loaded by the browser.</td>
+                  <td>The outer HTML page.</td>
+                </tr>
+                <tr>
+                  <td><code>src/main.ts</code></td>
+                  <td>Application starting point. It bootstraps Angular.</td>
+                  <td>Angular starts here.</td>
+                </tr>
+                <tr>
+                  <td><code>src/styles.css</code></td>
+                  <td>Global styles for the complete app.</td>
+                  <td>CSS for whole website.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>src/index.html</h3>
+
+          <p>
+            This is the browser’s first HTML file. It usually contains one important Angular root tag.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>&lt;app-root&gt;&lt;/app-root&gt;</code></pre>
+
+          <div class="note">
+            The browser loads <code>index.html</code>. Then Angular takes control and fills the page inside <code>&lt;app-root&gt;</code>.
+          </div>
+
+          <h3>src/main.ts</h3>
+
+          <p>
+            This file starts Angular. It connects the Angular application component with browser rendering.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
+
+bootstrapApplication(App, appConfig)
+  .catch((err) => console.error(err));</code></pre>
+
+          <h3>src/styles.css</h3>
+
+          <p>
+            This file is for global CSS. Use it for body style, fonts, common classes, and layout rules that should affect the whole website.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff7ed;
+  color: #241407;
+}</code></pre>
+        </section>
+
+        <section class="lesson" id="app">
+          <h2>6. The src/app Folder</h2>
+
+          <p>
+            The <code>src/app</code> folder is the heart of an Angular application.
+            Most beginner edits happen here.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>src/app/
+├── app.config.ts
+├── app.css
+├── app.html
+├── app.routes.ts
+├── app.spec.ts
+└── app.ts</code></pre>
+
+          <div class="diagram">
+            <svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Angular app folder diagram">
+              <rect x="20" y="20" width="960" height="520" rx="30" fill="#fff7ed" stroke="#fed7aa" stroke-width="3"/>
+
+              <text x="500" y="60" text-anchor="middle" font-size="28" font-weight="800" fill="#92400e">
+                src/app Folder
+              </text>
+
+              <rect x="390" y="95" width="220" height="80" rx="20" fill="#d97706"/>
+              <text x="500" y="128" text-anchor="middle" font-size="22" font-weight="800" fill="#ffffff">app.ts</text>
+              <text x="500" y="154" text-anchor="middle" font-size="14" fill="#fff7ed">Component logic</text>
+
+              <rect x="100" y="250" width="220" height="80" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="210" y="283" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">app.html</text>
+              <text x="210" y="309" text-anchor="middle" font-size="14" fill="#7c5b35">Component template</text>
+
+              <rect x="390" y="250" width="220" height="80" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="500" y="283" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">app.css</text>
+              <text x="500" y="309" text-anchor="middle" font-size="14" fill="#7c5b35">Component style</text>
+
+              <rect x="680" y="250" width="220" height="80" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="790" y="283" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">app.routes.ts</text>
+              <text x="790" y="309" text-anchor="middle" font-size="14" fill="#7c5b35">Page routes</text>
+
+              <rect x="250" y="400" width="220" height="80" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="360" y="433" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">app.config.ts</text>
+              <text x="360" y="459" text-anchor="middle" font-size="14" fill="#7c5b35">App providers</text>
+
+              <rect x="530" y="400" width="220" height="80" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="640" y="433" text-anchor="middle" font-size="22" font-weight="800" fill="#92400e">app.spec.ts</text>
+              <text x="640" y="459" text-anchor="middle" font-size="14" fill="#7c5b35">Testing file</text>
+
+              <path d="M500 175 L210 250" stroke="#d97706" stroke-width="4" fill="none"/>
+              <path d="M500 175 L500 250" stroke="#d97706" stroke-width="4" fill="none"/>
+              <path d="M500 175 L790 250" stroke="#d97706" stroke-width="4" fill="none"/>
+              <path d="M500 175 L360 400" stroke="#d97706" stroke-width="4" fill="none"/>
+              <path d="M500 175 L640 400" stroke="#d97706" stroke-width="4" fill="none"/>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Purpose</th>
+                  <th>Simple Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>app.ts</code></td>
+                  <td>Main root component TypeScript file.</td>
+                  <td>Controls the main app component.</td>
+                </tr>
+                <tr>
+                  <td><code>app.html</code></td>
+                  <td>Main root component template.</td>
+                  <td>Write visible HTML here.</td>
+                </tr>
+                <tr>
+                  <td><code>app.css</code></td>
+                  <td>CSS only for the root component.</td>
+                  <td>Style the root app page.</td>
+                </tr>
+                <tr>
+                  <td><code>app.routes.ts</code></td>
+                  <td>Route configuration.</td>
+                  <td>Maps URLs to pages.</td>
+                </tr>
+                <tr>
+                  <td><code>app.config.ts</code></td>
+                  <td>Application-level providers and configuration.</td>
+                  <td>Add router, HTTP, animations, etc.</td>
+                </tr>
+                <tr>
+                  <td><code>app.spec.ts</code></td>
+                  <td>Test file for the root component.</td>
+                  <td>Used for automated testing.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lesson" id="component">
+          <h2>7. Component Files</h2>
+
+          <p>
+            Angular apps are built using components. A component usually has three main parts.
+          </p>
+
+          <div class="diagram">
+            <svg viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Angular component parts diagram">
+              <rect x="20" y="20" width="960" height="380" rx="30" fill="#fff7ed" stroke="#fed7aa" stroke-width="3"/>
+              <text x="500" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#92400e">
+                Angular Component = Logic + Template + Style
+              </text>
+
+              <rect x="80" y="125" width="250" height="150" rx="24" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="205" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">TypeScript</text>
+              <text x="205" y="205" text-anchor="middle" font-size="16" fill="#7c5b35">data</text>
+              <text x="205" y="230" text-anchor="middle" font-size="16" fill="#7c5b35">methods</text>
+              <text x="205" y="255" text-anchor="middle" font-size="16" fill="#7c5b35">events</text>
+
+              <rect x="375" y="125" width="250" height="150" rx="24" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="500" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">HTML</text>
+              <text x="500" y="205" text-anchor="middle" font-size="16" fill="#7c5b35">visible structure</text>
+              <text x="500" y="230" text-anchor="middle" font-size="16" fill="#7c5b35">buttons</text>
+              <text x="500" y="255" text-anchor="middle" font-size="16" fill="#7c5b35">text and layout</text>
+
+              <rect x="670" y="125" width="250" height="150" rx="24" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="795" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">CSS</text>
+              <text x="795" y="205" text-anchor="middle" font-size="16" fill="#7c5b35">colors</text>
+              <text x="795" y="230" text-anchor="middle" font-size="16" fill="#7c5b35">spacing</text>
+              <text x="795" y="255" text-anchor="middle" font-size="16" fill="#7c5b35">responsive design</text>
+
+              <text x="500" y="340" text-anchor="middle" font-size="22" font-weight="800" fill="#d97706">
+                Together they create one reusable piece of UI.
+              </text>
+            </svg>
+          </div>
+
+          <h3>Example Component</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  imports: [],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {
+  title = 'Programmers Picnic Angular Demo';
+}</code></pre>
+
+          <h3>What Each Part Means</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Part</th>
+                  <th>Meaning</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>@Component</code></td>
+                  <td>Decorator that tells Angular this class is a component.</td>
+                  <td><code>@Component({...})</code></td>
+                </tr>
+                <tr>
+                  <td><code>selector</code></td>
+                  <td>HTML tag name for the component.</td>
+                  <td><code>&lt;app-root&gt;&lt;/app-root&gt;</code></td>
+                </tr>
+                <tr>
+                  <td><code>templateUrl</code></td>
+                  <td>HTML file attached to the component.</td>
+                  <td><code>./app.html</code></td>
+                </tr>
+                <tr>
+                  <td><code>styleUrl</code></td>
+                  <td>CSS file attached to the component.</td>
+                  <td><code>./app.css</code></td>
+                </tr>
+                <tr>
+                  <td><code>export class App</code></td>
+                  <td>The TypeScript class for the component.</td>
+                  <td><code>title = 'Demo'</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lesson" id="flow">
+          <h2>8. How an Angular App Starts</h2>
+
+          <p>
+            When the browser opens the Angular website, files are loaded in a specific flow.
+          </p>
+
+          <div class="diagram">
+            <svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Angular app start flow diagram">
+              <defs>
+                <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L9,3 z" fill="#d97706"/>
+                </marker>
+              </defs>
+
+              <rect x="20" y="20" width="1060" height="480" rx="30" fill="#fff7ed" stroke="#fed7aa" stroke-width="3"/>
+              <text x="550" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#92400e">
+                Angular Start Flow
+              </text>
+
+              <rect x="60" y="135" width="180" height="90" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="150" y="170" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">index.html</text>
+              <text x="150" y="198" text-anchor="middle" font-size="14" fill="#7c5b35">browser loads</text>
+
+              <rect x="300" y="135" width="180" height="90" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="390" y="170" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">main.ts</text>
+              <text x="390" y="198" text-anchor="middle" font-size="14" fill="#7c5b35">bootstraps app</text>
+
+              <rect x="540" y="135" width="180" height="90" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="630" y="170" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">app.config.ts</text>
+              <text x="630" y="198" text-anchor="middle" font-size="14" fill="#7c5b35">providers</text>
+
+              <rect x="780" y="135" width="180" height="90" rx="20" fill="#d97706"/>
+              <text x="870" y="170" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff">App</text>
+              <text x="870" y="198" text-anchor="middle" font-size="14" fill="#fff7ed">root component</text>
+
+              <rect x="230" y="330" width="190" height="90" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="325" y="365" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">app.html</text>
+              <text x="325" y="393" text-anchor="middle" font-size="14" fill="#7c5b35">template</text>
+
+              <rect x="455" y="330" width="190" height="90" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="550" y="365" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">app.css</text>
+              <text x="550" y="393" text-anchor="middle" font-size="14" fill="#7c5b35">style</text>
+
+              <rect x="680" y="330" width="190" height="90" rx="20" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="775" y="365" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">app.routes.ts</text>
+              <text x="775" y="393" text-anchor="middle" font-size="14" fill="#7c5b35">pages</text>
+
+              <path d="M240 180 L300 180" stroke="#d97706" stroke-width="4" marker-end="url(#arrow2)"/>
+              <path d="M480 180 L540 180" stroke="#d97706" stroke-width="4" marker-end="url(#arrow2)"/>
+              <path d="M720 180 L780 180" stroke="#d97706" stroke-width="4" marker-end="url(#arrow2)"/>
+
+              <path d="M870 225 C820 285 700 310 325 330" stroke="#d97706" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+              <path d="M870 225 C800 285 680 315 550 330" stroke="#d97706" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+              <path d="M870 225 C855 275 820 310 775 330" stroke="#d97706" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+            </svg>
+          </div>
+
+          <h3>Start Flow in Simple Words</h3>
+
+          <ol>
+            <li>The browser opens <code>index.html</code>.</li>
+            <li><code>index.html</code> contains <code>&lt;app-root&gt;</code>.</li>
+            <li><code>main.ts</code> starts Angular.</li>
+            <li>Angular loads the root component.</li>
+            <li>The root component uses its HTML and CSS.</li>
+            <li>If routes exist, Angular loads the page for the current URL.</li>
+          </ol>
+        </section>
+
+        <section class="lesson" id="assets">
+          <h2>9. Assets and Public Files</h2>
+
+          <p>
+            Angular projects may use a <code>public</code> folder for static files that should be copied as-is during build.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>public/
+├── favicon.ico
+├── logo.png
+├── banner.jpg
+└── CNAME</code></pre>
+
+          <div class="note">
+            For GitHub Pages custom domain, you can place a <code>CNAME</code> file in <code>public</code>.
+            During build/deploy, it should be copied to the final site output.
+          </div>
+
+          <h3>Correct Image Path</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>&lt;img src="logo.png" alt="Logo"&gt;</code></pre>
+
+          <h3>Common GitHub Pages Mistake</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>&lt;img src="/logo.png" alt="Logo"&gt;</code></pre>
+
+          <div class="warning">
+            Starting with <code>/</code> means root path. This can break on repository-based GitHub Pages deployment.
+            For custom domain root, it is usually okay, but beginners should still prefer simple relative paths.
+          </div>
+        </section>
+
+        <section class="lesson" id="config">
+          <h2>10. Configuration Files</h2>
+
+          <p>
+            Configuration files tell Angular, TypeScript, npm, and Git how the project should work.
+          </p>
+
+          <h3>angular.json</h3>
+
+          <p>
+            This is the main Angular workspace configuration file.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>{
+  "projects": {
+    "programmers-picnic-angular-demo": {
+      "architect": {
+        "build": {
+          "options": {
+            "outputPath": "dist/programmers-picnic-angular-demo",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "styles": [
+              "src/styles.css"
+            ],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+
+          <div class="info">
+            The exact structure can vary by Angular version, but the idea is the same:
+            <code>angular.json</code> tells Angular where the main entry file, styles, assets, and output folder are.
+          </div>
+
+          <h3>package.json</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>{
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "deploy:github": "ng deploy --base-href=/"
+  },
+  "dependencies": {
+    "@angular/core": "...",
+    "@angular/common": "...",
+    "@angular/router": "..."
+  },
+  "devDependencies": {
+    "@angular/cli": "...",
+    "typescript": "..."
+  }
+}</code></pre>
+
+          <h3>tsconfig.json</h3>
+
+          <p>
+            TypeScript configuration controls how TypeScript code is checked and compiled.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022"
+  }
+}</code></pre>
+
+          <div class="warning">
+            Beginners should not randomly edit <code>angular.json</code> or <code>tsconfig.json</code>.
+            A small wrong comma or path can break the project.
+          </div>
+        </section>
+
+        <section class="lesson" id="generated">
+          <h2>11. Automatically Generated Folders</h2>
+
+          <p>
+            Some folders are created by tools. You normally do not edit them manually.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Folder</th>
+                  <th>Created By</th>
+                  <th>Purpose</th>
+                  <th>Commit to Git?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>node_modules</code></td>
+                  <td><code>npm install</code></td>
+                  <td>Stores downloaded packages.</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><code>dist</code></td>
+                  <td><code>ng build</code></td>
+                  <td>Final website build output.</td>
+                  <td>Usually no, except deployment branches/tools</td>
+                </tr>
+                <tr>
+                  <td><code>.angular</code></td>
+                  <td>Angular CLI</td>
+                  <td>Cache for faster builds.</td>
+                  <td>No</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Install Packages Again</h3>
+
+          <p>
+            If <code>node_modules</code> is missing, run:
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>npm install</code></pre>
+
+          <h3>Create Build Output</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>ng build</code></pre>
+        </section>
+
+        <section class="lesson" id="beginner">
+          <h2>12. Beginner Editing Map</h2>
+
+          <p>
+            Beginners should know exactly which files to edit for common tasks.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>File to Edit</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Change visible text</td>
+                  <td><code>src/app/app.html</code></td>
+                  <td>Edit headings, paragraphs, buttons.</td>
+                </tr>
+                <tr>
+                  <td>Change page style</td>
+                  <td><code>src/app/app.css</code></td>
+                  <td>Change colors, spacing, cards.</td>
+                </tr>
+                <tr>
+                  <td>Change global body style</td>
+                  <td><code>src/styles.css</code></td>
+                  <td>Set body font and background.</td>
+                </tr>
+                <tr>
+                  <td>Add app title variable</td>
+                  <td><code>src/app/app.ts</code></td>
+                  <td><code>title = 'My App'</code></td>
+                </tr>
+                <tr>
+                  <td>Add images</td>
+                  <td><code>public</code></td>
+                  <td>Put <code>logo.png</code> in public.</td>
+                </tr>
+                <tr>
+                  <td>Add deploy command</td>
+                  <td><code>package.json</code></td>
+                  <td>Add <code>deploy:github</code> script.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Beginner Rule</h3>
+
+          <div class="success">
+            First learn these four files well:
+            <code>app.html</code>, <code>app.css</code>, <code>app.ts</code>, and <code>styles.css</code>.
+          </div>
+        </section>
+
+        <section class="lesson" id="intermediate">
+          <h2>13. Intermediate Angular Structure</h2>
+
+          <p>
+            As an Angular app grows, you should not keep everything inside only one component.
+            You should divide the app into pages, components, services, and models.
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>src/app/
+├── core/
+│   ├── services/
+│   └── guards/
+│
+├── shared/
+│   ├── components/
+│   └── pipes/
+│
+├── pages/
+│   ├── home/
+│   ├── courses/
+│   ├── students/
+│   └── contact/
+│
+├── models/
+│   └── course.model.ts
+│
+├── app.config.ts
+├── app.routes.ts
+└── app.ts</code></pre>
+
+          <div class="diagram">
+            <svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Intermediate Angular folder structure diagram">
+              <rect x="20" y="20" width="960" height="520" rx="30" fill="#fff7ed" stroke="#fed7aa" stroke-width="3"/>
+              <text x="500" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#92400e">
+                Clean Intermediate Structure
+              </text>
+
+              <rect x="80" y="120" width="240" height="100" rx="22" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="200" y="158" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">core</text>
+              <text x="200" y="190" text-anchor="middle" font-size="15" fill="#7c5b35">global services, guards</text>
+
+              <rect x="380" y="120" width="240" height="100" rx="22" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="500" y="158" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">shared</text>
+              <text x="500" y="190" text-anchor="middle" font-size="15" fill="#7c5b35">reusable components</text>
+
+              <rect x="680" y="120" width="240" height="100" rx="22" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="800" y="158" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">pages</text>
+              <text x="800" y="190" text-anchor="middle" font-size="15" fill="#7c5b35">route-level screens</text>
+
+              <rect x="230" y="300" width="240" height="100" rx="22" fill="#ffffff" stroke="#fed7aa"/>
+              <text x="350" y="338" text-anchor="middle" font-size="24" font-weight="800" fill="#92400e">models</text>
+              <text x="350" y="370" text-anchor="middle" font-size="15" fill="#7c5b35">TypeScript data shapes</text>
+
+              <rect x="530" y="300" width="240" height="100" rx="22" fill="#d97706"/>
+              <text x="650" y="338" text-anchor="middle" font-size="24" font-weight="800" fill="#ffffff">routes</text>
+              <text x="650" y="370" text-anchor="middle" font-size="15" fill="#fff7ed">connect URLs to pages</text>
+
+              <text x="500" y="475" text-anchor="middle" font-size="20" font-weight="800" fill="#92400e">
+                This structure helps when the project becomes large.
+              </text>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Folder</th>
+                  <th>What Goes Inside</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>core</code></td>
+                  <td>Services used across the whole app, authentication, guards, interceptors.</td>
+                </tr>
+                <tr>
+                  <td><code>shared</code></td>
+                  <td>Reusable buttons, cards, pipes, directives, layout components.</td>
+                </tr>
+                <tr>
+                  <td><code>pages</code></td>
+                  <td>Home page, dashboard page, login page, courses page.</td>
+                </tr>
+                <tr>
+                  <td><code>models</code></td>
+                  <td>TypeScript interfaces and types, such as <code>Student</code> or <code>Course</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lesson" id="expert">
+          <h2>14. Expert-Level Angular Structure</h2>
+
+          <p>
+            Expert Angular development is about scale, maintainability, testing, performance, and clean architecture.
+          </p>
+
+          <h3>Feature-Based Structure</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>src/app/
+├── core/
+│   ├── auth/
+│   ├── http/
+│   ├── layout/
+│   └── services/
+│
+├── shared/
+│   ├── ui/
+│   ├── pipes/
+│   ├── directives/
+│   └── utils/
+│
+├── features/
+│   ├── dashboard/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── dashboard.routes.ts
+│   │
+│   ├── courses/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── courses.routes.ts
+│   │
+│   └── students/
+│       ├── components/
+│       ├── pages/
+│       ├── services/
+│       └── students.routes.ts
+│
+├── app.config.ts
+├── app.routes.ts
+└── app.ts</code></pre>
+
+          <h3>Expert Rules</h3>
+
+          <div class="card-grid">
+            <div class="mini-card">
+              <strong>Rule 1</strong>
+              Keep pages separate from reusable components.
+            </div>
+
+            <div class="mini-card">
+              <strong>Rule 2</strong>
+              Keep API logic inside services.
+            </div>
+
+            <div class="mini-card">
+              <strong>Rule 3</strong>
+              Keep data shapes inside models or types.
+            </div>
+
+            <div class="mini-card">
+              <strong>Rule 4</strong>
+              Use lazy routes for big features.
+            </div>
+
+            <div class="mini-card">
+              <strong>Rule 5</strong>
+              Keep global layout in core or layout folder.
+            </div>
+
+            <div class="mini-card">
+              <strong>Rule 6</strong>
+              Avoid one giant component.
+            </div>
+          </div>
+
+          <h3>Lazy Route Example</h3>
+
+          <pre><button class="copy-btn">Copy</button><code>export const routes = [
+  {
+    path: 'courses',
+    loadChildren: () =>
+      import('./features/courses/courses.routes')
+        .then(m => m.COURSES_ROUTES)
+  }
+];</code></pre>
+
+          <div class="info">
+            Lazy loading means Angular can load a feature only when the user visits that feature.
+            This is useful for large applications.
+          </div>
+        </section>
+
+        <section class="lesson" id="mistakes">
+          <h2>15. Common Mistakes</h2>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mistake</th>
+                  <th>Why It Is Wrong</th>
+                  <th>Correct Habit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Editing <code>node_modules</code></td>
+                  <td>Changes will disappear after reinstall.</td>
+                  <td>Never edit it manually.</td>
+                </tr>
+                <tr>
+                  <td>Editing <code>dist</code></td>
+                  <td>Build output is regenerated.</td>
+                  <td>Edit source files, then run <code>ng build</code>.</td>
+                </tr>
+                <tr>
+                  <td>Putting all code in <code>app.ts</code></td>
+                  <td>App becomes hard to maintain.</td>
+                  <td>Create components, pages, and services.</td>
+                </tr>
+                <tr>
+                  <td>Using absolute image paths blindly</td>
+                  <td>Can break on GitHub Pages.</td>
+                  <td>Use correct relative paths or configure base href properly.</td>
+                </tr>
+                <tr>
+                  <td>Randomly changing <code>angular.json</code></td>
+                  <td>Can break builds.</td>
+                  <td>Change it only when you understand the option.</td>
+                </tr>
+                <tr>
+                  <td>Committing secrets</td>
+                  <td>Public GitHub repos expose files.</td>
+                  <td>Never commit private API keys.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lesson" id="assignment">
+          <h2>16. Student Assignment</h2>
+
+          <p>
+            Open your Angular project and identify each of the following files.
+            Write one sentence about each file.
+          </p>
+
+          <div class="checklist">
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>src/index.html</code> and identify the root tag.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>src/main.ts</code> and identify where Angular starts.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>src/app/app.html</code> and change the visible heading.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>src/app/app.css</code> and change the background color.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>src/styles.css</code> and add global body style.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>angular.json</code> and locate the styles and assets entries.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Find <code>package.json</code> and locate the scripts section.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" />
+              <span>Create a folder called <code>src/app/pages/home</code>.</span>
+            </label>
+          </div>
+
+          <h3>Mini Project</h3>
+
+          <p>
+            Create this clean structure:
+          </p>
+
+          <pre><button class="copy-btn">Copy</button><code>src/app/
+├── pages/
+│   ├── home/
+│   ├── about/
+│   └── courses/
+│
+├── shared/
+│   └── components/
+│       ├── header/
+│       └── footer/
+│
+└── core/
+    └── services/</code></pre>
+
+          <div class="success">
+            When a student understands folders and files, Angular becomes much less frightening.
+          </div>
+        </section>
+
+        <section class="lesson">
+          <h2>Final Summary</h2>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Question</th>
+                  <th>Answer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Where do I edit visible HTML?</td>
+                  <td><code>src/app/app.html</code></td>
+                </tr>
+                <tr>
+                  <td>Where do I edit component CSS?</td>
+                  <td><code>src/app/app.css</code></td>
+                </tr>
+                <tr>
+                  <td>Where do I write global CSS?</td>
+                  <td><code>src/styles.css</code></td>
+                </tr>
+                <tr>
+                  <td>Where does Angular start?</td>
+                  <td><code>src/main.ts</code></td>
+                </tr>
+                <tr>
+                  <td>Where is the outer HTML page?</td>
+                  <td><code>src/index.html</code></td>
+                </tr>
+                <tr>
+                  <td>Where are project scripts?</td>
+                  <td><code>package.json</code></td>
+                </tr>
+                <tr>
+                  <td>Where is Angular build configuration?</td>
+                  <td><code>angular.json</code></td>
+                </tr>
+                <tr>
+                  <td>Which folder should I not edit manually?</td>
+                  <td><code>node_modules</code> and <code>dist</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
   </main>
 
-  <footer>
-    Programmer's Picnic AI ML Classes by Champak Roy
+  <footer class="footer">
+    <p>
+      Programmers Picnic AI-ML Classes by Champak Roy
+      <br />
+      learnwithchampak.live | aiml.learnwithchampak.live | angular.learnwithchampak.live
+    </p>
   </footer>
 
   <script>
-    const STORAGE_KEY = "programmersPicnicAngularRoadmapChecks";
-    const checks = Array.from(document.querySelectorAll("input[type='checkbox'][data-check]"));
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
+    const copyButtons = document.querySelectorAll(".copy-btn");
 
-    function loadChecks() {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    copyButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const code = button.nextElementSibling.innerText;
 
-      checks.forEach((checkbox) => {
-        const id = checkbox.dataset.check;
-        checkbox.checked = Boolean(saved[id]);
+        try {
+          await navigator.clipboard.writeText(code);
+          const oldText = button.innerText;
+          button.innerText = "Copied";
+          setTimeout(() => {
+            button.innerText = oldText;
+          }, 1200);
+        } catch (error) {
+          alert("Copy failed. Please select and copy manually.");
+        }
       });
-
-      updateProgress();
-    }
-
-    function saveChecks() {
-      const data = {};
-
-      checks.forEach((checkbox) => {
-        data[checkbox.dataset.check] = checkbox.checked;
-      });
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      updateProgress();
-    }
-
-    function updateProgress() {
-      const total = checks.length;
-      const completed = checks.filter((checkbox) => checkbox.checked).length;
-      const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-
-      progressFill.style.width = percent + "%";
-      progressText.textContent = percent + "% Complete";
-    }
-
-    checks.forEach((checkbox) => {
-      checkbox.addEventListener("change", saveChecks);
     });
-
-    loadChecks();
   </script>
 </body>
 </html>
