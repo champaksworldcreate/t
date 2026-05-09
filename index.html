@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Curesia Expert Essay Editor</title>
+  <title>Curesia Expert Essay Editor V2</title>
 
   <style>
     :root {
@@ -17,6 +17,7 @@
       --soft: #e3f6ed;
       --line: #cfe8db;
       --danger: #b42318;
+      --warning: #fff7ed;
       --shadow: 0 20px 60px rgba(15, 104, 68, 0.12);
       --radius: 22px;
     }
@@ -41,7 +42,7 @@
     }
 
     .header-inner {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: auto;
       display: flex;
       justify-content: space-between;
@@ -59,18 +60,22 @@
     .brand-subtitle {
       margin: 8px 0 0;
       opacity: 0.9;
-      max-width: 680px;
+      max-width: 720px;
       line-height: 1.6;
     }
 
-    .top-actions {
+    .top-actions,
+    .footer-actions,
+    .toolbar,
+    .image-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     button,
-    .fake-btn {
+    .upload-label {
       border: 0;
       border-radius: 999px;
       padding: 11px 16px;
@@ -79,6 +84,10 @@
       background: var(--primary);
       color: white;
       box-shadow: 0 8px 20px rgba(15, 104, 68, 0.18);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.92rem;
     }
 
     button.secondary {
@@ -86,7 +95,8 @@
       color: var(--primary-dark);
     }
 
-    button.light {
+    button.light,
+    .upload-label.light {
       background: var(--soft);
       color: var(--primary-dark);
       box-shadow: none;
@@ -98,23 +108,27 @@
       box-shadow: none;
     }
 
+    input[type="file"] {
+      display: none;
+    }
+
     main {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 28px auto;
       padding: 0 20px 50px;
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-columns: 1fr 1fr;
       gap: 22px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 980px) {
       main {
         grid-template-columns: 1fr;
       }
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -175,7 +189,7 @@
     }
 
     #essayContent {
-      min-height: 360px;
+      min-height: 300px;
     }
 
     .grid-2 {
@@ -188,18 +202,6 @@
       .grid-2 {
         grid-template-columns: 1fr;
       }
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 12px 0 8px;
-    }
-
-    .toolbar button {
-      padding: 8px 12px;
-      font-size: 0.88rem;
     }
 
     .small-note {
@@ -235,6 +237,28 @@
       border-left: 4px solid var(--primary);
       padding-left: 14px;
       margin: 16px 0;
+    }
+
+    .cover-preview {
+      width: 100%;
+      min-height: 180px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, #e3f6ed, #ffffff);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      margin: 18px 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .cover-preview img {
+      width: 100%;
+      height: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      display: block;
     }
 
     .author-box {
@@ -284,7 +308,7 @@
     .disclaimer {
       margin-top: 24px;
       padding: 16px;
-      background: #fff7ed;
+      background: var(--warning);
       border: 1px solid #fed7aa;
       border-radius: 18px;
       color: #7c2d12;
@@ -310,11 +334,172 @@
       white-space: pre-wrap;
     }
 
-    .footer-actions {
-      display: flex;
-      flex-wrap: wrap;
+    .image-library {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
       gap: 10px;
+      margin-top: 14px;
+    }
+
+    .image-thumb {
+      border: 2px solid transparent;
+      border-radius: 14px;
+      overflow: hidden;
+      height: 82px;
+      background: #eef7f1;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .image-thumb.selected {
+      border-color: var(--primary);
+    }
+
+    .image-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-thumb span {
+      position: absolute;
+      left: 6px;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      color: white;
+      font-size: 0.68rem;
+      border-radius: 999px;
+      padding: 2px 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .image-workspace {
+      margin-top: 24px;
+      border: 2px dashed var(--line);
+      background:
+        linear-gradient(45deg, rgba(22, 135, 90, 0.04) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(22, 135, 90, 0.04) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(22, 135, 90, 0.04) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(22, 135, 90, 0.04) 75%);
+      background-size: 26px 26px;
+      background-position: 0 0, 0 13px, 13px -13px, -13px 0px;
+      min-height: 460px;
+      border-radius: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-workspace-title {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      z-index: 5;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .movable-image {
+      position: absolute;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
+      cursor: move;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.13);
+      user-select: none;
+    }
+
+    .movable-image.selected {
+      border-color: var(--primary);
+      outline: 4px solid rgba(22, 135, 90, 0.16);
+    }
+
+    .movable-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      display: block;
+    }
+
+    .resize-handle {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      right: 0;
+      bottom: 0;
+      background: var(--primary);
+      border-radius: 12px 0 12px 0;
+      cursor: nwse-resize;
+      display: none;
+    }
+
+    .movable-image.selected .resize-handle {
+      display: block;
+    }
+
+    .control-card {
       margin-top: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfffd;
+    }
+
+    .control-card h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 650px) {
+      .mini-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .mini-grid label {
+      margin-top: 0;
+      font-size: 0.8rem;
+    }
+
+    .mini-grid input {
+      padding: 9px 10px;
+      border-radius: 12px;
+    }
+
+    .article-image-block {
+      margin: 18px 0;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .article-image-block img {
+      width: 100%;
+      display: block;
+    }
+
+    .article-image-block figcaption {
+      padding: 9px 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      background: #fbfffd;
     }
   </style>
 </head>
@@ -323,10 +508,9 @@
   <header>
     <div class="header-inner">
       <div>
-        <h1 class="brand-title">Curesia Expert Essay Editor</h1>
+        <h1 class="brand-title">Curesia Expert Essay Editor V2</h1>
         <p class="brand-subtitle">
-          A simple writing system for doctors, psychotherapists, counselors and wellness professionals.
-          Write, preview, save and export publish-ready health articles.
+          Write essays, upload doctor photos, add article images, move and resize pictures, preview the article, and export JSON or HTML.
         </p>
       </div>
 
@@ -365,10 +549,15 @@
           </div>
 
           <div>
-            <label for="photoUrl">Photo URL</label>
-            <input id="photoUrl" placeholder="Example: assets/doctors/doctor-1.jpeg" />
+            <label>Author Photo</label>
+            <label class="upload-label light" for="authorPhotoInput">Upload Author Photo</label>
+            <input type="file" id="authorPhotoInput" accept="image/*" />
           </div>
         </div>
+
+        <label>Cover Image</label>
+        <label class="upload-label light" for="coverImageInput">Upload Cover Image</label>
+        <input type="file" id="coverImageInput" accept="image/*" />
 
         <label for="title">Essay Title</label>
         <input id="title" placeholder="Example: Understanding Anxiety in Everyday Life" />
@@ -416,10 +605,61 @@
         <textarea id="essayContent" placeholder="Write the full essay here. You can use simple HTML tags like <h2>, <p>, <ul>, <li>, <strong>."></textarea>
 
         <p class="small-note">
-          Tip: Write in simple language. Avoid making personal medical promises. Keep the article educational.
+          Tip: Use the image workspace below for freely positioned images. Use article image blocks for normal images inside the article flow.
         </p>
 
-        <div class="footer-actions">
+        <div class="control-card">
+          <h3>Picture Library</h3>
+
+          <div class="image-actions">
+            <label class="upload-label light" for="articleImagesInput">Upload Article Pictures</label>
+            <input type="file" id="articleImagesInput" accept="image/*" multiple />
+
+            <button class="light" onclick="addSelectedImageToWorkspace()">Add to Workspace</button>
+            <button class="light" onclick="insertSelectedImageBlock()">Insert in Article</button>
+            <button class="danger" onclick="deleteSelectedImage()">Delete Selected Picture</button>
+          </div>
+
+          <div class="image-library" id="imageLibrary"></div>
+        </div>
+
+        <div class="control-card">
+          <h3>Selected Workspace Image Controls</h3>
+
+          <div class="mini-grid">
+            <div>
+              <label for="imgX">X</label>
+              <input id="imgX" type="number" onchange="updateSelectedImageFromControls()" />
+            </div>
+
+            <div>
+              <label for="imgY">Y</label>
+              <input id="imgY" type="number" onchange="updateSelectedImageFromControls()" />
+            </div>
+
+            <div>
+              <label for="imgW">Width</label>
+              <input id="imgW" type="number" onchange="updateSelectedImageFromControls()" />
+            </div>
+
+            <div>
+              <label for="imgH">Height</label>
+              <input id="imgH" type="number" onchange="updateSelectedImageFromControls()" />
+            </div>
+          </div>
+
+          <div class="footer-actions">
+            <button class="light" onclick="bringSelectedForward()">Bring Forward</button>
+            <button class="light" onclick="sendSelectedBackward()">Send Backward</button>
+            <button class="danger" onclick="deleteSelectedWorkspaceImage()">Delete From Workspace</button>
+          </div>
+        </div>
+
+        <div class="image-workspace" id="imageWorkspace">
+          <div class="image-workspace-title">Image Workspace: drag pictures, resize from bottom-right corner</div>
+        </div>
+
+        <div class="footer-actions" style="margin-top: 18px;">
           <button onclick="updatePreview()">Update Preview</button>
           <button onclick="exportJSON()">Export JSON</button>
           <button onclick="exportHTML()">Export HTML</button>
@@ -448,13 +688,21 @@
       "authorName",
       "authorRole",
       "specialization",
-      "photoUrl",
       "title",
       "category",
       "tags",
       "summary",
       "essayContent"
     ];
+
+    let authorPhotoData = "";
+    let coverImageData = "";
+    let uploadedImages = [];
+    let workspaceImages = [];
+    let selectedLibraryImageId = null;
+    let selectedWorkspaceImageId = null;
+    let dragState = null;
+    let resizeState = null;
 
     const disclaimer = `
       <div class="disclaimer">
@@ -480,6 +728,341 @@
         .replace(/^-+|-+$/g, "");
     }
 
+    function makeId(prefix) {
+      return prefix + "-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+    }
+
+    function escapeHTML(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById("authorPhotoInput").addEventListener("change", async function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      authorPhotoData = await readFileAsDataURL(file);
+      updatePreview();
+    });
+
+    document.getElementById("coverImageInput").addEventListener("change", async function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      coverImageData = await readFileAsDataURL(file);
+      updatePreview();
+    });
+
+    document.getElementById("articleImagesInput").addEventListener("change", async function () {
+      const files = Array.from(this.files || []);
+
+      for (const file of files) {
+        const dataUrl = await readFileAsDataURL(file);
+
+        uploadedImages.push({
+          id: makeId("img"),
+          name: file.name,
+          dataUrl
+        });
+      }
+
+      renderImageLibrary();
+    });
+
+    function renderImageLibrary() {
+      const box = document.getElementById("imageLibrary");
+
+      if (!uploadedImages.length) {
+        box.innerHTML = `<p class="small-note">No pictures uploaded yet.</p>`;
+        return;
+      }
+
+      box.innerHTML = uploadedImages.map(img => `
+        <div
+          class="image-thumb ${selectedLibraryImageId === img.id ? "selected" : ""}"
+          onclick="selectLibraryImage('${img.id}')"
+          title="${escapeHTML(img.name)}"
+        >
+          <img src="${img.dataUrl}" alt="${escapeHTML(img.name)}" />
+          <span>${escapeHTML(img.name)}</span>
+        </div>
+      `).join("");
+    }
+
+    function selectLibraryImage(id) {
+      selectedLibraryImageId = id;
+      renderImageLibrary();
+    }
+
+    function getSelectedLibraryImage() {
+      return uploadedImages.find(img => img.id === selectedLibraryImageId);
+    }
+
+    function addSelectedImageToWorkspace() {
+      const img = getSelectedLibraryImage();
+
+      if (!img) {
+        alert("Please select an uploaded picture first.");
+        return;
+      }
+
+      const newWorkspaceImage = {
+        id: makeId("work"),
+        imageId: img.id,
+        name: img.name,
+        dataUrl: img.dataUrl,
+        x: 50,
+        y: 70,
+        width: 260,
+        height: 170,
+        zIndex: workspaceImages.length + 1
+      };
+
+      workspaceImages.push(newWorkspaceImage);
+      selectedWorkspaceImageId = newWorkspaceImage.id;
+
+      renderWorkspace();
+      updateSelectedControls();
+      updatePreview();
+    }
+
+    function renderWorkspace() {
+      const workspace = document.getElementById("imageWorkspace");
+
+      workspace.querySelectorAll(".movable-image").forEach(el => el.remove());
+
+      workspaceImages
+        .sort((a, b) => a.zIndex - b.zIndex)
+        .forEach(item => {
+          const div = document.createElement("div");
+
+          div.className = "movable-image" + (item.id === selectedWorkspaceImageId ? " selected" : "");
+          div.style.left = item.x + "px";
+          div.style.top = item.y + "px";
+          div.style.width = item.width + "px";
+          div.style.height = item.height + "px";
+          div.style.zIndex = item.zIndex;
+
+          div.dataset.id = item.id;
+
+          div.innerHTML = `
+            <img src="${item.dataUrl}" alt="${escapeHTML(item.name)}">
+            <div class="resize-handle"></div>
+          `;
+
+          div.addEventListener("mousedown", startDrag);
+          div.addEventListener("click", function (event) {
+            event.stopPropagation();
+            selectedWorkspaceImageId = item.id;
+            renderWorkspace();
+            updateSelectedControls();
+          });
+
+          div.querySelector(".resize-handle").addEventListener("mousedown", startResize);
+
+          workspace.appendChild(div);
+        });
+    }
+
+    document.getElementById("imageWorkspace").addEventListener("click", function () {
+      selectedWorkspaceImageId = null;
+      renderWorkspace();
+      updateSelectedControls();
+    });
+
+    function startDrag(event) {
+      if (event.target.classList.contains("resize-handle")) return;
+
+      const id = event.currentTarget.dataset.id;
+      const item = workspaceImages.find(x => x.id === id);
+
+      selectedWorkspaceImageId = id;
+
+      dragState = {
+        id,
+        startMouseX: event.clientX,
+        startMouseY: event.clientY,
+        startX: item.x,
+        startY: item.y
+      };
+
+      renderWorkspace();
+      updateSelectedControls();
+
+      document.addEventListener("mousemove", onDrag);
+      document.addEventListener("mouseup", stopDrag);
+    }
+
+    function onDrag(event) {
+      if (!dragState) return;
+
+      const item = workspaceImages.find(x => x.id === dragState.id);
+      const workspace = document.getElementById("imageWorkspace");
+      const rect = workspace.getBoundingClientRect();
+
+      item.x = Math.max(0, Math.min(rect.width - item.width, dragState.startX + event.clientX - dragState.startMouseX));
+      item.y = Math.max(0, Math.min(rect.height - item.height, dragState.startY + event.clientY - dragState.startMouseY));
+
+      renderWorkspace();
+      updateSelectedControls();
+    }
+
+    function stopDrag() {
+      dragState = null;
+
+      document.removeEventListener("mousemove", onDrag);
+      document.removeEventListener("mouseup", stopDrag);
+
+      updatePreview();
+    }
+
+    function startResize(event) {
+      event.stopPropagation();
+
+      const parent = event.target.closest(".movable-image");
+      const id = parent.dataset.id;
+      const item = workspaceImages.find(x => x.id === id);
+
+      selectedWorkspaceImageId = id;
+
+      resizeState = {
+        id,
+        startMouseX: event.clientX,
+        startMouseY: event.clientY,
+        startWidth: item.width,
+        startHeight: item.height
+      };
+
+      document.addEventListener("mousemove", onResize);
+      document.addEventListener("mouseup", stopResize);
+    }
+
+    function onResize(event) {
+      if (!resizeState) return;
+
+      const item = workspaceImages.find(x => x.id === resizeState.id);
+
+      item.width = Math.max(80, resizeState.startWidth + event.clientX - resizeState.startMouseX);
+      item.height = Math.max(60, resizeState.startHeight + event.clientY - resizeState.startMouseY);
+
+      renderWorkspace();
+      updateSelectedControls();
+    }
+
+    function stopResize() {
+      resizeState = null;
+
+      document.removeEventListener("mousemove", onResize);
+      document.removeEventListener("mouseup", stopResize);
+
+      updatePreview();
+    }
+
+    function updateSelectedControls() {
+      const item = workspaceImages.find(x => x.id === selectedWorkspaceImageId);
+
+      document.getElementById("imgX").value = item ? Math.round(item.x) : "";
+      document.getElementById("imgY").value = item ? Math.round(item.y) : "";
+      document.getElementById("imgW").value = item ? Math.round(item.width) : "";
+      document.getElementById("imgH").value = item ? Math.round(item.height) : "";
+    }
+
+    function updateSelectedImageFromControls() {
+      const item = workspaceImages.find(x => x.id === selectedWorkspaceImageId);
+
+      if (!item) return;
+
+      item.x = Number(document.getElementById("imgX").value) || 0;
+      item.y = Number(document.getElementById("imgY").value) || 0;
+      item.width = Math.max(80, Number(document.getElementById("imgW").value) || 80);
+      item.height = Math.max(60, Number(document.getElementById("imgH").value) || 60);
+
+      renderWorkspace();
+      updatePreview();
+    }
+
+    function bringSelectedForward() {
+      const item = workspaceImages.find(x => x.id === selectedWorkspaceImageId);
+      if (!item) return;
+
+      item.zIndex += 1;
+      renderWorkspace();
+      updatePreview();
+    }
+
+    function sendSelectedBackward() {
+      const item = workspaceImages.find(x => x.id === selectedWorkspaceImageId);
+      if (!item) return;
+
+      item.zIndex = Math.max(1, item.zIndex - 1);
+      renderWorkspace();
+      updatePreview();
+    }
+
+    function deleteSelectedWorkspaceImage() {
+      if (!selectedWorkspaceImageId) {
+        alert("Select a workspace image first.");
+        return;
+      }
+
+      workspaceImages = workspaceImages.filter(x => x.id !== selectedWorkspaceImageId);
+      selectedWorkspaceImageId = null;
+
+      renderWorkspace();
+      updateSelectedControls();
+      updatePreview();
+    }
+
+    function deleteSelectedImage() {
+      if (!selectedLibraryImageId) {
+        alert("Select a picture from the library first.");
+        return;
+      }
+
+      uploadedImages = uploadedImages.filter(img => img.id !== selectedLibraryImageId);
+      workspaceImages = workspaceImages.filter(item => item.imageId !== selectedLibraryImageId);
+
+      selectedLibraryImageId = null;
+      selectedWorkspaceImageId = null;
+
+      renderImageLibrary();
+      renderWorkspace();
+      updateSelectedControls();
+      updatePreview();
+    }
+
+    function insertSelectedImageBlock() {
+      const img = getSelectedLibraryImage();
+
+      if (!img) {
+        alert("Please select an uploaded picture first.");
+        return;
+      }
+
+      const html = `
+<figure class="article-image-block">
+  <img src="${img.dataUrl}" alt="${escapeHTML(img.name)}">
+  <figcaption>${escapeHTML(img.name)}</figcaption>
+</figure>`;
+
+      insertText(html);
+    }
+
     function getEssayData() {
       const title = getValue("title") || "Untitled Health Essay";
 
@@ -496,8 +1079,11 @@
           name: getValue("authorName"),
           role: getValue("authorRole"),
           specialization: getValue("specialization"),
-          photo: getValue("photoUrl")
+          photoData: authorPhotoData
         },
+        coverImageData,
+        uploadedImages,
+        workspaceImages,
         publishedDate: new Date().toISOString().slice(0, 10),
         tags: getValue("tags")
           .split(",")
@@ -508,6 +1094,34 @@
       };
     }
 
+    function getWorkspaceHTML() {
+      if (!workspaceImages.length) return "";
+
+      return `
+        <div style="position:relative; min-height:460px; border:1px solid #cfe8db; border-radius:22px; overflow:hidden; background:#f8fffb; margin:24px 0;">
+          ${workspaceImages
+            .sort((a, b) => a.zIndex - b.zIndex)
+            .map(item => `
+              <img
+                src="${item.dataUrl}"
+                alt="${escapeHTML(item.name)}"
+                style="
+                  position:absolute;
+                  left:${item.x}px;
+                  top:${item.y}px;
+                  width:${item.width}px;
+                  height:${item.height}px;
+                  object-fit:cover;
+                  border-radius:16px;
+                  z-index:${item.zIndex};
+                  box-shadow:0 14px 30px rgba(0,0,0,0.13);
+                "
+              />
+            `).join("")}
+        </div>
+      `;
+    }
+
     function updatePreview() {
       const data = getEssayData();
 
@@ -515,12 +1129,18 @@
         ? data.author.name.split(" ").map(x => x[0]).join("").slice(0, 2).toUpperCase()
         : "CH";
 
-      const photo = data.author.photo
-        ? `<img src="${escapeHTML(data.author.photo)}" alt="${escapeHTML(data.author.name)}">`
+      const photo = data.author.photoData
+        ? `<img src="${data.author.photoData}" alt="${escapeHTML(data.author.name)}">`
         : initials;
+
+      const cover = data.coverImageData
+        ? `<div class="cover-preview"><img src="${data.coverImageData}" alt="${escapeHTML(data.title)}"></div>`
+        : `<div class="cover-preview">Cover image preview</div>`;
 
       document.getElementById("preview").innerHTML = `
         <article>
+          ${cover}
+
           <span class="category">${escapeHTML(data.category)}</span>
           <h1>${escapeHTML(data.title)}</h1>
 
@@ -539,6 +1159,8 @@
             ${data.content || "<p>The essay body will appear here.</p>"}
           </div>
 
+          ${getWorkspaceHTML()}
+
           ${disclaimer}
         </article>
       `;
@@ -546,13 +1168,19 @@
 
     function saveDraft() {
       const data = getEssayData();
-      localStorage.setItem("curesiaEssayDraft", JSON.stringify(data));
-      document.getElementById("saveStatus").textContent = "Draft saved";
+
+      try {
+        localStorage.setItem("curesiaEssayDraftV2", JSON.stringify(data));
+        document.getElementById("saveStatus").textContent = "Draft saved";
+      } catch (error) {
+        alert("Draft is too large for browser storage. Try using fewer or smaller images.");
+      }
+
       updatePreview();
     }
 
     function loadDraft() {
-      const raw = localStorage.getItem("curesiaEssayDraft");
+      const raw = localStorage.getItem("curesiaEssayDraftV2");
 
       if (!raw) {
         alert("No saved draft found.");
@@ -564,12 +1192,23 @@
       setValue("authorName", data.author?.name);
       setValue("authorRole", data.author?.role);
       setValue("specialization", data.author?.specialization);
-      setValue("photoUrl", data.author?.photo);
       setValue("title", data.title);
       setValue("category", data.category);
       setValue("summary", data.summary);
       setValue("essayContent", data.content);
       setValue("tags", Array.isArray(data.tags) ? data.tags.join(", ") : "");
+
+      authorPhotoData = data.author?.photoData || "";
+      coverImageData = data.coverImageData || "";
+      uploadedImages = data.uploadedImages || [];
+      workspaceImages = data.workspaceImages || [];
+
+      selectedLibraryImageId = null;
+      selectedWorkspaceImageId = null;
+
+      renderImageLibrary();
+      renderWorkspace();
+      updateSelectedControls();
 
       document.getElementById("saveStatus").textContent = "Draft loaded";
       updatePreview();
@@ -582,8 +1221,19 @@
         if (id !== "category") setValue(id, "");
       });
 
+      authorPhotoData = "";
+      coverImageData = "";
+      uploadedImages = [];
+      workspaceImages = [];
+      selectedLibraryImageId = null;
+      selectedWorkspaceImageId = null;
+
       document.getElementById("output").value = "";
       document.getElementById("saveStatus").textContent = "Draft cleared";
+
+      renderImageLibrary();
+      renderWorkspace();
+      updateSelectedControls();
       updatePreview();
     }
 
@@ -595,8 +1245,14 @@
     function exportHTML() {
       const data = getEssayData();
 
+      const coverHTML = data.coverImageData
+        ? `<img class="essay-cover" src="${data.coverImageData}" alt="${escapeHTML(data.title)}" />`
+        : "";
+
       const html = `
 <article class="curesia-essay">
+  ${coverHTML}
+
   <span class="essay-category">${escapeHTML(data.category)}</span>
 
   <h1>${escapeHTML(data.title)}</h1>
@@ -606,7 +1262,7 @@
   </p>
 
   <div class="essay-author">
-    <img src="${escapeHTML(data.author.photo)}" alt="${escapeHTML(data.author.name)}" />
+    <img src="${data.author.photoData}" alt="${escapeHTML(data.author.name)}" />
     <div>
       <strong>${escapeHTML(data.author.name)}</strong>
       <span>${escapeHTML(data.author.role)}</span>
@@ -617,6 +1273,8 @@
   <div class="essay-content">
     ${data.content}
   </div>
+
+  ${getWorkspaceHTML()}
 
   <div class="medical-disclaimer">
     <strong>Medical Disclaimer:</strong>
@@ -655,26 +1313,21 @@
 
       textarea.focus();
       textarea.selectionStart = textarea.selectionEnd = start + text.length;
-      updatePreview();
-    }
 
-    function escapeHTML(str) {
-      return String(str || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      updatePreview();
     }
 
     fields.forEach(id => {
       const el = document.getElementById(id);
+
       if (el) {
         el.addEventListener("input", updatePreview);
         el.addEventListener("change", updatePreview);
       }
     });
 
+    renderImageLibrary();
+    renderWorkspace();
     updatePreview();
   </script>
 </body>
