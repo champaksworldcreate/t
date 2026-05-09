@@ -4,1084 +4,678 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>3D Drawing in Matplotlib | Line, Plane, Cube, Cone, Sphere, Emoji</title>
+  <title>Curesia Expert Essay Editor</title>
 
   <style>
     :root {
-      --bg: #fff7ed;
+      --bg: #f4fbf7;
       --card: #ffffff;
-      --text: #241407;
-      --muted: #7c5b35;
-      --primary: #d97706;
-      --primary-dark: #92400e;
-      --accent: #f59e0b;
-      --line: #f2d6ad;
-      --code-bg: #1e1b16;
-      --code-text: #fff7ed;
-      --shadow: 0 20px 50px rgba(146, 64, 14, 0.13);
+      --text: #173528;
+      --muted: #5d7568;
+      --primary: #16875a;
+      --primary-dark: #0f6844;
+      --soft: #e3f6ed;
+      --line: #cfe8db;
+      --danger: #b42318;
+      --shadow: 0 20px 60px rgba(15, 104, 68, 0.12);
+      --radius: 22px;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top left, #fed7aa, transparent 30%),
-        radial-gradient(circle at top right, #fde68a, transparent 28%),
-        linear-gradient(180deg, #fff7ed, #fffbeb);
+        radial-gradient(circle at top left, #dcfce7 0, transparent 35%),
+        linear-gradient(135deg, #f8fffb, var(--bg));
       color: var(--text);
-      line-height: 1.7;
-    }
-
-    .wrap {
-      max-width: 1180px;
-      margin: auto;
-      padding: 0 18px;
     }
 
     header {
-      padding: 34px 0 28px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(135deg, #ffedd5, #fff7ed);
+      padding: 28px 20px;
+      background: linear-gradient(135deg, #0f6844, #24a36d);
+      color: white;
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 24px;
-      align-items: center;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #fff;
-      color: var(--primary-dark);
-      border: 1px solid var(--line);
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 14px;
-      box-shadow: var(--shadow);
-    }
-
-    h1 {
-      font-size: clamp(34px, 5vw, 66px);
-      line-height: 1.04;
-      margin: 20px 0 14px;
-      color: var(--primary-dark);
-      letter-spacing: -1.4px;
-    }
-
-    .subtitle {
-      font-size: 20px;
-      color: var(--muted);
-      max-width: 780px;
-      margin: 0 0 22px;
-    }
-
-    .hero-card {
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .hero-card h2 {
-      margin-top: 0;
-      color: var(--primary-dark);
-    }
-
-    .btn-row {
+    .header-inner {
+      max-width: 1200px;
+      margin: auto;
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    button,
-    .btn {
-      border: 0;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
+      justify-content: space-between;
+      gap: 20px;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-weight: 850;
-      font-size: 15px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      flex-wrap: wrap;
     }
 
-    button:hover,
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(146, 64, 14, 0.18);
+    .brand-title {
+      margin: 0;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      letter-spacing: -0.04em;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .btn-light {
-      background: #fff;
-      color: var(--primary-dark);
-      border: 1px solid var(--line);
-    }
-
-    main {
-      padding: 30px 0 60px;
-    }
-
-    .section {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 26px;
-      margin: 24px 0;
-      box-shadow: var(--shadow);
-    }
-
-    .section h2 {
-      color: var(--primary-dark);
-      font-size: 32px;
-      margin: 0 0 14px;
-      line-height: 1.2;
-    }
-
-    .section h3 {
-      color: var(--primary-dark);
-      margin-top: 24px;
-    }
-
-    .pill {
-      display: inline-block;
-      background: #ffedd5;
-      color: var(--primary-dark);
-      border: 1px solid var(--line);
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      margin: 4px 4px 4px 0;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 18px;
-    }
-
-    .mini-card {
-      background: #fffaf3;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 18px;
-    }
-
-    .mini-card h3 {
-      margin: 0 0 8px;
-      color: var(--primary-dark);
-    }
-
-    pre {
-      background: var(--code-bg);
-      color: var(--code-text);
-      overflow-x: auto;
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid #3f2d1b;
-      font-size: 14px;
+    .brand-subtitle {
+      margin: 8px 0 0;
+      opacity: 0.9;
+      max-width: 680px;
       line-height: 1.6;
     }
 
-    code {
-      font-family: Consolas, "Courier New", monospace;
-    }
-
-    .note {
-      background: #fff7ed;
-      border-left: 6px solid var(--primary);
-      padding: 16px 18px;
-      border-radius: 16px;
-      color: var(--muted);
-      margin: 18px 0;
-    }
-
-    .svg-box {
-      background: #fffaf3;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 16px;
-      margin-top: 16px;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 18px;
-      margin-top: 18px;
-      background: #fff;
-    }
-
-    th,
-    td {
-      border: 1px solid var(--line);
-      padding: 12px;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      background: #ffedd5;
-      color: var(--primary-dark);
-    }
-
-    .editor-shell {
-      background: #2b1d0e;
-      border-radius: 28px;
-      overflow: hidden;
-      border: 3px solid #92400e;
-      box-shadow: 0 26px 70px rgba(146, 64, 14, 0.35);
-      margin-top: 18px;
-    }
-
-    .editor-topbar {
+    .top-actions {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      background: linear-gradient(90deg, #92400e, #d97706);
-      color: #fff;
-      padding: 12px 16px;
-      font-weight: 850;
-    }
-
-    .editor-actions {
-      display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    .small-btn {
-      padding: 8px 12px;
-      font-size: 13px;
-      border-radius: 10px;
-      background: #fff7ed;
-      color: #7c2d12;
-    }
-
-    iframe {
-      display: block;
-      width: 100%;
-      height: 720px;
+    button,
+    .fake-btn {
       border: 0;
-      background: #fff;
-    }
-
-    .checklist label {
-      display: block;
-      background: #fffaf3;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px 14px;
-      margin: 10px 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-weight: 700;
       cursor: pointer;
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 8px 20px rgba(15, 104, 68, 0.18);
     }
 
-    .checklist input {
-      transform: scale(1.2);
-      margin-right: 8px;
+    button.secondary {
+      background: white;
+      color: var(--primary-dark);
     }
 
-    .footer {
-      text-align: center;
-      padding: 28px 16px;
-      color: var(--muted);
-      border-top: 1px solid var(--line);
-      background: #fff7ed;
+    button.light {
+      background: var(--soft);
+      color: var(--primary-dark);
+      box-shadow: none;
+    }
+
+    button.danger {
+      background: #fee4e2;
+      color: var(--danger);
+      box-shadow: none;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 20px 50px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 22px;
     }
 
     @media (max-width: 900px) {
-      .hero,
-      .grid {
+      main {
         grid-template-columns: 1fr;
-      }
-
-      iframe {
-        height: 620px;
-      }
-
-      .section {
-        padding: 20px;
       }
     }
 
-    @media print {
-      .editor-shell,
-      .btn-row,
-      .editor-actions {
-        display: none;
-      }
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
 
-      body {
-        background: #fff;
-      }
+    .panel-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fffb;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-      .section,
-      .hero-card {
-        box-shadow: none;
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 750;
+      margin: 16px 0 7px;
+      color: #19392b;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--text);
+      background: white;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(22, 135, 90, 0.12);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    #essayContent {
+      min-height: 360px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 650px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
       }
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 8px;
+    }
+
+    .toolbar button {
+      padding: 8px 12px;
+      font-size: 0.88rem;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .preview {
+      line-height: 1.75;
+    }
+
+    .preview .category {
+      display: inline-flex;
+      background: var(--soft);
+      color: var(--primary-dark);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .preview h1 {
+      margin: 16px 0 10px;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+    }
+
+    .preview .summary {
+      font-size: 1.05rem;
+      color: var(--muted);
+      border-left: 4px solid var(--primary);
+      padding-left: 14px;
+      margin: 16px 0;
+    }
+
+    .author-box {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fbfffd;
+      margin: 18px 0;
+    }
+
+    .author-photo {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: var(--soft);
+      display: grid;
+      place-items: center;
+      color: var(--primary-dark);
+      font-weight: 900;
+      flex: 0 0 auto;
+      overflow: hidden;
+    }
+
+    .author-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .author-box strong {
+      display: block;
+    }
+
+    .essay-output {
+      margin-top: 18px;
+    }
+
+    .essay-output h2,
+    .essay-output h3 {
+      color: #123829;
+      line-height: 1.3;
+    }
+
+    .disclaimer {
+      margin-top: 24px;
+      padding: 16px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 18px;
+      color: #7c2d12;
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .status {
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .output-box {
+      width: 100%;
+      min-height: 180px;
+      margin-top: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
     }
   </style>
 </head>
 
 <body>
   <header>
-    <div class="wrap hero">
+    <div class="header-inner">
       <div>
-        <span class="badge">Programmers Picnic AI-ML Classes by Champak Roy</span>
-        <h1>3D Drawing in Matplotlib</h1>
-        <p class="subtitle">
-          Next lesson: draw a line, plane, cube, cone, sphere, and a fun emoji-style face using Python, NumPy, and Matplotlib 3D.
+        <h1 class="brand-title">Curesia Expert Essay Editor</h1>
+        <p class="brand-subtitle">
+          A simple writing system for doctors, psychotherapists, counselors and wellness professionals.
+          Write, preview, save and export publish-ready health articles.
         </p>
-
-        <div class="btn-row">
-          <a class="btn btn-primary" href="#editor">Open Embedded Python Editor</a>
-          <a class="btn btn-light" href="https://editor.learnwithchampak.live/python-starter/editor/super/?tmode=1" target="_blank">
-            Open Editor in New Tab
-          </a>
-          <button class="btn btn-light" onclick="window.print()">Print Lesson</button>
-        </div>
       </div>
 
-      <div class="hero-card">
-        <h2>Today we draw</h2>
-        <ul>
-          <li>A 3D line</li>
-          <li>A flat plane</li>
-          <li>A cube using edges</li>
-          <li>A cone using a surface</li>
-          <li>A sphere using parametric equations</li>
-          <li>A simple 3D emoji face</li>
-        </ul>
+      <div class="top-actions">
+        <button class="secondary" onclick="saveDraft()">Save Draft</button>
+        <button class="secondary" onclick="loadDraft()">Load Draft</button>
+        <button class="secondary" onclick="clearDraft()">Clear</button>
       </div>
     </div>
   </header>
 
-  <main class="wrap">
-
-    <section class="section">
-      <h2>0. Visual Goal</h2>
-
-      <p>
-        In the previous lesson, we learned how to create basic 3D plots.
-        In this lesson, we start drawing recognizable 3D objects.
-      </p>
-
-      <div class="grid">
-        <div class="mini-card">
-          <h3>Line</h3>
-          <p>A path joining points in 3D space.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Plane</h3>
-          <p>A flat sheet in 3D space.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Cube</h3>
-          <p>A box made from 8 corners and 12 edges.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Cone</h3>
-          <p>A circular base rising to one top point.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Sphere</h3>
-          <p>A ball created using angles.</p>
-        </div>
-        <div class="mini-card">
-          <h3>Emoji</h3>
-          <p>A fun object made by combining shapes.</p>
-        </div>
+  <main>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Write Essay</h2>
+        <span class="status" id="saveStatus">Draft not saved</span>
       </div>
 
-      <div class="svg-box">
-        <svg width="100%" height="300" viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
-          <rect width="900" height="300" rx="24" fill="#fff7ed"/>
-
-          <line x1="70" y1="230" x2="210" y2="90" stroke="#d97706" stroke-width="8" stroke-linecap="round"/>
-          <text x="95" y="265" font-size="22" fill="#92400e" font-weight="800">Line</text>
-
-          <polygon points="275,210 390,180 455,230 335,260" fill="#fed7aa" stroke="#92400e" stroke-width="4"/>
-          <text x="340" y="285" font-size="22" fill="#92400e" font-weight="800">Plane</text>
-
-          <rect x="520" y="120" width="90" height="90" fill="none" stroke="#d97706" stroke-width="5"/>
-          <rect x="555" y="85" width="90" height="90" fill="none" stroke="#92400e" stroke-width="5"/>
-          <line x1="520" y1="120" x2="555" y2="85" stroke="#92400e" stroke-width="4"/>
-          <line x1="610" y1="120" x2="645" y2="85" stroke="#92400e" stroke-width="4"/>
-          <line x1="610" y1="210" x2="645" y2="175" stroke="#92400e" stroke-width="4"/>
-          <line x1="520" y1="210" x2="555" y2="175" stroke="#92400e" stroke-width="4"/>
-          <text x="560" y="265" font-size="22" fill="#92400e" font-weight="800">Cube</text>
-
-          <ellipse cx="755" cy="215" rx="60" ry="22" fill="#fed7aa" stroke="#92400e" stroke-width="4"/>
-          <line x1="695" y1="215" x2="755" y2="80" stroke="#d97706" stroke-width="5"/>
-          <line x1="815" y1="215" x2="755" y2="80" stroke="#d97706" stroke-width="5"/>
-          <circle cx="755" cy="80" r="6" fill="#92400e"/>
-          <text x="728" y="265" font-size="22" fill="#92400e" font-weight="800">Cone</text>
-        </svg>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>1. Common Setup for 3D Drawing</h2>
-
-      <p>
-        Most programs in this lesson begin with the same setup.
-      </p>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-
-plt.show()</code></pre>
-
-      <div class="note">
-        In Matplotlib 3D, we do not draw “objects” directly like a game engine.
-        We build shapes from points, lines, surfaces, and mathematical equations.
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>2. Draw a 3D Line</h2>
-
-      <p>
-        A line is a collection of points connected together.
-      </p>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-t = np.linspace(0, 10, 100)
-
-x = t
-y = t
-z = t
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-ax.plot(x, y, z, linewidth=3)
-
-ax.set_title("3D Line")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-
-plt.show()</code></pre>
-
-      <h3>Try this</h3>
-
-      <pre><code>x = t
-y = t**2
-z = t**3</code></pre>
-
-      <p>
-        This creates a curved path instead of a straight line.
-      </p>
-    </section>
-
-    <section class="section">
-      <h2>3. Draw a Plane</h2>
-
-      <p>
-        A plane is a flat surface. We create many x and y points, then calculate z.
-      </p>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-x = np.linspace(-5, 5, 20)
-y = np.linspace(-5, 5, 20)
-
-X, Y = np.meshgrid(x, y)
-
-Z = 2 * X + Y
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-ax.plot_surface(X, Y, Z, alpha=0.75)
-
-ax.set_title("Plane: z = 2x + y")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-
-plt.show()</code></pre>
-
-      <div class="note">
-        The equation <strong>z = 2x + y</strong> creates a slanted plane.
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>4. Draw a Cube</h2>
-
-      <p>
-        A cube has 8 corners and 12 edges.
-        We can draw it using line segments.
-      </p>
-
-      <pre><code>import matplotlib.pyplot as plt
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-points = [
-    [0, 0, 0],
-    [1, 0, 0],
-    [1, 1, 0],
-    [0, 1, 0],
-    [0, 0, 1],
-    [1, 0, 1],
-    [1, 1, 1],
-    [0, 1, 1]
-]
-
-edges = [
-    [0, 1], [1, 2], [2, 3], [3, 0],
-    [4, 5], [5, 6], [6, 7], [7, 4],
-    [0, 4], [1, 5], [2, 6], [3, 7]
-]
-
-for edge in edges:
-    p1 = points[edge[0]]
-    p2 = points[edge[1]]
-
-    x = [p1[0], p2[0]]
-    y = [p1[1], p2[1]]
-    z = [p1[2], p2[2]]
-
-    ax.plot(x, y, z, linewidth=3)
-
-ax.scatter(
-    [p[0] for p in points],
-    [p[1] for p in points],
-    [p[2] for p in points],
-    s=60
-)
-
-ax.set_title("3D Cube Using Edges")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-ax.set_box_aspect([1, 1, 1])
-
-plt.show()</code></pre>
-
-      <div class="note">
-        The cube is not one single command here.
-        It is built from points and edges.
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>5. Draw a Cone</h2>
-
-      <p>
-        A cone has a circular base and one top point.
-      </p>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-theta = np.linspace(0, 2 * np.pi, 80)
-r = np.linspace(0, 1, 40)
-
-Theta, R = np.meshgrid(theta, r)
-
-X = R * np.cos(Theta)
-Y = R * np.sin(Theta)
-Z = 1 - R
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-ax.plot_surface(X, Y, Z, alpha=0.85)
-
-ax.set_title("3D Cone")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-ax.set_box_aspect([1, 1, 1])
-
-plt.show()</code></pre>
-
-      <h3>How it works</h3>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Part</th>
-            <th>Meaning</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>theta</code></td>
-            <td>Angle around the circle</td>
-          </tr>
-          <tr>
-            <td><code>r</code></td>
-            <td>Radius from center</td>
-          </tr>
-          <tr>
-            <td><code>X = R * cos(Theta)</code></td>
-            <td>Horizontal circular position</td>
-          </tr>
-          <tr>
-            <td><code>Y = R * sin(Theta)</code></td>
-            <td>Depth circular position</td>
-          </tr>
-          <tr>
-            <td><code>Z = 1 - R</code></td>
-            <td>Height decreases as radius increases</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section">
-      <h2>6. Draw a Sphere</h2>
-
-      <p>
-        A sphere is created using two angles.
-      </p>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-u = np.linspace(0, 2 * np.pi, 80)
-v = np.linspace(0, np.pi, 80)
-
-X = np.outer(np.cos(u), np.sin(v))
-Y = np.outer(np.sin(u), np.sin(v))
-Z = np.outer(np.ones_like(u), np.cos(v))
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-ax.plot_surface(X, Y, Z, alpha=0.85)
-
-ax.set_title("3D Sphere")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-ax.set_box_aspect([1, 1, 1])
-
-plt.show()</code></pre>
-
-      <div class="note">
-        <strong>set_box_aspect([1, 1, 1])</strong> helps the sphere look like a real sphere, not a stretched egg.
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>7. Example: 3D Emoji Face</h2>
-
-      <p>
-        Now let us combine shapes. We will make a simple emoji-style face:
-      </p>
-
-      <ul>
-        <li>Sphere for the head</li>
-        <li>Two black points for eyes</li>
-        <li>A curved smile line</li>
-      </ul>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-fig = plt.figure(figsize=(8, 7))
-ax = fig.add_subplot(projection="3d")
-
-# Face sphere
-u = np.linspace(0, 2 * np.pi, 100)
-v = np.linspace(0, np.pi, 100)
-
-X = np.outer(np.cos(u), np.sin(v))
-Y = np.outer(np.sin(u), np.sin(v))
-Z = np.outer(np.ones_like(u), np.cos(v))
-
-ax.plot_surface(X, Y, Z, alpha=0.75)
-
-# Eyes
-ax.scatter([-0.35, 0.35], [-0.82, -0.82], [0.35, 0.35], s=180, color="black")
-
-# Smile
-smile_x = np.linspace(-0.45, 0.45, 80)
-smile_y = np.full_like(smile_x, -0.88)
-smile_z = -0.15 - 0.35 * smile_x**2
-
-ax.plot(smile_x, smile_y, smile_z, color="black", linewidth=5)
-
-# View from front
-ax.view_init(elev=10, azim=-90)
-
-ax.set_title("Simple 3D Emoji Face")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
-ax.set_box_aspect([1, 1, 1])
-
-plt.show()</code></pre>
-
-      <div class="note">
-        This is not a real emoji image.
-        It is a 3D drawing made from a sphere, points, and a curve.
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>8. Master Demo: All Shapes in One Program</h2>
-
-      <p>
-        This program shows a menu. Students can choose what they want to draw.
-      </p>
-
-      <pre><code>import numpy as np
-import matplotlib.pyplot as plt
-
-
-def setup_ax(title):
-    fig = plt.figure(figsize=(8, 7))
-    ax = fig.add_subplot(projection="3d")
-
-    ax.set_title(title)
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.set_zlabel("Z")
-
-    return fig, ax
-
-
-def draw_line():
-    t = np.linspace(0, 10, 100)
-
-    x = t
-    y = t
-    z = t
-
-    fig, ax = setup_ax("3D Line")
-    ax.plot(x, y, z, linewidth=3)
-
-    plt.show()
-
-
-def draw_plane():
-    x = np.linspace(-5, 5, 20)
-    y = np.linspace(-5, 5, 20)
-
-    X, Y = np.meshgrid(x, y)
-    Z = 2 * X + Y
-
-    fig, ax = setup_ax("Plane: z = 2x + y")
-    ax.plot_surface(X, Y, Z, alpha=0.75)
-
-    plt.show()
-
-
-def draw_cube():
-    fig, ax = setup_ax("3D Cube")
-
-    points = [
-        [0, 0, 0],
-        [1, 0, 0],
-        [1, 1, 0],
-        [0, 1, 0],
-        [0, 0, 1],
-        [1, 0, 1],
-        [1, 1, 1],
-        [0, 1, 1]
-    ]
-
-    edges = [
-        [0, 1], [1, 2], [2, 3], [3, 0],
-        [4, 5], [5, 6], [6, 7], [7, 4],
-        [0, 4], [1, 5], [2, 6], [3, 7]
-    ]
-
-    for edge in edges:
-        p1 = points[edge[0]]
-        p2 = points[edge[1]]
-
-        x = [p1[0], p2[0]]
-        y = [p1[1], p2[1]]
-        z = [p1[2], p2[2]]
-
-        ax.plot(x, y, z, linewidth=3)
-
-    ax.scatter(
-        [p[0] for p in points],
-        [p[1] for p in points],
-        [p[2] for p in points],
-        s=60
-    )
-
-    ax.set_box_aspect([1, 1, 1])
-
-    plt.show()
-
-
-def draw_cone():
-    theta = np.linspace(0, 2 * np.pi, 80)
-    r = np.linspace(0, 1, 40)
-
-    Theta, R = np.meshgrid(theta, r)
-
-    X = R * np.cos(Theta)
-    Y = R * np.sin(Theta)
-    Z = 1 - R
-
-    fig, ax = setup_ax("3D Cone")
-    ax.plot_surface(X, Y, Z, alpha=0.85)
-    ax.set_box_aspect([1, 1, 1])
-
-    plt.show()
-
-
-def draw_sphere():
-    u = np.linspace(0, 2 * np.pi, 80)
-    v = np.linspace(0, np.pi, 80)
-
-    X = np.outer(np.cos(u), np.sin(v))
-    Y = np.outer(np.sin(u), np.sin(v))
-    Z = np.outer(np.ones_like(u), np.cos(v))
-
-    fig, ax = setup_ax("3D Sphere")
-    ax.plot_surface(X, Y, Z, alpha=0.85)
-    ax.set_box_aspect([1, 1, 1])
-
-    plt.show()
-
-
-def draw_emoji():
-    fig, ax = setup_ax("Simple 3D Emoji Face")
-
-    u = np.linspace(0, 2 * np.pi, 100)
-    v = np.linspace(0, np.pi, 100)
-
-    X = np.outer(np.cos(u), np.sin(v))
-    Y = np.outer(np.sin(u), np.sin(v))
-    Z = np.outer(np.ones_like(u), np.cos(v))
-
-    ax.plot_surface(X, Y, Z, alpha=0.75)
-
-    ax.scatter(
-        [-0.35, 0.35],
-        [-0.82, -0.82],
-        [0.35, 0.35],
-        s=180,
-        color="black"
-    )
-
-    smile_x = np.linspace(-0.45, 0.45, 80)
-    smile_y = np.full_like(smile_x, -0.88)
-    smile_z = -0.15 - 0.35 * smile_x**2
-
-    ax.plot(smile_x, smile_y, smile_z, color="black", linewidth=5)
-
-    ax.view_init(elev=10, azim=-90)
-    ax.set_box_aspect([1, 1, 1])
-
-    plt.show()
-
-
-print("3D Drawing in Matplotlib")
-print("1. Line")
-print("2. Plane")
-print("3. Cube")
-print("4. Cone")
-print("5. Sphere")
-print("6. Emoji Face")
-
-choice = input("Enter your choice: ")
-
-if choice == "1":
-    draw_line()
-elif choice == "2":
-    draw_plane()
-elif choice == "3":
-    draw_cube()
-elif choice == "4":
-    draw_cone()
-elif choice == "5":
-    draw_sphere()
-elif choice == "6":
-    draw_emoji()
-else:
-    print("Invalid choice")</code></pre>
-    </section>
-
-    <section class="section">
-      <h2>9. Shape Formula Cheat Sheet</h2>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Shape</th>
-            <th>Main Idea</th>
-            <th>Matplotlib Tool</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Line</td>
-            <td>Connect many points</td>
-            <td><code>ax.plot(x, y, z)</code></td>
-          </tr>
-          <tr>
-            <td>Plane</td>
-            <td>Use <code>z = ax + by + c</code></td>
-            <td><code>ax.plot_surface(X, Y, Z)</code></td>
-          </tr>
-          <tr>
-            <td>Cube</td>
-            <td>Draw corners and edges</td>
-            <td><code>ax.plot()</code> repeatedly</td>
-          </tr>
-          <tr>
-            <td>Cone</td>
-            <td>Use radius and angle</td>
-            <td><code>ax.plot_surface()</code></td>
-          </tr>
-          <tr>
-            <td>Sphere</td>
-            <td>Use two angles</td>
-            <td><code>ax.plot_surface()</code></td>
-          </tr>
-          <tr>
-            <td>Emoji</td>
-            <td>Combine sphere, points, and curves</td>
-            <td><code>plot_surface</code>, <code>scatter</code>, <code>plot</code></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="editor">
-      <h2>10. Embedded Python Editor</h2>
-
-      <p>
-        Copy any code from this lesson and run it inside the editor.
-      </p>
-
-      <div class="editor-shell">
-        <div class="editor-topbar">
-          <div>Python Starter Editor | Matplotlib 3D Drawing Practice</div>
-          <div class="editor-actions">
-            <button class="small-btn" onclick="reloadEditor()">Reload</button>
-            <button class="small-btn" onclick="openEditorNewTab()">Open New Tab</button>
-            <button class="small-btn" onclick="toggleEditorFullscreen()">Fullscreen</button>
+      <div class="panel-body">
+        <div class="grid-2">
+          <div>
+            <label for="authorName">Doctor / Therapist Name</label>
+            <input id="authorName" placeholder="Example: Dr. Aditi Sharma" />
+          </div>
+
+          <div>
+            <label for="authorRole">Designation</label>
+            <input id="authorRole" placeholder="Example: Clinical Psychologist" />
           </div>
         </div>
 
-        <iframe
-          id="pythonEditor"
-          src="https://editor.learnwithchampak.live/python-starter/editor/super/?tmode=1"
-          title="Programmers Picnic Python Editor"
-          allow="clipboard-read; clipboard-write; fullscreen"
-          loading="lazy">
-        </iframe>
-      </div>
+        <div class="grid-2">
+          <div>
+            <label for="specialization">Specialization</label>
+            <input id="specialization" placeholder="Example: Anxiety, Depression, Stress" />
+          </div>
 
-      <div class="note">
-        If the editor does not load inside the page because of browser security settings,
-        use the <strong>Open New Tab</strong> button.
+          <div>
+            <label for="photoUrl">Photo URL</label>
+            <input id="photoUrl" placeholder="Example: assets/doctors/doctor-1.jpeg" />
+          </div>
+        </div>
+
+        <label for="title">Essay Title</label>
+        <input id="title" placeholder="Example: Understanding Anxiety in Everyday Life" />
+
+        <div class="grid-2">
+          <div>
+            <label for="category">Category</label>
+            <select id="category">
+              <option>Mental Health</option>
+              <option>Psychotherapy</option>
+              <option>Counselling</option>
+              <option>Child Psychology</option>
+              <option>Stress and Anxiety</option>
+              <option>Depression</option>
+              <option>Relationship Health</option>
+              <option>Addiction Recovery</option>
+              <option>Nutrition</option>
+              <option>Women’s Health</option>
+              <option>General Health</option>
+              <option>Preventive Care</option>
+              <option>Yoga and Wellness</option>
+              <option>Senior Care</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="tags">Tags</label>
+            <input id="tags" placeholder="anxiety, therapy, wellness" />
+          </div>
+        </div>
+
+        <label for="summary">Short Summary</label>
+        <textarea id="summary" placeholder="Write a 2 to 3 line summary of the essay."></textarea>
+
+        <label for="essayContent">Full Essay</label>
+
+        <div class="toolbar">
+          <button class="light" onclick="insertText('<h2>Section Heading</h2>')">H2</button>
+          <button class="light" onclick="insertText('<h3>Sub Heading</h3>')">H3</button>
+          <button class="light" onclick="insertText('<p>Your paragraph here.</p>')">Paragraph</button>
+          <button class="light" onclick="insertText('<ul>\\n  <li>Point one</li>\\n  <li>Point two</li>\\n</ul>')">List</button>
+          <button class="light" onclick="insertText('<strong>important text</strong>')">Bold</button>
+        </div>
+
+        <textarea id="essayContent" placeholder="Write the full essay here. You can use simple HTML tags like <h2>, <p>, <ul>, <li>, <strong>."></textarea>
+
+        <p class="small-note">
+          Tip: Write in simple language. Avoid making personal medical promises. Keep the article educational.
+        </p>
+
+        <div class="footer-actions">
+          <button onclick="updatePreview()">Update Preview</button>
+          <button onclick="exportJSON()">Export JSON</button>
+          <button onclick="exportHTML()">Export HTML</button>
+          <button onclick="copyOutput()">Copy Output</button>
+        </div>
+
+        <label for="output">Export Output</label>
+        <textarea id="output" class="output-box" readonly></textarea>
       </div>
     </section>
 
-    <section class="section">
-      <h2>11. Student Practice Checklist</h2>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Live Preview</h2>
+        <span class="status">Public Article View</span>
+      </div>
 
-      <div class="checklist">
-        <label><input type="checkbox"> I drew a 3D line.</label>
-        <label><input type="checkbox"> I changed the line equation.</label>
-        <label><input type="checkbox"> I drew a plane.</label>
-        <label><input type="checkbox"> I understood meshgrid.</label>
-        <label><input type="checkbox"> I drew a cube using edges.</label>
-        <label><input type="checkbox"> I drew a cone using radius and angle.</label>
-        <label><input type="checkbox"> I drew a sphere using two angles.</label>
-        <label><input type="checkbox"> I created a simple 3D emoji face.</label>
+      <div class="panel-body preview" id="preview">
+        Preview will appear here.
       </div>
     </section>
-
-    <section class="section">
-      <h2>12. Homework</h2>
-
-      <h3>Easy</h3>
-      <p>Draw a line from point <code>(0, 0, 0)</code> to <code>(5, 5, 5)</code>.</p>
-
-      <h3>Medium</h3>
-      <p>Draw a cube with side length 2.</p>
-
-      <h3>Hard</h3>
-      <p>Draw a snowman using three spheres.</p>
-
-      <h3>Infinity</h3>
-      <p>Create a 3D emoji with eyebrows, nose, mouth, and ears.</p>
-    </section>
-
   </main>
 
-  <footer class="footer">
-    <strong>Programmers Picnic AI-ML Classes by Champak Roy</strong><br />
-    learnwithchampak.live | editor.learnwithchampak.live
-  </footer>
-
   <script>
-    const EDITOR_URL = "https://editor.learnwithchampak.live/python-starter/editor/super/?tmode=1";
+    const fields = [
+      "authorName",
+      "authorRole",
+      "specialization",
+      "photoUrl",
+      "title",
+      "category",
+      "tags",
+      "summary",
+      "essayContent"
+    ];
 
-    function reloadEditor() {
-      const iframe = document.getElementById("pythonEditor");
-      iframe.src = EDITOR_URL + "&reload=" + Date.now();
+    const disclaimer = `
+      <div class="disclaimer">
+        <strong>Medical Disclaimer:</strong>
+        This article is for educational and awareness purposes only. It should not be treated as a substitute
+        for professional medical advice, diagnosis, or treatment. Please consult a qualified healthcare
+        professional for personal medical concerns.
+      </div>
+    `;
+
+    function getValue(id) {
+      return document.getElementById(id).value.trim();
     }
 
-    function openEditorNewTab() {
-      window.open(EDITOR_URL, "_blank");
+    function setValue(id, value) {
+      document.getElementById(id).value = value || "";
     }
 
-    function toggleEditorFullscreen() {
-      const shell = document.querySelector(".editor-shell");
+    function makeSlug(text) {
+      return text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
 
-      if (!document.fullscreenElement) {
-        shell.requestFullscreen().catch(function(error) {
-          alert("Fullscreen could not be started: " + error.message);
-        });
-      } else {
-        document.exitFullscreen();
+    function getEssayData() {
+      const title = getValue("title") || "Untitled Health Essay";
+
+      return {
+        id: makeSlug(title) || "essay-draft",
+        status: "pending",
+        featured: false,
+        title,
+        slug: makeSlug(title),
+        category: getValue("category"),
+        summary: getValue("summary"),
+        content: getValue("essayContent"),
+        author: {
+          name: getValue("authorName"),
+          role: getValue("authorRole"),
+          specialization: getValue("specialization"),
+          photo: getValue("photoUrl")
+        },
+        publishedDate: new Date().toISOString().slice(0, 10),
+        tags: getValue("tags")
+          .split(",")
+          .map(tag => tag.trim())
+          .filter(Boolean),
+        disclaimer:
+          "This article is for educational purposes only and is not a replacement for medical consultation."
+      };
+    }
+
+    function updatePreview() {
+      const data = getEssayData();
+
+      const initials = data.author.name
+        ? data.author.name.split(" ").map(x => x[0]).join("").slice(0, 2).toUpperCase()
+        : "CH";
+
+      const photo = data.author.photo
+        ? `<img src="${escapeHTML(data.author.photo)}" alt="${escapeHTML(data.author.name)}">`
+        : initials;
+
+      document.getElementById("preview").innerHTML = `
+        <article>
+          <span class="category">${escapeHTML(data.category)}</span>
+          <h1>${escapeHTML(data.title)}</h1>
+
+          <p class="summary">${escapeHTML(data.summary || "Article summary will appear here.")}</p>
+
+          <div class="author-box">
+            <div class="author-photo">${photo}</div>
+            <div>
+              <strong>${escapeHTML(data.author.name || "Author Name")}</strong>
+              <span>${escapeHTML(data.author.role || "Designation")}</span><br>
+              <small>${escapeHTML(data.author.specialization || "Specialization")}</small>
+            </div>
+          </div>
+
+          <div class="essay-output">
+            ${data.content || "<p>The essay body will appear here.</p>"}
+          </div>
+
+          ${disclaimer}
+        </article>
+      `;
+    }
+
+    function saveDraft() {
+      const data = getEssayData();
+      localStorage.setItem("curesiaEssayDraft", JSON.stringify(data));
+      document.getElementById("saveStatus").textContent = "Draft saved";
+      updatePreview();
+    }
+
+    function loadDraft() {
+      const raw = localStorage.getItem("curesiaEssayDraft");
+
+      if (!raw) {
+        alert("No saved draft found.");
+        return;
       }
+
+      const data = JSON.parse(raw);
+
+      setValue("authorName", data.author?.name);
+      setValue("authorRole", data.author?.role);
+      setValue("specialization", data.author?.specialization);
+      setValue("photoUrl", data.author?.photo);
+      setValue("title", data.title);
+      setValue("category", data.category);
+      setValue("summary", data.summary);
+      setValue("essayContent", data.content);
+      setValue("tags", Array.isArray(data.tags) ? data.tags.join(", ") : "");
+
+      document.getElementById("saveStatus").textContent = "Draft loaded";
+      updatePreview();
     }
+
+    function clearDraft() {
+      if (!confirm("Clear the editor?")) return;
+
+      fields.forEach(id => {
+        if (id !== "category") setValue(id, "");
+      });
+
+      document.getElementById("output").value = "";
+      document.getElementById("saveStatus").textContent = "Draft cleared";
+      updatePreview();
+    }
+
+    function exportJSON() {
+      const data = getEssayData();
+      document.getElementById("output").value = JSON.stringify(data, null, 2);
+    }
+
+    function exportHTML() {
+      const data = getEssayData();
+
+      const html = `
+<article class="curesia-essay">
+  <span class="essay-category">${escapeHTML(data.category)}</span>
+
+  <h1>${escapeHTML(data.title)}</h1>
+
+  <p class="essay-summary">
+    ${escapeHTML(data.summary)}
+  </p>
+
+  <div class="essay-author">
+    <img src="${escapeHTML(data.author.photo)}" alt="${escapeHTML(data.author.name)}" />
+    <div>
+      <strong>${escapeHTML(data.author.name)}</strong>
+      <span>${escapeHTML(data.author.role)}</span>
+      <small>${escapeHTML(data.author.specialization)}</small>
+    </div>
+  </div>
+
+  <div class="essay-content">
+    ${data.content}
+  </div>
+
+  <div class="medical-disclaimer">
+    <strong>Medical Disclaimer:</strong>
+    This article is for educational and awareness purposes only. It should not be treated as a substitute
+    for professional medical advice, diagnosis, or treatment. Please consult a qualified healthcare
+    professional for personal medical concerns.
+  </div>
+</article>`.trim();
+
+      document.getElementById("output").value = html;
+    }
+
+    function copyOutput() {
+      const output = document.getElementById("output");
+
+      if (!output.value.trim()) {
+        alert("Nothing to copy. Export JSON or HTML first.");
+        return;
+      }
+
+      output.select();
+      document.execCommand("copy");
+      alert("Copied.");
+    }
+
+    function insertText(text) {
+      const textarea = document.getElementById("essayContent");
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const current = textarea.value;
+
+      textarea.value =
+        current.substring(0, start) +
+        text +
+        current.substring(end);
+
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + text.length;
+      updatePreview();
+    }
+
+    function escapeHTML(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", updatePreview);
+        el.addEventListener("change", updatePreview);
+      }
+    });
+
+    updatePreview();
   </script>
 </body>
 </html>
