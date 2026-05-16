@@ -4,19 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Mouse Drag Thread Drawing using HTML Canvas and JavaScript</title>
+  <title>One Thread Per Drag Canvas Simulation</title>
 
-  <meta name="description" content="A mouse-drag based threaded drawing simulation using HTML Canvas and JavaScript. Drag on the canvas to create animated drawing threads." />
-  <meta name="keywords" content="HTML Canvas, JavaScript, threaded drawing, mouse drag drawing, canvas animation, Programmer's Picnic" />
+  <meta name="description" content="One drag creates one animated drawing thread. Direction and speed come from the mouse drag, and the thread reflects from canvas borders." />
+  <meta name="keywords" content="HTML Canvas, JavaScript, drag animation, threaded drawing, canvas reflection, Programmer's Picnic" />
   <meta name="author" content="Champak Roy" />
 
-  <meta property="og:title" content="Mouse Drag Thread Drawing using HTML Canvas and JavaScript" />
-  <meta property="og:description" content="Drag on the canvas to start animated drawing threads using HTML Canvas and JavaScript." />
+  <meta property="og:title" content="One Thread Per Drag Canvas Simulation" />
+  <meta property="og:description" content="Drag and release to create one animated thread. Direction and speed come from the drag." />
   <meta property="og:type" content="article" />
-  <meta property="og:image" content="https://learnwithchampak.live/images/mouse-drag-thread-canvas-og.png" />
+  <meta property="og:image" content="https://learnwithchampak.live/images/one-thread-per-drag-canvas-og.png" />
 
   <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109" crossorigin="anonymous"></script>
+  <script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109"
+    crossorigin="anonymous">
+  </script>
 
   <style>
     :root {
@@ -221,9 +225,10 @@
 
 <body>
   <header>
-    <h1>Mouse Drag Thread Drawing</h1>
+    <h1>One Thread Per Drag</h1>
     <p>
-      Drag your mouse or finger on the canvas. Every drag movement starts a small animated drawing thread.
+      Drag on the canvas and release. One moving thread starts from the drag start point.
+      Its direction and speed come from your drag.
     </p>
   </header>
 
@@ -231,7 +236,7 @@
     <section class="panel">
       <div class="canvas-wrap">
         <canvas id="drawingCanvas"></canvas>
-        <div class="hint">Drag on the canvas to start threads</div>
+        <div class="hint">Drag and release to launch one thread</div>
       </div>
 
       <div class="controls">
@@ -264,15 +269,20 @@
 
     <section class="panel info">
       <h2>How this works</h2>
+
       <p>
-        In Java, we may use real threads. In the browser, JavaScript usually runs on one main thread.
-        Here, each animated brush behaves like a separate drawing thread.
+        One drag creates exactly one animated object. The drag start point becomes the thread's starting point.
+        The drag direction decides the movement direction. The drag length decides the initial speed.
       </p>
 
       <p>
-        The page uses <code>requestAnimationFrame()</code> for smooth animation. When you drag on the canvas,
-        JavaScript creates new drawing agents. Each agent has its own position, speed, direction, color,
-        size, and life.
+        When the thread touches the left or right wall, its horizontal velocity is reversed.
+        When it touches the top or bottom wall, its vertical velocity is reversed.
+      </p>
+
+      <p>
+        This is similar to a ball reflecting from a wall. The JavaScript animation is handled by
+        <code>requestAnimationFrame()</code>.
       </p>
     </section>
   </main>
@@ -296,8 +306,10 @@
     let drawingThreads = [];
 
     let isDragging = false;
-    let lastMouseX = 0;
-    let lastMouseY = 0;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let dragEndX = 0;
+    let dragEndY = 0;
 
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
@@ -307,7 +319,9 @@
       canvas.height = rect.height * dpr;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       softClear();
+      drawThreadCounter();
     }
 
     function getCanvasPoint(event) {
@@ -319,6 +333,9 @@
       if (event.touches && event.touches.length > 0) {
         clientX = event.touches[0].clientX;
         clientY = event.touches[0].clientY;
+      } else if (event.changedTouches && event.changedTouches.length > 0) {
+        clientX = event.changedTouches[0].clientX;
+        clientY = event.changedTouches[0].clientY;
       } else {
         clientX = event.clientX;
         clientY = event.clientY;
@@ -362,43 +379,63 @@
         this.vy = vy;
 
         this.color = randomColor();
-        this.radius = randomBetween(3, 9);
-        this.lineWidth = randomBetween(1.5, 4);
+        this.radius = randomBetween(4, 9);
+        this.lineWidth = randomBetween(2, 4);
         this.life = 0;
-        this.maxLife = randomBetween(260, 720);
-        this.spin = randomBetween(-0.08, 0.08);
+        this.maxLife = 100000;
+
         this.angle = randomBetween(0, Math.PI * 2);
+        this.spin = randomBetween(-0.05, 0.05);
       }
 
-      update(speed) {
+      update(speedMultiplier) {
         this.oldX = this.x;
         this.oldY = this.y;
 
         this.angle += this.spin;
 
-        this.x += this.vx * speed * 0.35;
-        this.y += this.vy * speed * 0.35;
+        this.x += this.vx * speedMultiplier;
+        this.y += this.vy * speedMultiplier;
 
-        this.vx += Math.cos(this.angle) * 0.015;
-        this.vy += Math.sin(this.angle) * 0.015;
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
 
-        if (this.x < 0 || this.x > canvas.clientWidth) {
+        if (this.x - this.radius <= 0) {
+          this.x = this.radius;
           this.vx *= -1;
+          this.changeAfterReflection();
         }
 
-        if (this.y < 0 || this.y > canvas.clientHeight) {
+        if (this.x + this.radius >= w) {
+          this.x = w - this.radius;
+          this.vx *= -1;
+          this.changeAfterReflection();
+        }
+
+        if (this.y - this.radius <= 0) {
+          this.y = this.radius;
           this.vy *= -1;
+          this.changeAfterReflection();
+        }
+
+        if (this.y + this.radius >= h) {
+          this.y = h - this.radius;
+          this.vy *= -1;
+          this.changeAfterReflection();
         }
 
         this.life++;
       }
 
+      changeAfterReflection() {
+        this.color = randomColor();
+        this.spin = randomBetween(-0.05, 0.05);
+      }
+
       draw(mode) {
         ctx.save();
 
-        const fade = 1 - this.life / this.maxLife;
-        ctx.globalAlpha = Math.max(0.05, fade);
-
+        ctx.globalAlpha = 0.9;
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.lineWidth = this.lineWidth;
@@ -414,7 +451,8 @@
         } else if (mode === "spark") {
           this.drawSpark();
         } else {
-          Math.random() > 0.5 ? this.drawLine() : this.drawCircle();
+          this.drawLine();
+          this.drawCircle();
         }
 
         ctx.restore();
@@ -440,14 +478,14 @@
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius * 0.7, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.radius * 0.75, 0, Math.PI * 2);
         ctx.fill();
       }
 
       drawSpark() {
         const spikes = 6;
         const outer = this.radius * 2.2;
-        const inner = this.radius * 0.7;
+        const inner = this.radius * 0.75;
 
         ctx.beginPath();
 
@@ -473,34 +511,36 @@
       }
     }
 
-    function createDragThread(x, y, oldX, oldY) {
-      const dx = x - oldX;
-      const dy = y - oldY;
+    function createOneThreadFromDrag(startX, startY, endX, endY) {
+      const dx = endX - startX;
+      const dy = endY - startY;
 
-      const movementLength = Math.sqrt(dx * dx + dy * dy);
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (movementLength < 2) {
+      if (distance < 8) {
         return;
       }
 
-      const speedBoost = 0.18;
+      /*
+        Direction comes from the drag direction.
+        Speed comes from the drag length.
+        Long drag = faster thread.
+      */
+      const speedScale = 0.035;
 
-      let vx = dx * speedBoost + randomBetween(-1.4, 1.4);
-      let vy = dy * speedBoost + randomBetween(-1.4, 1.4);
+      let vx = dx * speedScale;
+      let vy = dy * speedScale;
 
-      if (Math.abs(vx) < 0.4) {
-        vx = randomBetween(-2, 2);
+      const maxSpeed = 12;
+      const speed = Math.sqrt(vx * vx + vy * vy);
+
+      if (speed > maxSpeed) {
+        vx = (vx / speed) * maxSpeed;
+        vy = (vy / speed) * maxSpeed;
       }
 
-      if (Math.abs(vy) < 0.4) {
-        vy = randomBetween(-2, 2);
-      }
-
-      drawingThreads.push(new DrawingThread(x, y, vx, vy));
-
-      if (drawingThreads.length > 550) {
-        drawingThreads.splice(0, drawingThreads.length - 550);
-      }
+      const thread = new DrawingThread(startX, startY, vx, vy);
+      drawingThreads.push(thread);
 
       if (!running) {
         running = true;
@@ -514,25 +554,77 @@
     }
 
     function fadeCanvas() {
-      ctx.fillStyle = "rgba(17, 24, 39, 0.055)";
+      ctx.fillStyle = "rgba(17, 24, 39, 0.045)";
       ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    }
+
+    function drawDragPreview() {
+      if (!isDragging) return;
+
+      ctx.save();
+
+      ctx.strokeStyle = "#ffb703";
+      ctx.lineWidth = 3;
+      ctx.setLineDash([8, 8]);
+      ctx.lineCap = "round";
+
+      ctx.beginPath();
+      ctx.moveTo(dragStartX, dragStartY);
+      ctx.lineTo(dragEndX, dragEndY);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+
+      drawArrowHead(dragStartX, dragStartY, dragEndX, dragEndY);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(dragStartX, dragStartY, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#ffb703";
+      ctx.beginPath();
+      ctx.arc(dragEndX, dragEndY, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawArrowHead(fromX, fromY, toX, toY) {
+      const angle = Math.atan2(toY - fromY, toX - fromX);
+      const size = 16;
+
+      ctx.fillStyle = "#ffb703";
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(
+        toX - size * Math.cos(angle - Math.PI / 6),
+        toY - size * Math.sin(angle - Math.PI / 6)
+      );
+      ctx.lineTo(
+        toX - size * Math.cos(angle + Math.PI / 6),
+        toY - size * Math.sin(angle + Math.PI / 6)
+      );
+      ctx.closePath();
+      ctx.fill();
     }
 
     function animate() {
       if (!running) return;
 
-      const speed = Number(speedRange.value);
+      const speedMultiplier = Number(speedRange.value) / 4;
       const mode = modeSelect.value;
 
       fadeCanvas();
 
       for (const thread of drawingThreads) {
-        thread.update(speed);
+        thread.update(speedMultiplier);
         thread.draw(mode);
       }
 
       drawingThreads = drawingThreads.filter(thread => !thread.isDead());
 
+      drawDragPreview();
       drawThreadCounter();
 
       animationId = requestAnimationFrame(animate);
@@ -543,74 +635,71 @@
 
       ctx.globalAlpha = 0.92;
       ctx.fillStyle = "rgba(255, 247, 232, 0.9)";
-      ctx.fillRect(16, 16, 310, 62);
+      ctx.fillRect(16, 16, 350, 70);
 
       ctx.fillStyle = "#1f1b16";
       ctx.font = "700 16px system-ui";
-      ctx.fillText("Active drag threads: " + drawingThreads.length, 28, 41);
+      ctx.fillText("Active threads: " + drawingThreads.length, 28, 42);
 
       ctx.font = "500 13px system-ui";
-      ctx.fillText("Drag mouse or finger on canvas", 28, 64);
+      ctx.fillText("One drag creates one reflecting thread", 28, 65);
 
       ctx.restore();
     }
 
-    canvas.addEventListener("mousedown", event => {
+    function startDrag(event) {
+      event.preventDefault();
+
       isDragging = true;
 
       const point = getCanvasPoint(event);
-      lastMouseX = point.x;
-      lastMouseY = point.y;
-    });
 
-    canvas.addEventListener("mousemove", event => {
+      dragStartX = point.x;
+      dragStartY = point.y;
+      dragEndX = point.x;
+      dragEndY = point.y;
+    }
+
+    function moveDrag(event) {
       if (!isDragging) return;
+
+      event.preventDefault();
 
       const point = getCanvasPoint(event);
 
-      createDragThread(point.x, point.y, lastMouseX, lastMouseY);
+      dragEndX = point.x;
+      dragEndY = point.y;
+    }
 
-      lastMouseX = point.x;
-      lastMouseY = point.y;
-    });
+    function endDrag(event) {
+      if (!isDragging) return;
 
-    window.addEventListener("mouseup", () => {
+      event.preventDefault();
+
+      const point = getCanvasPoint(event);
+
+      dragEndX = point.x;
+      dragEndY = point.y;
+
+      createOneThreadFromDrag(dragStartX, dragStartY, dragEndX, dragEndY);
+
+      isDragging = false;
+    }
+
+    canvas.addEventListener("mousedown", startDrag);
+    canvas.addEventListener("mousemove", moveDrag);
+    window.addEventListener("mouseup", endDrag);
+
+    canvas.addEventListener("touchstart", startDrag, { passive: false });
+    canvas.addEventListener("touchmove", moveDrag, { passive: false });
+    window.addEventListener("touchend", endDrag, { passive: false });
+
+    window.addEventListener("touchcancel", () => {
       isDragging = false;
     });
 
     canvas.addEventListener("mouseleave", () => {
-      isDragging = false;
-    });
-
-    canvas.addEventListener("touchstart", event => {
-      event.preventDefault();
-
-      isDragging = true;
-
-      const point = getCanvasPoint(event);
-      lastMouseX = point.x;
-      lastMouseY = point.y;
-    }, { passive: false });
-
-    canvas.addEventListener("touchmove", event => {
-      event.preventDefault();
-
       if (!isDragging) return;
-
-      const point = getCanvasPoint(event);
-
-      createDragThread(point.x, point.y, lastMouseX, lastMouseY);
-
-      lastMouseX = point.x;
-      lastMouseY = point.y;
-    }, { passive: false });
-
-    window.addEventListener("touchend", () => {
-      isDragging = false;
-    });
-
-    window.addEventListener("touchcancel", () => {
-      isDragging = false;
     });
 
     startBtn.addEventListener("click", () => {
@@ -635,6 +724,7 @@
 
     resizeCanvas();
     softClear();
+    drawThreadCounter();
     animate();
 
     try {
