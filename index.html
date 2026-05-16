@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Threaded Drawing Simulation using HTML Canvas and JavaScript</title>
+  <title>Mouse Drag Thread Drawing using HTML Canvas and JavaScript</title>
 
-  <meta name="description" content="A Java threaded drawing style animation recreated using HTML Canvas and JavaScript. Multiple drawing agents move independently like threads." />
-  <meta name="keywords" content="HTML Canvas, JavaScript animation, threaded drawing, multithreading simulation, canvas tutorial, Programmer's Picnic" />
+  <meta name="description" content="A mouse-drag based threaded drawing simulation using HTML Canvas and JavaScript. Drag on the canvas to create animated drawing threads." />
+  <meta name="keywords" content="HTML Canvas, JavaScript, threaded drawing, mouse drag drawing, canvas animation, Programmer's Picnic" />
   <meta name="author" content="Champak Roy" />
 
-  <meta property="og:title" content="Threaded Drawing Simulation using HTML Canvas and JavaScript" />
-  <meta property="og:description" content="Recreate a Java threaded drawing example using HTML Canvas and JavaScript." />
+  <meta property="og:title" content="Mouse Drag Thread Drawing using HTML Canvas and JavaScript" />
+  <meta property="og:description" content="Drag on the canvas to start animated drawing threads using HTML Canvas and JavaScript." />
   <meta property="og:type" content="article" />
-  <meta property="og:image" content="https://learnwithchampak.live/images/threaded-canvas-drawing-og.png" />
+  <meta property="og:image" content="https://learnwithchampak.live/images/mouse-drag-thread-canvas-og.png" />
 
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109" crossorigin="anonymous"></script>
@@ -21,11 +21,13 @@
   <style>
     :root {
       --saffron: #ff8c00;
+      --saffron-light: #ffb347;
       --saffron-dark: #b85f00;
       --cream: #fff7e8;
       --ink: #1f1b16;
       --card: #ffffff;
       --line: #ead6b7;
+      --dark: #111827;
     }
 
     * {
@@ -44,7 +46,7 @@
     header {
       padding: 28px 18px;
       text-align: center;
-      background: linear-gradient(135deg, #ffb347, #ff8c00);
+      background: linear-gradient(135deg, var(--saffron-light), var(--saffron));
       color: #1d1203;
       border-bottom: 4px solid var(--saffron-dark);
     }
@@ -81,18 +83,34 @@
       overflow: hidden;
       border-radius: 20px;
       border: 3px solid var(--saffron);
-      background: #111827;
+      background: var(--dark);
     }
 
     canvas {
       display: block;
       width: 100%;
       height: 560px;
+      cursor: crosshair;
+      touch-action: none;
       background:
         linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
         #111827;
       background-size: 28px 28px;
+    }
+
+    .hint {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      background: rgba(255, 247, 232, 0.92);
+      color: #1f1b16;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
     }
 
     .controls {
@@ -104,7 +122,9 @@
       justify-content: center;
     }
 
-    button, select, input {
+    button,
+    select,
+    input {
       border: 0;
       border-radius: 999px;
       padding: 11px 16px;
@@ -125,20 +145,31 @@
 
     button.secondary {
       background: #1f2937;
-      color: #fff;
+      color: #ffffff;
+    }
+
+    select {
+      background: #fff4dc;
+      color: #1f1b16;
+      border: 1px solid #e6c98f;
     }
 
     label {
-      font-weight: 700;
+      font-weight: 800;
     }
 
     input[type="range"] {
       accent-color: var(--saffron);
+      padding-inline: 0;
     }
 
     .info {
       line-height: 1.7;
       font-size: 1rem;
+    }
+
+    .info h2 {
+      margin-top: 0;
     }
 
     .info code {
@@ -158,22 +189,41 @@
       background: #fffaf0;
       color: #6b4b18;
       font-size: 0.92rem;
+      overflow: hidden;
     }
 
     footer {
       text-align: center;
       padding: 24px;
       color: #5a3a08;
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      canvas {
+        height: 430px;
+      }
+
+      .hint {
+        font-size: 0.8rem;
+        left: 12px;
+        bottom: 12px;
+      }
+
+      button,
+      select,
+      input {
+        font-size: 0.88rem;
+      }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>Threaded Drawing Simulation</h1>
+    <h1>Mouse Drag Thread Drawing</h1>
     <p>
-      A Java multithreaded drawing idea recreated with HTML Canvas and JavaScript.
-      Each moving brush behaves like an independent drawing thread.
+      Drag your mouse or finger on the canvas. Every drag movement starts a small animated drawing thread.
     </p>
   </header>
 
@@ -181,13 +231,13 @@
     <section class="panel">
       <div class="canvas-wrap">
         <canvas id="drawingCanvas"></canvas>
+        <div class="hint">Drag on the canvas to start threads</div>
       </div>
 
       <div class="controls">
         <button id="startBtn">Start</button>
         <button id="pauseBtn" class="secondary">Pause</button>
         <button id="clearBtn" class="secondary">Clear</button>
-        <button id="addThreadBtn">Add Drawing Thread</button>
 
         <label for="speedRange">Speed</label>
         <input id="speedRange" type="range" min="1" max="10" value="4" />
@@ -198,12 +248,12 @@
           <option value="circles">Circles</option>
           <option value="mixed">Mixed</option>
           <option value="web">Web Pattern</option>
+          <option value="spark">Spark</option>
         </select>
       </div>
     </section>
 
     <div class="ad-box">
-      Google ad space
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-8321261883090494"
@@ -215,15 +265,14 @@
     <section class="panel info">
       <h2>How this works</h2>
       <p>
-        Java uses real threads. In the browser, JavaScript usually runs on one main thread.
-        But we can simulate threaded drawing by creating many independent drawing objects.
-        Each object has its own position, speed, direction, color, and drawing style.
+        In Java, we may use real threads. In the browser, JavaScript usually runs on one main thread.
+        Here, each animated brush behaves like a separate drawing thread.
       </p>
 
       <p>
-        The animation loop uses <code>requestAnimationFrame()</code>. On every frame, each
-        drawing agent updates itself. This creates the visual effect of multiple threads
-        drawing at the same time.
+        The page uses <code>requestAnimationFrame()</code> for smooth animation. When you drag on the canvas,
+        JavaScript creates new drawing agents. Each agent has its own position, speed, direction, color,
+        size, and life.
       </p>
     </section>
   </main>
@@ -239,13 +288,16 @@
     const startBtn = document.getElementById("startBtn");
     const pauseBtn = document.getElementById("pauseBtn");
     const clearBtn = document.getElementById("clearBtn");
-    const addThreadBtn = document.getElementById("addThreadBtn");
     const speedRange = document.getElementById("speedRange");
     const modeSelect = document.getElementById("modeSelect");
 
     let running = true;
     let animationId = null;
     let drawingThreads = [];
+
+    let isDragging = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
 
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
@@ -256,6 +308,26 @@
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       softClear();
+    }
+
+    function getCanvasPoint(event) {
+      const rect = canvas.getBoundingClientRect();
+
+      let clientX;
+      let clientY;
+
+      if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+      } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
+      }
+
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
     }
 
     function randomBetween(min, max) {
@@ -271,64 +343,62 @@
         "#90be6d",
         "#f94144",
         "#f9c74f",
-        "#ffffff"
+        "#ffffff",
+        "#c084fc",
+        "#67e8f9"
       ];
 
       return colors[Math.floor(Math.random() * colors.length)];
     }
 
     class DrawingThread {
-      constructor() {
-        this.reset();
-      }
+      constructor(x, y, vx, vy) {
+        this.x = x;
+        this.y = y;
+        this.oldX = x;
+        this.oldY = y;
 
-      reset() {
-        this.x = randomBetween(30, canvas.clientWidth - 30);
-        this.y = randomBetween(30, canvas.clientHeight - 30);
-        this.oldX = this.x;
-        this.oldY = this.y;
-
-        this.vx = randomBetween(-2.5, 2.5);
-        this.vy = randomBetween(-2.5, 2.5);
-
-        if (Math.abs(this.vx) < 0.6) this.vx = 1.5;
-        if (Math.abs(this.vy) < 0.6) this.vy = -1.5;
+        this.vx = vx;
+        this.vy = vy;
 
         this.color = randomColor();
-        this.radius = randomBetween(3, 10);
+        this.radius = randomBetween(3, 9);
         this.lineWidth = randomBetween(1.5, 4);
         this.life = 0;
-        this.maxLife = randomBetween(600, 1400);
+        this.maxLife = randomBetween(260, 720);
+        this.spin = randomBetween(-0.08, 0.08);
+        this.angle = randomBetween(0, Math.PI * 2);
       }
 
       update(speed) {
         this.oldX = this.x;
         this.oldY = this.y;
 
+        this.angle += this.spin;
+
         this.x += this.vx * speed * 0.35;
         this.y += this.vy * speed * 0.35;
 
+        this.vx += Math.cos(this.angle) * 0.015;
+        this.vy += Math.sin(this.angle) * 0.015;
+
         if (this.x < 0 || this.x > canvas.clientWidth) {
           this.vx *= -1;
-          this.color = randomColor();
         }
 
         if (this.y < 0 || this.y > canvas.clientHeight) {
           this.vy *= -1;
-          this.color = randomColor();
         }
 
         this.life++;
-
-        if (this.life > this.maxLife) {
-          this.reset();
-        }
       }
 
       draw(mode) {
         ctx.save();
 
-        ctx.globalAlpha = 0.82;
+        const fade = 1 - this.life / this.maxLife;
+        ctx.globalAlpha = Math.max(0.05, fade);
+
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.lineWidth = this.lineWidth;
@@ -341,6 +411,8 @@
           this.drawCircle();
         } else if (mode === "web") {
           this.drawWeb();
+        } else if (mode === "spark") {
+          this.drawSpark();
         } else {
           Math.random() > 0.5 ? this.drawLine() : this.drawCircle();
         }
@@ -371,11 +443,68 @@
         ctx.arc(this.x, this.y, this.radius * 0.7, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      drawSpark() {
+        const spikes = 6;
+        const outer = this.radius * 2.2;
+        const inner = this.radius * 0.7;
+
+        ctx.beginPath();
+
+        for (let i = 0; i < spikes * 2; i++) {
+          const r = i % 2 === 0 ? outer : inner;
+          const a = this.angle + i * Math.PI / spikes;
+          const px = this.x + Math.cos(a) * r;
+          const py = this.y + Math.sin(a) * r;
+
+          if (i === 0) {
+            ctx.moveTo(px, py);
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      isDead() {
+        return this.life > this.maxLife;
+      }
     }
 
-    function createThreads(count) {
-      for (let i = 0; i < count; i++) {
-        drawingThreads.push(new DrawingThread());
+    function createDragThread(x, y, oldX, oldY) {
+      const dx = x - oldX;
+      const dy = y - oldY;
+
+      const movementLength = Math.sqrt(dx * dx + dy * dy);
+
+      if (movementLength < 2) {
+        return;
+      }
+
+      const speedBoost = 0.18;
+
+      let vx = dx * speedBoost + randomBetween(-1.4, 1.4);
+      let vy = dy * speedBoost + randomBetween(-1.4, 1.4);
+
+      if (Math.abs(vx) < 0.4) {
+        vx = randomBetween(-2, 2);
+      }
+
+      if (Math.abs(vy) < 0.4) {
+        vy = randomBetween(-2, 2);
+      }
+
+      drawingThreads.push(new DrawingThread(x, y, vx, vy));
+
+      if (drawingThreads.length > 550) {
+        drawingThreads.splice(0, drawingThreads.length - 550);
+      }
+
+      if (!running) {
+        running = true;
+        animate();
       }
     }
 
@@ -402,6 +531,8 @@
         thread.draw(mode);
       }
 
+      drawingThreads = drawingThreads.filter(thread => !thread.isDead());
+
       drawThreadCounter();
 
       animationId = requestAnimationFrame(animate);
@@ -409,18 +540,78 @@
 
     function drawThreadCounter() {
       ctx.save();
+
       ctx.globalAlpha = 0.92;
       ctx.fillStyle = "rgba(255, 247, 232, 0.9)";
-      ctx.fillRect(16, 16, 245, 54);
+      ctx.fillRect(16, 16, 310, 62);
 
       ctx.fillStyle = "#1f1b16";
       ctx.font = "700 16px system-ui";
-      ctx.fillText("Simulated drawing threads: " + drawingThreads.length, 28, 39);
+      ctx.fillText("Active drag threads: " + drawingThreads.length, 28, 41);
 
       ctx.font = "500 13px system-ui";
-      ctx.fillText("Canvas + JavaScript animation", 28, 61);
+      ctx.fillText("Drag mouse or finger on canvas", 28, 64);
+
       ctx.restore();
     }
+
+    canvas.addEventListener("mousedown", event => {
+      isDragging = true;
+
+      const point = getCanvasPoint(event);
+      lastMouseX = point.x;
+      lastMouseY = point.y;
+    });
+
+    canvas.addEventListener("mousemove", event => {
+      if (!isDragging) return;
+
+      const point = getCanvasPoint(event);
+
+      createDragThread(point.x, point.y, lastMouseX, lastMouseY);
+
+      lastMouseX = point.x;
+      lastMouseY = point.y;
+    });
+
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+      isDragging = false;
+    });
+
+    canvas.addEventListener("touchstart", event => {
+      event.preventDefault();
+
+      isDragging = true;
+
+      const point = getCanvasPoint(event);
+      lastMouseX = point.x;
+      lastMouseY = point.y;
+    }, { passive: false });
+
+    canvas.addEventListener("touchmove", event => {
+      event.preventDefault();
+
+      if (!isDragging) return;
+
+      const point = getCanvasPoint(event);
+
+      createDragThread(point.x, point.y, lastMouseX, lastMouseY);
+
+      lastMouseX = point.x;
+      lastMouseY = point.y;
+    }, { passive: false });
+
+    window.addEventListener("touchend", () => {
+      isDragging = false;
+    });
+
+    window.addEventListener("touchcancel", () => {
+      isDragging = false;
+    });
 
     startBtn.addEventListener("click", () => {
       if (!running) {
@@ -435,17 +626,15 @@
     });
 
     clearBtn.addEventListener("click", () => {
+      drawingThreads = [];
       softClear();
-    });
-
-    addThreadBtn.addEventListener("click", () => {
-      createThreads(1);
+      drawThreadCounter();
     });
 
     window.addEventListener("resize", resizeCanvas);
 
     resizeCanvas();
-    createThreads(8);
+    softClear();
     animate();
 
     try {
