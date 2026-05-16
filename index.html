@@ -1,21 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WebSocket Test on GitHub Pages</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Threaded Drawing Simulation using HTML Canvas and JavaScript</title>
+
+  <meta name="description" content="A Java threaded drawing style animation recreated using HTML Canvas and JavaScript. Multiple drawing agents move independently like threads." />
+  <meta name="keywords" content="HTML Canvas, JavaScript animation, threaded drawing, multithreading simulation, canvas tutorial, Programmer's Picnic" />
+  <meta name="author" content="Champak Roy" />
+
+  <meta property="og:title" content="Threaded Drawing Simulation using HTML Canvas and JavaScript" />
+  <meta property="og:description" content="Recreate a Java threaded drawing example using HTML Canvas and JavaScript." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://learnwithchampak.live/images/threaded-canvas-drawing-og.png" />
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109" crossorigin="anonymous"></script>
 
   <style>
     :root {
-      --bg: #fff7ed;
+      --saffron: #ff8c00;
+      --saffron-dark: #b85f00;
+      --cream: #fff7e8;
+      --ink: #1f1b16;
       --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --saffron: #f59e0b;
-      --saffron-dark: #d97706;
-      --green: #16a34a;
-      --red: #dc2626;
-      --line: #fed7aa;
+      --line: #ead6b7;
     }
 
     * {
@@ -24,299 +34,424 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top left, #ffedd5, transparent 35%),
-        linear-gradient(135deg, #fff7ed, #fffbeb);
-      color: var(--text);
-      padding: 24px;
+        radial-gradient(circle at top left, rgba(255, 140, 0, 0.22), transparent 35%),
+        linear-gradient(135deg, #fff7e8, #fffdf7);
+      color: var(--ink);
     }
 
-    .wrap {
-      max-width: 900px;
-      margin: auto;
+    header {
+      padding: 28px 18px;
+      text-align: center;
+      background: linear-gradient(135deg, #ffb347, #ff8c00);
+      color: #1d1203;
+      border-bottom: 4px solid var(--saffron-dark);
     }
 
-    .hero {
-      background: linear-gradient(135deg, #f59e0b, #fb923c);
-      color: white;
-      border-radius: 28px;
-      padding: 28px;
-      box-shadow: 0 18px 45px rgba(217, 119, 6, 0.25);
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.7rem, 4vw, 3rem);
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.05rem;
+      max-width: 850px;
+      margin-inline: auto;
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(1100px, 94vw);
+      margin: 24px auto 50px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(120, 70, 0, 0.12);
       margin-bottom: 20px;
     }
 
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: clamp(28px, 5vw, 46px);
+    .canvas-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 3px solid var(--saffron);
+      background: #111827;
     }
 
-    .hero p {
-      margin: 0;
-      font-size: 18px;
-      opacity: 0.95;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: 0 12px 32px rgba(120, 53, 15, 0.08);
-      margin-bottom: 18px;
-    }
-
-    label {
+    canvas {
       display: block;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    input,
-    textarea {
       width: 100%;
-      border: 1px solid #fdba74;
-      border-radius: 16px;
-      padding: 14px;
-      font: inherit;
-      outline: none;
-      background: white;
+      height: 560px;
+      background:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+        #111827;
+      background-size: 28px 28px;
     }
 
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus {
-      border-color: var(--saffron-dark);
-      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
-    }
-
-    .row {
+    .controls {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 16px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button, select, input {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-weight: 700;
+      font-size: 0.95rem;
     }
 
     button {
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-weight: 800;
-      cursor: pointer;
       background: var(--saffron);
-      color: white;
-      box-shadow: 0 8px 18px rgba(217, 119, 6, 0.22);
+      color: #1d1203;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(184, 95, 0, 0.25);
     }
 
     button:hover {
-      background: var(--saffron-dark);
+      background: #ff9f1a;
     }
 
     button.secondary {
-      background: #fff7ed;
-      color: var(--saffron-dark);
-      border: 1px solid #fdba74;
+      background: #1f2937;
+      color: #fff;
     }
 
-    button.danger {
-      background: var(--red);
+    label {
+      font-weight: 700;
     }
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight: 800;
-      background: #f3f4f6;
-      color: var(--muted);
-      margin-top: 10px;
+    input[type="range"] {
+      accent-color: var(--saffron);
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--muted);
+    .info {
+      line-height: 1.7;
+      font-size: 1rem;
     }
 
-    .status.open {
-      background: #dcfce7;
-      color: var(--green);
+    .info code {
+      background: #1f2937;
+      color: #fff3c4;
+      padding: 3px 7px;
+      border-radius: 8px;
     }
 
-    .status.open .dot {
-      background: var(--green);
+    .ad-box {
+      margin: 22px 0;
+      min-height: 90px;
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #fffaf0;
+      color: #6b4b18;
+      font-size: 0.92rem;
     }
 
-    .status.closed {
-      background: #fee2e2;
-      color: var(--red);
-    }
-
-    .status.closed .dot {
-      background: var(--red);
-    }
-
-    pre {
-      background: #111827;
-      color: #f9fafb;
-      border-radius: 18px;
-      padding: 16px;
-      min-height: 220px;
-      overflow: auto;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-
-    .small {
-      color: var(--muted);
-      font-size: 14px;
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #5a3a08;
     }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <h1>WebSocket Test</h1>
-      <p>Test WebSocket connections directly from a GitHub Pages static page.</p>
+  <header>
+    <h1>Threaded Drawing Simulation</h1>
+    <p>
+      A Java multithreaded drawing idea recreated with HTML Canvas and JavaScript.
+      Each moving brush behaves like an independent drawing thread.
+    </p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="canvas-wrap">
+        <canvas id="drawingCanvas"></canvas>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn" class="secondary">Pause</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+        <button id="addThreadBtn">Add Drawing Thread</button>
+
+        <label for="speedRange">Speed</label>
+        <input id="speedRange" type="range" min="1" max="10" value="4" />
+
+        <label for="modeSelect">Mode</label>
+        <select id="modeSelect">
+          <option value="lines">Lines</option>
+          <option value="circles">Circles</option>
+          <option value="mixed">Mixed</option>
+          <option value="web">Web Pattern</option>
+        </select>
+      </div>
     </section>
 
-    <section class="card">
-      <label for="url">WebSocket URL</label>
-      <input
-        id="url"
-        value="wss://ws.postman-echo.com/raw"
-        placeholder="wss://example.com/socket"
-      />
+    <div class="ad-box">
+      Google ad space
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-8321261883090494"
+           data-ad-slot="7782388330"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>
 
-      <div id="status" class="status closed">
-        <span class="dot"></span>
-        <span>Disconnected</span>
-      </div>
-
-      <div class="row">
-        <button onclick="connectWS()">Connect</button>
-        <button class="danger" onclick="disconnectWS()">Disconnect</button>
-        <button class="secondary" onclick="clearLog()">Clear Log</button>
-      </div>
-
-      <p class="small">
-        On GitHub Pages, prefer wss:// URLs. ws:// may be blocked because the page is HTTPS.
+    <section class="panel info">
+      <h2>How this works</h2>
+      <p>
+        Java uses real threads. In the browser, JavaScript usually runs on one main thread.
+        But we can simulate threaded drawing by creating many independent drawing objects.
+        Each object has its own position, speed, direction, color, and drawing style.
       </p>
-    </section>
 
-    <section class="card">
-      <label for="msg">Message to send</label>
-      <textarea id="msg">Hello from GitHub Pages</textarea>
-
-      <div class="row">
-        <button onclick="sendMessage()">Send Message</button>
-        <button class="secondary" onclick="sendChampak()">Send Test: Champak</button>
-      </div>
-    </section>
-
-    <section class="card">
-      <label>Log</label>
-      <pre id="log"></pre>
+      <p>
+        The animation loop uses <code>requestAnimationFrame()</code>. On every frame, each
+        drawing agent updates itself. This creates the visual effect of multiple threads
+        drawing at the same time.
+      </p>
     </section>
   </main>
 
+  <footer>
+    Programmer's Picnic AI-ML classes by Champak Roy
+  </footer>
+
   <script>
-    let socket = null;
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
 
-    const logBox = document.getElementById("log");
-    const statusBox = document.getElementById("status");
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const addThreadBtn = document.getElementById("addThreadBtn");
+    const speedRange = document.getElementById("speedRange");
+    const modeSelect = document.getElementById("modeSelect");
 
-    function log(message) {
-      const time = new Date().toLocaleTimeString();
-      logBox.textContent += `[${time}] ${message}\n`;
-      logBox.scrollTop = logBox.scrollHeight;
+    let running = true;
+    let animationId = null;
+    let drawingThreads = [];
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      softClear();
     }
 
-    function setStatus(text, isOpen) {
-      statusBox.className = "status " + (isOpen ? "open" : "closed");
-      statusBox.querySelector("span:last-child").textContent = text;
+    function randomBetween(min, max) {
+      return Math.random() * (max - min) + min;
     }
 
-    function connectWS() {
-      const url = document.getElementById("url").value.trim();
+    function randomColor() {
+      const colors = [
+        "#ffb703",
+        "#fb8500",
+        "#8ecae6",
+        "#219ebc",
+        "#90be6d",
+        "#f94144",
+        "#f9c74f",
+        "#ffffff"
+      ];
 
-      if (!url) {
-        log("Please enter a WebSocket URL.");
-        return;
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    class DrawingThread {
+      constructor() {
+        this.reset();
       }
 
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        log("Already connected.");
-        return;
+      reset() {
+        this.x = randomBetween(30, canvas.clientWidth - 30);
+        this.y = randomBetween(30, canvas.clientHeight - 30);
+        this.oldX = this.x;
+        this.oldY = this.y;
+
+        this.vx = randomBetween(-2.5, 2.5);
+        this.vy = randomBetween(-2.5, 2.5);
+
+        if (Math.abs(this.vx) < 0.6) this.vx = 1.5;
+        if (Math.abs(this.vy) < 0.6) this.vy = -1.5;
+
+        this.color = randomColor();
+        this.radius = randomBetween(3, 10);
+        this.lineWidth = randomBetween(1.5, 4);
+        this.life = 0;
+        this.maxLife = randomBetween(600, 1400);
       }
 
-      try {
-        socket = new WebSocket(url);
+      update(speed) {
+        this.oldX = this.x;
+        this.oldY = this.y;
 
-        log("Connecting to " + url);
+        this.x += this.vx * speed * 0.35;
+        this.y += this.vy * speed * 0.35;
 
-        socket.onopen = function () {
-          setStatus("Connected", true);
-          log("Connection opened.");
-        };
+        if (this.x < 0 || this.x > canvas.clientWidth) {
+          this.vx *= -1;
+          this.color = randomColor();
+        }
 
-        socket.onmessage = function (event) {
-          log("Received: " + event.data);
-        };
+        if (this.y < 0 || this.y > canvas.clientHeight) {
+          this.vy *= -1;
+          this.color = randomColor();
+        }
 
-        socket.onerror = function () {
-          log("WebSocket error. Check URL, server, SSL, and CORS/origin rules.");
-        };
+        this.life++;
 
-        socket.onclose = function (event) {
-          setStatus("Disconnected", false);
-          log("Connection closed. Code: " + event.code + ", Reason: " + (event.reason || "none"));
-        };
-      } catch (err) {
-        log("Failed to create WebSocket: " + err.message);
+        if (this.life > this.maxLife) {
+          this.reset();
+        }
+      }
+
+      draw(mode) {
+        ctx.save();
+
+        ctx.globalAlpha = 0.82;
+        ctx.strokeStyle = this.color;
+        ctx.fillStyle = this.color;
+        ctx.lineWidth = this.lineWidth;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        if (mode === "lines") {
+          this.drawLine();
+        } else if (mode === "circles") {
+          this.drawCircle();
+        } else if (mode === "web") {
+          this.drawWeb();
+        } else {
+          Math.random() > 0.5 ? this.drawLine() : this.drawCircle();
+        }
+
+        ctx.restore();
+      }
+
+      drawLine() {
+        ctx.beginPath();
+        ctx.moveTo(this.oldX, this.oldY);
+        ctx.lineTo(this.x, this.y);
+        ctx.stroke();
+      }
+
+      drawCircle() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      drawWeb() {
+        ctx.beginPath();
+        ctx.moveTo(canvas.clientWidth / 2, canvas.clientHeight / 2);
+        ctx.lineTo(this.x, this.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 0.7, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
-    function disconnectWS() {
-      if (!socket) {
-        log("No socket to disconnect.");
-        return;
+    function createThreads(count) {
+      for (let i = 0; i < count; i++) {
+        drawingThreads.push(new DrawingThread());
+      }
+    }
+
+    function softClear() {
+      ctx.fillStyle = "#111827";
+      ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    }
+
+    function fadeCanvas() {
+      ctx.fillStyle = "rgba(17, 24, 39, 0.055)";
+      ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    }
+
+    function animate() {
+      if (!running) return;
+
+      const speed = Number(speedRange.value);
+      const mode = modeSelect.value;
+
+      fadeCanvas();
+
+      for (const thread of drawingThreads) {
+        thread.update(speed);
+        thread.draw(mode);
       }
 
-      socket.close();
-      socket = null;
-      setStatus("Disconnected", false);
-      log("Disconnect requested.");
+      drawThreadCounter();
+
+      animationId = requestAnimationFrame(animate);
     }
 
-    function sendMessage() {
-      const message = document.getElementById("msg").value;
+    function drawThreadCounter() {
+      ctx.save();
+      ctx.globalAlpha = 0.92;
+      ctx.fillStyle = "rgba(255, 247, 232, 0.9)";
+      ctx.fillRect(16, 16, 245, 54);
 
-      if (!socket || socket.readyState !== WebSocket.OPEN) {
-        log("Not connected. Click Connect first.");
-        return;
+      ctx.fillStyle = "#1f1b16";
+      ctx.font = "700 16px system-ui";
+      ctx.fillText("Simulated drawing threads: " + drawingThreads.length, 28, 39);
+
+      ctx.font = "500 13px system-ui";
+      ctx.fillText("Canvas + JavaScript animation", 28, 61);
+      ctx.restore();
+    }
+
+    startBtn.addEventListener("click", () => {
+      if (!running) {
+        running = true;
+        animate();
       }
+    });
 
-      socket.send(message);
-      log("Sent: " + message);
-    }
+    pauseBtn.addEventListener("click", () => {
+      running = false;
+      cancelAnimationFrame(animationId);
+    });
 
-    function sendChampak() {
-      document.getElementById("msg").value = "Champak";
-      sendMessage();
-    }
+    clearBtn.addEventListener("click", () => {
+      softClear();
+    });
 
-    function clearLog() {
-      logBox.textContent = "";
+    addThreadBtn.addEventListener("click", () => {
+      createThreads(1);
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    resizeCanvas();
+    createThreads(8);
+    animate();
+
+    try {
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (error) {
+      console.log("AdSense not loaded yet.");
     }
   </script>
 </body>
