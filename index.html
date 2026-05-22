@@ -1,357 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Google Login on GitHub Pages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Grid Point Highlighter Using X and Y Conditions</title>
-
-  <meta
-    name="description"
-    content="Create a grid by entering length and width, then highlight points using mathematical conditions on x and y."
-  />
-
-  <meta property="og:title" content="Grid Point Highlighter" />
-  <meta property="og:description" content="Enter length, width, and an x-y condition to highlight grid points." />
-  <meta property="og:type" content="website" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
-    :root {
-      --saffron: #ff9800;
-      --deep-saffron: #e65100;
-      --light-saffron: #fff3e0;
-      --cream: #fffaf2;
-      --dark: #2b2118;
-      --green: #2e7d32;
-      --red: #c62828;
-      --border: #e5c48b;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #fffaf2, #fff3e0);
-      color: var(--dark);
-    }
-
-    header {
-      padding: 28px 20px;
+      background: #fff7ed;
+      color: #1f2937;
+      padding: 40px;
       text-align: center;
-      background: linear-gradient(135deg, var(--saffron), #ffc107);
-      color: #2b2118;
-      border-bottom: 4px solid var(--deep-saffron);
     }
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 2rem;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 24px auto;
-      padding: 16px;
-    }
-
-    .panel {
-      background: #ffffff;
-      border: 1px solid var(--border);
+    .card {
+      max-width: 520px;
+      margin: auto;
+      background: white;
+      padding: 30px;
       border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border-top: 6px solid #f97316;
+    }
+
+    #protectedContent {
+      display: none;
+      margin-top: 25px;
       padding: 20px;
-      box-shadow: 0 10px 25px rgba(128, 72, 0, 0.12);
-      margin-bottom: 20px;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      align-items: end;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #d7a951;
-      border-radius: 10px;
-      font-size: 1rem;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: var(--deep-saffron);
-      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.18);
-    }
-
-    .condition-box {
-      grid-column: span 2;
+      background: #fffbeb;
+      border-radius: 14px;
+      border: 1px solid #fed7aa;
     }
 
     button {
-      padding: 12px 14px;
+      margin-top: 20px;
+      padding: 10px 18px;
       border: none;
       border-radius: 10px;
-      background: var(--deep-saffron);
+      background: #ea580c;
       color: white;
-      font-size: 1rem;
-      font-weight: bold;
       cursor: pointer;
-    }
-
-    button:hover {
-      background: #bf360c;
-    }
-
-    .examples {
-      margin-top: 15px;
-      padding: 12px;
-      background: var(--light-saffron);
-      border-radius: 12px;
-      border: 1px dashed var(--saffron);
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-
-    code {
-      background: #2b2118;
-      color: #fff8e1;
-      padding: 3px 7px;
-      border-radius: 6px;
-      font-family: Consolas, monospace;
-    }
-
-    .status {
-      margin-top: 14px;
       font-weight: bold;
-    }
-
-    .error {
-      color: var(--red);
-    }
-
-    .success {
-      color: var(--green);
-    }
-
-    .grid-wrapper {
-      overflow: auto;
-      padding: 16px;
-      background: #fff;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 25px rgba(128, 72, 0, 0.10);
-    }
-
-    .grid {
-      display: grid;
-      gap: 5px;
-      width: max-content;
-      margin: auto;
-    }
-
-    .cell {
-      width: 54px;
-      height: 54px;
-      border: 1px solid #d8b26a;
-      background: #fffdf8;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: bold;
-      transition: 0.25s;
-      position: relative;
-    }
-
-    .cell.highlight {
-      background: linear-gradient(135deg, #ff9800, #ffcc80);
-      color: #2b2118;
-      border-color: #e65100;
-      transform: scale(1.04);
-      box-shadow: 0 4px 14px rgba(230, 81, 0, 0.35);
-    }
-
-    .cell.origin {
-      outline: 3px solid #2e7d32;
-    }
-
-    .axis-label {
-      color: #6d4c41;
-      font-size: 0.75rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: #6d4c41;
-    }
-
-    @media (max-width: 800px) {
-      .controls {
-        grid-template-columns: 1fr;
-      }
-
-      .condition-box {
-        grid-column: span 1;
-      }
-
-      .cell {
-        width: 44px;
-        height: 44px;
-        font-size: 0.7rem;
-      }
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>Grid Point Highlighter</h1>
-    <p>Enter length, width, and a condition using <strong>x</strong> and <strong>y</strong>.</p>
-  </header>
+  <div class="card">
+    <h1>Programmers Picnic Login</h1>
+    <p>Sign in with Google to continue.</p>
 
-  <main>
-    <section class="panel">
-      <div class="controls">
-        <div>
-          <label for="lengthInput">Length</label>
-          <input type="number" id="lengthInput" min="1" max="50" value="10" />
-        </div>
+    <div id="g_id_onload"
+         data-client_id="YOUR_GOOGLE_CLIENT_ID"
+         data-callback="handleCredentialResponse">
+    </div>
 
-        <div>
-          <label for="widthInput">Width</label>
-          <input type="number" id="widthInput" min="1" max="50" value="8" />
-        </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="signin_with"
+         data-shape="pill"
+         data-logo_alignment="left">
+    </div>
 
-        <div class="condition-box">
-          <label for="conditionInput">Condition using x and y</label>
-          <input type="text" id="conditionInput" value="x == y" />
-        </div>
+    <div id="protectedContent">
+      <h2 id="welcomeText"></h2>
+      <p>You are now logged in.</p>
+      <p>This content is visible only after Google login.</p>
 
-        <button onclick="makeGrid()">Make Grid</button>
-      </div>
-
-      <div class="examples">
-        Try:
-        <code>x == y</code>
-        <code>x + y == 6</code>
-        <code>x > 3 && y < 5</code>
-        <code>x % 2 == 0</code>
-        <code>x*x + y*y < 25</code>
-      </div>
-
-      <div id="status" class="status"></div>
-    </section>
-
-    <section class="grid-wrapper">
-      <div id="grid" class="grid"></div>
-    </section>
-  </main>
-
-  <footer>
-    Grid points are shown as <strong>(x, y)</strong>. The bottom-left point is treated as <strong>(0, 0)</strong>.
-  </footer>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
 
   <script>
-    function makeGrid() {
-      const length = Number(document.getElementById("lengthInput").value);
-      const width = Number(document.getElementById("widthInput").value);
-      const condition = document.getElementById("conditionInput").value.trim();
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
 
-      const grid = document.getElementById("grid");
-      const status = document.getElementById("status");
-
-      grid.innerHTML = "";
-      status.textContent = "";
-      status.className = "status";
-
-      if (!Number.isInteger(length) || !Number.isInteger(width) || length <= 0 || width <= 0) {
-        status.textContent = "Please enter positive whole numbers for length and width.";
-        status.classList.add("error");
-        return;
-      }
-
-      if (length > 50 || width > 50) {
-        status.textContent = "Please keep length and width up to 50 for smooth display.";
-        status.classList.add("error");
-        return;
-      }
-
-      if (!condition) {
-        status.textContent = "Please enter a condition using x and y.";
-        status.classList.add("error");
-        return;
-      }
-
-      let conditionFunction;
-
-      try {
-        conditionFunction = new Function("x", "y", `"use strict"; return (${condition});`);
-      } catch (error) {
-        status.textContent = "Invalid condition. Please check your expression.";
-        status.classList.add("error");
-        return;
-      }
-
-      grid.style.gridTemplateColumns = `repeat(${length}, 54px)`;
-
-      let highlightedCount = 0;
-
-      for (let row = width - 1; row >= 0; row--) {
-        for (let col = 0; col < length; col++) {
-          const x = col;
-          const y = row;
-
-          const cell = document.createElement("div");
-          cell.className = "cell";
-          cell.textContent = `(${x},${y})`;
-
-          if (x === 0 && y === 0) {
-            cell.classList.add("origin");
-            cell.title = "Origin (0,0)";
-          }
-
-          try {
-            const result = Boolean(conditionFunction(x, y));
-
-            if (result) {
-              cell.classList.add("highlight");
-              highlightedCount++;
-            }
-          } catch (error) {
-            status.textContent = "The condition caused an error while checking points.";
-            status.classList.add("error");
-            grid.innerHTML = "";
-            return;
-          }
-
-          grid.appendChild(cell);
-        }
-      }
-
-      status.textContent = `${highlightedCount} point(s) highlighted using condition: ${condition}`;
-      status.classList.add("success");
+      return JSON.parse(jsonPayload);
     }
 
-    makeGrid();
+    function handleCredentialResponse(response) {
+      const user = parseJwt(response.credential);
+
+      console.log(user);
+
+      const allowedEmails = [
+        "champaksworld@gmail.com"
+      ];
+
+      if (!allowedEmails.includes(user.email)) {
+        alert("Sorry, this email is not allowed.");
+        return;
+      }
+
+      localStorage.setItem("google_user", JSON.stringify(user));
+
+      showUser(user);
+    }
+
+    function showUser(user) {
+      document.getElementById("protectedContent").style.display = "block";
+      document.getElementById("welcomeText").innerText =
+        "Welcome, " + (user.name || user.email);
+    }
+
+    function logout() {
+      localStorage.removeItem("google_user");
+      location.reload();
+    }
+
+    window.onload = function() {
+      const savedUser = localStorage.getItem("google_user");
+
+      if (savedUser) {
+        showUser(JSON.parse(savedUser));
+      }
+    };
   </script>
 
 </body>
