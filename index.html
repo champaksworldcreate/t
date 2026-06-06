@@ -1,24 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Android PIN Login Demo</title>
-  <meta name="description" content="Login using Android screen lock PIN, pattern, fingerprint, or passkey using WebAuthn." />
-  <meta name="theme-color" content="#d97706" />
+  <title>SQL Hiring Test from 0 Level | Programmer's Picnic by Champak Roy</title>
+
+  <meta name="description" content="A complete beginner-to-hiring-level SQL test with theory, query writing, joins, grouping, subqueries, case statements, and practical database questions. Includes embedded SQL editor for practice." />
+  <meta name="keywords" content="SQL test, SQL hiring test, SQL questions, SQL interview questions, beginner SQL, SQL practice, SQL editor, database test, Programmer's Picnic, Champak Roy" />
+  <meta name="author" content="Champak Roy" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="SQL Hiring Test from 0 Level" />
+  <meta property="og:description" content="Practice SQL from absolute beginner level to hiring-level problems using an embedded SQL editor." />
+  <meta property="og:image" content="https://editor.learnwithchampak.live/assets/sql-hiring-test-og.png" />
+  <meta property="og:url" content="https://www.learnwithchampak.live/" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SQL Hiring Test from 0 Level" />
+  <meta name="twitter:description" content="A complete SQL hiring test with embedded SQL editor and practical database questions." />
+  <meta name="twitter:image" content="https://editor.learnwithchampak.live/assets/sql-hiring-test-og.png" />
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109" crossorigin="anonymous"></script>
 
   <style>
     :root {
-      --bg: #fff7ed;
+      --bg: #fff8ed;
       --card: #ffffff;
+      --soft: #fff1d6;
+      --soft2: #fff7e8;
       --text: #1f2937;
       --muted: #6b7280;
       --accent: #d97706;
       --accent-dark: #92400e;
-      --border: #fed7aa;
-      --success: #047857;
-      --danger: #b91c1c;
+      --border: #f3d6a3;
+      --code-bg: #111827;
+      --code-text: #f9fafb;
+      --green: #047857;
+      --red: #b91c1c;
+      --blue: #1d4ed8;
     }
 
     * {
@@ -27,345 +47,1103 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, #ffedd5, transparent 35%),
-        linear-gradient(135deg, #fff7ed, #fffbeb);
+      background: linear-gradient(180deg, #fff8ed, #ffffff);
       color: var(--text);
-      display: grid;
-      place-items: center;
-      padding: 20px;
+      line-height: 1.7;
     }
 
-    .box {
-      width: min(100%, 440px);
-      background: var(--card);
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #fff1d6, #ffffff);
       border: 1px solid var(--border);
       border-radius: 24px;
       padding: 28px;
-      box-shadow: 0 24px 70px rgba(146, 64, 14, 0.15);
+      margin: 18px 0;
+      box-shadow: 0 12px 35px rgba(146, 64, 14, 0.09);
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #ffedd5;
+    .brand {
       color: var(--accent-dark);
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 18px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: clamp(28px, 6vw, 42px);
+      font-size: clamp(2rem, 5vw, 4rem);
       line-height: 1.05;
+      margin: 12px 0;
+      color: #111827;
+    }
+
+    h2 {
+      color: #111827;
+      margin-top: 42px;
+      border-left: 6px solid var(--accent);
+      padding-left: 12px;
+    }
+
+    h3 {
+      margin-top: 28px;
       color: var(--accent-dark);
     }
 
     p {
-      margin: 0 0 18px;
-      color: var(--muted);
-      line-height: 1.6;
+      margin: 10px 0;
     }
 
-    label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .hero-text {
+      font-size: 1.1rem;
+      max-width: 900px;
+      color: #374151;
     }
 
-    input {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      font-size: 16px;
-      outline: none;
-      margin-bottom: 14px;
-    }
-
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15);
-    }
-
-    .actions {
+    .meta-grid {
       display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .meta-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .meta-card strong {
+      display: block;
+      color: var(--accent-dark);
+      margin-bottom: 5px;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      margin: 22px 0;
+      box-shadow: 0 8px 28px rgba(17, 24, 39, 0.04);
+    }
+
+    .editor-wrap {
+      border: 2px solid var(--accent);
+      border-radius: 22px;
+      overflow: hidden;
+      background: #111827;
+      margin-top: 18px;
+    }
+
+    .editor-title {
+      background: #111827;
+      color: #f9fafb;
+      padding: 12px 16px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
       gap: 12px;
-      margin-top: 8px;
+      flex-wrap: wrap;
     }
 
-    button {
+    iframe {
+      width: 100%;
+      height: 680px;
       border: 0;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      background: var(--accent);
-      color: white;
+      display: block;
+      background: #ffffff;
     }
 
-    button.secondary {
-      background: #ffedd5;
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+      padding: 11px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #ffffff;
       color: var(--accent-dark);
     }
 
-    button.danger {
-      background: #fee2e2;
-      color: var(--danger);
-    }
-
-    button:focus {
-      outline: 4px solid rgba(217, 119, 6, 0.25);
-      outline-offset: 2px;
-    }
-
-    .status {
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 14px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      color: var(--text);
-      line-height: 1.5;
-      min-height: 52px;
-    }
-
-    .ok {
-      color: var(--success);
-      font-weight: 800;
-    }
-
-    .bad {
-      color: var(--danger);
-      font-weight: 800;
+    .btn:focus,
+    button:focus,
+    a:focus,
+    summary:focus {
+      outline: 4px solid #fbbf24;
+      outline-offset: 3px;
     }
 
     .note {
-      font-size: 13px;
-      margin-top: 16px;
-      color: var(--muted);
+      background: var(--soft2);
+      border: 1px dashed var(--accent);
+      border-radius: 18px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    .question {
+      border: 1px solid var(--border);
+      background: #fffdf8;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .question-title {
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .level {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--accent-dark);
+      margin-bottom: 10px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 16px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      line-height: 1.6;
     }
 
     code {
-      background: #fff7ed;
+      background: #fff1d6;
+      color: #7c2d12;
       padding: 2px 6px;
       border-radius: 6px;
+      font-weight: 600;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border-radius: 0;
+      font-weight: inherit;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
       color: var(--accent-dark);
+    }
+
+    details {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #ffffff;
+      margin-top: 12px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--blue);
+    }
+
+    .score-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .score-item {
+      padding: 16px;
+      background: var(--soft2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .ad-box {
+      margin: 24px 0;
+      padding: 12px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 32px 10px;
+    }
+
+    .print-only {
+      display: none;
+    }
+
+    @media print {
+      .editor-wrap,
+      .btn-row,
+      .ad-box,
+      footer {
+        display: none;
+      }
+
+      body {
+        background: #ffffff;
+      }
+
+      .section,
+      header,
+      .question {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+
+      .print-only {
+        display: block;
+      }
     }
   </style>
 </head>
 
 <body>
-  <main class="box">
-    <div class="badge">Android PIN / Passkey Login</div>
+  <main class="page">
+    <header>
+      <div class="brand">Programmer's Picnic by Champak Roy</div>
+      <h1>SQL Hiring Test from 0 Level</h1>
+      <p class="hero-text">
+        This test is designed for students and freshers who are starting SQL from the beginning but want to reach hiring-level confidence.
+        It begins with basic database understanding and slowly moves toward real query-writing, joins, grouping, subqueries, reports, and practical business problems.
+      </p>
 
-    <h1>Secure Login</h1>
+      <div class="meta-grid">
+        <div class="meta-card">
+          <strong>Level</strong>
+          Absolute beginner to fresher hiring level
+        </div>
+        <div class="meta-card">
+          <strong>Total Marks</strong>
+          100
+        </div>
+        <div class="meta-card">
+          <strong>Suggested Time</strong>
+          120 minutes
+        </div>
+        <div class="meta-card">
+          <strong>Tools Allowed</strong>
+          SQL editor, notes, and practice database
+        </div>
+      </div>
 
-    <p>
-      Register once, then login using your Android screen lock.
-      Android may ask for PIN, pattern, password, fingerprint, or face unlock.
-    </p>
+      <div class="btn-row">
+        <a class="btn" href="#sql-editor">Open Embedded SQL Editor</a>
+        <a class="btn secondary" href="#test-start">Start Test</a>
+        <button class="btn secondary" onclick="window.print()">Print Test</button>
+      </div>
+    </header>
 
-    <label for="username">Username</label>
-    <input id="username" value="champak" autocomplete="username" />
+    <section class="ad-box">
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-8321261883090494"
+        data-ad-slot="7782388330"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+    </section>
 
-    <div class="actions">
-      <button onclick="registerPasskey()">Register Android PIN Login</button>
-      <button class="secondary" onclick="loginWithPasskey()">Login Using Android PIN</button>
-      <button class="danger" onclick="clearLogin()">Clear Saved Demo Login</button>
-    </div>
+    <section class="section" id="sql-editor">
+      <h2>Embedded SQL Editor</h2>
+      <p>
+        Use this editor to write and test your SQL queries. Students should try each query first before checking the answer.
+      </p>
 
-    <div id="status" class="status">
-      Ready.
-    </div>
+      <div class="editor-wrap">
+        <div class="editor-title">
+          <span>SQL Practice Editor</span>
+          <span>editor.learnwithchampak.live/sql/premium</span>
+        </div>
+        <iframe
+          src="https://editor.learnwithchampak.live/sql/premium/"
+          title="SQL Premium Editor"
+          loading="lazy"
+          allow="clipboard-read; clipboard-write; fullscreen"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
 
-    <p class="note">
-      Important: this must run on <code>https://</code> or <code>localhost</code>.
-      It will not work properly from a plain <code>file://</code> page.
-    </p>
+      <div class="note">
+        <strong>Instruction:</strong> Create the sample tables given below inside the editor first. Then solve the questions section by section.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Test Rules</h2>
+      <ol>
+        <li>Write clean SQL. Formatting matters.</li>
+        <li>Use meaningful aliases where needed.</li>
+        <li>Do not only memorize syntax. Understand the output.</li>
+        <li>For every query, ask yourself: What table is needed? What rows are needed? What columns are needed? Is grouping required?</li>
+        <li>For hiring practice, explain your query in one or two lines after writing it.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>Database Setup</h2>
+      <p>Create these tables before starting the test.</p>
+
+      <pre><code>CREATE TABLE departments (
+  department_id INTEGER PRIMARY KEY,
+  department_name TEXT NOT NULL
+);
+
+CREATE TABLE employees (
+  employee_id INTEGER PRIMARY KEY,
+  employee_name TEXT NOT NULL,
+  department_id INTEGER,
+  salary INTEGER,
+  joining_date TEXT,
+  city TEXT,
+  manager_id INTEGER,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id)
+);
+
+CREATE TABLE projects (
+  project_id INTEGER PRIMARY KEY,
+  project_name TEXT NOT NULL,
+  department_id INTEGER,
+  budget INTEGER,
+  start_date TEXT,
+  status TEXT,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id)
+);
+
+CREATE TABLE attendance (
+  attendance_id INTEGER PRIMARY KEY,
+  employee_id INTEGER,
+  attendance_date TEXT,
+  status TEXT,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE sales (
+  sale_id INTEGER PRIMARY KEY,
+  employee_id INTEGER,
+  sale_date TEXT,
+  amount INTEGER,
+  product TEXT,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);</code></pre>
+
+      <h3>Insert Sample Data</h3>
+
+      <pre><code>INSERT INTO departments VALUES
+(1, 'Engineering'),
+(2, 'Sales'),
+(3, 'Human Resources'),
+(4, 'Finance'),
+(5, 'Support');
+
+INSERT INTO employees VALUES
+(101, 'Aarav', 1, 60000, '2022-01-15', 'Varanasi', NULL),
+(102, 'Meera', 1, 45000, '2023-03-10', 'Lucknow', 101),
+(103, 'Kabir', 2, 40000, '2021-07-21', 'Delhi', NULL),
+(104, 'Nisha', 2, 38000, '2024-02-01', 'Varanasi', 103),
+(105, 'Rohan', 3, 35000, '2023-08-11', 'Patna', NULL),
+(106, 'Isha', 4, 52000, '2022-12-05', 'Lucknow', NULL),
+(107, 'Dev', 5, 30000, '2024-04-18', 'Varanasi', NULL),
+(108, 'Tara', 1, 70000, '2020-11-30', 'Delhi', 101),
+(109, 'Ankit', 2, 42000, '2023-06-14', 'Lucknow', 103),
+(110, 'Pooja', NULL, 32000, '2024-05-20', 'Varanasi', NULL);
+
+INSERT INTO projects VALUES
+(201, 'Website Redesign', 1, 200000, '2024-01-01', 'Active'),
+(202, 'CRM Upgrade', 2, 150000, '2024-02-15', 'Active'),
+(203, 'Payroll Automation', 3, 100000, '2024-03-01', 'Completed'),
+(204, 'Tax Reporting', 4, 120000, '2024-01-20', 'Active'),
+(205, 'Helpdesk Portal', 5, 90000, '2024-04-10', 'Paused');
+
+INSERT INTO attendance VALUES
+(1, 101, '2024-06-01', 'Present'),
+(2, 102, '2024-06-01', 'Present'),
+(3, 103, '2024-06-01', 'Absent'),
+(4, 104, '2024-06-01', 'Present'),
+(5, 105, '2024-06-01', 'Present'),
+(6, 101, '2024-06-02', 'Present'),
+(7, 102, '2024-06-02', 'Absent'),
+(8, 103, '2024-06-02', 'Present'),
+(9, 104, '2024-06-02', 'Present'),
+(10, 106, '2024-06-02', 'Present');
+
+INSERT INTO sales VALUES
+(301, 103, '2024-06-01', 12000, 'Laptop'),
+(302, 104, '2024-06-01', 8000, 'Mouse'),
+(303, 109, '2024-06-01', 15000, 'Monitor'),
+(304, 103, '2024-06-02', 22000, 'Laptop'),
+(305, 104, '2024-06-02', 5000, 'Keyboard'),
+(306, 109, '2024-06-02', 18000, 'Printer');</code></pre>
+    </section>
+
+    <section class="section">
+      <h2>Scoring Pattern</h2>
+
+      <div class="score-box">
+        <div class="score-item">
+          <strong>Part A</strong>
+          SQL basics and concepts: 15 marks
+        </div>
+        <div class="score-item">
+          <strong>Part B</strong>
+          Simple SELECT queries: 20 marks
+        </div>
+        <div class="score-item">
+          <strong>Part C</strong>
+          Filtering, sorting, and conditions: 15 marks
+        </div>
+        <div class="score-item">
+          <strong>Part D</strong>
+          Aggregate functions and GROUP BY: 15 marks
+        </div>
+        <div class="score-item">
+          <strong>Part E</strong>
+          Joins and relationships: 20 marks
+        </div>
+        <div class="score-item">
+          <strong>Part F</strong>
+          Hiring-style practical tasks: 15 marks
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="test-start">
+      <h2>Part A: SQL Basics and Concepts</h2>
+      <p>Total: 15 marks</p>
+
+      <div class="question">
+        <span class="level">0 Level</span>
+        <div class="question-title">1. What is SQL?</div>
+        <p>Explain SQL in simple language. Also write the full form of SQL.</p>
+        <details>
+          <summary>Expected Answer</summary>
+          <p>
+            SQL stands for Structured Query Language. It is used to create, read, update, and delete data from relational databases.
+          </p>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">0 Level</span>
+        <div class="question-title">2. What is a table?</div>
+        <p>Explain table, row, and column using a student register example.</p>
+        <details>
+          <summary>Expected Answer</summary>
+          <p>
+            A table stores related data. A row is one record. A column is one property. In a student table, one row may represent one student, and columns may be name, roll number, class, and marks.
+          </p>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Basic</span>
+        <div class="question-title">3. What is a primary key?</div>
+        <p>Explain why <code>employee_id</code> is a good primary key in the employees table.</p>
+        <details>
+          <summary>Expected Answer</summary>
+          <p>
+            A primary key uniquely identifies each row in a table. <code>employee_id</code> is a good primary key because each employee should have a unique ID.
+          </p>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Basic</span>
+        <div class="question-title">4. What is a foreign key?</div>
+        <p>Explain the relationship between <code>employees.department_id</code> and <code>departments.department_id</code>.</p>
+        <details>
+          <summary>Expected Answer</summary>
+          <p>
+            A foreign key connects one table to another. Here, <code>employees.department_id</code> refers to <code>departments.department_id</code>, so each employee can be connected to a department.
+          </p>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Basic</span>
+        <div class="question-title">5. Difference between WHERE and HAVING</div>
+        <p>Explain the difference in simple words.</p>
+        <details>
+          <summary>Expected Answer</summary>
+          <p>
+            <code>WHERE</code> filters rows before grouping. <code>HAVING</code> filters grouped results after <code>GROUP BY</code>.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Part B: Simple SELECT Queries</h2>
+      <p>Total: 20 marks</p>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">6. Show all departments.</div>
+        <p>Write a query to display all rows from the departments table.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT * FROM departments;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">7. Show employee names and salaries.</div>
+        <p>Display only <code>employee_name</code> and <code>salary</code> from the employees table.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name, salary
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">8. Rename output columns.</div>
+        <p>Display employee name as <code>Name</code> and salary as <code>Monthly Salary</code>.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name AS Name,
+       salary AS "Monthly Salary"
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">9. Show unique cities.</div>
+        <p>Display each city only once from the employees table.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT DISTINCT city
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">10. Calculate annual salary.</div>
+        <p>Show employee name, monthly salary, and annual salary.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name,
+       salary AS monthly_salary,
+       salary * 12 AS annual_salary
+FROM employees;</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Part C: Filtering, Sorting, and Conditions</h2>
+      <p>Total: 15 marks</p>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">11. Employees from Varanasi</div>
+        <p>Find all employees whose city is Varanasi.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT *
+FROM employees
+WHERE city = 'Varanasi';</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">12. Salary greater than 40000</div>
+        <p>Find employees whose salary is greater than 40000.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name, salary
+FROM employees
+WHERE salary > 40000;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Beginner</span>
+        <div class="question-title">13. Sort employees by salary</div>
+        <p>Show employees from highest salary to lowest salary.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name, salary
+FROM employees
+ORDER BY salary DESC;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Basic Hiring</span>
+        <div class="question-title">14. Employees from Lucknow or Delhi</div>
+        <p>Find employees who are from Lucknow or Delhi.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name, city
+FROM employees
+WHERE city IN ('Lucknow', 'Delhi');</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Basic Hiring</span>
+        <div class="question-title">15. Employees without department</div>
+        <p>Find employees whose department is not assigned.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name, department_id
+FROM employees
+WHERE department_id IS NULL;</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Part D: Aggregate Functions and GROUP BY</h2>
+      <p>Total: 15 marks</p>
+
+      <div class="question">
+        <span class="level">Intermediate</span>
+        <div class="question-title">16. Count employees</div>
+        <p>Find the total number of employees.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT COUNT(*) AS total_employees
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Intermediate</span>
+        <div class="question-title">17. Average salary</div>
+        <p>Find the average salary of all employees.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT AVG(salary) AS average_salary
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Intermediate</span>
+        <div class="question-title">18. Highest and lowest salary</div>
+        <p>Find the highest salary and lowest salary.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT MAX(salary) AS highest_salary,
+       MIN(salary) AS lowest_salary
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Intermediate</span>
+        <div class="question-title">19. Employee count by city</div>
+        <p>Find how many employees are from each city.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT city,
+       COUNT(*) AS total_employees
+FROM employees
+GROUP BY city;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">20. Cities with more than 2 employees</div>
+        <p>Find cities where more than 2 employees are working.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT city,
+       COUNT(*) AS total_employees
+FROM employees
+GROUP BY city
+HAVING COUNT(*) > 2;</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Part E: Joins and Relationships</h2>
+      <p>Total: 20 marks</p>
+
+      <div class="question">
+        <span class="level">Intermediate</span>
+        <div class="question-title">21. Employee with department name</div>
+        <p>Display employee name and department name.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT e.employee_name,
+       d.department_name
+FROM employees e
+JOIN departments d
+ON e.department_id = d.department_id;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Intermediate</span>
+        <div class="question-title">22. Include employees without department</div>
+        <p>Display all employees and their department names. Employees without department should also appear.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT e.employee_name,
+       d.department_name
+FROM employees e
+LEFT JOIN departments d
+ON e.department_id = d.department_id;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">23. Department-wise average salary</div>
+        <p>Display each department name and average salary.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT d.department_name,
+       AVG(e.salary) AS average_salary
+FROM departments d
+JOIN employees e
+ON d.department_id = e.department_id
+GROUP BY d.department_name;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">24. Projects with department names</div>
+        <p>Display project name, budget, status, and department name.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT p.project_name,
+       p.budget,
+       p.status,
+       d.department_name
+FROM projects p
+JOIN departments d
+ON p.department_id = d.department_id;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">25. Employee and manager name</div>
+        <p>Display employee name and manager name using a self join.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT e.employee_name AS employee,
+       m.employee_name AS manager
+FROM employees e
+LEFT JOIN employees m
+ON e.manager_id = m.employee_id;</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Part F: Hiring-Style Practical Tasks</h2>
+      <p>Total: 15 marks</p>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">26. Top 3 highest-paid employees</div>
+        <p>Find the top 3 employees by salary.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name, salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 3;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">27. Sales total by employee</div>
+        <p>Find total sales amount generated by each sales employee.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT e.employee_name,
+       SUM(s.amount) AS total_sales
+FROM employees e
+JOIN sales s
+ON e.employee_id = s.employee_id
+GROUP BY e.employee_name
+ORDER BY total_sales DESC;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">28. Employees who were absent at least once</div>
+        <p>Find employees who have at least one absent record.</p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT DISTINCT e.employee_name
+FROM employees e
+JOIN attendance a
+ON e.employee_id = a.employee_id
+WHERE a.status = 'Absent';</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">29. Salary category</div>
+        <p>
+          Display employee name, salary, and salary category.
+          Use these rules:
+        </p>
+        <ul>
+          <li>Salary 60000 or above: High</li>
+          <li>Salary 40000 to 59999: Medium</li>
+          <li>Below 40000: Low</li>
+        </ul>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT employee_name,
+       salary,
+       CASE
+         WHEN salary >= 60000 THEN 'High'
+         WHEN salary >= 40000 THEN 'Medium'
+         ELSE 'Low'
+       END AS salary_category
+FROM employees;</code></pre>
+        </details>
+      </div>
+
+      <div class="question">
+        <span class="level">Hiring Level</span>
+        <div class="question-title">30. Department performance report</div>
+        <p>
+          Create a report showing department name, number of employees, average salary, and total project budget.
+        </p>
+        <details>
+          <summary>Answer</summary>
+          <pre><code>SELECT d.department_name,
+       COUNT(DISTINCT e.employee_id) AS total_employees,
+       AVG(e.salary) AS average_salary,
+       SUM(DISTINCT p.budget) AS total_project_budget
+FROM departments d
+LEFT JOIN employees e
+ON d.department_id = e.department_id
+LEFT JOIN projects p
+ON d.department_id = p.department_id
+GROUP BY d.department_name;</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Final Practical Challenge</h2>
+      <p>
+        This is the final hiring-style assignment. It tests whether the student can read a business problem and convert it into SQL.
+      </p>
+
+      <div class="question">
+        <span class="level">Final Challenge</span>
+        <div class="question-title">Build an Employee Dashboard Query</div>
+        <p>
+          Write one or more SQL queries to generate the following dashboard:
+        </p>
+        <ol>
+          <li>Total number of employees</li>
+          <li>Average salary</li>
+          <li>Highest-paid employee</li>
+          <li>Department-wise employee count</li>
+          <li>Department-wise average salary</li>
+          <li>Total sales by each sales employee</li>
+          <li>Employees who have no department assigned</li>
+          <li>Employees who were absent at least once</li>
+        </ol>
+
+        <details>
+          <summary>Sample Solution</summary>
+
+          <pre><code>-- 1. Total number of employees
+SELECT COUNT(*) AS total_employees
+FROM employees;
+
+-- 2. Average salary
+SELECT AVG(salary) AS average_salary
+FROM employees;
+
+-- 3. Highest-paid employee
+SELECT employee_name, salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1;
+
+-- 4. Department-wise employee count
+SELECT d.department_name,
+       COUNT(e.employee_id) AS total_employees
+FROM departments d
+LEFT JOIN employees e
+ON d.department_id = e.department_id
+GROUP BY d.department_name;
+
+-- 5. Department-wise average salary
+SELECT d.department_name,
+       AVG(e.salary) AS average_salary
+FROM departments d
+LEFT JOIN employees e
+ON d.department_id = e.department_id
+GROUP BY d.department_name;
+
+-- 6. Total sales by each sales employee
+SELECT e.employee_name,
+       SUM(s.amount) AS total_sales
+FROM employees e
+JOIN sales s
+ON e.employee_id = s.employee_id
+GROUP BY e.employee_name
+ORDER BY total_sales DESC;
+
+-- 7. Employees who have no department assigned
+SELECT employee_name
+FROM employees
+WHERE department_id IS NULL;
+
+-- 8. Employees who were absent at least once
+SELECT DISTINCT e.employee_name
+FROM employees e
+JOIN attendance a
+ON e.employee_id = a.employee_id
+WHERE a.status = 'Absent';</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Evaluation Rubric</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Score Range</th>
+            <th>Level</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0–30</td>
+            <td>Beginner</td>
+            <td>The student understands some commands but needs more practice with syntax and logic.</td>
+          </tr>
+          <tr>
+            <td>31–55</td>
+            <td>Basic SQL User</td>
+            <td>The student can write simple SELECT, WHERE, and ORDER BY queries.</td>
+          </tr>
+          <tr>
+            <td>56–75</td>
+            <td>Job Preparation Level</td>
+            <td>The student can solve grouping, aggregate, and simple join problems.</td>
+          </tr>
+          <tr>
+            <td>76–90</td>
+            <td>Hiring Ready Fresher</td>
+            <td>The student can handle most fresher-level SQL interview tasks.</td>
+          </tr>
+          <tr>
+            <td>91–100</td>
+            <td>Strong Candidate</td>
+            <td>The student shows clean query writing, correct joins, and business-report thinking.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>How to Use This Test in Class</h2>
+      <ol>
+        <li>First 20 minutes: create tables and insert data.</li>
+        <li>Next 30 minutes: solve Part A, B, and C.</li>
+        <li>Next 40 minutes: solve aggregate and join questions.</li>
+        <li>Final 30 minutes: solve the dashboard challenge.</li>
+        <li>Ask each student to explain 3 queries orally.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <p>
+        SQL Hiring Test from 0 Level<br />
+        Created for Programmer's Picnic by Champak Roy
+      </p>
+    </footer>
   </main>
 
   <script>
-    const statusBox = document.getElementById("status");
-    const usernameInput = document.getElementById("username");
+    document.addEventListener("DOMContentLoaded", function () {
+      const ads = document.querySelectorAll(".adsbygoogle");
+      ads.forEach(function () {
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {}
+      });
 
-    function setStatus(message, type = "") {
-      statusBox.innerHTML = type
-        ? `<span class="${type}">${message}</span>`
-        : message;
-    }
-
-    function bufferToBase64Url(buffer) {
-      const bytes = new Uint8Array(buffer);
-      let binary = "";
-      for (const byte of bytes) {
-        binary += String.fromCharCode(byte);
-      }
-
-      return btoa(binary)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=/g, "");
-    }
-
-    function base64UrlToBuffer(base64url) {
-      const base64 = base64url
-        .replace(/-/g, "+")
-        .replace(/_/g, "/");
-
-      const padded = base64.padEnd(
-        base64.length + (4 - base64.length % 4) % 4,
-        "="
-      );
-
-      const binary = atob(padded);
-      const bytes = new Uint8Array(binary.length);
-
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
-
-      return bytes.buffer;
-    }
-
-    function randomChallenge(length = 32) {
-      const array = new Uint8Array(length);
-      crypto.getRandomValues(array);
-      return array;
-    }
-
-    async function checkSupport() {
-      if (!window.PublicKeyCredential) {
-        throw new Error("WebAuthn is not supported in this browser.");
-      }
-
-      const available =
-        await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-
-      if (!available) {
-        throw new Error(
-          "No Android screen-lock authenticator was found. Set a PIN, pattern, password, or biometric lock first."
-        );
-      }
-    }
-
-    async function registerPasskey() {
-      try {
-        await checkSupport();
-
-        const username = usernameInput.value.trim();
-
-        if (!username) {
-          setStatus("Please enter a username.", "bad");
-          return;
-        }
-
-        const userId = new TextEncoder().encode(username);
-
-        const publicKeyOptions = {
-          challenge: randomChallenge(),
-
-          rp: {
-            name: "Learn With Champak Demo"
-          },
-
-          user: {
-            id: userId,
-            name: username,
-            displayName: username
-          },
-
-          pubKeyCredParams: [
-            { type: "public-key", alg: -7 },
-            { type: "public-key", alg: -257 }
-          ],
-
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            userVerification: "required",
-            residentKey: "preferred"
-          },
-
-          timeout: 60000,
-          attestation: "none"
-        };
-
-        setStatus("Android will now ask for screen lock confirmation...");
-
-        const credential = await navigator.credentials.create({
-          publicKey: publicKeyOptions
+      const focusable = document.querySelectorAll("a, button, summary, iframe");
+      focusable.forEach(function (el) {
+        el.addEventListener("focus", function () {
+          el.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
         });
-
-        const savedCredential = {
-          id: credential.id,
-          rawId: bufferToBase64Url(credential.rawId),
-          type: credential.type,
-          username
-        };
-
-        localStorage.setItem("androidPinCredential", JSON.stringify(savedCredential));
-
-        setStatus("Android PIN login registered successfully.", "ok");
-      } catch (error) {
-        setStatus(error.message || "Registration failed.", "bad");
-      }
-    }
-
-    async function loginWithPasskey() {
-      try {
-        await checkSupport();
-
-        const saved = localStorage.getItem("androidPinCredential");
-
-        if (!saved) {
-          setStatus("No saved login found. Register first.", "bad");
-          return;
-        }
-
-        const credentialData = JSON.parse(saved);
-
-        const publicKeyOptions = {
-          challenge: randomChallenge(),
-
-          allowCredentials: [
-            {
-              id: base64UrlToBuffer(credentialData.rawId),
-              type: "public-key",
-              transports: ["internal"]
-            }
-          ],
-
-          userVerification: "required",
-          timeout: 60000
-        };
-
-        setStatus("Android will now ask for PIN, pattern, password, fingerprint, or face unlock...");
-
-        const assertion = await navigator.credentials.get({
-          publicKey: publicKeyOptions
-        });
-
-        if (assertion) {
-          setStatus(`Login successful. Welcome, ${credentialData.username}.`, "ok");
-        } else {
-          setStatus("Login failed.", "bad");
-        }
-      } catch (error) {
-        setStatus(error.message || "Login failed.", "bad");
-      }
-    }
-
-    function clearLogin() {
-      localStorage.removeItem("androidPinCredential");
-      setStatus("Saved demo login cleared.");
-    }
+      });
+    });
   </script>
 </body>
 </html>
