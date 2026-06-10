@@ -1,1148 +1,1165 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>SQL Hiring Test from 0 Level | Programmer's Picnic by Champak Roy</title>
+  <title>Data Pipeline with Pandas: Pulling, Cleaning, Querying, Training, Presentation and Saving</title>
 
-  <meta name="description" content="A complete beginner-to-hiring-level SQL test with theory, query writing, joins, grouping, subqueries, case statements, and practical database questions. Includes embedded SQL editor for practice." />
-  <meta name="keywords" content="SQL test, SQL hiring test, SQL questions, SQL interview questions, beginner SQL, SQL practice, SQL editor, database test, Programmer's Picnic, Champak Roy" />
+  <meta name="description" content="A beginner-friendly 0 to infinity lesson on using pandas for data pulling, data cleaning, data querying, model training, data presentation and data saving." />
+  <meta name="keywords" content="pandas lesson, python data pipeline, data cleaning, data querying, model training, scikit-learn, data saving, beginner machine learning" />
   <meta name="author" content="Champak Roy" />
+  <meta name="theme-color" content="#0f766e" />
 
+  <meta property="og:title" content="Data Pipeline with Pandas: 0 to Infinity Lesson" />
+  <meta property="og:description" content="Learn the full data journey: pulling, cleaning, querying, training, presentation and saving using pandas and Python." />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="SQL Hiring Test from 0 Level" />
-  <meta property="og:description" content="Practice SQL from absolute beginner level to hiring-level problems using an embedded SQL editor." />
-  <meta property="og:image" content="https://editor.learnwithchampak.live/assets/sql-hiring-test-og.png" />
-  <meta property="og:url" content="https://www.learnwithchampak.live/" />
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SQL Hiring Test from 0 Level" />
-  <meta name="twitter:description" content="A complete SQL hiring test with embedded SQL editor and practical database questions." />
-  <meta name="twitter:image" content="https://editor.learnwithchampak.live/assets/sql-hiring-test-og.png" />
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109" crossorigin="anonymous"></script>
+  <!-- Google AdSense -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109"
+    crossorigin="anonymous"></script>
 
   <style>
     :root {
-      --bg: #fff8ed;
+      --bg: #f3fffb;
       --card: #ffffff;
-      --soft: #fff1d6;
-      --soft2: #fff7e8;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --accent: #d97706;
-      --accent-dark: #92400e;
-      --border: #f3d6a3;
-      --code-bg: #111827;
-      --code-text: #f9fafb;
-      --green: #047857;
-      --red: #b91c1c;
-      --blue: #1d4ed8;
+      --ink: #10201d;
+      --muted: #52635f;
+      --brand: #0f766e;
+      --brand-dark: #0b4f49;
+      --soft: #dffaf4;
+      --line: #b9e5dc;
+      --code-bg: #101827;
+      --code-ink: #f8fafc;
+      --warn-bg: #fff7df;
+      --warn-line: #eab308;
+      --ok-bg: #ecfdf5;
+      --ok-line: #10b981;
+      --danger-bg: #fff1f2;
+      --danger-line: #f43f5e;
+      --shadow: 0 14px 35px rgba(15, 118, 110, 0.14);
+      --radius: 18px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #fff8ed, #ffffff);
-      color: var(--text);
-      line-height: 1.7;
+      background:
+        radial-gradient(circle at top left, #ccfbf1 0, transparent 34%),
+        linear-gradient(180deg, #f3fffb, #eefbf7);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--brand-dark);
+      text-decoration-thickness: 2px;
     }
 
     .page {
-      max-width: 1180px;
+      width: min(1160px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 18px;
     }
 
     header {
-      background: linear-gradient(135deg, #fff1d6, #ffffff);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 28px;
-      margin: 18px 0;
-      box-shadow: 0 12px 35px rgba(146, 64, 14, 0.09);
+      padding: 28px 0 18px;
     }
 
-    .brand {
-      color: var(--accent-dark);
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 5vw, 4rem);
-      line-height: 1.05;
-      margin: 12px 0;
-      color: #111827;
-    }
-
-    h2 {
-      color: #111827;
-      margin-top: 42px;
-      border-left: 6px solid var(--accent);
-      padding-left: 12px;
-    }
-
-    h3 {
-      margin-top: 28px;
-      color: var(--accent-dark);
-    }
-
-    p {
-      margin: 10px 0;
-    }
-
-    .hero-text {
-      font-size: 1.1rem;
-      max-width: 900px;
-      color: #374151;
-    }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 22px;
-    }
-
-    .meta-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .meta-card strong {
-      display: block;
-      color: var(--accent-dark);
-      margin-bottom: 5px;
-    }
-
-    .section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 24px;
-      margin: 22px 0;
-      box-shadow: 0 8px 28px rgba(17, 24, 39, 0.04);
-    }
-
-    .editor-wrap {
-      border: 2px solid var(--accent);
-      border-radius: 22px;
+    .hero {
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      color: white;
+      border-radius: 28px;
+      padding: 38px;
+      box-shadow: var(--shadow);
+      position: relative;
       overflow: hidden;
-      background: #111827;
-      margin-top: 18px;
     }
 
-    .editor-title {
-      background: #111827;
-      color: #f9fafb;
-      padding: 12px 16px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      right: -80px;
+      top: -90px;
     }
 
-    iframe {
-      width: 100%;
-      height: 680px;
-      border: 0;
-      display: block;
-      background: #ffffff;
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      max-width: 900px;
     }
 
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 18px;
+    .hero p {
+      max-width: 760px;
+      font-size: 1.15rem;
+      margin: 0;
+      color: #e8fffb;
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      border: 1px solid var(--accent);
-      background: var(--accent);
-      color: #ffffff;
-      padding: 11px 16px;
+    .hero .tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.28);
+      padding: 7px 12px;
       border-radius: 999px;
+      margin-bottom: 18px;
       font-weight: 700;
-      cursor: pointer;
+      font-size: 0.9rem;
     }
 
-    .btn.secondary {
-      background: #ffffff;
-      color: var(--accent-dark);
+    nav {
+      margin: 18px 0 26px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
     }
 
-    .btn:focus,
-    button:focus,
-    a:focus,
-    summary:focus {
-      outline: 4px solid #fbbf24;
+    nav a {
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: var(--soft);
+      text-decoration: none;
+      color: var(--brand-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    nav a:focus,
+    nav a:hover,
+    button:focus {
+      outline: 3px solid #facc15;
       outline-offset: 3px;
     }
 
-    .note {
-      background: var(--soft2);
-      border: 1px dashed var(--accent);
-      border-radius: 18px;
-      padding: 16px;
-      margin: 16px 0;
+    main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding-bottom: 50px;
     }
 
-    .question {
-      border: 1px solid var(--border);
-      background: #fffdf8;
-      border-radius: 18px;
-      padding: 18px;
+    section,
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      color: var(--brand-dark);
+      font-size: clamp(1.55rem, 3vw, 2.2rem);
+      line-height: 1.15;
+      margin: 0 0 14px;
+    }
+
+    h3 {
+      margin-top: 26px;
+      color: #134e4a;
+      font-size: 1.28rem;
+    }
+
+    .lead {
+      font-size: 1.08rem;
+      color: #243d39;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
       margin: 18px 0;
     }
 
-    .question-title {
-      font-weight: 800;
-      color: #111827;
+    .mini {
+      background: #f8fffd;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .mini strong {
+      display: block;
+      color: var(--brand-dark);
+      margin-bottom: 6px;
+      font-size: 1.03rem;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .step {
+      background: linear-gradient(180deg, #ecfffb, #ffffff);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 14px;
+      text-align: center;
+      min-height: 112px;
+    }
+
+    .step .num {
+      width: 34px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--brand);
+      color: white;
+      font-weight: 900;
       margin-bottom: 8px;
     }
 
-    .level {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--soft);
-      color: var(--accent-dark);
-      margin-bottom: 10px;
+    .step b {
+      display: block;
+      color: var(--brand-dark);
     }
 
     pre {
       background: var(--code-bg);
-      color: var(--code-text);
-      padding: 16px;
-      border-radius: 14px;
+      color: var(--code-ink);
+      border-radius: 16px;
+      padding: 18px;
       overflow-x: auto;
+      border: 1px solid #334155;
+      line-height: 1.55;
       font-size: 0.95rem;
-      line-height: 1.6;
     }
 
     code {
-      background: #fff1d6;
-      color: #7c2d12;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-weight: 600;
+      font-family: Consolas, Monaco, "Courier New", monospace;
     }
 
-    pre code {
-      background: transparent;
-      color: inherit;
-      padding: 0;
-      border-radius: 0;
-      font-weight: inherit;
+    p code,
+    li code,
+    td code {
+      background: #e7fff8;
+      color: #063b35;
+      padding: 2px 6px;
+      border-radius: 7px;
+      border: 1px solid #b9e5dc;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 16px 0;
+      margin: 14px 0;
       overflow: hidden;
       border-radius: 14px;
     }
 
     th,
     td {
-      border: 1px solid var(--border);
+      border: 1px solid var(--line);
       padding: 10px;
       text-align: left;
       vertical-align: top;
     }
 
     th {
-      background: var(--soft);
-      color: var(--accent-dark);
+      background: #dffaf4;
+      color: #0b4f49;
     }
 
-    details {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 14px;
-      background: #ffffff;
-      margin-top: 12px;
+    tr:nth-child(even) td {
+      background: #f8fffd;
     }
 
-    summary {
-      cursor: pointer;
-      font-weight: 800;
-      color: var(--blue);
-    }
-
-    .score-box {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .score-item {
+    .note,
+    .warning,
+    .success {
+      border-radius: 16px;
       padding: 16px;
-      background: var(--soft2);
-      border: 1px solid var(--border);
-      border-radius: 18px;
+      margin: 18px 0;
+    }
+
+    .note {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-line);
+    }
+
+    .success {
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-line);
+    }
+
+    .warning {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-line);
     }
 
     .ad-box {
-      margin: 24px 0;
-      padding: 12px;
-      border-radius: 18px;
       background: #ffffff;
-      border: 1px solid var(--border);
+      border: 1px dashed #8bbdb4;
+      border-radius: 16px;
+      padding: 12px;
+      margin: 22px 0;
       text-align: center;
+      color: var(--muted);
+    }
+
+    .checklist li {
+      margin-bottom: 8px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 0;
+      background: var(--brand);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #134e4a;
+    }
+
+    .quiz {
+      margin-top: 14px;
+    }
+
+    .quiz details {
+      background: #f8fffd;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+
+    .quiz summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--brand-dark);
     }
 
     footer {
       text-align: center;
       color: var(--muted);
-      padding: 32px 10px;
+      padding: 28px 0 45px;
     }
 
-    .print-only {
-      display: none;
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .pipeline {
+        grid-template-columns: repeat(2, minmax(130px, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 26px;
+      }
+
+      section,
+      .card {
+        padding: 20px;
+      }
+
+      .grid,
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        position: static;
+      }
     }
 
     @media print {
-      .editor-wrap,
-      .btn-row,
-      .ad-box,
-      footer {
+      nav,
+      .button-row,
+      .ad-box {
         display: none;
       }
 
       body {
-        background: #ffffff;
+        background: white;
       }
 
-      .section,
-      header,
-      .question {
+      section,
+      .card,
+      .hero {
         box-shadow: none;
-        break-inside: avoid;
       }
 
-      .print-only {
-        display: block;
+      .hero {
+        color: black;
+        background: white;
+        border: 1px solid #999;
+      }
+
+      .hero p {
+        color: black;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
+  <div class="page">
     <header>
-      <div class="brand">Programmer's Picnic by Champak Roy</div>
-      <h1>SQL Hiring Test from 0 Level</h1>
-      <p class="hero-text">
-        This test is designed for students and freshers who are starting SQL from the beginning but want to reach hiring-level confidence.
-        It begins with basic database understanding and slowly moves toward real query-writing, joins, grouping, subqueries, reports, and practical business problems.
-      </p>
-
-      <div class="meta-grid">
-        <div class="meta-card">
-          <strong>Level</strong>
-          Absolute beginner to fresher hiring level
-        </div>
-        <div class="meta-card">
-          <strong>Total Marks</strong>
-          100
-        </div>
-        <div class="meta-card">
-          <strong>Suggested Time</strong>
-          120 minutes
-        </div>
-        <div class="meta-card">
-          <strong>Tools Allowed</strong>
-          SQL editor, notes, and practice database
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <a class="btn" href="#sql-editor">Open Embedded SQL Editor</a>
-        <a class="btn secondary" href="#test-start">Start Test</a>
-        <button class="btn secondary" onclick="window.print()">Print Test</button>
+      <div class="hero">
+        <span class="tag">0 to Infinity Lesson</span>
+        <h1>Complete Data Pipeline Using Pandas</h1>
+        <p>
+          Learn how data moves from raw source to useful prediction:
+          data pulling, data cleaning, data querying, model training,
+          presentation and data saving.
+        </p>
       </div>
     </header>
 
-    <section class="ad-box">
-      <ins class="adsbygoogle"
-        style="display:block"
-        data-ad-client="ca-pub-8321261883090494"
-        data-ad-slot="7782388330"
-        data-ad-format="auto"
-        data-full-width-responsive="true"></ins>
-    </section>
+    <nav aria-label="Lesson navigation">
+      <a href="#overview">Overview</a>
+      <a href="#pulling">Data Pulling</a>
+      <a href="#cleaning">Data Cleaning</a>
+      <a href="#querying">Data Querying</a>
+      <a href="#training">Training</a>
+      <a href="#presentation">Presentation</a>
+      <a href="#saving">Saving</a>
+      <a href="#project">Full Project</a>
+      <a href="#practice">Practice</a>
+    </nav>
 
-    <section class="section" id="sql-editor">
-      <h2>Embedded SQL Editor</h2>
-      <p>
-        Use this editor to write and test your SQL queries. Students should try each query first before checking the answer.
-      </p>
-
-      <div class="editor-wrap">
-        <div class="editor-title">
-          <span>SQL Practice Editor</span>
-          <span>editor.learnwithchampak.live/sql/premium</span>
-        </div>
-        <iframe
-          src="https://editor.learnwithchampak.live/sql/premium/"
-          title="SQL Premium Editor"
-          loading="lazy"
-          allow="clipboard-read; clipboard-write; fullscreen"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-      </div>
-
-      <div class="note">
-        <strong>Instruction:</strong> Create the sample tables given below inside the editor first. Then solve the questions section by section.
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Test Rules</h2>
-      <ol>
-        <li>Write clean SQL. Formatting matters.</li>
-        <li>Use meaningful aliases where needed.</li>
-        <li>Do not only memorize syntax. Understand the output.</li>
-        <li>For every query, ask yourself: What table is needed? What rows are needed? What columns are needed? Is grouping required?</li>
-        <li>For hiring practice, explain your query in one or two lines after writing it.</li>
-      </ol>
-    </section>
-
-    <section class="section">
-      <h2>Database Setup</h2>
-      <p>Create these tables before starting the test.</p>
-
-      <pre><code>CREATE TABLE departments (
-  department_id INTEGER PRIMARY KEY,
-  department_name TEXT NOT NULL
-);
-
-CREATE TABLE employees (
-  employee_id INTEGER PRIMARY KEY,
-  employee_name TEXT NOT NULL,
-  department_id INTEGER,
-  salary INTEGER,
-  joining_date TEXT,
-  city TEXT,
-  manager_id INTEGER,
-  FOREIGN KEY (department_id) REFERENCES departments(department_id)
-);
-
-CREATE TABLE projects (
-  project_id INTEGER PRIMARY KEY,
-  project_name TEXT NOT NULL,
-  department_id INTEGER,
-  budget INTEGER,
-  start_date TEXT,
-  status TEXT,
-  FOREIGN KEY (department_id) REFERENCES departments(department_id)
-);
-
-CREATE TABLE attendance (
-  attendance_id INTEGER PRIMARY KEY,
-  employee_id INTEGER,
-  attendance_date TEXT,
-  status TEXT,
-  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
-
-CREATE TABLE sales (
-  sale_id INTEGER PRIMARY KEY,
-  employee_id INTEGER,
-  sale_date TEXT,
-  amount INTEGER,
-  product TEXT,
-  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);</code></pre>
-
-      <h3>Insert Sample Data</h3>
-
-      <pre><code>INSERT INTO departments VALUES
-(1, 'Engineering'),
-(2, 'Sales'),
-(3, 'Human Resources'),
-(4, 'Finance'),
-(5, 'Support');
-
-INSERT INTO employees VALUES
-(101, 'Aarav', 1, 60000, '2022-01-15', 'Varanasi', NULL),
-(102, 'Meera', 1, 45000, '2023-03-10', 'Lucknow', 101),
-(103, 'Kabir', 2, 40000, '2021-07-21', 'Delhi', NULL),
-(104, 'Nisha', 2, 38000, '2024-02-01', 'Varanasi', 103),
-(105, 'Rohan', 3, 35000, '2023-08-11', 'Patna', NULL),
-(106, 'Isha', 4, 52000, '2022-12-05', 'Lucknow', NULL),
-(107, 'Dev', 5, 30000, '2024-04-18', 'Varanasi', NULL),
-(108, 'Tara', 1, 70000, '2020-11-30', 'Delhi', 101),
-(109, 'Ankit', 2, 42000, '2023-06-14', 'Lucknow', 103),
-(110, 'Pooja', NULL, 32000, '2024-05-20', 'Varanasi', NULL);
-
-INSERT INTO projects VALUES
-(201, 'Website Redesign', 1, 200000, '2024-01-01', 'Active'),
-(202, 'CRM Upgrade', 2, 150000, '2024-02-15', 'Active'),
-(203, 'Payroll Automation', 3, 100000, '2024-03-01', 'Completed'),
-(204, 'Tax Reporting', 4, 120000, '2024-01-20', 'Active'),
-(205, 'Helpdesk Portal', 5, 90000, '2024-04-10', 'Paused');
-
-INSERT INTO attendance VALUES
-(1, 101, '2024-06-01', 'Present'),
-(2, 102, '2024-06-01', 'Present'),
-(3, 103, '2024-06-01', 'Absent'),
-(4, 104, '2024-06-01', 'Present'),
-(5, 105, '2024-06-01', 'Present'),
-(6, 101, '2024-06-02', 'Present'),
-(7, 102, '2024-06-02', 'Absent'),
-(8, 103, '2024-06-02', 'Present'),
-(9, 104, '2024-06-02', 'Present'),
-(10, 106, '2024-06-02', 'Present');
-
-INSERT INTO sales VALUES
-(301, 103, '2024-06-01', 12000, 'Laptop'),
-(302, 104, '2024-06-01', 8000, 'Mouse'),
-(303, 109, '2024-06-01', 15000, 'Monitor'),
-(304, 103, '2024-06-02', 22000, 'Laptop'),
-(305, 104, '2024-06-02', 5000, 'Keyboard'),
-(306, 109, '2024-06-02', 18000, 'Printer');</code></pre>
-    </section>
-
-    <section class="section">
-      <h2>Scoring Pattern</h2>
-
-      <div class="score-box">
-        <div class="score-item">
-          <strong>Part A</strong>
-          SQL basics and concepts: 15 marks
-        </div>
-        <div class="score-item">
-          <strong>Part B</strong>
-          Simple SELECT queries: 20 marks
-        </div>
-        <div class="score-item">
-          <strong>Part C</strong>
-          Filtering, sorting, and conditions: 15 marks
-        </div>
-        <div class="score-item">
-          <strong>Part D</strong>
-          Aggregate functions and GROUP BY: 15 marks
-        </div>
-        <div class="score-item">
-          <strong>Part E</strong>
-          Joins and relationships: 20 marks
-        </div>
-        <div class="score-item">
-          <strong>Part F</strong>
-          Hiring-style practical tasks: 15 marks
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="test-start">
-      <h2>Part A: SQL Basics and Concepts</h2>
-      <p>Total: 15 marks</p>
-
-      <div class="question">
-        <span class="level">0 Level</span>
-        <div class="question-title">1. What is SQL?</div>
-        <p>Explain SQL in simple language. Also write the full form of SQL.</p>
-        <details>
-          <summary>Expected Answer</summary>
-          <p>
-            SQL stands for Structured Query Language. It is used to create, read, update, and delete data from relational databases.
-          </p>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">0 Level</span>
-        <div class="question-title">2. What is a table?</div>
-        <p>Explain table, row, and column using a student register example.</p>
-        <details>
-          <summary>Expected Answer</summary>
-          <p>
-            A table stores related data. A row is one record. A column is one property. In a student table, one row may represent one student, and columns may be name, roll number, class, and marks.
-          </p>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Basic</span>
-        <div class="question-title">3. What is a primary key?</div>
-        <p>Explain why <code>employee_id</code> is a good primary key in the employees table.</p>
-        <details>
-          <summary>Expected Answer</summary>
-          <p>
-            A primary key uniquely identifies each row in a table. <code>employee_id</code> is a good primary key because each employee should have a unique ID.
-          </p>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Basic</span>
-        <div class="question-title">4. What is a foreign key?</div>
-        <p>Explain the relationship between <code>employees.department_id</code> and <code>departments.department_id</code>.</p>
-        <details>
-          <summary>Expected Answer</summary>
-          <p>
-            A foreign key connects one table to another. Here, <code>employees.department_id</code> refers to <code>departments.department_id</code>, so each employee can be connected to a department.
-          </p>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Basic</span>
-        <div class="question-title">5. Difference between WHERE and HAVING</div>
-        <p>Explain the difference in simple words.</p>
-        <details>
-          <summary>Expected Answer</summary>
-          <p>
-            <code>WHERE</code> filters rows before grouping. <code>HAVING</code> filters grouped results after <code>GROUP BY</code>.
-          </p>
-        </details>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Part B: Simple SELECT Queries</h2>
-      <p>Total: 20 marks</p>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">6. Show all departments.</div>
-        <p>Write a query to display all rows from the departments table.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT * FROM departments;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">7. Show employee names and salaries.</div>
-        <p>Display only <code>employee_name</code> and <code>salary</code> from the employees table.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name, salary
-FROM employees;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">8. Rename output columns.</div>
-        <p>Display employee name as <code>Name</code> and salary as <code>Monthly Salary</code>.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name AS Name,
-       salary AS "Monthly Salary"
-FROM employees;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">9. Show unique cities.</div>
-        <p>Display each city only once from the employees table.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT DISTINCT city
-FROM employees;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">10. Calculate annual salary.</div>
-        <p>Show employee name, monthly salary, and annual salary.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name,
-       salary AS monthly_salary,
-       salary * 12 AS annual_salary
-FROM employees;</code></pre>
-        </details>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Part C: Filtering, Sorting, and Conditions</h2>
-      <p>Total: 15 marks</p>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">11. Employees from Varanasi</div>
-        <p>Find all employees whose city is Varanasi.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT *
-FROM employees
-WHERE city = 'Varanasi';</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">12. Salary greater than 40000</div>
-        <p>Find employees whose salary is greater than 40000.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name, salary
-FROM employees
-WHERE salary > 40000;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Beginner</span>
-        <div class="question-title">13. Sort employees by salary</div>
-        <p>Show employees from highest salary to lowest salary.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name, salary
-FROM employees
-ORDER BY salary DESC;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Basic Hiring</span>
-        <div class="question-title">14. Employees from Lucknow or Delhi</div>
-        <p>Find employees who are from Lucknow or Delhi.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name, city
-FROM employees
-WHERE city IN ('Lucknow', 'Delhi');</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Basic Hiring</span>
-        <div class="question-title">15. Employees without department</div>
-        <p>Find employees whose department is not assigned.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name, department_id
-FROM employees
-WHERE department_id IS NULL;</code></pre>
-        </details>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Part D: Aggregate Functions and GROUP BY</h2>
-      <p>Total: 15 marks</p>
-
-      <div class="question">
-        <span class="level">Intermediate</span>
-        <div class="question-title">16. Count employees</div>
-        <p>Find the total number of employees.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT COUNT(*) AS total_employees
-FROM employees;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Intermediate</span>
-        <div class="question-title">17. Average salary</div>
-        <p>Find the average salary of all employees.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT AVG(salary) AS average_salary
-FROM employees;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Intermediate</span>
-        <div class="question-title">18. Highest and lowest salary</div>
-        <p>Find the highest salary and lowest salary.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT MAX(salary) AS highest_salary,
-       MIN(salary) AS lowest_salary
-FROM employees;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Intermediate</span>
-        <div class="question-title">19. Employee count by city</div>
-        <p>Find how many employees are from each city.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT city,
-       COUNT(*) AS total_employees
-FROM employees
-GROUP BY city;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">20. Cities with more than 2 employees</div>
-        <p>Find cities where more than 2 employees are working.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT city,
-       COUNT(*) AS total_employees
-FROM employees
-GROUP BY city
-HAVING COUNT(*) > 2;</code></pre>
-        </details>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Part E: Joins and Relationships</h2>
-      <p>Total: 20 marks</p>
-
-      <div class="question">
-        <span class="level">Intermediate</span>
-        <div class="question-title">21. Employee with department name</div>
-        <p>Display employee name and department name.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT e.employee_name,
-       d.department_name
-FROM employees e
-JOIN departments d
-ON e.department_id = d.department_id;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Intermediate</span>
-        <div class="question-title">22. Include employees without department</div>
-        <p>Display all employees and their department names. Employees without department should also appear.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT e.employee_name,
-       d.department_name
-FROM employees e
-LEFT JOIN departments d
-ON e.department_id = d.department_id;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">23. Department-wise average salary</div>
-        <p>Display each department name and average salary.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT d.department_name,
-       AVG(e.salary) AS average_salary
-FROM departments d
-JOIN employees e
-ON d.department_id = e.department_id
-GROUP BY d.department_name;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">24. Projects with department names</div>
-        <p>Display project name, budget, status, and department name.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT p.project_name,
-       p.budget,
-       p.status,
-       d.department_name
-FROM projects p
-JOIN departments d
-ON p.department_id = d.department_id;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">25. Employee and manager name</div>
-        <p>Display employee name and manager name using a self join.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT e.employee_name AS employee,
-       m.employee_name AS manager
-FROM employees e
-LEFT JOIN employees m
-ON e.manager_id = m.employee_id;</code></pre>
-        </details>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Part F: Hiring-Style Practical Tasks</h2>
-      <p>Total: 15 marks</p>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">26. Top 3 highest-paid employees</div>
-        <p>Find the top 3 employees by salary.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name, salary
-FROM employees
-ORDER BY salary DESC
-LIMIT 3;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">27. Sales total by employee</div>
-        <p>Find total sales amount generated by each sales employee.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT e.employee_name,
-       SUM(s.amount) AS total_sales
-FROM employees e
-JOIN sales s
-ON e.employee_id = s.employee_id
-GROUP BY e.employee_name
-ORDER BY total_sales DESC;</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">28. Employees who were absent at least once</div>
-        <p>Find employees who have at least one absent record.</p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT DISTINCT e.employee_name
-FROM employees e
-JOIN attendance a
-ON e.employee_id = a.employee_id
-WHERE a.status = 'Absent';</code></pre>
-        </details>
-      </div>
-
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">29. Salary category</div>
-        <p>
-          Display employee name, salary, and salary category.
-          Use these rules:
+    <main>
+      <section id="overview">
+        <h2>1. The Big Picture</h2>
+        <p class="lead">
+          A data project is not only about training a model. Training is only one part.
+          Before training, we need clean and meaningful data. After training, we need
+          to show the result and save useful output.
         </p>
-        <ul>
-          <li>Salary 60000 or above: High</li>
-          <li>Salary 40000 to 59999: Medium</li>
-          <li>Below 40000: Low</li>
-        </ul>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT employee_name,
-       salary,
-       CASE
-         WHEN salary >= 60000 THEN 'High'
-         WHEN salary >= 40000 THEN 'Medium'
-         ELSE 'Low'
-       END AS salary_category
-FROM employees;</code></pre>
-        </details>
-      </div>
 
-      <div class="question">
-        <span class="level">Hiring Level</span>
-        <div class="question-title">30. Department performance report</div>
+        <div class="pipeline">
+          <div class="step">
+            <span class="num">1</span>
+            <b>Data Pulling</b>
+            <small>Bring data into Python</small>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <b>Data Cleaning</b>
+            <small>Fix errors and missing values</small>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <b>Data Querying</b>
+            <small>Ask questions from the data</small>
+          </div>
+          <div class="step">
+            <span class="num">4</span>
+            <b>Training</b>
+            <small>Teach a model from data</small>
+          </div>
+          <div class="step">
+            <span class="num">5</span>
+            <b>Presentation</b>
+            <small>Show tables, charts and results</small>
+          </div>
+          <div class="step">
+            <span class="num">6</span>
+            <b>Data Saving</b>
+            <small>Save cleaned data and predictions</small>
+          </div>
+        </div>
+
+        <div class="success">
+          <strong>Simple idea:</strong>
+          pandas prepares and manages the data. A machine learning library like
+          scikit-learn trains the model.
+        </div>
+
+        <h3>Libraries used in this lesson</h3>
+        <pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression</code></pre>
+
+        <div class="ad-box">
+          Advertisement
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-8321261883090494"
+               data-ad-slot="7782388330"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+      </section>
+
+      <section id="pulling">
+        <h2>2. Data Pulling</h2>
         <p>
-          Create a report showing department name, number of employees, average salary, and total project budget.
+          Data pulling means bringing data into your Python program.
+          Data may come from a dictionary, CSV file, Excel file, JSON file,
+          database or online source.
         </p>
-        <details>
-          <summary>Answer</summary>
-          <pre><code>SELECT d.department_name,
-       COUNT(DISTINCT e.employee_id) AS total_employees,
-       AVG(e.salary) AS average_salary,
-       SUM(DISTINCT p.budget) AS total_project_budget
-FROM departments d
-LEFT JOIN employees e
-ON d.department_id = e.department_id
-LEFT JOIN projects p
-ON d.department_id = p.department_id
-GROUP BY d.department_name;</code></pre>
-        </details>
-      </div>
-    </section>
 
-    <section class="section">
-      <h2>Final Practical Challenge</h2>
-      <p>
-        This is the final hiring-style assignment. It tests whether the student can read a business problem and convert it into SQL.
-      </p>
+        <h3>2.1 Pull data from a Python dictionary</h3>
+        <pre><code>import pandas as pd
 
-      <div class="question">
-        <span class="level">Final Challenge</span>
-        <div class="question-title">Build an Employee Dashboard Query</div>
+data = {
+    "hours": [1, 2, 3, 4, 5, 6],
+    "attendance": [55, 60, 65, 70, 80, 90],
+    "marks": [35, 42, 50, 58, 72, 88]
+}
+
+df = pd.DataFrame(data)
+
+print(df)</code></pre>
+
+        <h3>2.2 Pull data from CSV</h3>
+        <p>CSV means comma-separated values. It is one of the most common data formats.</p>
+
+        <pre><code>import pandas as pd
+
+df = pd.read_csv("students.csv")
+
+print(df.head())</code></pre>
+
+        <h3>2.3 Pull data from Excel</h3>
+        <pre><code>import pandas as pd
+
+df = pd.read_excel("students.xlsx")
+
+print(df.head())</code></pre>
+
+        <h3>2.4 Pull data from JSON</h3>
+        <pre><code>import pandas as pd
+
+df = pd.read_json("students.json")
+
+print(df.head())</code></pre>
+
+        <div class="note">
+          <strong>Checkpoint:</strong>
+          After pulling data, always print <code>df.head()</code>.
+          Do not start cleaning or training blindly.
+        </div>
+      </section>
+
+      <section id="cleaning">
+        <h2>3. Data Cleaning</h2>
         <p>
-          Write one or more SQL queries to generate the following dashboard:
+          Raw data is often imperfect. It may contain missing values,
+          wrong spellings, duplicate rows, unwanted columns or wrong data types.
         </p>
-        <ol>
-          <li>Total number of employees</li>
-          <li>Average salary</li>
-          <li>Highest-paid employee</li>
-          <li>Department-wise employee count</li>
-          <li>Department-wise average salary</li>
-          <li>Total sales by each sales employee</li>
-          <li>Employees who have no department assigned</li>
-          <li>Employees who were absent at least once</li>
+
+        <h3>3.1 Inspect the data</h3>
+        <pre><code>print(df.head())
+print(df.tail())
+print(df.info())
+print(df.describe())</code></pre>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>df.head()</code></td>
+              <td>Shows first 5 rows</td>
+            </tr>
+            <tr>
+              <td><code>df.info()</code></td>
+              <td>Shows columns, data types and missing values</td>
+            </tr>
+            <tr>
+              <td><code>df.describe()</code></td>
+              <td>Shows count, mean, minimum, maximum and other statistics</td>
+            </tr>
+            <tr>
+              <td><code>df.isnull().sum()</code></td>
+              <td>Counts missing values column by column</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>3.2 Check missing values</h3>
+        <pre><code>print(df.isnull().sum())</code></pre>
+
+        <h3>3.3 Remove rows with missing values</h3>
+        <pre><code>df = df.dropna()</code></pre>
+
+        <h3>3.4 Fill missing values</h3>
+        <pre><code>df["attendance"] = df["attendance"].fillna(df["attendance"].mean())
+df["hours"] = df["hours"].fillna(0)</code></pre>
+
+        <h3>3.5 Remove duplicate rows</h3>
+        <pre><code>df = df.drop_duplicates()</code></pre>
+
+        <h3>3.6 Rename columns</h3>
+        <pre><code>df = df.rename(columns={
+    "study hours": "hours",
+    "student marks": "marks"
+})</code></pre>
+
+        <h3>3.7 Convert data type</h3>
+        <pre><code>df["hours"] = df["hours"].astype(float)
+df["marks"] = df["marks"].astype(int)</code></pre>
+
+        <h3>3.8 Clean text columns</h3>
+        <pre><code>df["city"] = df["city"].str.strip()
+df["city"] = df["city"].str.title()</code></pre>
+
+        <div class="warning">
+          <strong>Important:</strong>
+          If the data is not cleaned, the model may learn wrong patterns.
+          Bad data can produce bad predictions.
+        </div>
+      </section>
+
+      <section id="querying">
+        <h2>4. Data Querying</h2>
+        <p>
+          Data querying means asking questions from the data. Before training,
+          we should understand what the data is saying.
+        </p>
+
+        <h3>4.1 Select one column</h3>
+        <pre><code>print(df["marks"])</code></pre>
+
+        <h3>4.2 Select multiple columns</h3>
+        <pre><code>print(df[["hours", "attendance", "marks"]])</code></pre>
+
+        <h3>4.3 Filter rows</h3>
+        <pre><code>high_marks = df[df["marks"] &gt;= 70]
+
+print(high_marks)</code></pre>
+
+        <h3>4.4 Multiple conditions</h3>
+        <pre><code>good_students = df[
+    (df["hours"] &gt;= 4) &amp; (df["attendance"] &gt;= 75)
+]
+
+print(good_students)</code></pre>
+
+        <h3>4.5 Sorting</h3>
+        <pre><code>sorted_df = df.sort_values(by="marks", ascending=False)
+
+print(sorted_df)</code></pre>
+
+        <h3>4.6 Grouping</h3>
+        <pre><code>city_average = df.groupby("city")["marks"].mean()
+
+print(city_average)</code></pre>
+
+        <h3>4.7 Useful questions before training</h3>
+        <div class="grid">
+          <div class="mini">
+            <strong>Question 1</strong>
+            Which column should be input?
+          </div>
+          <div class="mini">
+            <strong>Question 2</strong>
+            Which column should be output?
+          </div>
+          <div class="mini">
+            <strong>Question 3</strong>
+            Are there missing values?
+          </div>
+          <div class="mini">
+            <strong>Question 4</strong>
+            Are there duplicate rows?
+          </div>
+          <div class="mini">
+            <strong>Question 5</strong>
+            Are numbers stored as text?
+          </div>
+          <div class="mini">
+            <strong>Question 6</strong>
+            Are there strange values?
+          </div>
+        </div>
+      </section>
+
+      <section id="training">
+        <h2>5. Training</h2>
+        <p>
+          Training means teaching a model to learn the relation between input columns
+          and the target column.
+        </p>
+
+        <h3>5.1 Input and output</h3>
+        <pre><code>X = df[["hours", "attendance"]]
+y = df["marks"]</code></pre>
+
+        <p>
+          Here, <code>X</code> is the input table and <code>y</code> is the output column.
+        </p>
+
+        <h3>5.2 Split data into training and testing parts</h3>
+        <pre><code>X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)</code></pre>
+
+        <h3>5.3 Create and train the model</h3>
+        <pre><code>model = LinearRegression()
+
+model.fit(X_train, y_train)</code></pre>
+
+        <h3>5.4 Test the model</h3>
+        <pre><code>score = model.score(X_test, y_test)
+
+print("Model score:", score)</code></pre>
+
+        <h3>5.5 Make prediction</h3>
+        <pre><code>new_student = [[7, 92]]
+
+prediction = model.predict(new_student)
+
+print("Predicted marks:", prediction[0])</code></pre>
+
+        <div class="note">
+          <strong>Remember:</strong>
+          <code>fit()</code> trains the model.
+          <code>predict()</code> asks the trained model to give an answer.
+        </div>
+      </section>
+
+      <section id="presentation">
+        <h2>6. Presentation</h2>
+        <p>
+          Presentation means showing the result clearly. In a real project,
+          nobody wants only raw code. People want readable tables, charts and summaries.
+        </p>
+
+        <h3>6.1 Show final table</h3>
+        <pre><code>print(df)</code></pre>
+
+        <h3>6.2 Show selected columns</h3>
+        <pre><code>print(df[["hours", "attendance", "marks"]])</code></pre>
+
+        <h3>6.3 Add predictions to a table</h3>
+        <pre><code>df["predicted_marks"] = model.predict(X)
+
+print(df)</code></pre>
+
+        <h3>6.4 Plot actual marks</h3>
+        <pre><code>import matplotlib.pyplot as plt
+
+plt.scatter(df["hours"], df["marks"])
+plt.xlabel("Study Hours")
+plt.ylabel("Marks")
+plt.title("Study Hours vs Marks")
+plt.show()</code></pre>
+
+        <h3>6.5 Plot actual and predicted marks</h3>
+        <pre><code>plt.scatter(df["hours"], df["marks"], label="Actual Marks")
+plt.plot(df["hours"], df["predicted_marks"], label="Predicted Marks")
+
+plt.xlabel("Study Hours")
+plt.ylabel("Marks")
+plt.title("Actual vs Predicted Marks")
+plt.legend()
+plt.show()</code></pre>
+
+        <div class="success">
+          <strong>Good presentation answers three questions:</strong>
+          What was the input? What did the model predict? How close was the prediction?
+        </div>
+      </section>
+
+      <section id="saving">
+        <h2>7. Data Saving</h2>
+        <p>
+          After cleaning, querying, training and prediction, we should save useful results.
+          This helps us reuse the work later.
+        </p>
+
+        <h3>7.1 Save cleaned data as CSV</h3>
+        <pre><code>df.to_csv("cleaned_students.csv", index=False)</code></pre>
+
+        <h3>7.2 Save as Excel</h3>
+        <pre><code>df.to_excel("cleaned_students.xlsx", index=False)</code></pre>
+
+        <h3>7.3 Save as JSON</h3>
+        <pre><code>df.to_json("cleaned_students.json", orient="records", indent=4)</code></pre>
+
+        <h3>7.4 Save only predictions</h3>
+        <pre><code>result = df[["hours", "attendance", "marks", "predicted_marks"]]
+
+result.to_csv("student_predictions.csv", index=False)</code></pre>
+
+        <h3>7.5 Save trained model</h3>
+        <p>
+          To save the trained model, we can use <code>joblib</code>.
+        </p>
+
+        <pre><code>import joblib
+
+joblib.dump(model, "marks_model.pkl")</code></pre>
+
+        <h3>7.6 Load saved model again</h3>
+        <pre><code>import joblib
+
+model = joblib.load("marks_model.pkl")
+
+prediction = model.predict([[7, 92]])
+
+print(prediction[0])</code></pre>
+
+        <div class="note">
+          <strong>Project habit:</strong>
+          Save three things separately:
+          raw data, cleaned data and final result data.
+        </div>
+      </section>
+
+      <section id="project">
+        <h2>8. Complete Mini Project</h2>
+        <p>
+          This project covers the full journey:
+          pulling, cleaning, querying, training, presentation and saving.
+        </p>
+
+        <pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+import joblib
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# -------------------------------------------------
+# 1. DATA PULLING
+# -------------------------------------------------
+
+data = {
+    "name": ["Amit", "Ravi", "Sita", "Meena", "Kabir", "Anu", "Farhan", "Pooja"],
+    "hours": [1, 2, 3, 4, 5, 6, 7, 8],
+    "attendance": [55, 60, 65, 70, 78, 85, 90, 95],
+    "marks": [35, 42, 50, 58, 70, 80, 88, 96]
+}
+
+df = pd.DataFrame(data)
+
+print("Original Data")
+print(df)
+
+# -------------------------------------------------
+# 2. DATA CLEANING
+# -------------------------------------------------
+
+print("Missing values before cleaning:")
+print(df.isnull().sum())
+
+df = df.drop_duplicates()
+
+df["hours"] = df["hours"].astype(float)
+df["attendance"] = df["attendance"].astype(float)
+df["marks"] = df["marks"].astype(float)
+
+print("Cleaned Data")
+print(df)
+
+# -------------------------------------------------
+# 3. DATA QUERYING
+# -------------------------------------------------
+
+print("Students who scored 70 or more:")
+print(df[df["marks"] &gt;= 70])
+
+print("Average marks:")
+print(df["marks"].mean())
+
+print("Data sorted by marks:")
+print(df.sort_values(by="marks", ascending=False))
+
+# -------------------------------------------------
+# 4. TRAINING
+# -------------------------------------------------
+
+X = df[["hours", "attendance"]]
+y = df["marks"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.25,
+    random_state=42
+)
+
+model = LinearRegression()
+
+model.fit(X_train, y_train)
+
+score = model.score(X_test, y_test)
+
+print("Model score:", score)
+
+# -------------------------------------------------
+# 5. PRESENTATION
+# -------------------------------------------------
+
+df["predicted_marks"] = model.predict(X)
+
+print("Final Data with Predictions")
+print(df)
+
+plt.scatter(df["hours"], df["marks"], label="Actual Marks")
+plt.plot(df["hours"], df["predicted_marks"], label="Predicted Marks")
+
+plt.xlabel("Study Hours")
+plt.ylabel("Marks")
+plt.title("Actual Marks vs Predicted Marks")
+plt.legend()
+plt.show()
+
+# -------------------------------------------------
+# 6. DATA SAVING
+# -------------------------------------------------
+
+df.to_csv("final_student_result.csv", index=False)
+df.to_json("final_student_result.json", orient="records", indent=4)
+
+joblib.dump(model, "student_marks_model.pkl")
+
+print("Data and model saved successfully.")</code></pre>
+      </section>
+
+      <section id="workflow">
+        <h2>9. Professional Workflow</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Main Question</th>
+              <th>Common pandas Tools</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Data Pulling</td>
+              <td>Where is the data coming from?</td>
+              <td><code>read_csv()</code>, <code>read_excel()</code>, <code>read_json()</code></td>
+            </tr>
+            <tr>
+              <td>Data Cleaning</td>
+              <td>Is the data usable?</td>
+              <td><code>dropna()</code>, <code>fillna()</code>, <code>drop_duplicates()</code></td>
+            </tr>
+            <tr>
+              <td>Data Querying</td>
+              <td>What is the data saying?</td>
+              <td><code>filtering</code>, <code>sort_values()</code>, <code>groupby()</code></td>
+            </tr>
+            <tr>
+              <td>Training</td>
+              <td>Can a model learn from this?</td>
+              <td><code>X</code>, <code>y</code>, <code>train_test_split()</code>, <code>fit()</code></td>
+            </tr>
+            <tr>
+              <td>Presentation</td>
+              <td>Can people understand the result?</td>
+              <td><code>print()</code>, <code>matplotlib</code>, final tables</td>
+            </tr>
+            <tr>
+              <td>Data Saving</td>
+              <td>Can we reuse the result later?</td>
+              <td><code>to_csv()</code>, <code>to_excel()</code>, <code>to_json()</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="mistakes">
+        <h2>10. Common Mistakes</h2>
+
+        <div class="grid">
+          <div class="mini">
+            <strong>Mistake 1</strong>
+            Training before cleaning the data.
+          </div>
+          <div class="mini">
+            <strong>Mistake 2</strong>
+            Putting the answer column inside <code>X</code>.
+          </div>
+          <div class="mini">
+            <strong>Mistake 3</strong>
+            Not checking missing values.
+          </div>
+          <div class="mini">
+            <strong>Mistake 4</strong>
+            Using wrong column names.
+          </div>
+          <div class="mini">
+            <strong>Mistake 5</strong>
+            Showing only prediction without explanation.
+          </div>
+          <div class="mini">
+            <strong>Mistake 6</strong>
+            Not saving the final result.
+          </div>
+        </div>
+
+        <h3>Wrong input example</h3>
+        <pre><code># Wrong: marks is the answer column
+X = df[["hours", "attendance", "marks"]]
+y = df["marks"]</code></pre>
+
+        <h3>Correct input example</h3>
+        <pre><code># Correct
+X = df[["hours", "attendance"]]
+y = df["marks"]</code></pre>
+      </section>
+
+      <section id="practice">
+        <h2>11. Practice Tasks</h2>
+
+        <ol class="checklist">
+          <li>Create a CSV file named <code>sales.csv</code>.</li>
+          <li>Add columns: <code>advertising_budget</code>, <code>shop_visitors</code>, <code>sales</code>.</li>
+          <li>Pull the data using <code>pd.read_csv()</code>.</li>
+          <li>Clean missing values.</li>
+          <li>Query the data to find rows where sales are above average.</li>
+          <li>Train a Linear Regression model.</li>
+          <li>Predict sales for a new advertising budget and visitor count.</li>
+          <li>Show a chart.</li>
+          <li>Save the final result as <code>sales_predictions.csv</code>.</li>
         </ol>
 
-        <details>
-          <summary>Sample Solution</summary>
+        <div class="quiz">
+          <h3>Quick Self Test</h3>
 
-          <pre><code>-- 1. Total number of employees
-SELECT COUNT(*) AS total_employees
-FROM employees;
+          <details>
+            <summary>1. What does data pulling mean?</summary>
+            <p>It means bringing data into Python from a source like CSV, Excel, JSON or database.</p>
+          </details>
 
--- 2. Average salary
-SELECT AVG(salary) AS average_salary
-FROM employees;
+          <details>
+            <summary>2. Why is data cleaning important?</summary>
+            <p>Because missing values, duplicates and wrong data types can produce wrong model results.</p>
+          </details>
 
--- 3. Highest-paid employee
-SELECT employee_name, salary
-FROM employees
-ORDER BY salary DESC
-LIMIT 1;
+          <details>
+            <summary>3. What is the difference between <code>X</code> and <code>y</code>?</summary>
+            <p><code>X</code> contains input columns. <code>y</code> contains the target or answer column.</p>
+          </details>
 
--- 4. Department-wise employee count
-SELECT d.department_name,
-       COUNT(e.employee_id) AS total_employees
-FROM departments d
-LEFT JOIN employees e
-ON d.department_id = e.department_id
-GROUP BY d.department_name;
+          <details>
+            <summary>4. Which function trains the model?</summary>
+            <p><code>fit()</code> trains the model.</p>
+          </details>
 
--- 5. Department-wise average salary
-SELECT d.department_name,
-       AVG(e.salary) AS average_salary
-FROM departments d
-LEFT JOIN employees e
-ON d.department_id = e.department_id
-GROUP BY d.department_name;
+          <details>
+            <summary>5. Which function saves a DataFrame as CSV?</summary>
+            <p><code>to_csv()</code> saves a DataFrame as a CSV file.</p>
+          </details>
+        </div>
 
--- 6. Total sales by each sales employee
-SELECT e.employee_name,
-       SUM(s.amount) AS total_sales
-FROM employees e
-JOIN sales s
-ON e.employee_id = s.employee_id
-GROUP BY e.employee_name
-ORDER BY total_sales DESC;
+        <div class="button-row">
+          <button onclick="window.print()">Print Lesson</button>
+          <button class="secondary" onclick="scrollToTop()">Back to Top</button>
+        </div>
+      </section>
 
--- 7. Employees who have no department assigned
-SELECT employee_name
-FROM employees
-WHERE department_id IS NULL;
+      <section id="summary">
+        <h2>12. Final Summary</h2>
 
--- 8. Employees who were absent at least once
-SELECT DISTINCT e.employee_name
-FROM employees e
-JOIN attendance a
-ON e.employee_id = a.employee_id
-WHERE a.status = 'Absent';</code></pre>
-        </details>
-      </div>
-    </section>
+        <p>
+          A real data project follows a complete pipeline.
+          The model training part is important, but it becomes useful only when
+          the data is properly pulled, cleaned, queried, presented and saved.
+        </p>
 
-    <section class="section">
-      <h2>Evaluation Rubric</h2>
+        <pre><code>Data Pulling
+     ↓
+Data Cleaning
+     ↓
+Data Querying
+     ↓
+Training
+     ↓
+Presentation
+     ↓
+Data Saving</code></pre>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Score Range</th>
-            <th>Level</th>
-            <th>Meaning</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>0–30</td>
-            <td>Beginner</td>
-            <td>The student understands some commands but needs more practice with syntax and logic.</td>
-          </tr>
-          <tr>
-            <td>31–55</td>
-            <td>Basic SQL User</td>
-            <td>The student can write simple SELECT, WHERE, and ORDER BY queries.</td>
-          </tr>
-          <tr>
-            <td>56–75</td>
-            <td>Job Preparation Level</td>
-            <td>The student can solve grouping, aggregate, and simple join problems.</td>
-          </tr>
-          <tr>
-            <td>76–90</td>
-            <td>Hiring Ready Fresher</td>
-            <td>The student can handle most fresher-level SQL interview tasks.</td>
-          </tr>
-          <tr>
-            <td>91–100</td>
-            <td>Strong Candidate</td>
-            <td>The student shows clean query writing, correct joins, and business-report thinking.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section">
-      <h2>How to Use This Test in Class</h2>
-      <ol>
-        <li>First 20 minutes: create tables and insert data.</li>
-        <li>Next 30 minutes: solve Part A, B, and C.</li>
-        <li>Next 40 minutes: solve aggregate and join questions.</li>
-        <li>Final 30 minutes: solve the dashboard challenge.</li>
-        <li>Ask each student to explain 3 queries orally.</li>
-      </ol>
-    </section>
+        <div class="success">
+          <strong>Final lesson:</strong>
+          pandas is not just a library for tables. It is the main bridge between
+          raw data and machine learning.
+        </div>
+      </section>
+    </main>
 
     <footer>
       <p>
-        SQL Hiring Test from 0 Level<br />
-        Created for Programmer's Picnic by Champak Roy
+        Data Pipeline with Pandas lesson by Programmer's Picnic.
       </p>
     </footer>
-  </main>
+  </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const ads = document.querySelectorAll(".adsbygoogle");
-      ads.forEach(function () {
-        try {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {}
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
       });
+    }
 
-      const focusable = document.querySelectorAll("a, button, summary, iframe");
-      focusable.forEach(function (el) {
-        el.addEventListener("focus", function () {
-          el.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
+    // Initialize Google AdSense blocks safely.
+    window.addEventListener("load", function () {
+      try {
+        const ads = document.querySelectorAll(".adsbygoogle");
+        ads.forEach(function () {
+          (adsbygoogle = window.adsbygoogle || []).push({});
         });
-      });
+      } catch (error) {
+        console.log("AdSense could not be initialized:", error);
+      }
+    });
+
+    // Keyboard helper for students using keyboard or TV remote browsers.
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Home") {
+        event.preventDefault();
+        scrollToTop();
+      }
     });
   </script>
 </body>
