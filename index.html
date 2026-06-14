@@ -1,45 +1,58 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Data Pipeline with Pandas: Pulling, Cleaning, Querying, Training, Presentation and Saving</title>
+  <title>Data Cleaning and Preparation in Pandas | 0 to Infinity Lesson</title>
 
-  <meta name="description" content="A beginner-friendly 0 to infinity lesson on using pandas for data pulling, data cleaning, data querying, model training, data presentation and data saving." />
-  <meta name="keywords" content="pandas lesson, python data pipeline, data cleaning, data querying, model training, scikit-learn, data saving, beginner machine learning" />
+  <meta name="description" content="A 0 to infinity Pandas lesson on data cleaning and preparation: missing values, fillna, dropna, duplicates, datatype fixes, string cleanup, and before-after cleaned dataset comparison." />
+
+  <meta name="keywords" content="Pandas data cleaning, Python data preparation, fillna, dropna, missing values, duplicate rows, datatype conversion, string cleanup, messy student dataset, Titanic dataset, data analysis ready" />
+
   <meta name="author" content="Champak Roy" />
-  <meta name="theme-color" content="#0f766e" />
 
-  <meta property="og:title" content="Data Pipeline with Pandas: 0 to Infinity Lesson" />
-  <meta property="og:description" content="Learn the full data journey: pulling, cleaning, querying, training, presentation and saving using pandas and Python." />
+  <meta property="og:title" content="Data Cleaning and Preparation in Pandas" />
+  <meta property="og:description" content="Learn missing value handling, duplicate control, datatype conversion, string cleanup and cleaned dataset preparation from 0 to infinity." />
   <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://programmer-s-picnic.github.io/json-images/mee.jpg" />
 
   <!-- Google AdSense -->
-  <script async
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109"
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8321261883090494&host=ca-host-pub-1556223355139109"
     crossorigin="anonymous"></script>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSTQRQMLEE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-GSTQRQMLEE");
+  </script>
 
   <style>
     :root {
-      --bg: #f3fffb;
-      --card: #ffffff;
-      --ink: #10201d;
-      --muted: #52635f;
-      --brand: #0f766e;
-      --brand-dark: #0b4f49;
-      --soft: #dffaf4;
-      --line: #b9e5dc;
-      --code-bg: #101827;
-      --code-ink: #f8fafc;
-      --warn-bg: #fff7df;
-      --warn-line: #eab308;
-      --ok-bg: #ecfdf5;
-      --ok-line: #10b981;
-      --danger-bg: #fff1f2;
-      --danger-line: #f43f5e;
-      --shadow: 0 14px 35px rgba(15, 118, 110, 0.14);
-      --radius: 18px;
+      --bg: #d8fff4;
+      --bg2: #c8f7ee;
+      --hero: #11796f;
+      --hero-dark: #0d5f58;
+      --hero-deep: #0a4f49;
+      --mint: #dffcf7;
+      --mint2: #ccf5ef;
+      --panel: rgba(255, 255, 255, 0.74);
+      --panel-solid: #ffffff;
+      --text: #073b37;
+      --muted: #376763;
+      --line: rgba(15, 118, 110, 0.22);
+      --code-bg: #071f1d;
+      --code-text: #ecfffb;
+      --accent: #0f766e;
+      --accent2: #14b8a6;
+      --warning-bg: #fff7dd;
+      --success-bg: #e8fff6;
+      --danger-bg: #fff0f0;
+      --radius: 28px;
+      --shadow: 0 24px 60px rgba(8, 89, 82, 0.18);
     }
 
     * {
@@ -53,202 +66,234 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, #ccfbf1 0, transparent 34%),
-        linear-gradient(180deg, #f3fffb, #eefbf7);
-      color: var(--ink);
-      line-height: 1.65;
+        radial-gradient(circle at 10% 15%, rgba(255,255,255,0.75), transparent 24rem),
+        radial-gradient(circle at 90% 8%, rgba(20,184,166,0.18), transparent 28rem),
+        linear-gradient(120deg, var(--bg), var(--bg2));
+      line-height: 1.75;
     }
 
     a {
-      color: var(--brand-dark);
-      text-decoration-thickness: 2px;
+      color: var(--hero-dark);
+      font-weight: 800;
+      text-decoration: none;
     }
 
-    .page {
-      width: min(1160px, calc(100% - 28px));
-      margin: 0 auto;
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .wrap {
+      width: min(1160px, calc(100% - 36px));
+      margin: auto;
     }
 
     header {
-      padding: 28px 0 18px;
+      padding: 16px 0 36px;
     }
 
     .hero {
-      background: linear-gradient(135deg, #0f766e, #115e59);
-      color: white;
-      border-radius: 28px;
-      padding: 38px;
-      box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
+      margin-top: 0;
+      padding: clamp(34px, 6vw, 72px) clamp(28px, 6vw, 64px);
+      border-radius: 28px;
+      background: linear-gradient(135deg, var(--hero), var(--hero-deep));
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -34px;
+      top: -90px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      right: -80px;
-      top: -90px;
-    }
-
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 5vw, 4.2rem);
-      line-height: 1.05;
-      letter-spacing: -0.04em;
-      max-width: 900px;
-    }
-
-    .hero p {
-      max-width: 760px;
-      font-size: 1.15rem;
-      margin: 0;
-      color: #e8fffb;
-    }
-
-    .hero .tag {
-      display: inline-block;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.28);
-      padding: 7px 12px;
+      width: 190px;
+      height: 190px;
+      right: 84px;
+      bottom: -116px;
       border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 960px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: white;
+      font-size: 0.88rem;
+      font-weight: 900;
       margin-bottom: 18px;
-      font-weight: 700;
-      font-size: 0.9rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.24);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.45rem, 6vw, 4.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.06em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 930px;
+      color: #f0fffc;
+      font-size: clamp(1.02rem, 2vw, 1.22rem);
     }
 
     nav {
-      margin: 18px 0 26px;
-      background: rgba(255,255,255,0.86);
+      margin: 36px auto 34px;
       border: 1px solid var(--line);
       border-radius: 20px;
+      background: rgba(255,255,255,0.62);
+      backdrop-filter: blur(10px);
       padding: 12px;
+      box-shadow: 0 12px 36px rgba(8, 89, 82, 0.08);
+    }
+
+    .nav-grid {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      position: sticky;
-      top: 8px;
-      z-index: 10;
-      backdrop-filter: blur(10px);
     }
 
-    nav a {
-      padding: 9px 12px;
+    .nav-grid a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--mint);
+      color: var(--hero-deep);
       border-radius: 12px;
-      background: var(--soft);
-      text-decoration: none;
-      color: var(--brand-dark);
-      font-weight: 700;
-      font-size: 0.95rem;
+      padding: 10px 13px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      transition: 0.18s ease;
     }
 
-    nav a:focus,
-    nav a:hover,
-    button:focus {
-      outline: 3px solid #facc15;
-      outline-offset: 3px;
+    .nav-grid a:hover {
+      transform: translateY(-2px);
+      text-decoration: none;
+      background: #c9f6ee;
     }
 
     main {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-      padding-bottom: 50px;
+      padding-bottom: 70px;
     }
 
-    section,
-    .card {
-      background: var(--card);
+    section {
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 26px;
-      box-shadow: var(--shadow);
+      padding: clamp(22px, 4vw, 42px);
+      margin: 26px 0;
+      box-shadow: 0 18px 50px rgba(8, 89, 82, 0.1);
+      backdrop-filter: blur(10px);
     }
 
     h2 {
-      color: var(--brand-dark);
-      font-size: clamp(1.55rem, 3vw, 2.2rem);
-      line-height: 1.15;
       margin: 0 0 14px;
+      color: var(--hero-deep);
+      font-size: clamp(1.7rem, 4vw, 2.55rem);
+      line-height: 1.12;
+      letter-spacing: -0.04em;
     }
 
     h3 {
-      margin-top: 26px;
-      color: #134e4a;
-      font-size: 1.28rem;
+      margin-top: 30px;
+      color: var(--hero-dark);
+      font-size: 1.35rem;
     }
 
     .lead {
       font-size: 1.08rem;
-      color: #243d39;
+      color: var(--muted);
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
-      margin: 18px 0;
     }
 
-    .mini {
-      background: #f8fffd;
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 850px) {
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.78);
       border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 20px;
+      padding: 18px;
     }
 
-    .mini strong {
-      display: block;
-      color: var(--brand-dark);
-      margin-bottom: 6px;
-      font-size: 1.03rem;
+    .card h3 {
+      margin-top: 0;
     }
 
-    .pipeline {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(130px, 1fr));
-      gap: 12px;
+    .note {
       margin: 18px 0;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: var(--mint);
+      border-left: 7px solid var(--accent);
+      color: var(--text);
     }
 
-    .step {
-      background: linear-gradient(180deg, #ecfffb, #ffffff);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px 14px;
-      text-align: center;
-      min-height: 112px;
+    .warning {
+      background: var(--warning-bg);
+      border-left-color: #d97706;
     }
 
-    .step .num {
-      width: 34px;
-      height: 34px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--brand);
-      color: white;
-      font-weight: 900;
-      margin-bottom: 8px;
+    .success {
+      background: var(--success-bg);
+      border-left-color: #059669;
     }
 
-    .step b {
-      display: block;
-      color: var(--brand-dark);
+    .danger {
+      background: var(--danger-bg);
+      border-left-color: #dc2626;
     }
 
     pre {
-      background: var(--code-bg);
-      color: var(--code-ink);
-      border-radius: 16px;
+      margin: 16px 0;
       padding: 18px;
       overflow-x: auto;
-      border: 1px solid #334155;
-      line-height: 1.55;
+      border-radius: 18px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+      line-height: 1.6;
       font-size: 0.95rem;
     }
 
@@ -259,908 +304,1170 @@
     p code,
     li code,
     td code {
-      background: #e7fff8;
-      color: #063b35;
-      padding: 2px 6px;
-      border-radius: 7px;
-      border: 1px solid #b9e5dc;
+      background: #dffcf7;
+      color: #075e57;
+      padding: 2px 7px;
+      border-radius: 8px;
+      font-weight: 800;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 14px 0;
       overflow: hidden;
-      border-radius: 14px;
+      border-radius: 18px;
+      background: white;
+      margin: 18px 0;
     }
 
     th,
     td {
       border: 1px solid var(--line);
-      padding: 10px;
-      text-align: left;
+      padding: 13px;
       vertical-align: top;
+      text-align: left;
     }
 
     th {
-      background: #dffaf4;
-      color: #0b4f49;
+      background: var(--mint);
+      color: var(--hero-deep);
     }
 
-    tr:nth-child(even) td {
-      background: #f8fffd;
-    }
-
-    .note,
-    .warning,
-    .success {
+    details {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 16px;
-      margin: 18px 0;
+      padding: 14px 16px;
+      margin: 14px 0;
     }
 
-    .note {
-      background: var(--warn-bg);
-      border: 1px solid var(--warn-line);
+    summary {
+      cursor: pointer;
+      color: var(--hero-dark);
+      font-weight: 950;
     }
 
-    .success {
-      background: var(--ok-bg);
-      border: 1px solid var(--ok-line);
+    .task {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      margin: 14px 0;
     }
 
-    .warning {
-      background: var(--danger-bg);
-      border: 1px solid var(--danger-line);
+    .task-number {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      margin-right: 8px;
+      border-radius: 999px;
+      background: var(--hero);
+      color: white;
+      font-weight: 950;
+    }
+
+    .editor-box {
+      overflow: hidden;
+      border-radius: 24px;
+      border: 2px solid var(--accent);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .editor-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+      background: var(--hero-deep);
+      color: white;
+      font-weight: 950;
+    }
+
+    iframe {
+      width: 100%;
+      height: 680px;
+      border: 0;
+      display: block;
+      background: white;
     }
 
     .ad-box {
-      background: #ffffff;
-      border: 1px dashed #8bbdb4;
-      border-radius: 16px;
-      padding: 12px;
-      margin: 22px 0;
+      margin: 28px 0;
+      padding: 16px;
       text-align: center;
-      color: var(--muted);
+      border: 1px dashed var(--accent);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.55);
+      color: var(--hero-deep);
+      font-weight: 900;
     }
 
-    .checklist li {
-      margin-bottom: 8px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px;
-      margin-top: 16px;
+      margin: 22px 0;
     }
 
-    button {
-      border: 0;
-      background: var(--brand);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    button.secondary {
-      background: #134e4a;
-    }
-
-    .quiz {
-      margin-top: 14px;
-    }
-
-    .quiz details {
-      background: #f8fffd;
+    .flow div {
+      background: white;
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 14px;
-      margin: 10px 0;
+      text-align: center;
+      font-weight: 900;
+      color: var(--hero-deep);
     }
 
-    .quiz summary {
-      cursor: pointer;
-      font-weight: 800;
-      color: var(--brand-dark);
+    @media (max-width: 900px) {
+      .flow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .top-link {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 99;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--hero);
+      color: white;
+      box-shadow: var(--shadow);
+      font-weight: 950;
     }
 
     footer {
+      padding: 34px 18px;
+      background: var(--hero-deep);
+      color: #eafffb;
       text-align: center;
-      color: var(--muted);
-      padding: 28px 0 45px;
     }
 
-    @media (max-width: 980px) {
-      .grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .pipeline {
-        grid-template-columns: repeat(2, minmax(130px, 1fr));
-      }
-    }
-
-    @media (max-width: 620px) {
-      .hero {
-        padding: 26px;
-      }
-
-      section,
-      .card {
-        padding: 20px;
-      }
-
-      .grid,
-      .pipeline {
-        grid-template-columns: 1fr;
-      }
-
-      nav {
-        position: static;
-      }
-    }
-
-    @media print {
-      nav,
-      .button-row,
-      .ad-box {
-        display: none;
-      }
-
-      body {
-        background: white;
-      }
-
-      section,
-      .card,
-      .hero {
-        box-shadow: none;
-      }
-
-      .hero {
-        color: black;
-        background: white;
-        border: 1px solid #999;
-      }
-
-      .hero p {
-        color: black;
-      }
+    footer a {
+      color: white;
+      text-decoration: underline;
     }
   </style>
 </head>
 
-<body>
-  <div class="page">
-    <header>
+<body id="top">
+
+  <header>
+    <div class="wrap">
       <div class="hero">
-        <span class="tag">0 to Infinity Lesson</span>
-        <h1>Complete Data Pipeline Using Pandas</h1>
-        <p>
-          Learn how data moves from raw source to useful prediction:
-          data pulling, data cleaning, data querying, model training,
-          presentation and data saving.
-        </p>
+        <div class="hero-content">
+          <div class="pill">0 to Infinity Lesson</div>
+          <h1>Data Cleaning and Preparation</h1>
+          <p class="subtitle">
+            Learn missing values, duplicates, datatype fixes, string cleanup, null handling,
+            fillna, dropna, duplicate control, and how to make a dataset analysis-ready.
+          </p>
+        </div>
       </div>
-    </header>
 
-    <nav aria-label="Lesson navigation">
-      <a href="#overview">Overview</a>
-      <a href="#pulling">Data Pulling</a>
-      <a href="#cleaning">Data Cleaning</a>
-      <a href="#querying">Data Querying</a>
-      <a href="#training">Training</a>
-      <a href="#presentation">Presentation</a>
-      <a href="#saving">Saving</a>
-      <a href="#project">Full Project</a>
-      <a href="#practice">Practice</a>
-    </nav>
+      <nav>
+        <div class="nav-grid">
+          <a href="#overview">Overview</a>
+          <a href="#why">Why Clean</a>
+          <a href="#dataset">Dataset</a>
+          <a href="#inspect">Inspect</a>
+          <a href="#missing">Missing Values</a>
+          <a href="#fillna">fillna</a>
+          <a href="#dropna">dropna</a>
+          <a href="#duplicates">Duplicates</a>
+          <a href="#types">Data Types</a>
+          <a href="#strings">String Cleanup</a>
+          <a href="#beforeafter">Before/After</a>
+          <a href="#notebook">Notebook</a>
+          <a href="#editor">Python Editor</a>
+          <a href="#practice">Practice</a>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-    <main>
-      <section id="overview">
-        <h2>1. The Big Picture</h2>
-        <p class="lead">
-          A data project is not only about training a model. Training is only one part.
-          Before training, we need clean and meaningful data. After training, we need
-          to show the result and save useful output.
-        </p>
+  <main class="wrap">
 
-        <div class="pipeline">
-          <div class="step">
-            <span class="num">1</span>
-            <b>Data Pulling</b>
-            <small>Bring data into Python</small>
-          </div>
-          <div class="step">
-            <span class="num">2</span>
-            <b>Data Cleaning</b>
-            <small>Fix errors and missing values</small>
-          </div>
-          <div class="step">
-            <span class="num">3</span>
-            <b>Data Querying</b>
-            <small>Ask questions from the data</small>
-          </div>
-          <div class="step">
-            <span class="num">4</span>
-            <b>Training</b>
-            <small>Teach a model from data</small>
-          </div>
-          <div class="step">
-            <span class="num">5</span>
-            <b>Presentation</b>
-            <small>Show tables, charts and results</small>
-          </div>
-          <div class="step">
-            <span class="num">6</span>
-            <b>Data Saving</b>
-            <small>Save cleaned data and predictions</small>
-          </div>
+    <section id="overview">
+      <h2>1. Overview</h2>
+
+      <p class="lead">
+        Data cleaning is the process of converting messy, incomplete, inconsistent,
+        duplicated, and wrongly typed data into a form that is ready for analysis.
+      </p>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Missing values</h3>
+          <p>
+            Empty cells, unknown values, blanks, <code>None</code>, <code>NaN</code>, or values like
+            <code>"N/A"</code>.
+          </p>
         </div>
 
-        <div class="success">
-          <strong>Simple idea:</strong>
-          pandas prepares and manages the data. A machine learning library like
-          scikit-learn trains the model.
+        <div class="card">
+          <h3>Duplicates</h3>
+          <p>
+            Repeated rows or repeated records that can distort counting, averages, and reports.
+          </p>
         </div>
 
-        <h3>Libraries used in this lesson</h3>
-        <pre><code>import pandas as pd
-import matplotlib.pyplot as plt
-
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression</code></pre>
-
-        <div class="ad-box">
-          Advertisement
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-8321261883090494"
-               data-ad-slot="7782388330"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
+        <div class="card">
+          <h3>Wrong datatypes</h3>
+          <p>
+            Numbers stored as text, dates stored as text, and categories with inconsistent spelling.
+          </p>
         </div>
-      </section>
+      </div>
 
-      <section id="pulling">
-        <h2>2. Data Pulling</h2>
-        <p>
-          Data pulling means bringing data into your Python program.
-          Data may come from a dictionary, CSV file, Excel file, JSON file,
-          database or online source.
-        </p>
+      <div class="note">
+        <strong>Final output:</strong> a cleaned dataset notebook with a before/after comparison.
+      </div>
+    </section>
 
-        <h3>2.1 Pull data from a Python dictionary</h3>
-        <pre><code>import pandas as pd
+    <div class="ad-box">
+      Advertisement
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-8321261883090494"
+        data-ad-slot="7782388330"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {}
+      </script>
+    </div>
+
+    <section id="why">
+      <h2>2. Why data cleaning matters</h2>
+
+      <p>
+        Data analysis is only as good as the data. If the data is dirty, every result after that
+        becomes doubtful.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Example</th>
+            <th>Damage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Missing values</td>
+            <td><code>Age</code> is empty for many students</td>
+            <td>Mean age becomes incorrect or impossible</td>
+          </tr>
+          <tr>
+            <td>Duplicates</td>
+            <td>Same student appears twice</td>
+            <td>Counts and averages become biased</td>
+          </tr>
+          <tr>
+            <td>Wrong datatype</td>
+            <td><code>"85"</code> stored as text instead of number</td>
+            <td>Mathematical operations fail</td>
+          </tr>
+          <tr>
+            <td>Messy strings</td>
+            <td><code>" male "</code>, <code>"MALE"</code>, <code>"Male"</code></td>
+            <td>One category becomes many fake categories</td>
+          </tr>
+          <tr>
+            <td>Impossible values</td>
+            <td>Marks are <code>150</code> out of <code>100</code></td>
+            <td>Reports become misleading</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="flow">
+        <div>Raw Data</div>
+        <div>Inspect</div>
+        <div>Clean</div>
+        <div>Compare</div>
+        <div>Analyze</div>
+      </div>
+    </section>
+
+    <section id="dataset">
+      <h2>3. Dataset: messy student dataset</h2>
+
+      <p>
+        We will use a small messy student dataset. It has missing values, duplicates,
+        spaces, wrong cases, wrong datatypes, and one impossible value.
+      </p>
+
+      <pre><code>import pandas as pd
+import numpy as np
 
 data = {
-    "hours": [1, 2, 3, 4, 5, 6],
-    "attendance": [55, 60, 65, 70, 80, 90],
-    "marks": [35, 42, 50, 58, 72, 88]
+    "Student_ID": [1, 2, 3, 4, 5, 5, 6, 7, 8, 9],
+    "Name": [" Aarav ", "siya", "MOHAN", "Riya", "Kabir", "Kabir", " Anaya", None, "Dev", "Meera "],
+    "Gender": [" Male", "female ", "MALE", "Female", "male", "male", "FEMALE", "Female", None, " female"],
+    "Age": ["15", "16", None, "15", "17", "17", "sixteen", "16", "15", ""],
+    "Math": ["85", "90", "78", None, "88", "88", "92", "absent", "150", "81"],
+    "Science": [80, 95, None, 72, 88, 88, 91, 84, 77, ""],
+    "City": [" Varanasi", "varanasi ", "Lucknow", "LUCKNOW", "Patna", "Patna", None, "Delhi ", "delhi", "Kanpur"]
 }
 
 df = pd.DataFrame(data)
 
 print(df)</code></pre>
 
-        <h3>2.2 Pull data from CSV</h3>
-        <p>CSV means comma-separated values. It is one of the most common data formats.</p>
+      <div class="note warning">
+        This dataset is intentionally messy. That is good for learning because real-world data
+        usually looks like this.
+      </div>
+    </section>
 
-        <pre><code>import pandas as pd
+    <section id="inspect">
+      <h2>4. Step one: inspect the data</h2>
 
-df = pd.read_csv("students.csv")
+      <p>
+        Before cleaning, never start blindly. First inspect the dataset.
+      </p>
 
-print(df.head())</code></pre>
-
-        <h3>2.3 Pull data from Excel</h3>
-        <pre><code>import pandas as pd
-
-df = pd.read_excel("students.xlsx")
-
-print(df.head())</code></pre>
-
-        <h3>2.4 Pull data from JSON</h3>
-        <pre><code>import pandas as pd
-
-df = pd.read_json("students.json")
-
-print(df.head())</code></pre>
-
-        <div class="note">
-          <strong>Checkpoint:</strong>
-          After pulling data, always print <code>df.head()</code>.
-          Do not start cleaning or training blindly.
-        </div>
-      </section>
-
-      <section id="cleaning">
-        <h2>3. Data Cleaning</h2>
-        <p>
-          Raw data is often imperfect. It may contain missing values,
-          wrong spellings, duplicate rows, unwanted columns or wrong data types.
-        </p>
-
-        <h3>3.1 Inspect the data</h3>
-        <pre><code>print(df.head())
+      <pre><code>print(df.head())
 print(df.tail())
 print(df.info())
-print(df.describe())</code></pre>
+print(df.describe(include="all"))
+print(df.isnull().sum())</code></pre>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Command</th>
-              <th>Purpose</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>df.head()</code></td>
-              <td>Shows first 5 rows</td>
-            </tr>
-            <tr>
-              <td><code>df.info()</code></td>
-              <td>Shows columns, data types and missing values</td>
-            </tr>
-            <tr>
-              <td><code>df.describe()</code></td>
-              <td>Shows count, mean, minimum, maximum and other statistics</td>
-            </tr>
-            <tr>
-              <td><code>df.isnull().sum()</code></td>
-              <td>Counts missing values column by column</td>
-            </tr>
-          </tbody>
-        </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>df.head()</code></td>
+            <td>Shows the first 5 rows</td>
+          </tr>
+          <tr>
+            <td><code>df.tail()</code></td>
+            <td>Shows the last 5 rows</td>
+          </tr>
+          <tr>
+            <td><code>df.info()</code></td>
+            <td>Shows column names, non-null counts, and datatypes</td>
+          </tr>
+          <tr>
+            <td><code>df.describe(include="all")</code></td>
+            <td>Shows summary for numeric and non-numeric columns</td>
+          </tr>
+          <tr>
+            <td><code>df.isnull().sum()</code></td>
+            <td>Counts missing values in each column</td>
+          </tr>
+        </tbody>
+      </table>
 
-        <h3>3.2 Check missing values</h3>
-        <pre><code>print(df.isnull().sum())</code></pre>
+      <div class="note">
+        Inspection is like a doctor checking the patient before giving medicine.
+      </div>
+    </section>
 
-        <h3>3.3 Remove rows with missing values</h3>
-        <pre><code>df = df.dropna()</code></pre>
+    <section id="missing">
+      <h2>5. Missing values and null handling</h2>
 
-        <h3>3.4 Fill missing values</h3>
-        <pre><code>df["attendance"] = df["attendance"].fillna(df["attendance"].mean())
-df["hours"] = df["hours"].fillna(0)</code></pre>
+      <p>
+        In Pandas, missing values are usually represented as <code>NaN</code>.
+        But real messy datasets may also contain empty strings, spaces, <code>"N/A"</code>,
+        <code>"missing"</code>, or <code>"absent"</code>.
+      </p>
 
-        <h3>3.5 Remove duplicate rows</h3>
-        <pre><code>df = df.drop_duplicates()</code></pre>
+      <h3>Detect normal missing values</h3>
 
-        <h3>3.6 Rename columns</h3>
-        <pre><code>df = df.rename(columns={
-    "study hours": "hours",
-    "student marks": "marks"
+      <pre><code>print(df.isnull())
+print(df.isnull().sum())</code></pre>
+
+      <h3>Convert fake missing values into real missing values</h3>
+
+      <pre><code>df = df.replace(["", " ", "N/A", "NA", "missing", "absent"], np.nan)
+
+print(df.isnull().sum())</code></pre>
+
+      <div class="note success">
+        First convert fake missing values to <code>np.nan</code>. Then Pandas can handle them properly.
+      </div>
+    </section>
+
+    <section id="fillna">
+      <h2>6. fillna: filling missing values</h2>
+
+      <p>
+        <code>fillna()</code> is used when we want to replace missing values with some suitable value.
+      </p>
+
+      <h3>Fill with fixed value</h3>
+
+      <pre><code>df["Name"] = df["Name"].fillna("Unknown")
+df["Gender"] = df["Gender"].fillna("Unknown")
+df["City"] = df["City"].fillna("Unknown")</code></pre>
+
+      <h3>Fill numeric column with mean or median</h3>
+
+      <p>
+        For numeric columns, median is often safer than mean because one very high or very low value
+        can distort the mean.
+      </p>
+
+      <pre><code>df["Age"] = df["Age"].fillna(df["Age"].median())
+df["Math"] = df["Math"].fillna(df["Math"].median())
+df["Science"] = df["Science"].fillna(df["Science"].median())</code></pre>
+
+      <h3>Common fillna options</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Example</th>
+            <th>Use case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fixed value</td>
+            <td><code>fillna("Unknown")</code></td>
+            <td>Names, city, category columns</td>
+          </tr>
+          <tr>
+            <td>Mean</td>
+            <td><code>fillna(df["Age"].mean())</code></td>
+            <td>Numeric column without extreme values</td>
+          </tr>
+          <tr>
+            <td>Median</td>
+            <td><code>fillna(df["Marks"].median())</code></td>
+            <td>Numeric column with possible extreme values</td>
+          </tr>
+          <tr>
+            <td>Mode</td>
+            <td><code>fillna(df["City"].mode()[0])</code></td>
+            <td>Most common category</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="dropna">
+      <h2>7. dropna: removing missing values</h2>
+
+      <p>
+        <code>dropna()</code> removes rows or columns containing missing values.
+        Use it carefully because you may lose useful data.
+      </p>
+
+      <h3>Drop rows with any missing value</h3>
+
+      <pre><code>df_without_missing = df.dropna()</code></pre>
+
+      <h3>Drop rows only if important columns are missing</h3>
+
+      <pre><code>df = df.dropna(subset=["Student_ID", "Name"])</code></pre>
+
+      <h3>Drop columns with too many missing values</h3>
+
+      <pre><code># Example:
+# df = df.drop(columns=["Very_Bad_Column"])</code></pre>
+
+      <div class="note warning">
+        <strong>Rule:</strong> Do not use <code>dropna()</code> blindly.
+        First ask: is this row useless, or can it be repaired?
+      </div>
+    </section>
+
+    <section id="duplicates">
+      <h2>8. Duplicate control</h2>
+
+      <p>
+        Duplicate rows can silently damage analysis.
+      </p>
+
+      <h3>Check duplicates</h3>
+
+      <pre><code>print(df.duplicated())
+print("Duplicate rows:", df.duplicated().sum())</code></pre>
+
+      <h3>Remove exact duplicate rows</h3>
+
+      <pre><code>df = df.drop_duplicates()</code></pre>
+
+      <h3>Remove duplicates using a specific column</h3>
+
+      <p>
+        In student data, <code>Student_ID</code> should usually be unique.
+      </p>
+
+      <pre><code>df = df.drop_duplicates(subset=["Student_ID"], keep="first")</code></pre>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>df.duplicated()</code></td>
+            <td>Returns True for duplicate rows</td>
+          </tr>
+          <tr>
+            <td><code>df.duplicated().sum()</code></td>
+            <td>Counts duplicate rows</td>
+          </tr>
+          <tr>
+            <td><code>df.drop_duplicates()</code></td>
+            <td>Removes duplicate rows</td>
+          </tr>
+          <tr>
+            <td><code>subset=["Student_ID"]</code></td>
+            <td>Checks duplicates based on Student_ID only</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="types">
+      <h2>9. Datatype fixes and type conversion</h2>
+
+      <p>
+        Sometimes numbers are stored as strings. Pandas cannot correctly calculate until
+        we convert them.
+      </p>
+
+      <h3>Check datatypes</h3>
+
+      <pre><code>print(df.dtypes)</code></pre>
+
+      <h3>Convert to numeric</h3>
+
+      <pre><code>df["Age"] = pd.to_numeric(df["Age"], errors="coerce")
+df["Math"] = pd.to_numeric(df["Math"], errors="coerce")
+df["Science"] = pd.to_numeric(df["Science"], errors="coerce")</code></pre>
+
+      <p>
+        <code>errors="coerce"</code> means: if a value cannot be converted, convert it to
+        <code>NaN</code>.
+      </p>
+
+      <h3>Fix impossible values</h3>
+
+      <p>
+        In our dataset, Math marks contain <code>150</code>. If marks are out of 100, this is invalid.
+      </p>
+
+      <pre><code>df.loc[df["Math"] > 100, "Math"] = np.nan
+df.loc[df["Science"] > 100, "Science"] = np.nan</code></pre>
+
+      <h3>Fill after conversion</h3>
+
+      <pre><code>df["Age"] = df["Age"].fillna(df["Age"].median())
+df["Math"] = df["Math"].fillna(df["Math"].median())
+df["Science"] = df["Science"].fillna(df["Science"].median())</code></pre>
+
+      <div class="note success">
+        Convert first, then fill. If you fill before conversion, bad text values may remain hidden.
+      </div>
+    </section>
+
+    <section id="strings">
+      <h2>10. String cleanup</h2>
+
+      <p>
+        Text columns often contain extra spaces and inconsistent case.
+      </p>
+
+      <h3>Remove spaces</h3>
+
+      <pre><code>df["Name"] = df["Name"].str.strip()
+df["Gender"] = df["Gender"].str.strip()
+df["City"] = df["City"].str.strip()</code></pre>
+
+      <h3>Fix case</h3>
+
+      <pre><code>df["Name"] = df["Name"].str.title()
+df["Gender"] = df["Gender"].str.title()
+df["City"] = df["City"].str.title()</code></pre>
+
+      <h3>Replace inconsistent categories</h3>
+
+      <pre><code>df["Gender"] = df["Gender"].replace({
+    "Male": "Male",
+    "Female": "Female",
+    "Unknown": "Unknown"
 })</code></pre>
 
-        <h3>3.7 Convert data type</h3>
-        <pre><code>df["hours"] = df["hours"].astype(float)
-df["marks"] = df["marks"].astype(int)</code></pre>
+      <table>
+        <thead>
+          <tr>
+            <th>Function</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>.str.strip()</code></td>
+            <td>Removes spaces from beginning and end</td>
+          </tr>
+          <tr>
+            <td><code>.str.lower()</code></td>
+            <td>Converts text to lowercase</td>
+          </tr>
+          <tr>
+            <td><code>.str.upper()</code></td>
+            <td>Converts text to uppercase</td>
+          </tr>
+          <tr>
+            <td><code>.str.title()</code></td>
+            <td>Converts text to title case</td>
+          </tr>
+          <tr>
+            <td><code>.replace()</code></td>
+            <td>Replaces one value with another</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-        <h3>3.8 Clean text columns</h3>
-        <pre><code>df["city"] = df["city"].str.strip()
-df["city"] = df["city"].str.title()</code></pre>
+    <section id="beforeafter">
+      <h2>11. Before/after comparison</h2>
 
-        <div class="warning">
-          <strong>Important:</strong>
-          If the data is not cleaned, the model may learn wrong patterns.
-          Bad data can produce bad predictions.
-        </div>
-      </section>
+      <p>
+        A good cleaning notebook should show what changed.
+      </p>
 
-      <section id="querying">
-        <h2>4. Data Querying</h2>
-        <p>
-          Data querying means asking questions from the data. Before training,
-          we should understand what the data is saying.
-        </p>
+      <h3>Save a copy before cleaning</h3>
 
-        <h3>4.1 Select one column</h3>
-        <pre><code>print(df["marks"])</code></pre>
+      <pre><code>before = df.copy()</code></pre>
 
-        <h3>4.2 Select multiple columns</h3>
-        <pre><code>print(df[["hours", "attendance", "marks"]])</code></pre>
+      <h3>Compare shape</h3>
 
-        <h3>4.3 Filter rows</h3>
-        <pre><code>high_marks = df[df["marks"] &gt;= 70]
+      <pre><code>print("Before shape:", before.shape)
+print("After shape:", df.shape)</code></pre>
 
-print(high_marks)</code></pre>
+      <h3>Compare missing values</h3>
 
-        <h3>4.4 Multiple conditions</h3>
-        <pre><code>good_students = df[
-    (df["hours"] &gt;= 4) &amp; (df["attendance"] &gt;= 75)
-]
+      <pre><code>print("Missing values before:")
+print(before.isnull().sum())
 
-print(good_students)</code></pre>
+print("Missing values after:")
+print(df.isnull().sum())</code></pre>
 
-        <h3>4.5 Sorting</h3>
-        <pre><code>sorted_df = df.sort_values(by="marks", ascending=False)
+      <h3>Compare datatypes</h3>
 
-print(sorted_df)</code></pre>
+      <pre><code>print("Datatypes before:")
+print(before.dtypes)
 
-        <h3>4.6 Grouping</h3>
-        <pre><code>city_average = df.groupby("city")["marks"].mean()
+print("Datatypes after:")
+print(df.dtypes)</code></pre>
 
-print(city_average)</code></pre>
+      <h3>Compare first rows</h3>
 
-        <h3>4.7 Useful questions before training</h3>
-        <div class="grid">
-          <div class="mini">
-            <strong>Question 1</strong>
-            Which column should be input?
-          </div>
-          <div class="mini">
-            <strong>Question 2</strong>
-            Which column should be output?
-          </div>
-          <div class="mini">
-            <strong>Question 3</strong>
-            Are there missing values?
-          </div>
-          <div class="mini">
-            <strong>Question 4</strong>
-            Are there duplicate rows?
-          </div>
-          <div class="mini">
-            <strong>Question 5</strong>
-            Are numbers stored as text?
-          </div>
-          <div class="mini">
-            <strong>Question 6</strong>
-            Are there strange values?
-          </div>
-        </div>
-      </section>
+      <pre><code>print("Before:")
+print(before.head())
 
-      <section id="training">
-        <h2>5. Training</h2>
-        <p>
-          Training means teaching a model to learn the relation between input columns
-          and the target column.
-        </p>
+print("After:")
+print(df.head())</code></pre>
+    </section>
 
-        <h3>5.1 Input and output</h3>
-        <pre><code>X = df[["hours", "attendance"]]
-y = df["marks"]</code></pre>
+    <section id="notebook">
+      <h2>12. Output: cleaned dataset notebook</h2>
 
-        <p>
-          Here, <code>X</code> is the input table and <code>y</code> is the output column.
-        </p>
+      <p>
+        Copy this complete notebook into the Python editor and run it.
+      </p>
 
-        <h3>5.2 Split data into training and testing parts</h3>
-        <pre><code>X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)</code></pre>
+      <pre><code>"""
+Cleaned Dataset Notebook
+Programmer's Picnic by Champak Roy
 
-        <h3>5.3 Create and train the model</h3>
-        <pre><code>model = LinearRegression()
+Topic:
+Data cleaning and preparation using Pandas
 
-model.fit(X_train, y_train)</code></pre>
+Learning:
+1. Missing values
+2. fillna
+3. dropna
+4. duplicate control
+5. type conversion
+6. string cleanup
+7. before/after comparison
+"""
 
-        <h3>5.4 Test the model</h3>
-        <pre><code>score = model.score(X_test, y_test)
+import pandas as pd
+import numpy as np
 
-print("Model score:", score)</code></pre>
+print("=" * 70)
+print("CLEANED DATASET NOTEBOOK")
+print("=" * 70)
 
-        <h3>5.5 Make prediction</h3>
-        <pre><code>new_student = [[7, 92]]
-
-prediction = model.predict(new_student)
-
-print("Predicted marks:", prediction[0])</code></pre>
-
-        <div class="note">
-          <strong>Remember:</strong>
-          <code>fit()</code> trains the model.
-          <code>predict()</code> asks the trained model to give an answer.
-        </div>
-      </section>
-
-      <section id="presentation">
-        <h2>6. Presentation</h2>
-        <p>
-          Presentation means showing the result clearly. In a real project,
-          nobody wants only raw code. People want readable tables, charts and summaries.
-        </p>
-
-        <h3>6.1 Show final table</h3>
-        <pre><code>print(df)</code></pre>
-
-        <h3>6.2 Show selected columns</h3>
-        <pre><code>print(df[["hours", "attendance", "marks"]])</code></pre>
-
-        <h3>6.3 Add predictions to a table</h3>
-        <pre><code>df["predicted_marks"] = model.predict(X)
-
-print(df)</code></pre>
-
-        <h3>6.4 Plot actual marks</h3>
-        <pre><code>import matplotlib.pyplot as plt
-
-plt.scatter(df["hours"], df["marks"])
-plt.xlabel("Study Hours")
-plt.ylabel("Marks")
-plt.title("Study Hours vs Marks")
-plt.show()</code></pre>
-
-        <h3>6.5 Plot actual and predicted marks</h3>
-        <pre><code>plt.scatter(df["hours"], df["marks"], label="Actual Marks")
-plt.plot(df["hours"], df["predicted_marks"], label="Predicted Marks")
-
-plt.xlabel("Study Hours")
-plt.ylabel("Marks")
-plt.title("Actual vs Predicted Marks")
-plt.legend()
-plt.show()</code></pre>
-
-        <div class="success">
-          <strong>Good presentation answers three questions:</strong>
-          What was the input? What did the model predict? How close was the prediction?
-        </div>
-      </section>
-
-      <section id="saving">
-        <h2>7. Data Saving</h2>
-        <p>
-          After cleaning, querying, training and prediction, we should save useful results.
-          This helps us reuse the work later.
-        </p>
-
-        <h3>7.1 Save cleaned data as CSV</h3>
-        <pre><code>df.to_csv("cleaned_students.csv", index=False)</code></pre>
-
-        <h3>7.2 Save as Excel</h3>
-        <pre><code>df.to_excel("cleaned_students.xlsx", index=False)</code></pre>
-
-        <h3>7.3 Save as JSON</h3>
-        <pre><code>df.to_json("cleaned_students.json", orient="records", indent=4)</code></pre>
-
-        <h3>7.4 Save only predictions</h3>
-        <pre><code>result = df[["hours", "attendance", "marks", "predicted_marks"]]
-
-result.to_csv("student_predictions.csv", index=False)</code></pre>
-
-        <h3>7.5 Save trained model</h3>
-        <p>
-          To save the trained model, we can use <code>joblib</code>.
-        </p>
-
-        <pre><code>import joblib
-
-joblib.dump(model, "marks_model.pkl")</code></pre>
-
-        <h3>7.6 Load saved model again</h3>
-        <pre><code>import joblib
-
-model = joblib.load("marks_model.pkl")
-
-prediction = model.predict([[7, 92]])
-
-print(prediction[0])</code></pre>
-
-        <div class="note">
-          <strong>Project habit:</strong>
-          Save three things separately:
-          raw data, cleaned data and final result data.
-        </div>
-      </section>
-
-      <section id="project">
-        <h2>8. Complete Mini Project</h2>
-        <p>
-          This project covers the full journey:
-          pulling, cleaning, querying, training, presentation and saving.
-        </p>
-
-        <pre><code>import pandas as pd
-import matplotlib.pyplot as plt
-import joblib
-
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-
-# -------------------------------------------------
-# 1. DATA PULLING
-# -------------------------------------------------
+# ------------------------------------------------------------
+# 1. Create messy dataset
+# ------------------------------------------------------------
 
 data = {
-    "name": ["Amit", "Ravi", "Sita", "Meena", "Kabir", "Anu", "Farhan", "Pooja"],
-    "hours": [1, 2, 3, 4, 5, 6, 7, 8],
-    "attendance": [55, 60, 65, 70, 78, 85, 90, 95],
-    "marks": [35, 42, 50, 58, 70, 80, 88, 96]
+    "Student_ID": [1, 2, 3, 4, 5, 5, 6, 7, 8, 9],
+    "Name": [" Aarav ", "siya", "MOHAN", "Riya", "Kabir", "Kabir", " Anaya", None, "Dev", "Meera "],
+    "Gender": [" Male", "female ", "MALE", "Female", "male", "male", "FEMALE", "Female", None, " female"],
+    "Age": ["15", "16", None, "15", "17", "17", "sixteen", "16", "15", ""],
+    "Math": ["85", "90", "78", None, "88", "88", "92", "absent", "150", "81"],
+    "Science": [80, 95, None, 72, 88, 88, 91, 84, 77, ""],
+    "City": [" Varanasi", "varanasi ", "Lucknow", "LUCKNOW", "Patna", "Patna", None, "Delhi ", "delhi", "Kanpur"]
 }
 
 df = pd.DataFrame(data)
 
-print("Original Data")
+print("\n1. RAW DATASET")
 print(df)
 
-# -------------------------------------------------
-# 2. DATA CLEANING
-# -------------------------------------------------
+# Save before copy
+before = df.copy()
 
-print("Missing values before cleaning:")
+# ------------------------------------------------------------
+# 2. Inspect raw data
+# ------------------------------------------------------------
+
+print("\n2. BASIC INSPECTION")
+print("\nFirst rows:")
+print(df.head())
+
+print("\nInformation:")
+print(df.info())
+
+print("\nMissing values before cleaning:")
 print(df.isnull().sum())
 
+print("\nDuplicate rows before cleaning:", df.duplicated().sum())
+
+print("\nDatatypes before cleaning:")
+print(df.dtypes)
+
+# ------------------------------------------------------------
+# 3. Convert fake missing values to np.nan
+# ------------------------------------------------------------
+
+print("\n3. CONVERT FAKE MISSING VALUES TO REAL NaN")
+
+df = df.replace(["", " ", "N/A", "NA", "missing", "absent"], np.nan)
+
+print(df.isnull().sum())
+
+# ------------------------------------------------------------
+# 4. Remove duplicates
+# ------------------------------------------------------------
+
+print("\n4. REMOVE DUPLICATES")
+
 df = df.drop_duplicates()
+df = df.drop_duplicates(subset=["Student_ID"], keep="first")
 
-df["hours"] = df["hours"].astype(float)
-df["attendance"] = df["attendance"].astype(float)
-df["marks"] = df["marks"].astype(float)
+print("Duplicate rows after cleaning:", df.duplicated().sum())
 
-print("Cleaned Data")
+# ------------------------------------------------------------
+# 5. String cleanup
+# ------------------------------------------------------------
+
+print("\n5. STRING CLEANUP")
+
+text_columns = ["Name", "Gender", "City"]
+
+for col in text_columns:
+    df[col] = df[col].astype("string")
+    df[col] = df[col].str.strip()
+    df[col] = df[col].str.title()
+
+print(df[text_columns])
+
+# ------------------------------------------------------------
+# 6. Fill missing text values
+# ------------------------------------------------------------
+
+print("\n6. FILL MISSING TEXT VALUES")
+
+df["Name"] = df["Name"].fillna("Unknown")
+df["Gender"] = df["Gender"].fillna("Unknown")
+df["City"] = df["City"].fillna("Unknown")
+
+print(df[["Name", "Gender", "City"]])
+
+# ------------------------------------------------------------
+# 7. Type conversion
+# ------------------------------------------------------------
+
+print("\n7. TYPE CONVERSION")
+
+numeric_columns = ["Age", "Math", "Science"]
+
+for col in numeric_columns:
+    df[col] = pd.to_numeric(df[col], errors="coerce")
+
+print(df.dtypes)
+
+# ------------------------------------------------------------
+# 8. Fix impossible values
+# ------------------------------------------------------------
+
+print("\n8. FIX IMPOSSIBLE VALUES")
+
+df.loc[df["Math"] > 100, "Math"] = np.nan
+df.loc[df["Science"] > 100, "Science"] = np.nan
+df.loc[df["Age"] <= 0, "Age"] = np.nan
+
 print(df)
 
-# -------------------------------------------------
-# 3. DATA QUERYING
-# -------------------------------------------------
+# ------------------------------------------------------------
+# 9. Fill missing numeric values
+# ------------------------------------------------------------
 
-print("Students who scored 70 or more:")
-print(df[df["marks"] &gt;= 70])
+print("\n9. FILL MISSING NUMERIC VALUES")
 
-print("Average marks:")
-print(df["marks"].mean())
+for col in numeric_columns:
+    median_value = df[col].median()
+    df[col] = df[col].fillna(median_value)
 
-print("Data sorted by marks:")
-print(df.sort_values(by="marks", ascending=False))
+print(df[numeric_columns])
 
-# -------------------------------------------------
-# 4. TRAINING
-# -------------------------------------------------
+# ------------------------------------------------------------
+# 10. Create new analysis-ready columns
+# ------------------------------------------------------------
 
-X = df[["hours", "attendance"]]
-y = df["marks"]
+print("\n10. CREATE ANALYSIS-READY COLUMNS")
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.25,
-    random_state=42
-)
+df["Total"] = df["Math"] + df["Science"]
+df["Average"] = df["Total"] / 2
 
-model = LinearRegression()
+def result_status(avg):
+    if avg >= 80:
+        return "Excellent"
+    elif avg >= 60:
+        return "Good"
+    else:
+        return "Needs Practice"
 
-model.fit(X_train, y_train)
+df["Status"] = df["Average"].apply(result_status)
 
-score = model.score(X_test, y_test)
-
-print("Model score:", score)
-
-# -------------------------------------------------
-# 5. PRESENTATION
-# -------------------------------------------------
-
-df["predicted_marks"] = model.predict(X)
-
-print("Final Data with Predictions")
 print(df)
 
-plt.scatter(df["hours"], df["marks"], label="Actual Marks")
-plt.plot(df["hours"], df["predicted_marks"], label="Predicted Marks")
+# ------------------------------------------------------------
+# 11. Before/after comparison
+# ------------------------------------------------------------
 
-plt.xlabel("Study Hours")
-plt.ylabel("Marks")
-plt.title("Actual Marks vs Predicted Marks")
-plt.legend()
-plt.show()
+print("\n11. BEFORE / AFTER COMPARISON")
 
-# -------------------------------------------------
-# 6. DATA SAVING
-# -------------------------------------------------
+print("\nBefore shape:", before.shape)
+print("After shape:", df.shape)
 
-df.to_csv("final_student_result.csv", index=False)
-df.to_json("final_student_result.json", orient="records", indent=4)
+print("\nMissing values before:")
+print(before.isnull().sum())
 
-joblib.dump(model, "student_marks_model.pkl")
+print("\nMissing values after:")
+print(df.isnull().sum())
 
-print("Data and model saved successfully.")</code></pre>
-      </section>
+print("\nDatatypes before:")
+print(before.dtypes)
 
-      <section id="workflow">
-        <h2>9. Professional Workflow</h2>
+print("\nDatatypes after:")
+print(df.dtypes)
 
-        <table>
-          <thead>
-            <tr>
-              <th>Stage</th>
-              <th>Main Question</th>
-              <th>Common pandas Tools</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Data Pulling</td>
-              <td>Where is the data coming from?</td>
-              <td><code>read_csv()</code>, <code>read_excel()</code>, <code>read_json()</code></td>
-            </tr>
-            <tr>
-              <td>Data Cleaning</td>
-              <td>Is the data usable?</td>
-              <td><code>dropna()</code>, <code>fillna()</code>, <code>drop_duplicates()</code></td>
-            </tr>
-            <tr>
-              <td>Data Querying</td>
-              <td>What is the data saying?</td>
-              <td><code>filtering</code>, <code>sort_values()</code>, <code>groupby()</code></td>
-            </tr>
-            <tr>
-              <td>Training</td>
-              <td>Can a model learn from this?</td>
-              <td><code>X</code>, <code>y</code>, <code>train_test_split()</code>, <code>fit()</code></td>
-            </tr>
-            <tr>
-              <td>Presentation</td>
-              <td>Can people understand the result?</td>
-              <td><code>print()</code>, <code>matplotlib</code>, final tables</td>
-            </tr>
-            <tr>
-              <td>Data Saving</td>
-              <td>Can we reuse the result later?</td>
-              <td><code>to_csv()</code>, <code>to_excel()</code>, <code>to_json()</code></td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+print("\nBefore first rows:")
+print(before.head())
 
-      <section id="mistakes">
-        <h2>10. Common Mistakes</h2>
+print("\nAfter first rows:")
+print(df.head())
 
-        <div class="grid">
-          <div class="mini">
-            <strong>Mistake 1</strong>
-            Training before cleaning the data.
-          </div>
-          <div class="mini">
-            <strong>Mistake 2</strong>
-            Putting the answer column inside <code>X</code>.
-          </div>
-          <div class="mini">
-            <strong>Mistake 3</strong>
-            Not checking missing values.
-          </div>
-          <div class="mini">
-            <strong>Mistake 4</strong>
-            Using wrong column names.
-          </div>
-          <div class="mini">
-            <strong>Mistake 5</strong>
-            Showing only prediction without explanation.
-          </div>
-          <div class="mini">
-            <strong>Mistake 6</strong>
-            Not saving the final result.
-          </div>
-        </div>
+# ------------------------------------------------------------
+# 12. Analysis after cleaning
+# ------------------------------------------------------------
 
-        <h3>Wrong input example</h3>
-        <pre><code># Wrong: marks is the answer column
-X = df[["hours", "attendance", "marks"]]
-y = df["marks"]</code></pre>
+print("\n12. SIMPLE ANALYSIS AFTER CLEANING")
 
-        <h3>Correct input example</h3>
-        <pre><code># Correct
-X = df[["hours", "attendance"]]
-y = df["marks"]</code></pre>
-      </section>
+print("\nAverage Math marks:", df["Math"].mean())
+print("Average Science marks:", df["Science"].mean())
+print("Highest average:", df["Average"].max())
+print("Lowest average:", df["Average"].min())
 
-      <section id="practice">
-        <h2>11. Practice Tasks</h2>
+print("\nCity-wise average:")
+print(df.groupby("City")["Average"].mean())
 
-        <ol class="checklist">
-          <li>Create a CSV file named <code>sales.csv</code>.</li>
-          <li>Add columns: <code>advertising_budget</code>, <code>shop_visitors</code>, <code>sales</code>.</li>
-          <li>Pull the data using <code>pd.read_csv()</code>.</li>
-          <li>Clean missing values.</li>
-          <li>Query the data to find rows where sales are above average.</li>
-          <li>Train a Linear Regression model.</li>
-          <li>Predict sales for a new advertising budget and visitor count.</li>
-          <li>Show a chart.</li>
-          <li>Save the final result as <code>sales_predictions.csv</code>.</li>
-        </ol>
+print("\nStatus count:")
+print(df["Status"].value_counts())
 
-        <div class="quiz">
-          <h3>Quick Self Test</h3>
+# ------------------------------------------------------------
+# 13. Save cleaned dataset
+# ------------------------------------------------------------
 
-          <details>
-            <summary>1. What does data pulling mean?</summary>
-            <p>It means bringing data into Python from a source like CSV, Excel, JSON or database.</p>
-          </details>
+print("\n13. SAVE CLEANED DATASET")
 
-          <details>
-            <summary>2. Why is data cleaning important?</summary>
-            <p>Because missing values, duplicates and wrong data types can produce wrong model results.</p>
-          </details>
+df.to_csv("cleaned_students.csv", index=False)
 
-          <details>
-            <summary>3. What is the difference between <code>X</code> and <code>y</code>?</summary>
-            <p><code>X</code> contains input columns. <code>y</code> contains the target or answer column.</p>
-          </details>
+print("Cleaned dataset saved as cleaned_students.csv")
 
-          <details>
-            <summary>4. Which function trains the model?</summary>
-            <p><code>fit()</code> trains the model.</p>
-          </details>
+print("\n" + "=" * 70)
+print("NOTEBOOK COMPLETE")
+print("=" * 70)</code></pre>
+    </section>
 
-          <details>
-            <summary>5. Which function saves a DataFrame as CSV?</summary>
-            <p><code>to_csv()</code> saves a DataFrame as a CSV file.</p>
-          </details>
-        </div>
+    <section>
+      <h2>13. Cleaning pipeline explained</h2>
 
-        <div class="button-row">
-          <button onclick="window.print()">Print Lesson</button>
-          <button class="secondary" onclick="scrollToTop()">Back to Top</button>
-        </div>
-      </section>
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Code idea</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Create copy</td>
+            <td><code>before = df.copy()</code></td>
+            <td>Needed for before/after comparison</td>
+          </tr>
+          <tr>
+            <td>Replace fake missing</td>
+            <td><code>replace([...], np.nan)</code></td>
+            <td>Makes missing values detectable</td>
+          </tr>
+          <tr>
+            <td>Remove duplicates</td>
+            <td><code>drop_duplicates()</code></td>
+            <td>Prevents repeated records</td>
+          </tr>
+          <tr>
+            <td>Clean strings</td>
+            <td><code>str.strip()</code>, <code>str.title()</code></td>
+            <td>Fixes spaces and case problems</td>
+          </tr>
+          <tr>
+            <td>Convert datatypes</td>
+            <td><code>pd.to_numeric()</code></td>
+            <td>Makes calculation possible</td>
+          </tr>
+          <tr>
+            <td>Fix invalid values</td>
+            <td><code>df.loc[condition, column] = np.nan</code></td>
+            <td>Removes impossible data</td>
+          </tr>
+          <tr>
+            <td>Fill missing values</td>
+            <td><code>fillna()</code></td>
+            <td>Repairs useful rows</td>
+          </tr>
+          <tr>
+            <td>Save output</td>
+            <td><code>to_csv()</code></td>
+            <td>Creates reusable cleaned dataset</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <section id="summary">
-        <h2>12. Final Summary</h2>
+    <section id="editor">
+      <h2>14. Python Editor</h2>
 
-        <p>
-          A real data project follows a complete pipeline.
-          The model training part is important, but it becomes useful only when
-          the data is properly pulled, cleaned, queried, presented and saved.
-        </p>
-
-        <pre><code>Data Pulling
-     ↓
-Data Cleaning
-     ↓
-Data Querying
-     ↓
-Training
-     ↓
-Presentation
-     ↓
-Data Saving</code></pre>
-
-        <div class="success">
-          <strong>Final lesson:</strong>
-          pandas is not just a library for tables. It is the main bridge between
-          raw data and machine learning.
-        </div>
-      </section>
-    </main>
-
-    <footer>
       <p>
-        Data Pipeline with Pandas lesson by Programmer's Picnic.
+        Run the full notebook here. Modify the messy dataset and observe how the cleaning process changes.
       </p>
-    </footer>
-  </div>
 
-  <script>
-    function scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
+      <div class="editor-box">
+        <div class="editor-title">
+          <span>Embedded Python Editor</span>
+          <span>Data Cleaning Practice</span>
+        </div>
 
-    // Initialize Google AdSense blocks safely.
-    window.addEventListener("load", function () {
-      try {
-        const ads = document.querySelectorAll(".adsbygoogle");
-        ads.forEach(function () {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        });
-      } catch (error) {
-        console.log("AdSense could not be initialized:", error);
-      }
-    });
+        <iframe
+          title="Python Editor"
+          src="https://editor.learnwithchampak.live/python-starter/editor/super/?tmode=1"
+          allow="clipboard-read; clipboard-write">
+        </iframe>
+      </div>
+    </section>
 
-    // Keyboard helper for students using keyboard or TV remote browsers.
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Home") {
-        event.preventDefault();
-        scrollToTop();
-      }
-    });
-  </script>
+    <section id="practice">
+      <h2>15. Practice tasks</h2>
+
+      <div class="task">
+        <h3><span class="task-number">1</span> Missing value check</h3>
+        <p>
+          Create a small dataset and print how many missing values are present in each column.
+        </p>
+      </div>
+
+      <div class="task">
+        <h3><span class="task-number">2</span> fillna practice</h3>
+        <p>
+          Fill missing city names with <code>"Unknown"</code> and missing marks with the median.
+        </p>
+      </div>
+
+      <div class="task">
+        <h3><span class="task-number">3</span> dropna practice</h3>
+        <p>
+          Drop rows where the name or ID is missing.
+        </p>
+      </div>
+
+      <div class="task">
+        <h3><span class="task-number">4</span> Duplicate practice</h3>
+        <p>
+          Add duplicate rows and remove them using <code>drop_duplicates()</code>.
+        </p>
+      </div>
+
+      <div class="task">
+        <h3><span class="task-number">5</span> Type conversion practice</h3>
+        <p>
+          Convert marks stored as strings into numbers using <code>pd.to_numeric()</code>.
+        </p>
+      </div>
+
+      <div class="task">
+        <h3><span class="task-number">6</span> String cleanup practice</h3>
+        <p>
+          Clean names like <code>" aarav "</code>, <code>"SIYA"</code>, and <code>" moHan "</code>.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>16. Final challenge</h2>
+
+      <p>
+        Create a messy dataset for 10 students with the following columns:
+      </p>
+
+      <ul>
+        <li><code>Roll_No</code></li>
+        <li><code>Name</code></li>
+        <li><code>Class</code></li>
+        <li><code>Math</code></li>
+        <li><code>English</code></li>
+        <li><code>Attendance</code></li>
+      </ul>
+
+      <p>
+        Your notebook should:
+      </p>
+
+      <ul>
+        <li>Print the raw dataset.</li>
+        <li>Show missing values before cleaning.</li>
+        <li>Remove duplicates.</li>
+        <li>Clean all string columns.</li>
+        <li>Convert marks and attendance to numeric values.</li>
+        <li>Fix impossible marks above 100.</li>
+        <li>Fill missing numeric values with median.</li>
+        <li>Create <code>Total</code> and <code>Average</code>.</li>
+        <li>Print before/after comparison.</li>
+        <li>Save the cleaned dataset as CSV.</li>
+      </ul>
+
+      <details>
+        <summary>Show starter code</summary>
+
+        <pre><code>import pandas as pd
+import numpy as np
+
+data = {
+    "Roll_No": [1, 2, 3, 4, 5, 5, 6, 7, 8, 9],
+    "Name": [" Aarav ", "SIYA", " mohan", None, "Riya", "Riya", "Kabir ", "anaya", "DEV", " Meera "],
+    "Class": [" 9A", "9a", "9B ", "9b", "9A", "9A", None, "9C", "9c ", "9B"],
+    "Math": ["80", "90", "absent", "75", "105", "105", "88", "", "70", "95"],
+    "English": ["85", None, "78", "80", "91", "91", "bad", "76", "72", "99"],
+    "Attendance": ["90", "95", "eighty", "88", None, None, "85", "92", "", "98"]
+}
+
+df = pd.DataFrame(data)
+
+# Write your cleaning notebook below</code></pre>
+      </details>
+    </section>
+
+    <section>
+      <h2>17. What you now know</h2>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>You can inspect data</h3>
+          <p>
+            You can use <code>head()</code>, <code>info()</code>, <code>describe()</code>,
+            and <code>isnull().sum()</code>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>You can handle missing values</h3>
+          <p>
+            You understand <code>fillna()</code>, <code>dropna()</code>, and fake missing values.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>You can control duplicates</h3>
+          <p>
+            You can detect and remove duplicate rows.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>You can fix datatypes</h3>
+          <p>
+            You can convert text numbers into real numbers using <code>pd.to_numeric()</code>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>You can clean strings</h3>
+          <p>
+            You can use <code>str.strip()</code>, <code>str.title()</code>, and <code>replace()</code>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>You can prepare analysis-ready data</h3>
+          <p>
+            You can create clean output columns and save the cleaned dataset.
+          </p>
+        </div>
+      </div>
+
+      <div class="note success">
+        Clean data is the foundation of useful analysis. Before training a model,
+        plotting a chart, or making a report, clean the data first.
+      </div>
+    </section>
+
+  </main>
+
+  <a class="top-link" href="#top">Top</a>
+
+  <footer>
+    <p><strong>Programmer's Picnic by Champak Roy</strong></p>
+    <p>Python, Data Science, Machine Learning and Artificial Intelligence from 0 to infinity.</p>
+    <p>
+      <a href="https://www.learnwithchampak.live/">learnwithchampak.live</a>
+      |
+      <a href="https://editor.learnwithchampak.live/python-starter/editor/super/?tmode=1">Python Editor</a>
+      |
+      <a href="https://wa.me/919335874326">Contact on WhatsApp</a>
+    </p>
+  </footer>
+
 </body>
 </html>
