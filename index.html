@@ -4,13 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Drone Testing Dashboard | Programmer's Picnic</title>
-  <meta name="description" content="A simple drone testing page with pre-flight checklist, battery test, signal test, motor test, camera test, GPS test and flight log." />
-  <meta name="keywords" content="drone testing, drone dashboard, UAV testing, flight checklist, drone simulator, HTML CSS JavaScript" />
+  <title>Programmable Drone Testing Page | Programmer's Picnic</title>
+
+  <meta name="description" content="Programmable animated drone testing dashboard with drone commands, camera scene, live simulation, flight log, battery test, GPS test and drone movement animation." />
+  <meta name="keywords" content="programmable drone, drone testing page, drone animation, drone camera simulation, UAV testing, JavaScript drone simulator" />
   <meta name="author" content="Champak Roy" />
 
-  <meta property="og:title" content="Drone Testing Dashboard" />
-  <meta property="og:description" content="Interactive drone testing page with checklist, test buttons, flight log and emergency stop." />
+  <meta property="og:title" content="Programmable Drone Testing Dashboard" />
+  <meta property="og:description" content="Animate and program a drone using simple commands. Includes camera scene and flight testing dashboard." />
   <meta property="og:type" content="website" />
 
   <style>
@@ -18,17 +19,21 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: #eaf7f7;
-      color: #123;
+      color: #102a2d;
     }
 
     header {
       background: linear-gradient(135deg, #063b3f, #087f8c);
       color: white;
-      padding: 32px 20px;
+      padding: 34px 20px;
       text-align: center;
     }
 
@@ -40,6 +45,7 @@
     header p {
       margin: 10px 0 0;
       font-size: 18px;
+      line-height: 1.5;
     }
 
     nav {
@@ -49,7 +55,7 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
     }
 
     nav a {
@@ -64,19 +70,25 @@
     }
 
     .container {
-      max-width: 1150px;
+      max-width: 1280px;
       margin: 24px auto;
       padding: 0 16px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 18px;
     }
 
     .card {
-      background: white;
+      background: rgba(255, 255, 255, 0.96);
       border-radius: 18px;
       padding: 20px;
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
@@ -87,6 +99,11 @@
       margin-top: 0;
       color: #05636b;
       font-size: 22px;
+    }
+
+    .card h3 {
+      color: #05636b;
+      margin-bottom: 8px;
     }
 
     .status {
@@ -126,6 +143,11 @@
 
     button:hover {
       background: #05636b;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     button.secondary {
@@ -187,34 +209,548 @@
       cursor: pointer;
     }
 
-    .drone-box {
-      min-height: 260px;
-      background: radial-gradient(circle, #ffffff, #c8f1f0);
-      border: 2px dashed #087f8c;
+    .world {
+      height: 430px;
       border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
       position: relative;
+      border: 2px solid #087f8c;
+      background:
+        linear-gradient(#8ed8ff 0 43%, #7cc96f 43% 100%);
     }
 
-    .drone {
-      font-size: 70px;
-      transition: transform 0.4s;
+    .sun {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      right: 40px;
+      top: 30px;
+      border-radius: 50%;
+      background: #ffdf6b;
+      box-shadow: 0 0 35px rgba(255, 223, 107, 0.9);
     }
 
-    .flying {
-      animation: fly 2s infinite alternate ease-in-out;
+    .cloud {
+      position: absolute;
+      width: 110px;
+      height: 34px;
+      background: white;
+      border-radius: 999px;
+      opacity: 0.85;
+      animation: cloudMove 18s linear infinite;
     }
 
-    @keyframes fly {
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .cloud::before {
+      width: 48px;
+      height: 48px;
+      left: 18px;
+      top: -22px;
+    }
+
+    .cloud::after {
+      width: 56px;
+      height: 56px;
+      right: 18px;
+      top: -28px;
+    }
+
+    .cloud.one {
+      left: 40px;
+      top: 78px;
+    }
+
+    .cloud.two {
+      left: 420px;
+      top: 120px;
+      animation-duration: 24s;
+    }
+
+    @keyframes cloudMove {
       from {
-        transform: translateY(25px) rotate(-5deg);
+        transform: translateX(-180px);
       }
 
       to {
-        transform: translateY(-25px) rotate(5deg);
+        transform: translateX(950px);
       }
+    }
+
+    .mountain {
+      position: absolute;
+      bottom: 170px;
+      width: 0;
+      height: 0;
+      border-left: 115px solid transparent;
+      border-right: 115px solid transparent;
+      border-bottom: 150px solid #52796f;
+    }
+
+    .mountain.m1 {
+      left: 40px;
+    }
+
+    .mountain.m2 {
+      left: 210px;
+      border-bottom-color: #43665d;
+      transform: scale(1.2);
+    }
+
+    .mountain.m3 {
+      right: 60px;
+    }
+
+    .ground-road {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 60px;
+      height: 70px;
+      background: #555;
+      border-top: 5px solid #333;
+      border-bottom: 5px solid #333;
+    }
+
+    .road-line {
+      position: absolute;
+      width: 80px;
+      height: 8px;
+      background: #fff1a8;
+      top: 31px;
+      animation: roadMove 1.8s linear infinite;
+    }
+
+    .road-line.l1 {
+      left: 40px;
+    }
+
+    .road-line.l2 {
+      left: 200px;
+    }
+
+    .road-line.l3 {
+      left: 360px;
+    }
+
+    .road-line.l4 {
+      left: 520px;
+    }
+
+    .road-line.l5 {
+      left: 680px;
+    }
+
+    @keyframes roadMove {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-160px);
+      }
+    }
+
+    .building {
+      position: absolute;
+      bottom: 130px;
+      width: 70px;
+      background: #f2f2f2;
+      border: 2px solid #6c757d;
+    }
+
+    .building::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 14px;
+      width: 12px;
+      height: 12px;
+      background: #087f8c;
+      box-shadow:
+        28px 0 #087f8c,
+        0 28px #087f8c,
+        28px 28px #087f8c,
+        0 56px #087f8c,
+        28px 56px #087f8c;
+    }
+
+    .building.b1 {
+      left: 90px;
+      height: 120px;
+    }
+
+    .building.b2 {
+      right: 110px;
+      height: 150px;
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 130px;
+      width: 22px;
+      height: 70px;
+      background: #7b4f2c;
+    }
+
+    .tree::before {
+      content: "";
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      background: #1b7f3a;
+      border-radius: 50%;
+      left: -21px;
+      top: -40px;
+    }
+
+    .tree.t1 {
+      left: 300px;
+    }
+
+    .tree.t2 {
+      left: 520px;
+      transform: scale(0.85);
+    }
+
+    .tree.t3 {
+      right: 300px;
+      transform: scale(1.1);
+    }
+
+    .car {
+      position: absolute;
+      bottom: 88px;
+      left: 40px;
+      width: 90px;
+      height: 34px;
+      background: #e63946;
+      border-radius: 18px 22px 8px 8px;
+      animation: carDrive 8s linear infinite;
+    }
+
+    .car::before {
+      content: "";
+      position: absolute;
+      left: 24px;
+      top: -22px;
+      width: 42px;
+      height: 24px;
+      background: #f8f9fa;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .car::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      bottom: -8px;
+      width: 16px;
+      height: 16px;
+      background: #111;
+      border-radius: 50%;
+      box-shadow: 48px 0 #111;
+    }
+
+    @keyframes carDrive {
+      from {
+        transform: translateX(-160px);
+      }
+
+      to {
+        transform: translateX(1000px);
+      }
+    }
+
+    .drone {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      width: 118px;
+      height: 60px;
+      transform: translate(-50%, -50%);
+      transition:
+        left 0.7s ease,
+        top 0.7s ease,
+        transform 0.7s ease;
+      z-index: 10;
+    }
+
+    .drone-body {
+      position: absolute;
+      width: 70px;
+      height: 34px;
+      left: 24px;
+      top: 13px;
+      border-radius: 20px;
+      background: #102a2d;
+      border: 3px solid #31d3d3;
+    }
+
+    .drone-body::after {
+      content: "";
+      position: absolute;
+      left: 25px;
+      top: 7px;
+      width: 14px;
+      height: 14px;
+      background: #f4d35e;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #f4d35e;
+    }
+
+    .arm {
+      position: absolute;
+      height: 6px;
+      width: 105px;
+      background: #102a2d;
+      top: 27px;
+      left: 6px;
+      border-radius: 8px;
+    }
+
+    .arm.second {
+      transform: rotate(90deg);
+    }
+
+    .propeller {
+      position: absolute;
+      width: 36px;
+      height: 10px;
+      background: #cfffff;
+      border-radius: 50%;
+      animation: spin 0.12s linear infinite;
+      transform-origin: center;
+    }
+
+    .p1 {
+      left: 0;
+      top: 22px;
+    }
+
+    .p2 {
+      right: 0;
+      top: 22px;
+    }
+
+    .p3 {
+      left: 41px;
+      top: -10px;
+    }
+
+    .p4 {
+      left: 41px;
+      bottom: -10px;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg) scaleX(1);
+      }
+
+      to {
+        transform: rotate(360deg) scaleX(1.8);
+      }
+    }
+
+    .shadow {
+      position: absolute;
+      width: 100px;
+      height: 22px;
+      background: rgba(0, 0, 0, 0.23);
+      border-radius: 50%;
+      left: 50%;
+      top: 82%;
+      transform: translateX(-50%);
+      filter: blur(4px);
+      transition: left 0.7s ease, top 0.7s ease, width 0.7s ease;
+    }
+
+    .camera-panel {
+      background: #071b1d;
+      color: #d7ffff;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 3px solid #102a2d;
+    }
+
+    .camera-top {
+      padding: 10px 14px;
+      background: #102a2d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .camera-screen {
+      height: 330px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(#7ec8ff 0 45%, #86c96b 45% 100%);
+      transition: filter 0.2s;
+    }
+
+    .camera-screen.recording {
+      box-shadow: inset 0 0 0 4px #e63946;
+    }
+
+    .camera-scene {
+      position: absolute;
+      inset: 0;
+      transform: translate(0, 0) scale(1);
+      transition: transform 0.7s ease;
+    }
+
+    .camera-screen .sun {
+      width: 48px;
+      height: 48px;
+      right: 28px;
+      top: 24px;
+    }
+
+    .camera-screen .mountain {
+      bottom: 135px;
+      border-left-width: 85px;
+      border-right-width: 85px;
+      border-bottom-width: 110px;
+    }
+
+    .camera-screen .building {
+      bottom: 94px;
+      transform: scale(0.85);
+    }
+
+    .camera-screen .tree {
+      bottom: 90px;
+      transform: scale(0.75);
+    }
+
+    .camera-screen .ground-road {
+      bottom: 35px;
+      height: 54px;
+    }
+
+    .camera-screen .car {
+      bottom: 55px;
+      transform: scale(0.72);
+    }
+
+    .crosshair {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 90px;
+      height: 90px;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .crosshair::before {
+      left: 44px;
+      top: -25px;
+      width: 2px;
+      height: 140px;
+    }
+
+    .crosshair::after {
+      left: -25px;
+      top: 44px;
+      width: 140px;
+      height: 2px;
+    }
+
+    .hud {
+      position: absolute;
+      color: #d7ffff;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      z-index: 6;
+      background: rgba(0, 0, 0, 0.36);
+      padding: 7px 9px;
+      border-radius: 8px;
+    }
+
+    .hud.left {
+      left: 12px;
+      top: 12px;
+    }
+
+    .hud.right {
+      right: 12px;
+      bottom: 12px;
+    }
+
+    .photo-flash {
+      animation: photoFlash 0.4s ease;
+    }
+
+    @keyframes photoFlash {
+      0% {
+        filter: brightness(1);
+      }
+
+      50% {
+        filter: brightness(2.7);
+      }
+
+      100% {
+        filter: brightness(1);
+      }
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      border: 2px solid #bee7e7;
+      border-radius: 14px;
+      padding: 14px;
+      font-family: Consolas, monospace;
+      font-size: 15px;
+      line-height: 1.5;
+      background: #071b1d;
+      color: #eaffff;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #087f8c;
+      box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.18);
+    }
+
+    .help {
+      background: #f4fbfb;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid #d9eeee;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    code {
+      background: #071b1d;
+      color: #d7ffff;
+      padding: 2px 6px;
+      border-radius: 6px;
     }
 
     .log {
@@ -222,7 +758,7 @@
       color: #d7ffff;
       border-radius: 14px;
       padding: 14px;
-      height: 220px;
+      height: 250px;
       overflow-y: auto;
       font-family: Consolas, monospace;
       font-size: 14px;
@@ -252,6 +788,12 @@
       color: #06484d;
     }
 
+    .small-note {
+      color: #456;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     footer {
       text-align: center;
       padding: 24px;
@@ -260,13 +802,21 @@
       margin-top: 30px;
     }
 
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 28px;
+    @media (max-width: 900px) {
+      .two-column {
+        grid-template-columns: 1fr;
       }
 
-      .drone {
-        font-size: 52px;
+      header h1 {
+        font-size: 30px;
+      }
+
+      .world {
+        height: 360px;
+      }
+
+      .camera-screen {
+        height: 300px;
       }
     }
   </style>
@@ -275,102 +825,208 @@
 <body>
 
   <header>
-    <h1>Drone Testing Dashboard</h1>
-    <p>Pre-flight checks, battery test, motor test, GPS test, signal test and flight log</p>
+    <h1>Programmable Drone Testing Dashboard</h1>
+    <p>
+      Write commands, run the program, animate the drone, and watch the camera scene change.
+    </p>
   </header>
 
   <nav>
-    <a href="#checklist">Checklist</a>
+    <a href="#world">Drone World</a>
+    <a href="#camera">Camera</a>
+    <a href="#program">Program</a>
     <a href="#dashboard">Dashboard</a>
-    <a href="#tests">Tests</a>
-    <a href="#log">Flight Log</a>
+    <a href="#log">Log</a>
   </nav>
 
   <main class="container">
 
     <section id="dashboard" class="grid">
-
       <div class="card">
         <h2>Drone Status</h2>
-        <p>Main status: <span id="mainStatus" class="status warn">Waiting for checks</span></p>
+        <p>Main status: <span id="mainStatus" class="status warn">Waiting for command</span></p>
         <p>Mode: <strong id="modeText">Ground Mode</strong></p>
         <p>Altitude: <strong id="altitude">0</strong> meters</p>
         <p>Speed: <strong id="speed">0</strong> km/h</p>
+        <p>Position: X = <strong id="xPos">50</strong>, Y = <strong id="yPos">54</strong></p>
+        <p>Rotation: <strong id="rotationText">0</strong> degrees</p>
       </div>
 
       <div class="card">
         <h2>Battery</h2>
-        <p>Battery level: <strong id="batteryValue">76%</strong></p>
+        <p>Battery level: <strong id="batteryValue">88%</strong></p>
         <div class="meter">
-          <div id="batteryMeter" class="meter-fill"></div>
+          <div id="batteryMeter" class="meter-fill" style="width: 88%;"></div>
         </div>
         <button onclick="testBattery()">Test Battery</button>
       </div>
 
       <div class="card">
-        <h2>Signal</h2>
+        <h2>Signal and GPS</h2>
         <p>Controller signal: <strong id="signalValue">Good</strong></p>
         <div class="meter">
           <div id="signalMeter" class="meter-fill" style="width: 82%;"></div>
         </div>
         <button onclick="testSignal()">Test Signal</button>
+        <button onclick="runGpsTest()">GPS Test</button>
       </div>
-
     </section>
 
-    <section class="grid" style="margin-top: 18px;">
+    <section class="two-column" style="margin-top: 18px;">
+      <div id="world" class="card">
+        <h2>Animated Drone World</h2>
 
-      <div id="checklist" class="card checklist">
-        <h2>Pre-flight Checklist</h2>
+        <div class="world">
+          <div class="sun"></div>
 
-        <label>
-          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
-          Propellers are fixed properly
-        </label>
+          <div class="cloud one"></div>
+          <div class="cloud two"></div>
 
-        <label>
-          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
-          Battery is locked
-        </label>
+          <div class="mountain m1"></div>
+          <div class="mountain m2"></div>
+          <div class="mountain m3"></div>
 
-        <label>
-          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
-          Camera is clear
-        </label>
+          <div class="building b1"></div>
+          <div class="building b2"></div>
 
-        <label>
-          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
-          GPS is available
-        </label>
+          <div class="tree t1"></div>
+          <div class="tree t2"></div>
+          <div class="tree t3"></div>
 
-        <label>
-          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
-          Flying area is safe
-        </label>
+          <div class="ground-road">
+            <div class="road-line l1"></div>
+            <div class="road-line l2"></div>
+            <div class="road-line l3"></div>
+            <div class="road-line l4"></div>
+            <div class="road-line l5"></div>
+          </div>
 
-        <p>Checklist status: <span id="checkStatus" class="status warn">Incomplete</span></p>
+          <div class="car"></div>
+
+          <div id="shadow" class="shadow"></div>
+
+          <div id="drone" class="drone">
+            <div class="arm"></div>
+            <div class="arm second"></div>
+            <div class="propeller p1"></div>
+            <div class="propeller p2"></div>
+            <div class="propeller p3"></div>
+            <div class="propeller p4"></div>
+            <div class="drone-body"></div>
+          </div>
+        </div>
+
+        <p class="small-note">
+          The drone moves according to the program. The camera view also changes when the drone moves.
+        </p>
       </div>
 
+      <div id="camera" class="card">
+        <h2>Drone Camera Scene</h2>
+
+        <div class="camera-panel">
+          <div class="camera-top">
+            <span>CAMERA: <strong id="cameraStatusText">ON</strong></span>
+            <span>REC: <strong id="recordText">READY</strong></span>
+          </div>
+
+          <div id="cameraScreen" class="camera-screen">
+            <div id="cameraScene" class="camera-scene">
+              <div class="sun"></div>
+
+              <div class="cloud one"></div>
+              <div class="cloud two"></div>
+
+              <div class="mountain m1"></div>
+              <div class="mountain m2"></div>
+              <div class="mountain m3"></div>
+
+              <div class="building b1"></div>
+              <div class="building b2"></div>
+
+              <div class="tree t1"></div>
+              <div class="tree t2"></div>
+              <div class="tree t3"></div>
+
+              <div class="ground-road">
+                <div class="road-line l1"></div>
+                <div class="road-line l2"></div>
+                <div class="road-line l3"></div>
+                <div class="road-line l4"></div>
+                <div class="road-line l5"></div>
+              </div>
+
+              <div class="car"></div>
+            </div>
+
+            <div class="crosshair"></div>
+
+            <div class="hud left">
+              ALT: <span id="hudAlt">0</span>m<br>
+              SPD: <span id="hudSpeed">0</span>km/h<br>
+              BAT: <span id="hudBat">88</span>%
+            </div>
+
+            <div class="hud right">
+              X: <span id="hudX">50</span><br>
+              Y: <span id="hudY">54</span><br>
+              ROT: <span id="hudRot">0</span>°
+            </div>
+          </div>
+        </div>
+
+        <button onclick="takePhoto()">Take Photo</button>
+        <button onclick="toggleRecording()">Toggle Recording</button>
+      </div>
+    </section>
+
+    <section id="program" class="two-column" style="margin-top: 18px;">
       <div class="card">
-        <h2>Drone Preview</h2>
-        <div class="drone-box">
-          <div id="droneIcon" class="drone">🚁</div>
+        <h2>Drone Program Editor</h2>
+
+        <textarea id="programCode"># Drone program
+TAKEOFF
+UP 20
+FORWARD 18
+RIGHT 18
+PHOTO
+ROTATE 45
+LEFT 12
+DOWN 10
+BACK 15
+PHOTO
+LAND</textarea>
+
+        <div style="margin-top: 10px;">
+          <button id="runBtn" onclick="runProgram()">Run Program</button>
+          <button id="pauseBtn" onclick="pauseProgram()" class="secondary">Pause</button>
+          <button onclick="stopProgram()" class="secondary">Stop</button>
+          <button onclick="resetDrone()" class="secondary">Reset Drone</button>
+          <button onclick="loadDemoProgram()">Load Demo Program</button>
         </div>
       </div>
 
-    </section>
+      <div class="card">
+        <h2>Programming Commands</h2>
 
-    <section id="tests" class="card" style="margin-top: 18px;">
-      <h2>Testing Controls</h2>
+        <div class="help">
+          <p><code>TAKEOFF</code> starts the drone.</p>
+          <p><code>LAND</code> brings the drone down.</p>
+          <p><code>UP 20</code> moves the drone up.</p>
+          <p><code>DOWN 10</code> moves the drone down.</p>
+          <p><code>FORWARD 15</code> moves the drone forward.</p>
+          <p><code>BACK 15</code> moves the drone backward.</p>
+          <p><code>LEFT 20</code> moves the drone left.</p>
+          <p><code>RIGHT 20</code> moves the drone right.</p>
+          <p><code>ROTATE 45</code> rotates the drone.</p>
+          <p><code>PHOTO</code> captures a camera flash.</p>
+          <p><code>WAIT 1000</code> waits for 1000 milliseconds.</p>
+        </div>
 
-      <button onclick="runMotorTest()">Motor Test</button>
-      <button onclick="runCameraTest()">Camera Test</button>
-      <button onclick="runGpsTest()">GPS Test</button>
-      <button onclick="takeOff()">Take Off</button>
-      <button onclick="landDrone()" class="secondary">Land</button>
-      <button onclick="resetSystem()" class="secondary">Reset</button>
-
-      <button onclick="emergencyStop()" class="emergency">Emergency Stop</button>
+        <p class="small-note">
+          Lines starting with <code>#</code> are comments. Empty lines are ignored.
+        </p>
+      </div>
     </section>
 
     <section class="card" style="margin-top: 18px;">
@@ -406,8 +1062,8 @@
 
           <tr>
             <td>Camera</td>
-            <td id="cameraStatus">Not tested</td>
-            <td id="cameraResult">Waiting</td>
+            <td id="cameraResultStatus">Ready</td>
+            <td id="cameraResult">Camera scene visible</td>
           </tr>
 
           <tr>
@@ -424,16 +1080,37 @@
       <div id="flightLog" class="log"></div>
     </section>
 
+    <section class="card" style="margin-top: 18px;">
+      <h2>Emergency Control</h2>
+      <button onclick="emergencyStop()" class="emergency">Emergency Stop</button>
+    </section>
+
   </main>
 
   <footer>
-    <p>Drone Testing Dashboard by Champak Roy | Programmer's Picnic</p>
+    <p>Programmable Drone Testing Dashboard by Champak Roy | Programmer's Picnic</p>
   </footer>
 
   <script>
-    let isFlying = false;
-    let altitude = 0;
-    let speed = 0;
+    let droneState = {
+      x: 50,
+      y: 54,
+      altitude: 0,
+      speed: 0,
+      rotation: 0,
+      flying: false,
+      battery: 88,
+      recording: false
+    };
+
+    let programRunning = false;
+    let programPaused = false;
+    let stopRequested = false;
+
+    const drone = document.getElementById("drone");
+    const shadow = document.getElementById("shadow");
+    const cameraScene = document.getElementById("cameraScene");
+    const cameraScreen = document.getElementById("cameraScreen");
 
     function addLog(message) {
       const log = document.getElementById("flightLog");
@@ -451,36 +1128,75 @@
       status.className = "status " + type;
     }
 
-    function updateChecklistStatus() {
-      const checks = document.querySelectorAll(".flightCheck");
-      let completed = 0;
+    function clamp(value, minimum, maximum) {
+      return Math.max(minimum, Math.min(maximum, value));
+    }
 
-      checks.forEach(function (check) {
-        if (check.checked) {
-          completed++;
-        }
+    function wait(ms) {
+      return new Promise(function(resolve) {
+        setTimeout(resolve, ms);
       });
+    }
 
-      const checkStatus = document.getElementById("checkStatus");
+    async function waitWhilePaused() {
+      while (programPaused && !stopRequested) {
+        await wait(200);
+      }
+    }
 
-      if (completed === checks.length) {
-        checkStatus.textContent = "Complete";
-        checkStatus.className = "status ok";
-        setStatus("Ready for testing", "ok");
-        addLog("All pre-flight checklist items completed.");
-      } else {
-        checkStatus.textContent = completed + " of " + checks.length + " complete";
-        checkStatus.className = "status warn";
-        setStatus("Waiting for checks", "warn");
+    function updateDroneView() {
+      drone.style.left = droneState.x + "%";
+      drone.style.top = droneState.y + "%";
+      drone.style.transform =
+        "translate(-50%, -50%) rotate(" + droneState.rotation + "deg)";
+
+      shadow.style.left = droneState.x + "%";
+      shadow.style.top = clamp(droneState.y + 28, 66, 88) + "%";
+
+      const shadowSize = clamp(130 - droneState.altitude, 40, 110);
+      shadow.style.width = shadowSize + "px";
+
+      document.getElementById("altitude").textContent = droneState.altitude;
+      document.getElementById("speed").textContent = droneState.speed;
+      document.getElementById("xPos").textContent = Math.round(droneState.x);
+      document.getElementById("yPos").textContent = Math.round(droneState.y);
+      document.getElementById("rotationText").textContent = droneState.rotation;
+
+      document.getElementById("hudAlt").textContent = droneState.altitude;
+      document.getElementById("hudSpeed").textContent = droneState.speed;
+      document.getElementById("hudBat").textContent = droneState.battery;
+      document.getElementById("hudX").textContent = Math.round(droneState.x);
+      document.getElementById("hudY").textContent = Math.round(droneState.y);
+      document.getElementById("hudRot").textContent = droneState.rotation;
+
+      document.getElementById("batteryValue").textContent = droneState.battery + "%";
+      document.getElementById("batteryMeter").style.width = droneState.battery + "%";
+
+      updateCameraView();
+    }
+
+    function updateCameraView() {
+      const moveX = (50 - droneState.x) * 5;
+      const moveY = (54 - droneState.y) * 3;
+      const zoom = 1 + droneState.altitude / 140;
+
+      cameraScene.style.transform =
+        "translate(" + moveX + "px, " + moveY + "px) scale(" + zoom + ") rotate(" + (-droneState.rotation / 30) + "deg)";
+    }
+
+    function consumeBattery(amount) {
+      droneState.battery = clamp(droneState.battery - amount, 0, 100);
+
+      if (droneState.battery <= 15) {
+        setStatus("Low battery", "danger");
+        addLog("Warning: battery is very low.");
       }
     }
 
     function testBattery() {
-      const level = Math.floor(Math.random() * 41) + 55;
+      const level = Math.floor(Math.random() * 31) + 65;
 
-      document.getElementById("batteryValue").textContent = level + "%";
-      document.getElementById("batteryMeter").style.width = level + "%";
-
+      droneState.battery = level;
       document.getElementById("batteryStatus").textContent = "Tested";
 
       if (level >= 70) {
@@ -490,6 +1206,8 @@
         document.getElementById("batteryResult").textContent = "Low battery warning";
         addLog("Battery test warning. Level: " + level + "%.");
       }
+
+      updateDroneView();
     }
 
     function testSignal() {
@@ -509,114 +1227,322 @@
       }
     }
 
-    function runMotorTest() {
-      document.getElementById("motorStatus").textContent = "Tested";
-      document.getElementById("motorResult").textContent = "All motors responding";
-      addLog("Motor test passed. All motors are responding.");
-    }
-
-    function runCameraTest() {
-      document.getElementById("cameraStatus").textContent = "Tested";
-      document.getElementById("cameraResult").textContent = "Camera feed clear";
-      addLog("Camera test passed. Video feed is clear.");
-    }
-
     function runGpsTest() {
       document.getElementById("gpsStatus").textContent = "Tested";
       document.getElementById("gpsResult").textContent = "GPS locked";
       addLog("GPS test passed. Satellite lock available.");
     }
 
-    function allChecksComplete() {
-      const checks = document.querySelectorAll(".flightCheck");
-
-      for (let i = 0; i < checks.length; i++) {
-        if (!checks[i].checked) {
-          return false;
-        }
-      }
-
-      return true;
+    function runMotorTest() {
+      document.getElementById("motorStatus").textContent = "Tested";
+      document.getElementById("motorResult").textContent = "All motors responding";
+      addLog("Motor test passed. All motors are responding.");
     }
 
-    function takeOff() {
-      if (!allChecksComplete()) {
-        setStatus("Cannot take off", "danger");
-        addLog("Take off blocked. Complete the pre-flight checklist first.");
+    async function executeCommand(line, lineNumber) {
+      const cleanLine = line.trim();
+
+      if (cleanLine === "" || cleanLine.startsWith("#")) {
         return;
       }
 
-      isFlying = true;
-      altitude = 12;
-      speed = 18;
+      const parts = cleanLine.split(/\s+/);
+      const command = parts[0].toUpperCase();
+      const value = Number(parts[1] || 0);
 
-      document.getElementById("altitude").textContent = altitude;
-      document.getElementById("speed").textContent = speed;
-      document.getElementById("modeText").textContent = "Flight Mode";
-      document.getElementById("droneIcon").classList.add("flying");
+      addLog("Line " + lineNumber + ": " + cleanLine);
 
-      setStatus("Drone flying", "ok");
-      addLog("Drone take off successful.");
+      await waitWhilePaused();
+
+      if (stopRequested) {
+        return;
+      }
+
+      switch (command) {
+        case "TAKEOFF":
+          runMotorTest();
+          droneState.flying = true;
+          droneState.altitude = Math.max(droneState.altitude, 10);
+          droneState.y = clamp(droneState.y - 14, 12, 82);
+          droneState.speed = 12;
+          document.getElementById("modeText").textContent = "Flight Mode";
+          setStatus("Drone flying", "ok");
+          consumeBattery(1);
+          addLog("Drone takeoff completed.");
+          break;
+
+        case "LAND":
+          droneState.flying = false;
+          droneState.altitude = 0;
+          droneState.speed = 0;
+          droneState.y = 54;
+          document.getElementById("modeText").textContent = "Ground Mode";
+          setStatus("Drone landed", "ok");
+          addLog("Drone landed safely.");
+          break;
+
+        case "UP":
+          if (!droneState.flying) {
+            addLog("UP ignored. Drone has not taken off.");
+            break;
+          }
+          droneState.altitude = clamp(droneState.altitude + value, 0, 100);
+          droneState.y = clamp(droneState.y - value / 2, 10, 82);
+          droneState.speed = 10 + Math.round(value / 2);
+          consumeBattery(2);
+          break;
+
+        case "DOWN":
+          if (!droneState.flying) {
+            addLog("DOWN ignored. Drone has not taken off.");
+            break;
+          }
+          droneState.altitude = clamp(droneState.altitude - value, 0, 100);
+          droneState.y = clamp(droneState.y + value / 2, 10, 82);
+          droneState.speed = 8 + Math.round(value / 3);
+          consumeBattery(1);
+          break;
+
+        case "FORWARD":
+          if (!droneState.flying) {
+            addLog("FORWARD ignored. Drone has not taken off.");
+            break;
+          }
+          droneState.y = clamp(droneState.y - value / 3, 10, 82);
+          droneState.speed = value;
+          consumeBattery(2);
+          break;
+
+        case "BACK":
+          if (!droneState.flying) {
+            addLog("BACK ignored. Drone has not taken off.");
+            break;
+          }
+          droneState.y = clamp(droneState.y + value / 3, 10, 82);
+          droneState.speed = value;
+          consumeBattery(2);
+          break;
+
+        case "LEFT":
+          if (!droneState.flying) {
+            addLog("LEFT ignored. Drone has not taken off.");
+            break;
+          }
+          droneState.x = clamp(droneState.x - value, 8, 92);
+          droneState.speed = value;
+          consumeBattery(2);
+          break;
+
+        case "RIGHT":
+          if (!droneState.flying) {
+            addLog("RIGHT ignored. Drone has not taken off.");
+            break;
+          }
+          droneState.x = clamp(droneState.x + value, 8, 92);
+          droneState.speed = value;
+          consumeBattery(2);
+          break;
+
+        case "ROTATE":
+          droneState.rotation = (droneState.rotation + value) % 360;
+          consumeBattery(1);
+          break;
+
+        case "PHOTO":
+          takePhoto();
+          consumeBattery(1);
+          break;
+
+        case "WAIT":
+          addLog("Waiting for " + value + " milliseconds.");
+          updateDroneView();
+          await wait(value);
+          return;
+
+        default:
+          addLog("Unknown command on line " + lineNumber + ": " + command);
+          setStatus("Unknown command", "danger");
+          break;
+      }
+
+      updateDroneView();
+      await wait(850);
     }
 
-    function landDrone() {
-      isFlying = false;
-      altitude = 0;
-      speed = 0;
+    async function runProgram() {
+      if (programRunning) {
+        addLog("Program is already running.");
+        return;
+      }
 
-      document.getElementById("altitude").textContent = altitude;
-      document.getElementById("speed").textContent = speed;
+      programRunning = true;
+      programPaused = false;
+      stopRequested = false;
+
+      document.getElementById("runBtn").disabled = true;
+      setStatus("Program running", "ok");
+      addLog("Program started.");
+
+      const programText = document.getElementById("programCode").value;
+      const lines = programText.split("\n");
+
+      for (let i = 0; i < lines.length; i++) {
+        if (stopRequested) {
+          addLog("Program stopped.");
+          break;
+        }
+
+        await executeCommand(lines[i], i + 1);
+      }
+
+      programRunning = false;
+      programPaused = false;
+      stopRequested = false;
+
+      document.getElementById("runBtn").disabled = false;
+
+      if (droneState.flying) {
+        setStatus("Program finished. Drone still flying.", "warn");
+      } else {
+        setStatus("Program finished", "ok");
+      }
+
+      addLog("Program finished.");
+    }
+
+    function pauseProgram() {
+      if (!programRunning) {
+        addLog("No running program to pause.");
+        return;
+      }
+
+      programPaused = !programPaused;
+
+      if (programPaused) {
+        setStatus("Program paused", "warn");
+        document.getElementById("pauseBtn").textContent = "Resume";
+        addLog("Program paused.");
+      } else {
+        setStatus("Program running", "ok");
+        document.getElementById("pauseBtn").textContent = "Pause";
+        addLog("Program resumed.");
+      }
+    }
+
+    function stopProgram() {
+      if (!programRunning) {
+        addLog("No running program to stop.");
+      }
+
+      stopRequested = true;
+      programPaused = false;
+      document.getElementById("pauseBtn").textContent = "Pause";
+      document.getElementById("runBtn").disabled = false;
+      setStatus("Program stop requested", "danger");
+    }
+
+    function resetDrone() {
+      stopRequested = true;
+      programRunning = false;
+      programPaused = false;
+
+      droneState = {
+        x: 50,
+        y: 54,
+        altitude: 0,
+        speed: 0,
+        rotation: 0,
+        flying: false,
+        battery: 88,
+        recording: false
+      };
+
       document.getElementById("modeText").textContent = "Ground Mode";
-      document.getElementById("droneIcon").classList.remove("flying");
+      document.getElementById("runBtn").disabled = false;
+      document.getElementById("pauseBtn").textContent = "Pause";
+      document.getElementById("recordText").textContent = "READY";
+      cameraScreen.classList.remove("recording");
 
-      setStatus("Drone landed", "ok");
-      addLog("Drone landed safely.");
+      setStatus("Drone reset", "warn");
+      updateDroneView();
+      addLog("Drone reset completed.");
     }
 
     function emergencyStop() {
-      isFlying = false;
-      altitude = 0;
-      speed = 0;
+      stopRequested = true;
+      programRunning = false;
+      programPaused = false;
 
-      document.getElementById("altitude").textContent = altitude;
-      document.getElementById("speed").textContent = speed;
+      droneState.flying = false;
+      droneState.altitude = 0;
+      droneState.speed = 0;
+      droneState.y = 54;
+      droneState.recording = false;
+
       document.getElementById("modeText").textContent = "Emergency Mode";
-      document.getElementById("droneIcon").classList.remove("flying");
+      document.getElementById("runBtn").disabled = false;
+      document.getElementById("pauseBtn").textContent = "Pause";
+      document.getElementById("recordText").textContent = "STOPPED";
+      cameraScreen.classList.remove("recording");
 
       setStatus("Emergency stop activated", "danger");
+      updateDroneView();
       addLog("EMERGENCY STOP activated. Motors stopped immediately.");
     }
 
-    function resetSystem() {
-      isFlying = false;
-      altitude = 0;
-      speed = 0;
+    function takePhoto() {
+      cameraScreen.classList.remove("photo-flash");
 
-      document.getElementById("altitude").textContent = "0";
-      document.getElementById("speed").textContent = "0";
-      document.getElementById("modeText").textContent = "Ground Mode";
-      document.getElementById("droneIcon").classList.remove("flying");
+      void cameraScreen.offsetWidth;
 
-      document.getElementById("batteryStatus").textContent = "Not tested";
-      document.getElementById("batteryResult").textContent = "Waiting";
+      cameraScreen.classList.add("photo-flash");
 
-      document.getElementById("signalStatus").textContent = "Not tested";
-      document.getElementById("signalResult").textContent = "Waiting";
+      document.getElementById("cameraResultStatus").textContent = "Photo captured";
+      document.getElementById("cameraResult").textContent =
+        "Scene captured at X=" + Math.round(droneState.x) +
+        ", Y=" + Math.round(droneState.y) +
+        ", ALT=" + droneState.altitude;
 
-      document.getElementById("motorStatus").textContent = "Not tested";
-      document.getElementById("motorResult").textContent = "Waiting";
-
-      document.getElementById("cameraStatus").textContent = "Not tested";
-      document.getElementById("cameraResult").textContent = "Waiting";
-
-      document.getElementById("gpsStatus").textContent = "Not tested";
-      document.getElementById("gpsResult").textContent = "Waiting";
-
-      setStatus("System reset", "warn");
-      addLog("System reset completed.");
+      addLog("Photo captured from drone camera.");
     }
 
-    addLog("Drone testing dashboard loaded.");
+    function toggleRecording() {
+      droneState.recording = !droneState.recording;
+
+      if (droneState.recording) {
+        document.getElementById("recordText").textContent = "RECORDING";
+        cameraScreen.classList.add("recording");
+        addLog("Camera recording started.");
+      } else {
+        document.getElementById("recordText").textContent = "READY";
+        cameraScreen.classList.remove("recording");
+        addLog("Camera recording stopped.");
+      }
+    }
+
+    function loadDemoProgram() {
+      document.getElementById("programCode").value =
+`# Demo drone program
+TAKEOFF
+WAIT 700
+UP 25
+FORWARD 15
+RIGHT 20
+PHOTO
+ROTATE 45
+WAIT 700
+LEFT 35
+DOWN 12
+PHOTO
+BACK 10
+ROTATE -45
+LAND`;
+
+      addLog("Demo program loaded.");
+    }
+
+    updateDroneView();
+    addLog("Programmable drone testing dashboard loaded.");
   </script>
 
 </body>
