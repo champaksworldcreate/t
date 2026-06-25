@@ -1,278 +1,623 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>AI ML Classes by Champak Roy | Learn AIML from 0 to Infinity</title>
-
-  <meta name="description" content="Study Artificial Intelligence, Machine Learning, NLP, data science, pandas, NumPy, model training, and chatbot development with Champak Roy of Varanasi." />
-
-  <meta name="keywords" content="AI ML classes, AIML course, Champak Roy, Varanasi AI ML teacher, Machine Learning lessons, Artificial Intelligence lessons, NLP course, chatbot course, Python data science, pandas, NumPy, Programmer's Picnic" />
-
+  <title>Drone Testing Dashboard | Programmer's Picnic</title>
+  <meta name="description" content="A simple drone testing page with pre-flight checklist, battery test, signal test, motor test, camera test, GPS test and flight log." />
+  <meta name="keywords" content="drone testing, drone dashboard, UAV testing, flight checklist, drone simulator, HTML CSS JavaScript" />
   <meta name="author" content="Champak Roy" />
-  <meta name="robots" content="index, follow" />
 
-  <link rel="canonical" href="https://aiml.learnwithchampak.live/" />
-
+  <meta property="og:title" content="Drone Testing Dashboard" />
+  <meta property="og:description" content="Interactive drone testing page with checklist, test buttons, flight log and emergency stop." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="AI ML Classes by Champak Roy" />
-  <meta property="og:description" content="Learn Artificial Intelligence, Machine Learning, NLP, pandas, NumPy, model training, and chatbot development from 0 to infinity." />
-  <meta property="og:url" content="https://aiml.learnwithchampak.live/" />
-  <meta property="og:site_name" content="Programmer's Picnic AI ML Classes" />
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSTQRQMLEE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-GSTQRQMLEE');
-  </script>
 
   <style>
-    :root {
-      --bg: #ecfeff;
-      --hero: #064e3b;
-      --hero2: #0f766e;
-      --card: rgba(255,255,255,0.92);
-      --text: #102a2a;
-      --muted: #4b6363;
-      --accent: #0f766e;
-      --accent-dark: #115e59;
-      --border: #99f6e4;
-      --soft: #ccfbf1;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #eaf7f7;
+      color: #123;
     }
 
     header {
-      background: linear-gradient(135deg, var(--hero), var(--hero2));
+      background: linear-gradient(135deg, #063b3f, #087f8c);
       color: white;
-      padding: 64px 18px;
+      padding: 32px 20px;
       text-align: center;
     }
 
     header h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 5vw, 4.2rem);
-      line-height: 1.1;
+      margin: 0;
+      font-size: 38px;
     }
 
     header p {
-      max-width: 900px;
-      margin: 0 auto;
-      font-size: 1.12rem;
+      margin: 10px 0 0;
+      font-size: 18px;
     }
 
     nav {
-      background: #042f2e;
+      background: #ffffff;
       padding: 12px;
       text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     nav a {
       display: inline-block;
       margin: 6px;
-      padding: 9px 15px;
+      padding: 10px 16px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      color: white;
+      background: #d9f4f2;
+      color: #06484d;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: bold;
     }
 
-    nav a:hover,
-    nav a:focus {
-      background: #5eead4;
-      color: #042f2e;
-      outline: 3px solid white;
-    }
-
-    main {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 32px 16px 64px;
-    }
-
-    section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 26px;
-      margin: 22px 0;
-      box-shadow: 0 12px 30px rgba(15, 118, 110, 0.1);
-    }
-
-    h2 {
-      margin-top: 0;
-      color: var(--accent-dark);
-      font-size: 1.9rem;
+    .container {
+      max-width: 1150px;
+      margin: 24px auto;
+      padding: 0 16px;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
-      margin-top: 18px;
     }
 
     .card {
-      background: linear-gradient(180deg, #ffffff, #f0fdfa);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 18px;
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+      border: 1px solid #d9eeee;
     }
 
-    .card h3 {
+    .card h2 {
       margin-top: 0;
-      color: #0f766e;
+      color: #05636b;
+      font-size: 22px;
     }
 
-    .card p {
-      color: var(--muted);
-    }
-
-    .card a {
+    .status {
       display: inline-block;
-      margin-top: 8px;
-      text-decoration: none;
-      background: var(--accent-dark);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: bold;
+      font-size: 14px;
     }
 
-    .highlight {
-      background: var(--soft);
-      border-left: 6px solid var(--accent);
+    .ok {
+      background: #d7ffd9;
+      color: #08751a;
+    }
+
+    .warn {
+      background: #fff3cd;
+      color: #8a6500;
+    }
+
+    .danger {
+      background: #ffd7d7;
+      color: #9b111e;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 6px 4px;
+      background: #087f8c;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #05636b;
+    }
+
+    button.secondary {
+      background: #455a64;
+    }
+
+    button.secondary:hover {
+      background: #263238;
+    }
+
+    button.emergency {
+      background: #c1121f;
+      font-size: 18px;
+      width: 100%;
       padding: 16px;
+      animation: pulse 1.2s infinite;
+    }
+
+    button.emergency:hover {
+      background: #780000;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(193, 18, 31, 0.5);
+      }
+
+      70% {
+        box-shadow: 0 0 0 14px rgba(193, 18, 31, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(193, 18, 31, 0);
+      }
+    }
+
+    .meter {
+      width: 100%;
+      height: 18px;
+      background: #dfecec;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 75%;
+      background: linear-gradient(90deg, #0ead69, #087f8c);
+      transition: width 0.4s;
+    }
+
+    .checklist label {
+      display: block;
+      padding: 8px;
+      margin: 6px 0;
+      background: #f4fbfb;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .drone-box {
+      min-height: 260px;
+      background: radial-gradient(circle, #ffffff, #c8f1f0);
+      border: 2px dashed #087f8c;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .drone {
+      font-size: 70px;
+      transition: transform 0.4s;
+    }
+
+    .flying {
+      animation: fly 2s infinite alternate ease-in-out;
+    }
+
+    @keyframes fly {
+      from {
+        transform: translateY(25px) rotate(-5deg);
+      }
+
+      to {
+        transform: translateY(-25px) rotate(5deg);
+      }
+    }
+
+    .log {
+      background: #071b1d;
+      color: #d7ffff;
       border-radius: 14px;
+      padding: 14px;
+      height: 220px;
+      overflow-y: auto;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+    }
+
+    .log div {
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border: 1px solid #d2eaea;
+      text-align: left;
+    }
+
+    th {
+      background: #d9f4f2;
+      color: #06484d;
     }
 
     footer {
-      background: #042f2e;
-      color: white;
       text-align: center;
-      padding: 28px 16px;
+      padding: 24px;
+      background: #063b3f;
+      color: white;
+      margin-top: 30px;
     }
 
-    footer a {
-      color: #99f6e4;
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 28px;
+      }
+
+      .drone {
+        font-size: 52px;
+      }
     }
   </style>
 </head>
 
 <body>
+
   <header>
-    <h1>AI ML Classes by Champak Roy</h1>
-    <p>Study Artificial Intelligence, Machine Learning, Natural Language Processing, data science, and chatbot development from 0 to infinity.</p>
+    <h1>Drone Testing Dashboard</h1>
+    <p>Pre-flight checks, battery test, motor test, GPS test, signal test and flight log</p>
   </header>
 
-  <nav aria-label="Main navigation">
-    <a href="https://learnwithchampak.live/">Main Site</a>
-    <a href="https://aiml.learnwithchampak.live/">AIML Home</a>
-    <a href="https://dsa.learnwithchampak.live/">DSA</a>
-    <a href="https://editor.learnwithchampak.live/python-starter/editor/super/">Python Editor</a>
+  <nav>
+    <a href="#checklist">Checklist</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#tests">Tests</a>
+    <a href="#log">Flight Log</a>
   </nav>
 
-  <main>
-    <section>
-      <h2>Start Your AIML Journey</h2>
-      <p>
-        This site is for students who want to understand Artificial Intelligence and Machine Learning properly,
-        not just copy code. We begin with Python, data, arrays, tables, cleaning, querying, plotting, training,
-        testing, and finally move toward Natural Language Processing and chatbot development.
-      </p>
+  <main class="container">
 
-      <div class="highlight">
-        <strong>Teacher:</strong> Champak Roy, Varanasi.  
-        <br />
-        <strong>Focus:</strong> Artificial Intelligence, Machine Learning, NLP, data science, Python, pandas, NumPy, and chatbot building.
+    <section id="dashboard" class="grid">
+
+      <div class="card">
+        <h2>Drone Status</h2>
+        <p>Main status: <span id="mainStatus" class="status warn">Waiting for checks</span></p>
+        <p>Mode: <strong id="modeText">Ground Mode</strong></p>
+        <p>Altitude: <strong id="altitude">0</strong> meters</p>
+        <p>Speed: <strong id="speed">0</strong> km/h</p>
       </div>
-    </section>
 
-    <section>
-      <h2>Important Pages</h2>
-
-      <div class="grid">
-        <article class="card">
-          <h3>Python for AIML</h3>
-          <p>Build the Python foundation needed for data science, Machine Learning, and AI projects.</p>
-          <a href="./python/">Open Python Lessons</a>
-        </article>
-
-        <article class="card">
-          <h3>Pandas Lessons</h3>
-          <p>Learn DataFrames, rows, columns, CSV files, cleaning, querying, saving data, and preparing datasets.</p>
-          <a href="./code/pandas/">Open Pandas Lessons</a>
-        </article>
-
-        <article class="card">
-          <h3>Data Cleaning</h3>
-          <p>Remove duplicates, handle bad values, convert columns, clean numeric data, and prepare data for training.</p>
-          <a href="./code/pandas/cleaning/">Open Data Cleaning</a>
-        </article>
-
-        <article class="card">
-          <h3>Machine Learning Projects</h3>
-          <p>Train simple models, understand features, predictions, regression, plotting, and model evaluation.</p>
-          <a href="./code/pandas/projects/">Open ML Projects</a>
-        </article>
-
-        <article class="card">
-          <h3>NLP Lessons</h3>
-          <p>Study Natural Language Processing, text cleaning, tokens, words, sentences, grammar, intent, and chatbots.</p>
-          <a href="./nlp/">Open NLP Lessons</a>
-        </article>
-
-        <article class="card">
-          <h3>Build Your Own Chatbot</h3>
-          <p>Learn how data, rules, intent, JSON, CSV, SQLite, and web pages can come together to make a chatbot.</p>
-          <a href="./chatbot/">Open Chatbot Lessons</a>
-        </article>
-
-        <article class="card">
-          <h3>NumPy Arrays</h3>
-          <p>Understand arrays, shape, axis, zeros, ones, random values, numerical thinking, and vector operations.</p>
-          <a href="https://dsa.learnwithchampak.live/python/numpyarrays/">Open NumPy Lessons</a>
-        </article>
-
-        <article class="card">
-          <h3>Online Python Editor</h3>
-          <p>Run Python code directly in the browser and practice every lesson immediately.</p>
-          <a href="https://editor.learnwithchampak.live/python-starter/editor/super/">Open Python Editor</a>
-        </article>
+      <div class="card">
+        <h2>Battery</h2>
+        <p>Battery level: <strong id="batteryValue">76%</strong></p>
+        <div class="meter">
+          <div id="batteryMeter" class="meter-fill"></div>
+        </div>
+        <button onclick="testBattery()">Test Battery</button>
       </div>
+
+      <div class="card">
+        <h2>Signal</h2>
+        <p>Controller signal: <strong id="signalValue">Good</strong></p>
+        <div class="meter">
+          <div id="signalMeter" class="meter-fill" style="width: 82%;"></div>
+        </div>
+        <button onclick="testSignal()">Test Signal</button>
+      </div>
+
     </section>
 
-    <section>
-      <h2>Recommended Learning Order</h2>
-      <p>
-        First learn Python basics. Then learn lists, dictionaries, files, CSV handling, NumPy arrays, pandas DataFrames,
-        data cleaning, plotting, regression, Machine Learning concepts, Natural Language Processing, and chatbot building.
-        This order gives a strong foundation and makes advanced AI topics easier.
-      </p>
+    <section class="grid" style="margin-top: 18px;">
+
+      <div id="checklist" class="card checklist">
+        <h2>Pre-flight Checklist</h2>
+
+        <label>
+          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
+          Propellers are fixed properly
+        </label>
+
+        <label>
+          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
+          Battery is locked
+        </label>
+
+        <label>
+          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
+          Camera is clear
+        </label>
+
+        <label>
+          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
+          GPS is available
+        </label>
+
+        <label>
+          <input type="checkbox" class="flightCheck" onchange="updateChecklistStatus()">
+          Flying area is safe
+        </label>
+
+        <p>Checklist status: <span id="checkStatus" class="status warn">Incomplete</span></p>
+      </div>
+
+      <div class="card">
+        <h2>Drone Preview</h2>
+        <div class="drone-box">
+          <div id="droneIcon" class="drone">🚁</div>
+        </div>
+      </div>
+
     </section>
+
+    <section id="tests" class="card" style="margin-top: 18px;">
+      <h2>Testing Controls</h2>
+
+      <button onclick="runMotorTest()">Motor Test</button>
+      <button onclick="runCameraTest()">Camera Test</button>
+      <button onclick="runGpsTest()">GPS Test</button>
+      <button onclick="takeOff()">Take Off</button>
+      <button onclick="landDrone()" class="secondary">Land</button>
+      <button onclick="resetSystem()" class="secondary">Reset</button>
+
+      <button onclick="emergencyStop()" class="emergency">Emergency Stop</button>
+    </section>
+
+    <section class="card" style="margin-top: 18px;">
+      <h2>Test Result Table</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>Status</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Battery</td>
+            <td id="batteryStatus">Not tested</td>
+            <td id="batteryResult">Waiting</td>
+          </tr>
+
+          <tr>
+            <td>Signal</td>
+            <td id="signalStatus">Not tested</td>
+            <td id="signalResult">Waiting</td>
+          </tr>
+
+          <tr>
+            <td>Motors</td>
+            <td id="motorStatus">Not tested</td>
+            <td id="motorResult">Waiting</td>
+          </tr>
+
+          <tr>
+            <td>Camera</td>
+            <td id="cameraStatus">Not tested</td>
+            <td id="cameraResult">Waiting</td>
+          </tr>
+
+          <tr>
+            <td>GPS</td>
+            <td id="gpsStatus">Not tested</td>
+            <td id="gpsResult">Waiting</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="log" class="card" style="margin-top: 18px;">
+      <h2>Flight Log</h2>
+      <div id="flightLog" class="log"></div>
+    </section>
+
   </main>
 
   <footer>
-    <p><strong>Programmer's Picnic AI ML Classes by Champak Roy</strong></p>
-    <p>
-      <a href="https://aiml.learnwithchampak.live/">aiml.learnwithchampak.live</a> |
-      <a href="https://wa.me/919335874326">Contact Champak Roy on WhatsApp</a>
-    </p>
+    <p>Drone Testing Dashboard by Champak Roy | Programmer's Picnic</p>
   </footer>
+
+  <script>
+    let isFlying = false;
+    let altitude = 0;
+    let speed = 0;
+
+    function addLog(message) {
+      const log = document.getElementById("flightLog");
+      const time = new Date().toLocaleTimeString();
+
+      const entry = document.createElement("div");
+      entry.textContent = "[" + time + "] " + message;
+
+      log.prepend(entry);
+    }
+
+    function setStatus(text, type) {
+      const status = document.getElementById("mainStatus");
+      status.textContent = text;
+      status.className = "status " + type;
+    }
+
+    function updateChecklistStatus() {
+      const checks = document.querySelectorAll(".flightCheck");
+      let completed = 0;
+
+      checks.forEach(function (check) {
+        if (check.checked) {
+          completed++;
+        }
+      });
+
+      const checkStatus = document.getElementById("checkStatus");
+
+      if (completed === checks.length) {
+        checkStatus.textContent = "Complete";
+        checkStatus.className = "status ok";
+        setStatus("Ready for testing", "ok");
+        addLog("All pre-flight checklist items completed.");
+      } else {
+        checkStatus.textContent = completed + " of " + checks.length + " complete";
+        checkStatus.className = "status warn";
+        setStatus("Waiting for checks", "warn");
+      }
+    }
+
+    function testBattery() {
+      const level = Math.floor(Math.random() * 41) + 55;
+
+      document.getElementById("batteryValue").textContent = level + "%";
+      document.getElementById("batteryMeter").style.width = level + "%";
+
+      document.getElementById("batteryStatus").textContent = "Tested";
+
+      if (level >= 70) {
+        document.getElementById("batteryResult").textContent = "Good";
+        addLog("Battery test passed. Level: " + level + "%.");
+      } else {
+        document.getElementById("batteryResult").textContent = "Low battery warning";
+        addLog("Battery test warning. Level: " + level + "%.");
+      }
+    }
+
+    function testSignal() {
+      const signal = Math.floor(Math.random() * 31) + 65;
+
+      document.getElementById("signalMeter").style.width = signal + "%";
+      document.getElementById("signalStatus").textContent = "Tested";
+
+      if (signal >= 80) {
+        document.getElementById("signalValue").textContent = "Excellent";
+        document.getElementById("signalResult").textContent = "Stable connection";
+        addLog("Signal test passed. Signal strength: " + signal + "%.");
+      } else {
+        document.getElementById("signalValue").textContent = "Good";
+        document.getElementById("signalResult").textContent = "Usable connection";
+        addLog("Signal test completed. Signal strength: " + signal + "%.");
+      }
+    }
+
+    function runMotorTest() {
+      document.getElementById("motorStatus").textContent = "Tested";
+      document.getElementById("motorResult").textContent = "All motors responding";
+      addLog("Motor test passed. All motors are responding.");
+    }
+
+    function runCameraTest() {
+      document.getElementById("cameraStatus").textContent = "Tested";
+      document.getElementById("cameraResult").textContent = "Camera feed clear";
+      addLog("Camera test passed. Video feed is clear.");
+    }
+
+    function runGpsTest() {
+      document.getElementById("gpsStatus").textContent = "Tested";
+      document.getElementById("gpsResult").textContent = "GPS locked";
+      addLog("GPS test passed. Satellite lock available.");
+    }
+
+    function allChecksComplete() {
+      const checks = document.querySelectorAll(".flightCheck");
+
+      for (let i = 0; i < checks.length; i++) {
+        if (!checks[i].checked) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function takeOff() {
+      if (!allChecksComplete()) {
+        setStatus("Cannot take off", "danger");
+        addLog("Take off blocked. Complete the pre-flight checklist first.");
+        return;
+      }
+
+      isFlying = true;
+      altitude = 12;
+      speed = 18;
+
+      document.getElementById("altitude").textContent = altitude;
+      document.getElementById("speed").textContent = speed;
+      document.getElementById("modeText").textContent = "Flight Mode";
+      document.getElementById("droneIcon").classList.add("flying");
+
+      setStatus("Drone flying", "ok");
+      addLog("Drone take off successful.");
+    }
+
+    function landDrone() {
+      isFlying = false;
+      altitude = 0;
+      speed = 0;
+
+      document.getElementById("altitude").textContent = altitude;
+      document.getElementById("speed").textContent = speed;
+      document.getElementById("modeText").textContent = "Ground Mode";
+      document.getElementById("droneIcon").classList.remove("flying");
+
+      setStatus("Drone landed", "ok");
+      addLog("Drone landed safely.");
+    }
+
+    function emergencyStop() {
+      isFlying = false;
+      altitude = 0;
+      speed = 0;
+
+      document.getElementById("altitude").textContent = altitude;
+      document.getElementById("speed").textContent = speed;
+      document.getElementById("modeText").textContent = "Emergency Mode";
+      document.getElementById("droneIcon").classList.remove("flying");
+
+      setStatus("Emergency stop activated", "danger");
+      addLog("EMERGENCY STOP activated. Motors stopped immediately.");
+    }
+
+    function resetSystem() {
+      isFlying = false;
+      altitude = 0;
+      speed = 0;
+
+      document.getElementById("altitude").textContent = "0";
+      document.getElementById("speed").textContent = "0";
+      document.getElementById("modeText").textContent = "Ground Mode";
+      document.getElementById("droneIcon").classList.remove("flying");
+
+      document.getElementById("batteryStatus").textContent = "Not tested";
+      document.getElementById("batteryResult").textContent = "Waiting";
+
+      document.getElementById("signalStatus").textContent = "Not tested";
+      document.getElementById("signalResult").textContent = "Waiting";
+
+      document.getElementById("motorStatus").textContent = "Not tested";
+      document.getElementById("motorResult").textContent = "Waiting";
+
+      document.getElementById("cameraStatus").textContent = "Not tested";
+      document.getElementById("cameraResult").textContent = "Waiting";
+
+      document.getElementById("gpsStatus").textContent = "Not tested";
+      document.getElementById("gpsResult").textContent = "Waiting";
+
+      setStatus("System reset", "warn");
+      addLog("System reset completed.");
+    }
+
+    addLog("Drone testing dashboard loaded.");
+  </script>
+
 </body>
 </html>
