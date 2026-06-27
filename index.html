@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Project 28: Hand Gesture Recognizer</title>
+  <title>Project 26: Webcam Object Classifier</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+  <!-- COCO-SSD Object Detection Model -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
   <style>
     body {
@@ -22,12 +23,12 @@
     header {
       background: linear-gradient(135deg, #064e4e, #0b7777);
       color: white;
-      padding: 25px;
+      padding: 24px;
     }
 
     h1 {
       margin: 0;
-      font-size: 32px;
+      font-size: 30px;
     }
 
     .box {
@@ -39,15 +40,37 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
 
+    button {
+      background: #087878;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 8px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #055d5d;
+    }
+
+    #status {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 15px;
+      color: #064e4e;
+    }
+
     #stage {
       position: relative;
       width: 640px;
       height: 480px;
       max-width: 100%;
       margin: auto;
+      background: black;
       border-radius: 16px;
       overflow: hidden;
-      background: black;
     }
 
     video, canvas {
@@ -67,32 +90,12 @@
       transform: scaleX(-1);
     }
 
-    button {
-      background: #087878;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      margin: 10px;
-      border-radius: 12px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #055d5d;
-    }
-
-    .result {
-      font-size: 30px;
-      font-weight: bold;
-      margin: 15px;
-      color: #064e4e;
-    }
-
-    .small {
-      font-size: 15px;
-      color: #335;
+    .note {
+      max-width: 760px;
+      margin: 15px auto 0;
       line-height: 1.6;
+      color: #334;
+      font-size: 15px;
     }
   </style>
 </head>
@@ -100,33 +103,34 @@
 <body>
 
 <header>
-  <h1>Project 28: Hand Gesture Recognizer</h1>
-  <p>TensorFlow.js + MediaPipe Hands + Webcam</p>
+  <h1>Project 26: Webcam Object Classifier</h1>
+  <p>TensorFlow.js + COCO-SSD + Webcam</p>
 </header>
 
 <div class="box">
   <button onclick="startApp()">Start Camera</button>
   <button onclick="stopCamera()">Stop Camera</button>
 
-  <div class="result" id="gestureResult">Gesture: Waiting...</div>
+  <div id="status">Status: Waiting...</div>
 
   <div id="stage">
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas"></canvas>
   </div>
 
-  <p class="small">
-    Supported gestures: Open Palm, Fist, Thumbs Up, Peace Sign, One Finger, Three Fingers, Four Fingers.
+  <p class="note">
+    This project detects common objects like person, bottle, chair, laptop,
+    phone, book, cup, dog, cat, car, bicycle and many more.
   </p>
 </div>
 
 <script>
-  let video = document.getElementById("video");
-  let canvas = document.getElementById("canvas");
-  let ctx = canvas.getContext("2d");
-  let resultBox = document.getElementById("gestureResult");
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const statusBox = document.getElementById("status");
 
-  let detector = null;
+  let model = null;
   let stream = null;
   let running = false;
 
@@ -134,21 +138,13 @@
   canvas.height = 480;
 
   async function startApp() {
-    resultBox.innerText = "Loading model...";
+    statusBox.innerText = "Status: Loading TensorFlow model...";
 
-    await tf.setBackend("webgl");
-    await tf.ready();
+    if (!model) {
+      model = await cocoSsd.load();
+    }
 
-    const model = handPoseDetection.SupportedModels.MediaPipeHands;
-
-    const detectorConfig = {
-      runtime: "mediapipe",
-      modelType: "full",
-      maxHands: 1,
-      solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands"
-    };
-
-    detector = await handPoseDetection.createDetector(model, detectorConfig);
+    statusBox.innerText = "Status: Opening camera...";
 
     stream = await navigator.mediaDevices.getUserMedia({
       video: {
@@ -160,127 +156,72 @@
 
     video.srcObject = stream;
 
-    video.onloadedmetadata = () => {
+    video.onloadedmetadata = function () {
       video.play();
       running = true;
-      detectHands();
+      statusBox.innerText = "Status: Detecting objects...";
+      detectObjects();
     };
-
-    resultBox.innerText = "Gesture: Show your hand";
   }
 
   function stopCamera() {
     running = false;
 
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach(function(track) {
+        track.stop();
+      });
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    resultBox.innerText = "Gesture: Camera stopped";
+    statusBox.innerText = "Status: Camera stopped";
   }
 
-  async function detectHands() {
-    if (!running || !detector) return;
+  async function detectObjects() {
+    if (!running || !model) {
+      return;
+    }
 
-    const hands = await detector.estimateHands(video, {
-      flipHorizontal: false
+    const predictions = await model.detect(video);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (predictions.length === 0) {
+      statusBox.innerText = "Status: No object detected";
+    } else {
+      statusBox.innerText = "Detected: " + predictions.length + " object(s)";
+    }
+
+    predictions.forEach(function(prediction) {
+      drawPrediction(prediction);
     });
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (hands.length > 0) {
-      const hand = hands[0];
-      const keypoints = hand.keypoints;
-
-      drawHand(keypoints);
-
-      const gesture = recognizeGesture(keypoints);
-      resultBox.innerText = "Gesture: " + gesture;
-    } else {
-      resultBox.innerText = "Gesture: No hand detected";
-    }
-
-    requestAnimationFrame(detectHands);
+    requestAnimationFrame(detectObjects);
   }
 
-  function drawHand(keypoints) {
-    ctx.fillStyle = "red";
-    ctx.strokeStyle = "yellow";
+  function drawPrediction(prediction) {
+    const x = prediction.bbox[0];
+    const y = prediction.bbox[1];
+    const width = prediction.bbox[2];
+    const height = prediction.bbox[3];
+
+    const label = prediction.class;
+    const score = Math.round(prediction.score * 100);
+
+    ctx.strokeStyle = "lime";
     ctx.lineWidth = 3;
+    ctx.strokeRect(x, y, width, height);
 
-    for (let point of keypoints) {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 6, 0, 2 * Math.PI);
-      ctx.fill();
-    }
+    ctx.fillStyle = "lime";
+    ctx.font = "18px Arial";
 
-    const connections = [
-      [0,1],[1,2],[2,3],[3,4],
-      [0,5],[5,6],[6,7],[7,8],
-      [0,9],[9,10],[10,11],[11,12],
-      [0,13],[13,14],[14,15],[15,16],
-      [0,17],[17,18],[18,19],[19,20],
-      [5,9],[9,13],[13,17]
-    ];
+    const text = label + " - " + score + "%";
+    const textWidth = ctx.measureText(text).width;
 
-    for (let pair of connections) {
-      const p1 = keypoints[pair[0]];
-      const p2 = keypoints[pair[1]];
+    ctx.fillRect(x, y > 24 ? y - 24 : y, textWidth + 12, 24);
 
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
-    }
-  }
-
-  function isFingerOpen(keypoints, tip, pip) {
-    return keypoints[tip].y < keypoints[pip].y;
-  }
-
-  function isThumbOpen(keypoints) {
-    return Math.abs(keypoints[4].x - keypoints[2].x) > 35;
-  }
-
-  function recognizeGesture(keypoints) {
-    const thumb = isThumbOpen(keypoints);
-    const index = isFingerOpen(keypoints, 8, 6);
-    const middle = isFingerOpen(keypoints, 12, 10);
-    const ring = isFingerOpen(keypoints, 16, 14);
-    const pinky = isFingerOpen(keypoints, 20, 18);
-
-    const openCount = [thumb, index, middle, ring, pinky].filter(Boolean).length;
-
-    if (openCount === 5) {
-      return "Open Palm";
-    }
-
-    if (openCount === 0) {
-      return "Fist";
-    }
-
-    if (thumb && !index && !middle && !ring && !pinky) {
-      return "Thumbs Up";
-    }
-
-    if (!thumb && index && middle && !ring && !pinky) {
-      return "Peace Sign";
-    }
-
-    if (!thumb && index && !middle && !ring && !pinky) {
-      return "One Finger";
-    }
-
-    if (!thumb && index && middle && ring && !pinky) {
-      return "Three Fingers";
-    }
-
-    if (!thumb && index && middle && ring && pinky) {
-      return "Four Fingers";
-    }
-
-    return "Unknown Gesture";
+    ctx.fillStyle = "black";
+    ctx.fillText(text, x + 6, y > 24 ? y - 6 : y + 18);
   }
 </script>
 
