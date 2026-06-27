@@ -5,10 +5,7 @@
   <title>Project 26: Webcam Object Classifier</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- TensorFlow.js -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-
-  <!-- COCO-SSD Object Detection Model -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
   <style>
@@ -40,7 +37,7 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
 
-    button {
+    select, button {
       background: #087878;
       color: white;
       border: none;
@@ -51,7 +48,11 @@
       cursor: pointer;
     }
 
-    button:hover {
+    select {
+      min-width: 260px;
+    }
+
+    button:hover, select:hover {
       background: #055d5d;
     }
 
@@ -104,10 +105,15 @@
 
 <header>
   <h1>Project 26: Webcam Object Classifier</h1>
-  <p>TensorFlow.js + COCO-SSD + Webcam</p>
+  <p>TensorFlow.js + COCO-SSD + Camera Selection</p>
 </header>
 
 <div class="box">
+  <select id="cameraSelect">
+    <option value="">Loading cameras...</option>
+  </select>
+
+  <button onclick="loadCameras()">Refresh Cameras</button>
   <button onclick="startApp()">Start Camera</button>
   <button onclick="stopCamera()">Stop Camera</button>
 
@@ -129,6 +135,7 @@
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const statusBox = document.getElementById("status");
+  const cameraSelect = document.getElementById("cameraSelect");
 
   let model = null;
   let stream = null;
@@ -137,45 +144,98 @@
   canvas.width = 640;
   canvas.height = 480;
 
-  async function startApp() {
-    statusBox.innerText = "Status: Loading TensorFlow model...";
+  async function loadCameras() {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(device => device.kind === "videoinput");
 
-    if (!model) {
-      model = await cocoSsd.load();
+      cameraSelect.innerHTML = "";
+
+      if (cameras.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.text = "No camera found";
+        cameraSelect.appendChild(option);
+        return;
+      }
+
+      cameras.forEach((camera, index) => {
+        const option = document.createElement("option");
+        option.value = camera.deviceId;
+        option.text = camera.label || "Camera " + (index + 1);
+        cameraSelect.appendChild(option);
+      });
+
+      statusBox.innerText = "Status: Cameras loaded";
+    } catch (error) {
+      statusBox.innerText = "Status: Could not load cameras";
+      console.error(error);
     }
+  }
 
-    statusBox.innerText = "Status: Opening camera...";
+  async function startApp() {
+    try {
+      statusBox.innerText = "Status: Loading TensorFlow model...";
 
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        width: 640,
-        height: 480
-      },
-      audio: false
-    });
+      if (!model) {
+        model = await cocoSsd.load();
+      }
 
-    video.srcObject = stream;
+      const selectedCameraId = cameraSelect.value;
 
-    video.onloadedmetadata = function () {
-      video.play();
-      running = true;
-      statusBox.innerText = "Status: Detecting objects...";
-      detectObjects();
-    };
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      statusBox.innerText = "Status: Opening camera...";
+
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined,
+          width: 640,
+          height: 480
+        },
+        audio: false
+      });
+
+      video.srcObject = stream;
+
+      video.onloadedmetadata = async function () {
+        await video.play();
+
+        await loadCameras();
+
+        running = true;
+        statusBox.innerText = "Status: Detecting objects...";
+        detectObjects();
+      };
+
+    } catch (error) {
+      statusBox.innerText = "Status: Camera or model error";
+      console.error(error);
+    }
   }
 
   function stopCamera() {
     running = false;
 
     if (stream) {
-      stream.getTracks().forEach(function(track) {
-        track.stop();
-      });
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     statusBox.innerText = "Status: Camera stopped";
   }
+
+  async function switchCamera() {
+    if (!cameraSelect.value) return;
+
+    stopCamera();
+    await startApp();
+  }
+
+  cameraSelect.addEventListener("change", switchCamera);
 
   async function detectObjects() {
     if (!running || !model) {
@@ -192,7 +252,7 @@
       statusBox.innerText = "Detected: " + predictions.length + " object(s)";
     }
 
-    predictions.forEach(function(prediction) {
+    predictions.forEach(prediction => {
       drawPrediction(prediction);
     });
 
@@ -223,6 +283,8 @@
     ctx.fillStyle = "black";
     ctx.fillText(text, x + 6, y > 24 ? y - 6 : y + 18);
   }
+
+  loadCameras();
 </script>
 
 </body>
