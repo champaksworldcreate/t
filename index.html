@@ -3,55 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M × N Grid Highlighter</title>
+<title>M × N Boolean Grid Highlighter</title>
 
 <style>
-*{
-    box-sizing:border-box;
-}
-
 body{
     font-family:Arial,Helvetica,sans-serif;
     background:#eef8f8;
-    margin:20px;
     text-align:center;
+    margin:20px;
 }
-
-h1{
-    color:#00695c;
-}
-
-.controls{
-    margin:15px 0;
-}
-
+h1{color:#00695c;}
+.controls{margin:15px 0;}
 input{
     padding:8px;
     font-size:16px;
     border:1px solid #00897b;
     border-radius:6px;
-    text-align:center;
 }
-
-#rows,#cols{
-    width:80px;
-}
-
-#expression{
-    width:360px;
-    max-width:95%;
-}
-
+#rows,#cols{width:80px;text-align:center;}
+#expression{width:420px;max-width:95%;}
 button{
     padding:8px 18px;
     font-size:16px;
-    border:none;
-    border-radius:6px;
     background:#00897b;
     color:white;
+    border:none;
+    border-radius:6px;
     cursor:pointer;
 }
-
 .grid-wrapper{
     width:95vw;
     max-height:70vh;
@@ -62,13 +41,11 @@ button{
     padding:10px;
     background:white;
 }
-
 #grid{
     display:grid;
     gap:5px;
     justify-content:start;
 }
-
 .cell{
     width:90px;
     height:70px;
@@ -77,136 +54,240 @@ button{
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:18px;
     font-weight:bold;
-    background:white;
     color:#00695c;
-    transition:.2s;
+    background:white;
 }
-
 .highlight{
     background:gold;
     border-color:red;
     color:black;
+}
+#error{
+    color:red;
+    font-weight:bold;
+    min-height:24px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>M × N Grid Highlighter</h1>
+<h1>M × N Boolean Grid Highlighter</h1>
 
 <div class="controls">
-Rows
+Rows:
 <input type="number" id="rows" value="7" min="1">
 
-Columns
+Columns:
 <input type="number" id="cols" value="7" min="1">
 
 <button onclick="makeGrid()">Generate Grid</button>
 </div>
 
 <div class="controls">
-Expression
-
+Expression:
 <input
-type="text"
-id="expression"
-value="m==1 and n==4"
-oninput="highlightGrid()"
-placeholder="Example: m==1 and n==4">
-
+    type="text"
+    id="expression"
+    value="row = 1 and col = n"
+    oninput="highlightGrid()"
+    placeholder="Example: row = 1 and col = n">
 </div>
+
+<div id="error"></div>
 
 <div class="grid-wrapper">
     <div id="grid"></div>
 </div>
 
 <script>
+let totalRows = 7;
+let totalCols = 7;
 
 function makeGrid(){
+    totalRows = Number(document.getElementById("rows").value);
+    totalCols = Number(document.getElementById("cols").value);
 
-    let rows=parseInt(document.getElementById("rows").value);
-    let cols=parseInt(document.getElementById("cols").value);
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${totalCols}, 90px)`;
 
-    let grid=document.getElementById("grid");
-
-    grid.innerHTML="";
-
-    grid.style.gridTemplateColumns=`repeat(${cols},90px)`;
-
-    for(let m=1;m<=rows;m++){
-
-        for(let n=1;n<=cols;n++){
-
-            let cell=document.createElement("div");
-
-            cell.className="cell";
-
-            cell.dataset.m=m;
-            cell.dataset.n=n;
-
-            cell.textContent=`(${m}, ${n})`;
-
+    for(let row = 1; row <= totalRows; row++){
+        for(let col = 1; col <= totalCols; col++){
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            cell.textContent = `(${row}, ${col})`;
             grid.appendChild(cell);
-
         }
-
     }
 
     highlightGrid();
-
 }
 
-function evaluateExpression(expression,m,n){
+function tokenize(text){
+    return text
+        .toLowerCase()
+        .replace(/<=|>=|!=|=|<|>|\(|\)|\+|-|\*|\/|%/g, " $& ")
+        .trim()
+        .split(/\s+/)
+        .filter(x => x.length > 0);
+}
 
-    expression=expression.toLowerCase();
+function valueOf(token, row, col){
+    if(token === "row") return row;
+    if(token === "col") return col;
+    if(token === "m") return totalRows;
+    if(token === "n") return totalCols;
+    if(!isNaN(Number(token))) return Number(token);
+    throw "Unknown word: " + token;
+}
 
-    expression=expression.replace(/\band\b/g,"&&");
-    expression=expression.replace(/\bor\b/g,"||");
+function evaluate(expression, row, col){
+    const tokens = tokenize(expression);
+    let i = 0;
 
-    expression=expression.replace(/\brow\b/g,m);
-    expression=expression.replace(/\bcol\b/g,n);
+    function peek(){ return tokens[i]; }
+    function next(){ return tokens[i++]; }
 
-    expression=expression.replace(/\bm\b/g,m);
-    expression=expression.replace(/\bn\b/g,n);
+    function numberExpression(){
+        let value = term();
 
-    // allow single =
-    expression=expression.replace(/([^!<>=])=([^=])/g,"$1==$2");
+        while(peek() === "+" || peek() === "-"){
+            let op = next();
+            let right = term();
 
-    try{
-        return Function("return ("+expression+")")();
+            if(op === "+") value += right;
+            if(op === "-") value -= right;
+        }
+
+        return value;
     }
-    catch(e){
-        return false;
+
+    function term(){
+        let value = factor();
+
+        while(peek() === "*" || peek() === "/" || peek() === "%"){
+            let op = next();
+            let right = factor();
+
+            if(op === "*") value *= right;
+            if(op === "/") value /= right;
+            if(op === "%") value %= right;
+        }
+
+        return value;
     }
 
+    function factor(){
+        if(peek() === "("){
+            next();
+            let result = boolExpression();
+
+            if(next() !== ")"){
+                throw "Missing closing bracket";
+            }
+
+            return result;
+        }
+
+        return valueOf(next(), row, col);
+    }
+
+    function comparison(){
+        let left = numberExpression();
+        let op = next();
+        let right = numberExpression();
+
+        if(op === "=") return left === right;
+        if(op === "!=") return left !== right;
+        if(op === "<") return left < right;
+        if(op === ">") return left > right;
+        if(op === "<=") return left <= right;
+        if(op === ">=") return left >= right;
+
+        throw "Use a Boolean comparison like row = 1";
+    }
+
+    function boolFactor(){
+        if(peek() === "not"){
+            next();
+            return !boolFactor();
+        }
+
+        if(peek() === "("){
+            next();
+            let result = boolExpression();
+
+            if(next() !== ")"){
+                throw "Missing closing bracket";
+            }
+
+            return result;
+        }
+
+        return comparison();
+    }
+
+    function boolTerm(){
+        let result = boolFactor();
+
+        while(peek() === "and"){
+            next();
+            result = result && boolFactor();
+        }
+
+        return result;
+    }
+
+    function boolExpression(){
+        let result = boolTerm();
+
+        while(peek() === "or"){
+            next();
+            result = result || boolTerm();
+        }
+
+        return result;
+    }
+
+    let answer = boolExpression();
+
+    if(i < tokens.length){
+        throw "Extra text found: " + tokens[i];
+    }
+
+    return answer;
 }
 
 function highlightGrid(){
+    const expression = document.getElementById("expression").value;
+    const cells = document.querySelectorAll(".cell");
+    const errorBox = document.getElementById("error");
 
-    let expression=document.getElementById("expression").value;
+    errorBox.textContent = "";
 
-    let cells=document.querySelectorAll(".cell");
+    cells.forEach(cell => {
+        const row = Number(cell.dataset.row);
+        const col = Number(cell.dataset.col);
 
-    cells.forEach(function(cell){
-
-        let m=Number(cell.dataset.m);
-        let n=Number(cell.dataset.n);
-
-        if(evaluateExpression(expression,m,n)){
-            cell.classList.add("highlight");
+        try{
+            if(evaluate(expression, row, col)){
+                cell.classList.add("highlight");
+            }else{
+                cell.classList.remove("highlight");
+            }
         }
-        else{
+        catch(error){
             cell.classList.remove("highlight");
+            errorBox.textContent = error;
         }
-
     });
-
 }
 
 makeGrid();
-
 </script>
 
 </body>
