@@ -1,291 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Project 26: Webcam Object Classifier</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
+  <title>N x N Grid</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #e9fbf7;
-      color: #083c3c;
+      background: #f2fbfa;
       text-align: center;
-    }
-
-    header {
-      background: linear-gradient(135deg, #064e4e, #0b7777);
-      color: white;
-      padding: 24px;
+      padding: 30px;
     }
 
     h1 {
-      margin: 0;
-      font-size: 30px;
+      color: #064e4a;
     }
 
-    .box {
-      max-width: 900px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 18px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    select, button {
-      background: #087878;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      margin: 8px;
-      border-radius: 12px;
+    input, button {
+      padding: 10px;
       font-size: 16px;
+      margin: 5px;
+      border-radius: 8px;
+      border: 1px solid #0f766e;
+    }
+
+    button {
+      background: #0f766e;
+      color: white;
       cursor: pointer;
     }
 
-    select {
-      min-width: 260px;
+    #grid {
+      margin: 25px auto;
+      display: grid;
+      gap: 5px;
+      justify-content: center;
     }
 
-    button:hover, select:hover {
-      background: #055d5d;
-    }
-
-    #status {
-      font-size: 22px;
+    .cell {
+      width: 50px;
+      height: 50px;
+      background: white;
+      border: 2px solid #0f766e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: bold;
-      margin: 15px;
-      color: #064e4e;
-    }
-
-    #stage {
-      position: relative;
-      width: 640px;
-      height: 480px;
-      max-width: 100%;
-      margin: auto;
-      background: black;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    video, canvas {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 640px;
-      height: 480px;
-      max-width: 100%;
-    }
-
-    video {
-      transform: scaleX(-1);
-    }
-
-    canvas {
-      transform: scaleX(-1);
-    }
-
-    .note {
-      max-width: 760px;
-      margin: 15px auto 0;
-      line-height: 1.6;
-      color: #334;
-      font-size: 15px;
+      border-radius: 8px;
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <h1>Project 26: Webcam Object Classifier</h1>
-  <p>TensorFlow.js + COCO-SSD + Camera Selection</p>
-</header>
+  <h1>N x N Grid Generator</h1>
 
-<div class="box">
-  <select id="cameraSelect">
-    <option value="">Loading cameras...</option>
-  </select>
+  <input type="number" id="nValue" placeholder="Enter N" min="1" value="5">
+  <button onclick="makeGrid()">Make Grid</button>
 
-  <button onclick="loadCameras()">Refresh Cameras</button>
-  <button onclick="startApp()">Start Camera</button>
-  <button onclick="stopCamera()">Stop Camera</button>
+  <div id="grid"></div>
 
-  <div id="status">Status: Waiting...</div>
+  <script>
+    function makeGrid() {
+      let n = Number(document.getElementById("nValue").value);
+      let grid = document.getElementById("grid");
 
-  <div id="stage">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-  </div>
+      grid.innerHTML = "";
 
-  <p class="note">
-    This project detects common objects like person, bottle, chair, laptop,
-    phone, book, cup, dog, cat, car, bicycle and many more.
-  </p>
-</div>
+      grid.style.gridTemplateColumns = `repeat(${n}, 50px)`;
 
-<script>
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  const statusBox = document.getElementById("status");
-  const cameraSelect = document.getElementById("cameraSelect");
-
-  let model = null;
-  let stream = null;
-  let running = false;
-
-  canvas.width = 640;
-  canvas.height = 480;
-
-  async function loadCameras() {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter(device => device.kind === "videoinput");
-
-      cameraSelect.innerHTML = "";
-
-      if (cameras.length === 0) {
-        const option = document.createElement("option");
-        option.value = "";
-        option.text = "No camera found";
-        cameraSelect.appendChild(option);
-        return;
+      for (let i = 1; i <= n * n; i++) {
+        let cell = document.createElement("div");
+        cell.className = "cell";
+        cell.textContent = i;
+        grid.appendChild(cell);
       }
-
-      cameras.forEach((camera, index) => {
-        const option = document.createElement("option");
-        option.value = camera.deviceId;
-        option.text = camera.label || "Camera " + (index + 1);
-        cameraSelect.appendChild(option);
-      });
-
-      statusBox.innerText = "Status: Cameras loaded";
-    } catch (error) {
-      statusBox.innerText = "Status: Could not load cameras";
-      console.error(error);
-    }
-  }
-
-  async function startApp() {
-    try {
-      statusBox.innerText = "Status: Loading TensorFlow model...";
-
-      if (!model) {
-        model = await cocoSsd.load();
-      }
-
-      const selectedCameraId = cameraSelect.value;
-
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-
-      statusBox.innerText = "Status: Opening camera...";
-
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined,
-          width: 640,
-          height: 480
-        },
-        audio: false
-      });
-
-      video.srcObject = stream;
-
-      video.onloadedmetadata = async function () {
-        await video.play();
-
-        await loadCameras();
-
-        running = true;
-        statusBox.innerText = "Status: Detecting objects...";
-        detectObjects();
-      };
-
-    } catch (error) {
-      statusBox.innerText = "Status: Camera or model error";
-      console.error(error);
-    }
-  }
-
-  function stopCamera() {
-    running = false;
-
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      stream = null;
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    statusBox.innerText = "Status: Camera stopped";
-  }
-
-  async function switchCamera() {
-    if (!cameraSelect.value) return;
-
-    stopCamera();
-    await startApp();
-  }
-
-  cameraSelect.addEventListener("change", switchCamera);
-
-  async function detectObjects() {
-    if (!running || !model) {
-      return;
-    }
-
-    const predictions = await model.detect(video);
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (predictions.length === 0) {
-      statusBox.innerText = "Status: No object detected";
-    } else {
-      statusBox.innerText = "Detected: " + predictions.length + " object(s)";
-    }
-
-    predictions.forEach(prediction => {
-      drawPrediction(prediction);
-    });
-
-    requestAnimationFrame(detectObjects);
-  }
-
-  function drawPrediction(prediction) {
-    const x = prediction.bbox[0];
-    const y = prediction.bbox[1];
-    const width = prediction.bbox[2];
-    const height = prediction.bbox[3];
-
-    const label = prediction.class;
-    const score = Math.round(prediction.score * 100);
-
-    ctx.strokeStyle = "lime";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(x, y, width, height);
-
-    ctx.fillStyle = "lime";
-    ctx.font = "18px Arial";
-
-    const text = label + " - " + score + "%";
-    const textWidth = ctx.measureText(text).width;
-
-    ctx.fillRect(x, y > 24 ? y - 24 : y, textWidth + 12, 24);
-
-    ctx.fillStyle = "black";
-    ctx.fillText(text, x + 6, y > 24 ? y - 6 : y + 18);
-  }
-
-  loadCameras();
-</script>
+    makeGrid();
+  </script>
 
 </body>
 </html>
