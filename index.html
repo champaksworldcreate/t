@@ -44,14 +44,25 @@ button{
 }
 
 #expression{
-    width: 260px;
+    width: 320px;
+}
+
+.grid-wrapper{
+    width: 100%;
+    max-width: 95vw;
+    max-height: 70vh;
+    overflow: auto;
+    margin: 20px auto;
+    border: 2px solid #00897b;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 10px;
 }
 
 #grid{
-    margin: 20px auto;
     display: grid;
     gap: 5px;
-    justify-content: center;
+    justify-content: start;
 }
 
 .cell{
@@ -81,21 +92,27 @@ button{
 
 <div class="controls">
     Rows:
-    <input type="number" id="rows" value="4" min="1">
+    <input type="number" id="rows" value="7" min="1">
 
     Columns:
-    <input type="number" id="cols" value="5" min="1">
+    <input type="number" id="cols" value="7" min="1">
 
     <button onclick="makeGrid()">Generate Grid</button>
 </div>
 
 <div class="controls">
     Expression:
-    <input type="text" id="expression" value="row=1 and col=4">
-    <button onclick="highlightGrid()">Highlight</button>
+    <input 
+        type="text" 
+        id="expression" 
+        value="row=1 and col=4"
+        oninput="highlightGrid()"
+    >
 </div>
 
-<div id="grid"></div>
+<div class="grid-wrapper">
+    <div id="grid"></div>
+</div>
 
 <script>
 function makeGrid(){
