@@ -7,66 +7,88 @@
 
 <style>
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#eef8f8;
-    text-align:center;
-    margin:20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef8f8;
+    text-align: center;
+    margin: 20px;
 }
-h1{color:#00695c;}
-.controls{margin:15px 0;}
+
+h1{
+    color: #00695c;
+}
+
+.controls{
+    margin: 15px 0;
+}
+
 input{
-    padding:8px;
-    font-size:16px;
-    border:1px solid #00897b;
-    border-radius:6px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #00897b;
+    border-radius: 6px;
 }
-#rows,#cols{width:80px;text-align:center;}
-#expression{width:420px;max-width:95%;}
+
+#rows, #cols{
+    width: 80px;
+    text-align: center;
+}
+
+#expression{
+    width: 480px;
+    max-width: 95%;
+}
+
 button{
-    padding:8px 18px;
-    font-size:16px;
-    background:#00897b;
-    color:white;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
+    padding: 8px 18px;
+    font-size: 16px;
+    background: #00897b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
+
 .grid-wrapper{
-    width:95vw;
-    max-height:70vh;
-    overflow:auto;
-    margin:auto;
-    border:2px solid #00897b;
-    border-radius:10px;
-    padding:10px;
-    background:white;
+    width: 95vw;
+    max-height: 70vh;
+    overflow: auto;
+    margin: auto;
+    border: 2px solid #00897b;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
 }
+
 #grid{
-    display:grid;
-    gap:5px;
-    justify-content:start;
+    display: grid;
+    gap: 5px;
+    justify-content: start;
 }
+
 .cell{
-    width:90px;
-    height:70px;
-    border:2px solid #00897b;
-    border-radius:8px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-weight:bold;
-    color:#00695c;
-    background:white;
+    width: 90px;
+    height: 70px;
+    border: 2px solid #00897b;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    background: white;
+    color: #00695c;
 }
+
 .highlight{
-    background:gold;
-    border-color:red;
-    color:black;
+    background: gold;
+    border-color: red;
+    color: black;
 }
+
 #error{
-    color:red;
-    font-weight:bold;
-    min-height:24px;
+    color: red;
+    font-weight: bold;
+    min-height: 24px;
+    margin: 10px;
 }
 </style>
 </head>
@@ -76,23 +98,23 @@ button{
 <h1>M × N Boolean Grid Highlighter</h1>
 
 <div class="controls">
-Rows:
-<input type="number" id="rows" value="7" min="1">
+    Rows:
+    <input type="number" id="rows" value="7" min="1">
 
-Columns:
-<input type="number" id="cols" value="7" min="1">
+    Columns:
+    <input type="number" id="cols" value="7" min="1">
 
-<button onclick="makeGrid()">Generate Grid</button>
+    <button onclick="makeGrid()">Generate Grid</button>
 </div>
 
 <div class="controls">
-Expression:
-<input
-    type="text"
-    id="expression"
-    value="row = 1 and col = n"
-    oninput="highlightGrid()"
-    placeholder="Example: row = 1 and col = n">
+    Expression:
+    <input
+        type="text"
+        id="expression"
+        value="row = 1 and col = n"
+        oninput="highlightGrid()"
+        placeholder="Example: row = 1 and col = n">
 </div>
 
 <div id="error"></div>
@@ -102,24 +124,26 @@ Expression:
 </div>
 
 <script>
-let totalRows = 7;
-let totalCols = 7;
+let m = 7; // total rows
+let n = 7; // total columns
 
 function makeGrid(){
-    totalRows = Number(document.getElementById("rows").value);
-    totalCols = Number(document.getElementById("cols").value);
+    m = Number(document.getElementById("rows").value);
+    n = Number(document.getElementById("cols").value);
 
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
-    grid.style.gridTemplateColumns = `repeat(${totalCols}, 90px)`;
+    grid.style.gridTemplateColumns = `repeat(${n}, 90px)`;
 
-    for(let row = 1; row <= totalRows; row++){
-        for(let col = 1; col <= totalCols; col++){
+    for(let row = 1; row <= m; row++){
+        for(let col = 1; col <= n; col++){
             const cell = document.createElement("div");
+
             cell.className = "cell";
             cell.dataset.row = row;
             cell.dataset.col = col;
             cell.textContent = `(${row}, ${col})`;
+
             grid.appendChild(cell);
         }
     }
@@ -130,37 +154,46 @@ function makeGrid(){
 function tokenize(text){
     return text
         .toLowerCase()
-        .replace(/<=|>=|!=|=|<|>|\(|\)|\+|-|\*|\/|%/g, " $& ")
+        .replace(/<=|>=|!=|=|<|>|\(|\)|\+|-|\*|\/|%|\band\b|\bor\b|\bnot\b/g, " $& ")
         .trim()
         .split(/\s+/)
-        .filter(x => x.length > 0);
+        .filter(token => token.length > 0);
 }
 
-function valueOf(token, row, col){
+function getValue(token, row, col){
     if(token === "row") return row;
     if(token === "col") return col;
-    if(token === "m") return totalRows;
-    if(token === "n") return totalCols;
-    if(!isNaN(Number(token))) return Number(token);
+    if(token === "m") return m;
+    if(token === "n") return n;
+
+    if(!isNaN(Number(token))){
+        return Number(token);
+    }
+
     throw "Unknown word: " + token;
 }
 
 function evaluate(expression, row, col){
     const tokens = tokenize(expression);
-    let i = 0;
+    let index = 0;
 
-    function peek(){ return tokens[i]; }
-    function next(){ return tokens[i++]; }
+    function peek(){
+        return tokens[index];
+    }
+
+    function next(){
+        return tokens[index++];
+    }
 
     function numberExpression(){
         let value = term();
 
         while(peek() === "+" || peek() === "-"){
-            let op = next();
-            let right = term();
+            const operator = next();
+            const right = term();
 
-            if(op === "+") value += right;
-            if(op === "-") value -= right;
+            if(operator === "+") value = value + right;
+            if(operator === "-") value = value - right;
         }
 
         return value;
@@ -170,12 +203,12 @@ function evaluate(expression, row, col){
         let value = factor();
 
         while(peek() === "*" || peek() === "/" || peek() === "%"){
-            let op = next();
-            let right = factor();
+            const operator = next();
+            const right = factor();
 
-            if(op === "*") value *= right;
-            if(op === "/") value /= right;
-            if(op === "%") value %= right;
+            if(operator === "*") value = value * right;
+            if(operator === "/") value = value / right;
+            if(operator === "%") value = value % right;
         }
 
         return value;
@@ -184,31 +217,32 @@ function evaluate(expression, row, col){
     function factor(){
         if(peek() === "("){
             next();
-            let result = boolExpression();
+
+            const value = numberExpression();
 
             if(next() !== ")"){
                 throw "Missing closing bracket";
             }
 
-            return result;
+            return value;
         }
 
-        return valueOf(next(), row, col);
+        return getValue(next(), row, col);
     }
 
     function comparison(){
-        let left = numberExpression();
-        let op = next();
-        let right = numberExpression();
+        const left = numberExpression();
+        const operator = next();
+        const right = numberExpression();
 
-        if(op === "=") return left === right;
-        if(op === "!=") return left !== right;
-        if(op === "<") return left < right;
-        if(op === ">") return left > right;
-        if(op === "<=") return left <= right;
-        if(op === ">=") return left >= right;
+        if(operator === "=") return left === right;
+        if(operator === "!=") return left !== right;
+        if(operator === "<") return left < right;
+        if(operator === ">") return left > right;
+        if(operator === "<=") return left <= right;
+        if(operator === ">=") return left >= right;
 
-        throw "Use a Boolean comparison like row = 1";
+        throw "Use a comparison like row = 1";
     }
 
     function boolFactor(){
@@ -219,7 +253,8 @@ function evaluate(expression, row, col){
 
         if(peek() === "("){
             next();
-            let result = boolExpression();
+
+            const result = boolExpression();
 
             if(next() !== ")"){
                 throw "Missing closing bracket";
@@ -253,10 +288,10 @@ function evaluate(expression, row, col){
         return result;
     }
 
-    let answer = boolExpression();
+    const answer = boolExpression();
 
-    if(i < tokens.length){
-        throw "Extra text found: " + tokens[i];
+    if(index < tokens.length){
+        throw "Extra text found: " + tokens[index];
     }
 
     return answer;
@@ -269,7 +304,7 @@ function highlightGrid(){
 
     errorBox.textContent = "";
 
-    cells.forEach(cell => {
+    for(const cell of cells){
         const row = Number(cell.dataset.row);
         const col = Number(cell.dataset.col);
 
@@ -284,7 +319,7 @@ function highlightGrid(){
             cell.classList.remove("highlight");
             errorBox.textContent = error;
         }
-    });
+    }
 }
 
 makeGrid();
