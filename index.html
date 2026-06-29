@@ -1,151 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M × N Boolean Grid Highlighter</title>
+<title>Basic Grid Highlighter</title>
 
 <style>
-*{box-sizing:border-box}
-
 body{
-    font-family:Arial,Helvetica,sans-serif;
+    font-family: Arial, sans-serif;
     background:#eef8f8;
     text-align:center;
-    margin:20px;
 }
 
-h1{
-    color:#00695c;
-    font-size:42px;
-}
-
-.controls{
-    margin:15px 0;
-}
-
-input{
-    padding:10px;
+input, button{
     font-size:18px;
-    border:2px solid #00897b;
-    border-radius:8px;
-}
-
-#rows,#cols{
-    width:90px;
-    text-align:center;
+    padding:8px;
+    margin:6px;
 }
 
 #expression{
-    width:600px;
-    max-width:95%;
+    width:90%;
+    max-width:600px;
 }
 
-button{
-    padding:10px 22px;
-    font-size:18px;
-    background:#00897b;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-#error{
-    color:red;
-    font-size:20px;
-    font-weight:bold;
-    min-height:30px;
-    margin:12px;
-}
-
-.grid-wrapper{
+#gridBox{
     width:95vw;
     max-height:70vh;
     overflow:auto;
-    margin:auto;
     border:3px solid #00897b;
-    border-radius:12px;
-    padding:12px;
+    margin:auto;
+    padding:10px;
     background:white;
 }
 
 #grid{
     display:grid;
     gap:6px;
-    justify-content:start;
 }
 
 .cell{
-    width:110px;
-    height:80px;
-    border:3px solid #00897b;
-    border-radius:10px;
+    width:90px;
+    height:70px;
+    border:2px solid #00897b;
+    border-radius:8px;
     display:flex;
-    justify-content:center;
     align-items:center;
-    font-size:22px;
+    justify-content:center;
     font-weight:bold;
-    background:white;
     color:#00695c;
 }
 
 .highlight{
     background:gold;
-    border-color:red;
     color:black;
+    border-color:red;
+}
+
+#error{
+    color:red;
+    font-weight:bold;
+    min-height:25px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>M × N Boolean Grid Highlighter</h1>
+<h1>M × N Grid Highlighter</h1>
 
-<div class="controls">
-    Rows:
-    <input type="number" id="rows" value="7" min="1">
+Rows:
+<input type="number" id="rows" value="7" min="1">
 
-    Columns:
-    <input type="number" id="cols" value="7" min="1">
+Columns:
+<input type="number" id="cols" value="7" min="1">
 
-    <button onclick="makeGrid()">Generate Grid</button>
-</div>
+<button onclick="makeGrid()">Generate Grid</button>
 
-<div class="controls">
-    Expression:<br><br>
-    <input
-        type="text"
-        id="expression"
-        value="(col = 1) and (row <= m)"
-        oninput="highlightGrid()">
-</div>
+<br><br>
+
+Expression:
+<br>
+<input
+    id="expression"
+    value="(col = 1) and (row <= m)"
+    oninput="highlightGrid()">
 
 <div id="error"></div>
 
-<div class="grid-wrapper">
+<div id="gridBox">
     <div id="grid"></div>
 </div>
 
 <script>
-let m = 7;
-let n = 7;
+let m = 7; // total rows
+let n = 7; // total columns
 
 function makeGrid(){
     m = Number(document.getElementById("rows").value);
     n = Number(document.getElementById("cols").value);
 
-    const grid = document.getElementById("grid");
+    let grid = document.getElementById("grid");
     grid.innerHTML = "";
-    grid.style.gridTemplateColumns = `repeat(${n}, 110px)`;
+
+    grid.style.gridTemplateColumns = `repeat(${n}, 90px)`;
 
     for(let row = 1; row <= m; row++){
         for(let col = 1; col <= n; col++){
-            const cell = document.createElement("div");
+            let cell = document.createElement("div");
+
             cell.className = "cell";
             cell.dataset.row = row;
             cell.dataset.col = col;
-            cell.textContent = `(${row}, ${col})`;
+            cell.innerText = `(${row}, ${col})`;
+
             grid.appendChild(cell);
         }
     }
@@ -153,234 +118,45 @@ function makeGrid(){
     highlightGrid();
 }
 
-function tokenize(text){
-    const tokens = [];
-    let i = 0;
+function convertToJavaScript(expression){
+    expression = expression.toLowerCase();
 
-    while(i < text.length){
-        let ch = text[i];
+    expression = expression.replaceAll(" and ", " && ");
+    expression = expression.replaceAll(" or ", " || ");
+    expression = expression.replaceAll("not ", "! ");
 
-        if(/\s/.test(ch)){
-            i++;
-            continue;
-        }
+    // Convert single = into ==
+    // Does not disturb <=, >=, !=, ==
+    expression = expression.replace(/(?<![<>=!])=(?![=])/g, "==");
 
-        let two = text.slice(i, i + 2);
-
-        if(two === "<=" || two === ">=" || two === "!="){
-            tokens.push(two);
-            i += 2;
-            continue;
-        }
-
-        if("=<>()+-*/%".includes(ch)){
-            tokens.push(ch);
-            i++;
-            continue;
-        }
-
-        if(/[0-9]/.test(ch)){
-            let num = "";
-
-            while(i < text.length && /[0-9.]/.test(text[i])){
-                num += text[i];
-                i++;
-            }
-
-            tokens.push(num);
-            continue;
-        }
-
-        if(/[a-zA-Z]/.test(ch)){
-            let word = "";
-
-            while(i < text.length && /[a-zA-Z]/.test(text[i])){
-                word += text[i].toLowerCase();
-                i++;
-            }
-
-            tokens.push(word);
-            continue;
-        }
-
-        throw "Invalid character: " + ch;
-    }
-
-    return tokens;
+    return expression;
 }
 
-function evaluateExpression(expression, row, col){
-    const tokens = tokenize(expression);
-    let index = 0;
+function checkCell(expression, row, col){
+    let jsExpression = convertToJavaScript(expression);
 
-    function peek(){
-        return tokens[index];
-    }
-
-    function next(){
-        return tokens[index++];
-    }
-
-    function expect(token){
-        let found = next();
-
-        if(found !== token){
-            throw "Expected " + token + " but found " + found;
-        }
-    }
-
-    function valueOf(token){
-        if(token === "row") return row;
-        if(token === "col") return col;
-        if(token === "m") return m;
-        if(token === "n") return n;
-
-        if(!isNaN(Number(token))){
-            return Number(token);
-        }
-
-        throw "Unknown word: " + token;
-    }
-
-    function numberFactor(){
-        let token = peek();
-
-        if(token === undefined){
-            throw "Number expected";
-        }
-
-        if(token === "-"){
-            next();
-            return -numberFactor();
-        }
-
-        if(token === "("){
-            next();
-            let value = numberExpression();
-            expect(")");
-            return value;
-        }
-
-        next();
-        return valueOf(token);
-    }
-
-    function numberTerm(){
-        let value = numberFactor();
-
-        while(peek() === "*" || peek() === "/" || peek() === "%"){
-            let op = next();
-            let right = numberFactor();
-
-            if(op === "*") value *= right;
-            if(op === "/") value /= right;
-            if(op === "%") value %= right;
-        }
-
-        return value;
-    }
-
-    function numberExpression(){
-        let value = numberTerm();
-
-        while(peek() === "+" || peek() === "-"){
-            let op = next();
-            let right = numberTerm();
-
-            if(op === "+") value += right;
-            if(op === "-") value -= right;
-        }
-
-        return value;
-    }
-
-    function comparison(){
-        let left = numberExpression();
-        let op = next();
-
-        if(!["=", "!=", "<", ">", "<=", ">="].includes(op)){
-            throw "Comparison operator expected";
-        }
-
-        let right = numberExpression();
-
-        if(op === "=") return left === right;
-        if(op === "!=") return left !== right;
-        if(op === "<") return left < right;
-        if(op === ">") return left > right;
-        if(op === "<=") return left <= right;
-        if(op === ">=") return left >= right;
-    }
-
-    function boolFactor(){
-        if(peek() === "not"){
-            next();
-            return !boolFactor();
-        }
-
-        let save = index;
-
-        try{
-            return comparison();
-        }
-        catch(e){
-            index = save;
-        }
-
-        if(peek() === "("){
-            next();
-            let result = boolExpression();
-            expect(")");
-            return result;
-        }
-
-        throw "Boolean expression expected near: " + peek();
-    }
-
-    function boolTerm(){
-        let result = boolFactor();
-
-        while(peek() === "and"){
-            next();
-            result = result && boolFactor();
-        }
-
-        return result;
-    }
-
-    function boolExpression(){
-        let result = boolTerm();
-
-        while(peek() === "or"){
-            next();
-            result = result || boolTerm();
-        }
-
-        return result;
-    }
-
-    let answer = boolExpression();
-
-    if(index < tokens.length){
-        throw "Extra text found: " + tokens[index];
-    }
-
-    return answer;
+    return Function(
+        "row",
+        "col",
+        "m",
+        "n",
+        "return " + jsExpression;
+    )(row, col, m, n);
 }
 
 function highlightGrid(){
-    const expression = document.getElementById("expression").value;
-    const cells = document.querySelectorAll(".cell");
-    const errorBox = document.getElementById("error");
+    let expression = document.getElementById("expression").value;
+    let errorBox = document.getElementById("error");
+    let cells = document.querySelectorAll(".cell");
 
-    errorBox.textContent = "";
+    errorBox.innerText = "";
 
-    for(const cell of cells){
-        const row = Number(cell.dataset.row);
-        const col = Number(cell.dataset.col);
+    for(let cell of cells){
+        let row = Number(cell.dataset.row);
+        let col = Number(cell.dataset.col);
 
         try{
-            if(evaluateExpression(expression, row, col)){
+            if(checkCell(expression, row, col)){
                 cell.classList.add("highlight");
             }else{
                 cell.classList.remove("highlight");
@@ -388,7 +164,7 @@ function highlightGrid(){
         }
         catch(error){
             cell.classList.remove("highlight");
-            errorBox.textContent = error;
+            errorBox.innerText = "Invalid expression";
         }
     }
 }
