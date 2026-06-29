@@ -6,6 +6,10 @@
 <title>M × N Boolean Grid Highlighter</title>
 
 <style>
+*{
+    box-sizing: border-box;
+}
+
 body{
     font-family: Arial, Helvetica, sans-serif;
     background: #eef8f8;
@@ -34,7 +38,7 @@ input{
 }
 
 #expression{
-    width: 480px;
+    width: 540px;
     max-width: 95%;
 }
 
@@ -46,6 +50,13 @@ button{
     border: none;
     border-radius: 6px;
     cursor: pointer;
+}
+
+#error{
+    color: red;
+    font-weight: bold;
+    min-height: 26px;
+    margin: 10px;
 }
 
 .grid-wrapper{
@@ -83,13 +94,6 @@ button{
     border-color: red;
     color: black;
 }
-
-#error{
-    color: red;
-    font-weight: bold;
-    min-height: 24px;
-    margin: 10px;
-}
 </style>
 </head>
 
@@ -112,9 +116,9 @@ button{
     <input
         type="text"
         id="expression"
-        value="row = 1 and col = n"
+        value="(col = 1) and (row <= m)"
         oninput="highlightGrid()"
-        placeholder="Example: row = 1 and col = n">
+        placeholder="Example: (row = 1) and (col = n)">
 </div>
 
 <div id="error"></div>
@@ -138,12 +142,10 @@ function makeGrid(){
     for(let row = 1; row <= m; row++){
         for(let col = 1; col <= n; col++){
             const cell = document.createElement("div");
-
             cell.className = "cell";
             cell.dataset.row = row;
             cell.dataset.col = col;
             cell.textContent = `(${row}, ${col})`;
-
             grid.appendChild(cell);
         }
     }
@@ -152,28 +154,58 @@ function makeGrid(){
 }
 
 function tokenize(text){
-    return text
-        .toLowerCase()
-        .replace(/<=|>=|!=|=|<|>|\(|\)|\+|-|\*|\/|%|\band\b|\bor\b|\bnot\b/g, " $& ")
-        .trim()
-        .split(/\s+/)
-        .filter(token => token.length > 0);
-}
+    const tokens = [];
+    let i = 0;
 
-function getValue(token, row, col){
-    if(token === "row") return row;
-    if(token === "col") return col;
-    if(token === "m") return m;
-    if(token === "n") return n;
+    while(i < text.length){
+        const ch = text[i];
 
-    if(!isNaN(Number(token))){
-        return Number(token);
+        if(/\s/.test(ch)){
+            i++;
+            continue;
+        }
+
+        const two = text.slice(i, i + 2);
+
+        if(two === "<=" || two === ">=" || two === "!="){
+            tokens.push(two);
+            i += 2;
+            continue;
+        }
+
+        if("=<>()+-*/%".includes(ch)){
+            tokens.push(ch);
+            i++;
+            continue;
+        }
+
+        if(/[0-9.]/.test(ch)){
+            let num = "";
+            while(i < text.length && /[0-9.]/.test(text[i])){
+                num += text[i];
+                i++;
+            }
+            tokens.push(num);
+            continue;
+        }
+
+        if(/[a-zA-Z_]/.test(ch)){
+            let word = "";
+            while(i < text.length && /[a-zA-Z_]/.test(text[i])){
+                word += text[i].toLowerCase();
+                i++;
+            }
+            tokens.push(word);
+            continue;
+        }
+
+        throw "Invalid character: " + ch;
     }
 
-    throw "Unknown word: " + token;
+    return tokens;
 }
 
-function evaluate(expression, row, col){
+function evaluateExpression(expression, row, col){
     const tokens = tokenize(expression);
     let index = 0;
 
@@ -185,110 +217,147 @@ function evaluate(expression, row, col){
         return tokens[index++];
     }
 
-    function numberExpression(){
-        let value = term();
+    function expect(token){
+        const found = next();
 
-        while(peek() === "+" || peek() === "-"){
-            const operator = next();
-            const right = term();
-
-            if(operator === "+") value = value + right;
-            if(operator === "-") value = value - right;
+        if(found !== token){
+            throw "Expected " + token + " but found " + found;
         }
-
-        return value;
     }
 
-    function term(){
-        let value = factor();
+    function getVariableValue(name){
+        if(name === "row") return row;
+        if(name === "col") return col;
+        if(name === "m") return m;
+        if(name === "n") return n;
 
-        while(peek() === "*" || peek() === "/" || peek() === "%"){
-            const operator = next();
-            const right = factor();
-
-            if(operator === "*") value = value * right;
-            if(operator === "/") value = value / right;
-            if(operator === "%") value = value % right;
-        }
-
-        return value;
+        throw "Unknown word: " + name;
     }
 
-    function factor(){
-        if(peek() === "("){
+    function parseNumberFactor(){
+        const token = peek();
+
+        if(token === undefined){
+            throw "Number expected";
+        }
+
+        if(token === "("){
             next();
 
-            const value = numberExpression();
+            const value = parseNumberExpression();
 
-            if(next() !== ")"){
-                throw "Missing closing bracket";
-            }
+            expect(")");
 
             return value;
         }
 
-        return getValue(next(), row, col);
+        if(token === "-"){
+            next();
+            return -parseNumberFactor();
+        }
+
+        if(!isNaN(Number(token))){
+            next();
+            return Number(token);
+        }
+
+        if(["row", "col", "m", "n"].includes(token)){
+            next();
+            return getVariableValue(token);
+        }
+
+        throw "Number expected near: " + token;
     }
 
-    function comparison(){
-        const left = numberExpression();
-        const operator = next();
-        const right = numberExpression();
+    function parseNumberTerm(){
+        let value = parseNumberFactor();
 
-        if(operator === "=") return left === right;
-        if(operator === "!=") return left !== right;
-        if(operator === "<") return left < right;
-        if(operator === ">") return left > right;
-        if(operator === "<=") return left <= right;
-        if(operator === ">=") return left >= right;
+        while(peek() === "*" || peek() === "/" || peek() === "%"){
+            const op = next();
+            const right = parseNumberFactor();
 
-        throw "Use a comparison like row = 1";
+            if(op === "*") value *= right;
+            if(op === "/") value /= right;
+            if(op === "%") value %= right;
+        }
+
+        return value;
     }
 
-    function boolFactor(){
+    function parseNumberExpression(){
+        let value = parseNumberTerm();
+
+        while(peek() === "+" || peek() === "-"){
+            const op = next();
+            const right = parseNumberTerm();
+
+            if(op === "+") value += right;
+            if(op === "-") value -= right;
+        }
+
+        return value;
+    }
+
+    function parseComparison(){
+        const left = parseNumberExpression();
+        const op = next();
+
+        if(!["=", "!=", "<", ">", "<=", ">="].includes(op)){
+            throw "Boolean comparison expected";
+        }
+
+        const right = parseNumberExpression();
+
+        if(op === "=") return left === right;
+        if(op === "!=") return left !== right;
+        if(op === "<") return left < right;
+        if(op === ">") return left > right;
+        if(op === "<=") return left <= right;
+        if(op === ">=") return left >= right;
+    }
+
+    function parseBoolFactor(){
         if(peek() === "not"){
             next();
-            return !boolFactor();
+            return !parseBoolFactor();
         }
 
         if(peek() === "("){
             next();
 
-            const result = boolExpression();
+            const result = parseBoolExpression();
 
-            if(next() !== ")"){
-                throw "Missing closing bracket";
-            }
+            expect(")");
 
             return result;
         }
 
-        return comparison();
+        return parseComparison();
     }
 
-    function boolTerm(){
-        let result = boolFactor();
+    function parseBoolTerm(){
+        let result = parseBoolFactor();
 
         while(peek() === "and"){
             next();
-            result = result && boolFactor();
+            result = result && parseBoolFactor();
         }
 
         return result;
     }
 
-    function boolExpression(){
-        let result = boolTerm();
+    function parseBoolExpression(){
+        let result = parseBoolTerm();
 
         while(peek() === "or"){
             next();
-            result = result || boolTerm();
+            result = result || parseBoolTerm();
         }
 
         return result;
     }
 
-    const answer = boolExpression();
+    const answer = parseBoolExpression();
 
     if(index < tokens.length){
         throw "Extra text found: " + tokens[index];
@@ -309,7 +378,9 @@ function highlightGrid(){
         const col = Number(cell.dataset.col);
 
         try{
-            if(evaluate(expression, row, col)){
+            const result = evaluateExpression(expression, row, col);
+
+            if(result){
                 cell.classList.add("highlight");
             }else{
                 cell.classList.remove("highlight");
