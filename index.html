@@ -1,176 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Basic Grid Highlighter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#eef8f8;
-    text-align:center;
-}
+  <title>Student Activity Report</title>
+  <meta name="description" content="Submit your student activity report with file attachment.">
 
-input, button{
-    font-size:18px;
-    padding:8px;
-    margin:6px;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eff6ff;
+      color: #0f172a;
+      text-align: center;
+    }
 
-#expression{
-    width:90%;
-    max-width:600px;
-}
+    .box {
+      max-width: 600px;
+      margin: 80px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
 
-#gridBox{
-    width:95vw;
-    max-height:70vh;
-    overflow:auto;
-    border:3px solid #00897b;
-    margin:auto;
-    padding:10px;
-    background:white;
-}
+    h1 {
+      color: #1d4ed8;
+      margin-bottom: 10px;
+    }
 
-#grid{
-    display:grid;
-    gap:6px;
-}
+    p {
+      font-size: 18px;
+      color: #475569;
+    }
 
-.cell{
-    width:90px;
-    height:70px;
-    border:2px solid #00897b;
-    border-radius:8px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    color:#00695c;
-}
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 15px 26px;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-.highlight{
-    background:gold;
-    color:black;
-    border-color:red;
-}
-
-#error{
-    color:red;
-    font-weight:bold;
-    min-height:25px;
-}
-</style>
+    .note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #64748b;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>M × N Grid Highlighter</h1>
+  <div class="box">
+    <h1>Student Activity Report</h1>
 
-Rows:
-<input type="number" id="rows" value="7" min="1">
+    <p>
+      Submit your daily work, problems, tomorrow’s plan,
+      and attach files.
+    </p>
 
-Columns:
-<input type="number" id="cols" value="7" min="1">
+    <a class="btn" href="https://forms.gle/RaM7MXMg3QNQBBKU6" target="_blank">
+      Submit Activity Report
+    </a>
 
-<button onclick="makeGrid()">Generate Grid</button>
-
-<br><br>
-
-Expression:
-<br>
-<input
-    id="expression"
-    value="(col = 1) and (row <= m)"
-    oninput="highlightGrid()">
-
-<div id="error"></div>
-
-<div id="gridBox">
-    <div id="grid"></div>
-</div>
-
-<script>
-let m = 7; // total rows
-let n = 7; // total columns
-
-function makeGrid(){
-    m = Number(document.getElementById("rows").value);
-    n = Number(document.getElementById("cols").value);
-
-    let grid = document.getElementById("grid");
-    grid.innerHTML = "";
-
-    grid.style.gridTemplateColumns = `repeat(${n}, 90px)`;
-
-    for(let row = 1; row <= m; row++){
-        for(let col = 1; col <= n; col++){
-            let cell = document.createElement("div");
-
-            cell.className = "cell";
-            cell.dataset.row = row;
-            cell.dataset.col = col;
-            cell.innerText = `(${row}, ${col})`;
-
-            grid.appendChild(cell);
-        }
-    }
-
-    highlightGrid();
-}
-
-function convertToJavaScript(expression){
-    expression = expression.toLowerCase();
-
-    expression = expression.replaceAll(" and ", " && ");
-    expression = expression.replaceAll(" or ", " || ");
-    expression = expression.replaceAll("not ", "! ");
-
-    // Convert single = into ==
-    // Does not disturb <=, >=, !=, ==
-    expression = expression.replace(/(?<![<>=!])=(?![=])/g, "==");
-
-    return expression;
-}
-
-function checkCell(expression, row, col){
-    let jsExpression = convertToJavaScript(expression);
-
-    return Function(
-        "row",
-        "col",
-        "m",
-        "n",
-        "return " + jsExpression;
-    )(row, col, m, n);
-}
-
-function highlightGrid(){
-    let expression = document.getElementById("expression").value;
-    let errorBox = document.getElementById("error");
-    let cells = document.querySelectorAll(".cell");
-
-    errorBox.innerText = "";
-
-    for(let cell of cells){
-        let row = Number(cell.dataset.row);
-        let col = Number(cell.dataset.col);
-
-        try{
-            if(checkCell(expression, row, col)){
-                cell.classList.add("highlight");
-            }else{
-                cell.classList.remove("highlight");
-            }
-        }
-        catch(error){
-            cell.classList.remove("highlight");
-            errorBox.innerText = "Invalid expression";
-        }
-    }
-}
-
-makeGrid();
-</script>
+    <div class="note">
+      File upload is available inside the Google Form.
+    </div>
+  </div>
 
 </body>
 </html>
